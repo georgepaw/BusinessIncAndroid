@@ -1,4 +1,4 @@
 BusinessIncAndroid
 ==================
 
-Test Commit #1
+To create a branch: git checkout -b "branchname"
