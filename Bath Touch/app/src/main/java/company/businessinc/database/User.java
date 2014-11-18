@@ -10,8 +10,8 @@ public class User {
     private String name;
     private String password;
     private String email;
-    private boolean isPlayerGhost;
-    private boolean isReferee;
+    private boolean IsPlayerGhost;
+    private boolean IsReferee;
 
     public User(int userID, String userName, int accessRights, String name, String password, String email, boolean isPlayerGhost, boolean isReferee) {
         this.userID = userID;
@@ -20,8 +20,8 @@ public class User {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.isPlayerGhost = isPlayerGhost;
-        this.isReferee = isReferee;
+        this.IsPlayerGhost = isPlayerGhost;
+        this.IsReferee = isReferee;
     }
 
     public int getUserID() {
@@ -49,10 +49,10 @@ public class User {
     }
 
     public boolean isPlayerGhost() {
-        return isPlayerGhost;
+        return IsPlayerGhost;
     }
 
     public boolean isReferee() {
-        return isReferee;
+        return IsReferee;
     }
 }

@@ -15,46 +15,5 @@ public class Match {
     private Date matchDate;
     private int leagueId;
 
-    public Match(int matchId, int teamOneID, int teamTwoID, int refID, int teamOnePoints, int teamTwoPoints, Date matchDate, int leagueId) {
-        this.matchId = matchId;
-        this.teamOneID = teamOneID;
-        this.teamTwoID = teamTwoID;
-        this.refID = refID;
-        this.teamOnePoints = teamOnePoints;
-        this.teamTwoPoints = teamTwoPoints;
-        this.matchDate = matchDate;
-        this.leagueId = leagueId;
-    }
 
-    public int getMatchId() {
-        return matchId;
-    }
-
-    public int getTeamOneID() {
-        return teamOneID;
-    }
-
-    public int getTeamTwoID() {
-        return teamTwoID;
-    }
-
-    public int getRefID() {
-        return refID;
-    }
-
-    public int getTeamOnePoints() {
-        return teamOnePoints;
-    }
-
-    public int getTeamTwoPoints() {
-        return teamTwoPoints;
-    }
-
-    public Date getMatchDate() {
-        return matchDate;
-    }
-
-    public int getLeagueId() {
-        return leagueId;
-    }
 }

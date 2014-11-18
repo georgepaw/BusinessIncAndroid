@@ -4,37 +4,43 @@ package company.businessinc.database;
  * Created by gp on 16/11/14.
  */
 public class LeagueTeam {
-    private int leagueID;
-    private int teamID;
-    private int leaguePoints;
-    private int pointsFor;
-    private int pointsAgainst;
+    private int LeagueID;
+    private int TeamID;
+    private int LeaguePoints;
+    private int PointsFor;
+    private int PointsAgainst;
+    private int Position;
 
-    public LeagueTeam(int leagueID, int teamID, int leaguePoints, int pointsFor, int pointsAgainst) {
-        this.leagueID = leagueID;
-        this.teamID = teamID;
-        this.leaguePoints = leaguePoints;
-        this.pointsFor = pointsFor;
-        this.pointsAgainst = pointsAgainst;
+    public LeagueTeam(int leagueID, int teamID, int leaguePoints, int pointsFor, int pointsAgainst, int position) {
+        LeagueID = leagueID;
+        TeamID = teamID;
+        LeaguePoints = leaguePoints;
+        PointsFor = pointsFor;
+        PointsAgainst = pointsAgainst;
+        Position = position;
     }
 
     public int getLeagueID() {
-        return leagueID;
+        return LeagueID;
     }
 
     public int getTeamID() {
-        return teamID;
+        return TeamID;
     }
 
     public int getLeaguePoints() {
-        return leaguePoints;
+        return LeaguePoints;
     }
 
     public int getPointsFor() {
-        return pointsFor;
+        return PointsFor;
     }
 
     public int getPointsAgainst() {
-        return pointsAgainst;
+        return PointsAgainst;
+    }
+
+    public int getPosition() {
+        return Position;
     }
 }

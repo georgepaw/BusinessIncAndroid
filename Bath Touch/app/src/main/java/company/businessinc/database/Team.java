@@ -4,62 +4,61 @@ package company.businessinc.database;
  * Created by gp on 16/11/14.
  */
 public class Team {
-    private int teamID;
-    private String teamName;
-    private int teamCaptainID;
-    private int teamColorPrimaryR;
-    private int teamColorPrimaryG;
-    private int teamColorPrimaryB;
-    private int teamColorSecondaryR;
-    private int teamColorSecondaryG;
-    private int teamColorSecondaryB;
+    private int TeamID;
+    private String TeamName;
+    private int TeamCaptainID;
+    private int TeamColorPrimaryR;
+    private int TeamColorPrimaryG;
+    private int TeamColorPrimaryB;
+    private int TeamColorSecondaryR;
+    private int TeamColorSecondaryG;
+    private int TeamColorSecondaryB;
 
     public Team(int teamID, String teamName, int teamCaptainID, int teamColorPrimaryR, int teamColorPrimaryG, int teamColorPrimaryB, int teamColorSecondaryR, int teamColorSecondaryG, int teamColorSecondaryB) {
-        this.teamID = teamID;
-        this.teamName = teamName;
-        this.teamCaptainID = teamCaptainID;
-        this.teamColorPrimaryR = teamColorPrimaryR;
-        this.teamColorPrimaryG = teamColorPrimaryG;
-        this.teamColorPrimaryB = teamColorPrimaryB;
-        this.teamColorSecondaryR = teamColorSecondaryR;
-        this.teamColorSecondaryG = teamColorSecondaryG;
-        this.teamColorSecondaryB = teamColorSecondaryB;
+        TeamID = teamID;
+        TeamName = teamName;
+        TeamCaptainID = teamCaptainID;
+        TeamColorPrimaryR = teamColorPrimaryR;
+        TeamColorPrimaryG = teamColorPrimaryG;
+        TeamColorPrimaryB = teamColorPrimaryB;
+        TeamColorSecondaryR = teamColorSecondaryR;
+        TeamColorSecondaryG = teamColorSecondaryG;
+        TeamColorSecondaryB = teamColorSecondaryB;
     }
 
-
     public int getTeamID() {
-        return teamID;
+        return TeamID;
     }
 
     public String getTeamName() {
-        return teamName;
+        return TeamName;
     }
 
     public int getTeamCaptainID() {
-        return teamCaptainID;
+        return TeamCaptainID;
     }
 
     public int getTeamColorPrimaryR() {
-        return teamColorPrimaryR;
+        return TeamColorPrimaryR;
     }
 
     public int getTeamColorPrimaryG() {
-        return teamColorPrimaryG;
+        return TeamColorPrimaryG;
     }
 
     public int getTeamColorPrimaryB() {
-        return teamColorPrimaryB;
+        return TeamColorPrimaryB;
     }
 
     public int getTeamColorSecondaryR() {
-        return teamColorSecondaryR;
+        return TeamColorSecondaryR;
     }
 
     public int getTeamColorSecondaryG() {
-        return teamColorSecondaryG;
+        return TeamColorSecondaryG;
     }
 
     public int getTeamColorSecondaryB() {
-        return teamColorSecondaryB;
+        return TeamColorSecondaryB;
     }
 }

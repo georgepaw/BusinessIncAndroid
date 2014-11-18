@@ -5,15 +5,15 @@ package company.businessinc.database;
  */
 public class Ref {
     private int userID;
-    private int refID;
-    private int gamesRefereed;
-    private String qualification;
+    private int RefID;
+    private int GamesRefereed;
+    private String Qualification;
 
     public Ref(int userID, int refID, int gamesRefereed, String qualification) {
         this.userID = userID;
-        this.refID = refID;
-        this.gamesRefereed = gamesRefereed;
-        this.qualification = qualification;
+        this.RefID = refID;
+        this.GamesRefereed = gamesRefereed;
+        this.Qualification = qualification;
     }
 
     public int getUserID() {
@@ -21,14 +21,14 @@ public class Ref {
     }
 
     public int getRefID() {
-        return refID;
+        return RefID;
     }
 
     public int getGamesRefereed() {
-        return gamesRefereed;
+        return GamesRefereed;
     }
 
     public String getQualification() {
-        return qualification;
+        return Qualification;
     }
 }
