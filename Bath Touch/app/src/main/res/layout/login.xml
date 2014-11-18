@@ -50,11 +50,14 @@
             android:inputType="textPassword" />
 
         <Button
+            android:id="@+id/button_login"
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_gravity="center"
-            android:text="Login"/>
+            android:text="Login"
+            android:onClick="login_as_user"
+            android:layout_marginTop="16dp"/>
 
     </LinearLayout>
 
@@ -62,12 +65,12 @@
         style="@style/ButtonStyle"
         android:id="@+id/button_anonymousLogin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:text="Anonymous Login"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="10dp"
-        android:padding="5dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:padding="8dp"
         />
 </RelativeLayout>
