@@ -2,19 +2,15 @@ package company.businessinc.networking;
 
 import java.util.List;
 
-import company.businessinc.database.LeagueTeam;
+import company.businessinc.dataModels.LeagueTeam;
 
 /**
- * Created by gp on 16/11/14.
+ * Created by gp on 18/11/14.
  */
 public class LeagueView {
-    static private String endPoint = "/league/view";
+    private static final String endPoint = "/league/view";
 
-    public List<LeagueTeam> getStandings(int leagueID){
+    public List<LeagueTeam> get (int leagueID){
         return null;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
     }
 }

@@ -1,17 +1,12 @@
 package company.businessinc.networking;
 
 /**
- * Created by gp on 16/11/14.
+ * Created by gp on 18/11/14.
  */
 public class ScoreSubmit {
+    private static final String endPoint = "/score/submit";
 
-    static private String endPoint = "/league/view";
-
-    public boolean submit(int matchID, int teamOneScore, int teamTwoScore){
+    public boolean get(int matchID, int teamOneScore, int teamTwoScore){
         return false;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
     }
 }

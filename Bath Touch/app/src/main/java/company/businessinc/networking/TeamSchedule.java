@@ -2,19 +2,15 @@ package company.businessinc.networking;
 
 import java.util.List;
 
-import company.businessinc.database.Match;
+import company.businessinc.dataModels.Match;
 
 /**
- * Created by gp on 16/11/14.
+ * Created by gp on 18/11/14.
  */
 public class TeamSchedule {
-    static private String endPoint = "/team/schedule";
+    private static final String endPoint = "/team/schedule";
 
-    public List<Match> getGames(int leagueID, int teamID){
+    public static List<Match> get(int leagueID, int teamID){
         return null;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
     }
 }
