@@ -40,8 +40,6 @@ public class ScoreSubmit extends AsyncTask<Void, Void, Status> {
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
         }
-        //TODO: PARSE JSON
-
         company.businessinc.dataModels.Status bool = null;
         try{
             bool = new company.businessinc.dataModels.Status(jsonObject);

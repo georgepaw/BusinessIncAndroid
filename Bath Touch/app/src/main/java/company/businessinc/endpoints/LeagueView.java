@@ -40,8 +40,6 @@ public class LeagueView extends AsyncTask<Void, Void, List<LeagueTeam>> {
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
         }
-        //TODO: PARSE JSON
-
         List<LeagueTeam> list = new LinkedList<LeagueTeam>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
