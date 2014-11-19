@@ -3,54 +3,48 @@ package company.businessinc.networking;
 import android.net.Uri;
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
  * Created by gp on 17/11/14.
  */
-public class APICall {
+public class APICall{
 
+    private static final String url = "http://www.watchanysport.com";
     private static final String TAG = "APICall";
+    private static HttpClient httpclient = new DefaultHttpClient();
 
-    public static String call(String endPoint, List<NameValuePair> parameters) {
-        Uri.Builder uri = Uri.parse("http://www.watchanysport.com").buildUpon();
-        uri.path("api" + endPoint);
-        String output;
-        URL url;
-        HttpURLConnection urlConnection;
+    public static String call(APICallType apiCallType, List<NameValuePair> parameters) {
+        Uri.Builder uri = Uri.parse(url).buildUpon();
+        uri.path("api" + apiCallType.getEndPoint());
+        String output = null;
         for (NameValuePair x : parameters) {
             uri.appendQueryParameter(x.getName(), x.getValue());
         }
-        try {
-            String a = uri.build().toString();
-            url = new URL(a);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-            BufferedReader r = new BufferedReader(new InputStreamReader(in));
-            StringBuilder total = new StringBuilder();
-            String line;
-            while ((line = r.readLine()) != null) {
-                total.append(line);
+        HttpGet httpGet = new HttpGet(uri.build().toString());
+        HttpResponse httpResponse;
+        try{
+            //TODO cookies!
+            httpResponse = httpclient.execute(httpGet);
+            if(httpResponse.getStatusLine().getStatusCode() != 200){
+                Log.d(TAG, "Request wasn't successful, returning null");
+                return null;
             }
-            output = total.toString();
-            urlConnection.disconnect();
-        } catch (MalformedURLException e) {
-            Log.wtf(TAG, "Malformed url?!");
-            return null;
-        } catch (IOException e) {
-            Log.d(TAG, "Exception when opening connection");
-            return null;
+            HttpEntity entity = httpResponse.getEntity();
+            if(entity != null){
+                output = EntityUtils.toString(entity);
+            }
+        } catch (IOException e){
+            Log.d(TAG,"Couldn't execute the httpGet");
         }
         return output;
     }
