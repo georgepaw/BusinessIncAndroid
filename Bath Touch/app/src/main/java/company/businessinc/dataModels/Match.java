@@ -16,14 +16,14 @@ import java.util.Locale;
 public class Match {
     private String teamOne;
     private String teamTwo;
-    private int refID;
+    private Integer refID;
     private String refName;
     private Date dateTime;
     private String place;
     private Integer teamOnePoints;
     private Integer teamTwoPoints;
 
-    public Match(String teamOne, String teamTwo, int refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints) {
+    public Match(String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints) {
         this.teamOne = teamOne;
         this.teamTwo = teamTwo;
         this.refID = refID;
@@ -35,22 +35,51 @@ public class Match {
     }
 
     public Match(JSONObject jsonObject) throws JSONException {
-        this.teamOne = jsonObject.getString("teamOne");
-        this.teamTwo = jsonObject.getString("teamTwo");
-        this.refID = jsonObject.getInt("refID");
-        this.refName = jsonObject.getString("refName");
-        String dT = jsonObject.getString("date");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
         try {
-            this.dateTime = sdf.parse(dT);
-        } catch (ParseException e){
-            throw new JSONException(dT);
+            this.teamOne = jsonObject.getString("teamOne");
+        } catch(JSONException e) {
+            this.teamOne = null;
         }
-        this.place = jsonObject.getString("place");
-        this.teamOnePoints = jsonObject.getInt("teamOnePoints");
-        this.teamTwoPoints = jsonObject.getInt("teamTwoPoints");
+        try {
+            this.teamTwo = jsonObject.getString("teamTwo");
+        } catch(JSONException e) {
+            this.teamTwo = null;
+        }
+        try {
+            this.refID = jsonObject.getInt("refID");
+        } catch(JSONException e) {
+            this.refID = null;
+        }
+        try {
+            this.refName = jsonObject.getString("refName");
+        } catch(JSONException e) {
+            this.refName = null;
+        }
+        try {
+            String dT = jsonObject.getString("dateTime");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
+            this.dateTime = sdf.parse(dT);
+        } catch(JSONException e) {
+            this.refName = null;
+        } catch (ParseException e){
+            throw new JSONException("couldn't parse dateTime");
+        }
+        try {
+            this.place = jsonObject.getString("place");
+        } catch(JSONException e) {
+            this.place = null;
+        }
+        try {
+            this.teamOnePoints = jsonObject.getInt("teamOnePoints");
+        } catch(JSONException e) {
+            this.teamOnePoints = null;
+        }
+        try {
+            this.teamTwoPoints = jsonObject.getInt("teamTwoPoints");
+        } catch(JSONException e) {
+            this.teamTwoPoints = null;
+        }
     }
-
 
     public String getTeamOne() {
         return teamOne;
@@ -68,11 +97,11 @@ public class Match {
         this.teamTwo = teamTwo;
     }
 
-    public int getrefID() {
+    public Integer getRefID() {
         return refID;
     }
 
-    public void setrefID(int refID) {
+    public void setRefID(Integer refID) {
         this.refID = refID;
     }
 
