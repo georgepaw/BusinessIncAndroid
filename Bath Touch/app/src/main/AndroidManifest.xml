@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="company.businessinc.bathtouch.submit_score"
+            android:name=".SubmitScoreActivity"
             android:label="@string/title_activity_submit_score"
             android:screenOrientation="portrait">
         </activity>

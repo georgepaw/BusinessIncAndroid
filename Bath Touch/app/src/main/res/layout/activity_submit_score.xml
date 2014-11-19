@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_submit_score"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
-        >
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp">
         <Spinner
             android:id="@+id/team1_spinner"
-            android:layout_width="100dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center" >
@@ -29,10 +38,10 @@
             />
         <Spinner
             android:id="@+id/team2_spinner"
-            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:layout_width="fill_parent">
 
         </Spinner>
 
@@ -43,7 +52,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp">
         <EditText
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -69,7 +79,7 @@
     </LinearLayout>
 
     <Button
-        style="@style/ButtonStyle"
+        style="@style/ButtonStyleRaised"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit Score"
