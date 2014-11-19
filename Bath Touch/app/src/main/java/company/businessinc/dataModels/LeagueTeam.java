@@ -1,5 +1,8 @@
 package company.businessinc.dataModels;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by gp on 18/11/14.
  */
@@ -24,6 +27,18 @@ public class LeagueTeam {
         this.position = position;
         this.pointsFor = pointsFor;
         this.pointsAgainst = pointsAgainst;
+    }
+
+    public LeagueTeam(JSONObject jsonObject) throws JSONException{
+        this.teamName = jsonObject.getString("teamName");
+        this.leaguePoints = jsonObject.getInt("leaguePoints");
+        this.win = jsonObject.getInt("win");
+        this.draw = jsonObject.getInt("draw");;
+        this.lose = jsonObject.getInt("lose");;
+        this.forfeit = jsonObject.getInt("forfeit");;
+        this.position = jsonObject.getInt("position");;
+        this.pointsFor = jsonObject.getInt("pointsFor");;
+        this.pointsAgainst = jsonObject.getInt("pointsAgainst");;
     }
 
     public String getTeamName() {

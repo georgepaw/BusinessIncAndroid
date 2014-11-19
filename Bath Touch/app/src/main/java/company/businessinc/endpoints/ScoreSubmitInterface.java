@@ -1,7 +1,7 @@
 package company.businessinc.endpoints;
 
-import company.businessinc.dataModels.User;
+import company.businessinc.dataModels.Status;
 
 public interface ScoreSubmitInterface {
-    public void scoreSubmitCallback(boolean data);
+    public void scoreSubmitCallback(Status data);
 }

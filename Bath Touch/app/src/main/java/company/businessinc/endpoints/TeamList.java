@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
+import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.Team;
 import company.businessinc.networking.APICall;
@@ -38,9 +39,16 @@ public class TeamList extends AsyncTask<Void, Void, List<Team>> {
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
         }
-        //TODO: PARSE JSON
 
-        List<Team> list = null;
+        List<Team> list = new LinkedList<Team>();
+        for(int i = 0; i < jsonArray.length(); i++){
+            try{
+                list.add(new Team(jsonArray.getJSONObject(i)));
+            } catch (JSONException e){
+                Log.d(TAG, "Couldn't parse JSON into Match object");
+                return null;
+            }
+        }
         return list;
     }
 

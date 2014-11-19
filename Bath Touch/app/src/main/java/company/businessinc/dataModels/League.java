@@ -1,5 +1,8 @@
 package company.businessinc.dataModels;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 
 /**
@@ -12,6 +15,11 @@ public class League {
     public League(int leagueID, String leagueName) {
         this.leagueID = leagueID;
         this.leagueName = leagueName;
+    }
+
+    public League(JSONObject jsonObject) throws JSONException{
+        this.leagueID = jsonObject.getInt("leagueID");
+        this.leagueName = jsonObject.getString("leagueName");
     }
 
     public int getLeagueID() {

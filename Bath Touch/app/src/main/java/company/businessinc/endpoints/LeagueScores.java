@@ -41,8 +41,16 @@ public class LeagueScores extends AsyncTask<Void, Void, List<Match>> {
         }
         //TODO: PARSE JSON
 
-        List<Match> leagueScores = null;
-        return leagueScores;
+        List<Match> list = new LinkedList<Match>();
+        for(int i = 0; i < jsonArray.length(); i++){
+            try{
+                list.add(new Match(jsonArray.getJSONObject(i)));
+            } catch (JSONException e){
+                Log.d(TAG, "Couldn't parse JSON into Match object");
+                return null;
+            }
+        }
+        return list;
     }
 
     // onPostExecute displays the results of the AsyncTask.

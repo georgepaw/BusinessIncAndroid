@@ -1,5 +1,8 @@
 package company.businessinc.dataModels;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by gp on 18/11/14.
  */
@@ -10,6 +13,25 @@ public class Team {
     private String captainName;
     private int teamColorPrimary;
     private int teamColorSecondary;
+
+
+    public Team(int teamID, String teamName, int captainID, String captainName, int teamColorPrimary, int teamColorSecondary) {
+        this.teamID = teamID;
+        this.teamName = teamName;
+        this.captainID = captainID;
+        this.captainName = captainName;
+        this.teamColorPrimary = teamColorPrimary;
+        this.teamColorSecondary = teamColorSecondary;
+    }
+
+    public Team (JSONObject jsonObject) throws JSONException{
+        this.teamID = jsonObject.getInt("teamID");
+        this.teamName = jsonObject.getString("teamName");
+        this.captainID = jsonObject.getInt("captainID");
+        this.captainName = jsonObject.getString("captainName");
+        this.teamColorPrimary = jsonObject.getInt("teamColorPrimary");
+        this.teamColorSecondary = jsonObject.getInt("teamColorSecondary");
+    }
 
     public int getTeamID() {
         return teamID;

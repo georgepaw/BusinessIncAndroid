@@ -39,9 +39,16 @@ public class TeamSchedule extends AsyncTask<Void, Void, List<Match>> {
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
         }
-        //TODO: PARSE JSON
 
-        List<Match> list = null;
+        List<Match> list = new LinkedList<Match>();
+        for(int i = 0; i < jsonArray.length(); i++){
+            try{
+                list.add(new Match(jsonArray.getJSONObject(i)));
+            } catch (JSONException e){
+                Log.d(TAG, "Couldn't parse JSON into Match object");
+                return null;
+            }
+        }
         return list;
     }
 

@@ -40,11 +40,7 @@ public class UserLogin extends AsyncTask<Void, Void, User> {
         }
         User user = null;
         try {
-            if (jsonObject != null) {
-                if(jsonObject.getBoolean("status")) {
-                    user = new User(jsonObject.getInt("userID"));
-                }
-            }
+            user = new User(jsonObject);
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse parameters");
         }

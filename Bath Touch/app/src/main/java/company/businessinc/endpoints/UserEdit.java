@@ -13,13 +13,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Status;
 import company.businessinc.networking.APICall;
 import company.businessinc.networking.APICallType;
 
 /**
  * Created by gp on 18/11/14.
  */
-public class UserEdit extends AsyncTask<Void, Void, Boolean> {
+public class UserEdit extends AsyncTask<Void, Void, Status> {
     String TAG = "UserEdit";
     private UserEditInterface callback;
     private List<NameValuePair> parameters;
@@ -35,22 +36,26 @@ public class UserEdit extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Void... a) {
-        JSONArray jsonArray = null;
+    protected company.businessinc.dataModels.Status doInBackground(Void... a) {
+        JSONObject jsonObject = null;
         try {
-            jsonArray = new JSONArray(APICall.call(APICallType.UserEdit, parameters));
+            jsonObject = new JSONObject(APICall.call(APICallType.UserEdit, parameters));
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
         }
-        //TODO: PARSE JSON
 
-        Boolean bool = null;
+        company.businessinc.dataModels.Status bool = null;
+        try{
+            bool = new company.businessinc.dataModels.Status(jsonObject);
+        } catch (JSONException e){
+            Log.d(TAG, "Couldn't parse JSON into Status");
+        }
         return bool;
     }
 
     // onPostExecute displays the results of the AsyncTask.
     @Override
-    protected void onPostExecute(Boolean result) {
+    protected void onPostExecute(company.businessinc.dataModels.Status result) {
         callback.userEditCallback(result);
     }
 }
