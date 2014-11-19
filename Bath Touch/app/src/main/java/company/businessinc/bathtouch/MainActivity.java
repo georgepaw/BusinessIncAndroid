@@ -5,30 +5,59 @@ import android.content.res.Resources;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import company.businessinc.dataModels.User;
+import company.businessinc.endpoints.UserLogin;
+import company.businessinc.endpoints.UserLoginInterface;
+import company.businessinc.networking.CheckNetworkConnection;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements UserLoginInterface {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Toolbar toolbar =  (Toolbar) findViewById(R.id.toolbar_login);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_login);
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
     }
 
-    public void login_as_user(View view){
-        Intent intent = new Intent(this, SubmitScoreActivity.class);
+    public void login_as_user(View view) {
+        if (CheckNetworkConnection.check(this)) {
+            LinearLayout linearLayout = (LinearLayout)findViewById(R.id.login_boxes);
+            String username = ((EditText)linearLayout.getChildAt(0)).getText().toString();
+            String password = ((EditText)linearLayout.getChildAt(1)).getText().toString();
+            Log.d("Login", "Network is working, let's log in");
+            new UserLogin(this,username,password).execute();
+        } else {
+            Log.d("Login", "Network is not working");
+        }
+    }
+
+    public void userLoginCallback(User data) {
+        if (data != null) {
+            if (data.getStatus()) { //User has logged in
+                data.getUserID(); //this needs to be stored somewhere
+                Log.d("Login", "Logged in");
+                Intent intent = new Intent(this, SubmitScoreActivity.class);
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
 //        String message = editText.getText().toString();
 //        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-
+                startActivity(intent);
+            } else {
+                Log.d("Login", "Invalid credentials");
+            }
+        } else {
+            Log.d("Login", "Error connecting and parsing");
+        }
     }
 }
