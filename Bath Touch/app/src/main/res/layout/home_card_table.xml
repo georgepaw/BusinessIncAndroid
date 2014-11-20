@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/home_page_card_table"
+        card_view:cardCornerRadius="2dp"
+        android:layout_width="fill_parent"
+        android:layout_height="140dp"
+        android:layout_margin="8dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+
+                android:id="@+id/home_page_card_table_header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:text="EPL"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/home_page_card_table_subHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/home_page_card_table_header"
+                android:layout_marginLeft="8dp"
+                android:text="Subheader" />
+
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/home_page_table_recycle"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:layout_below="@id/home_page_card_table_subHeader"-->
+                <!--android:clickable="false"-->
+                <!--android:scrollbars="vertical" />-->
+
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

@@ -2,24 +2,11 @@ package company.businessinc.bathtouch;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
 
@@ -34,9 +21,9 @@ public class HomePageActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_activity);
+        setContentView(R.layout.activity_homepage_activity);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.home_page_cards_recycle);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -48,6 +35,7 @@ public class HomePageActivity extends ActionBarActivity {
 
         // specify an adapter (see also next example)
         String[] myDataset = createDataset();
+
         mAdapter = new HomePageAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
