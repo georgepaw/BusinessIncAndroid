@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.UserLogin;
@@ -39,25 +40,29 @@ public class MainActivity extends ActionBarActivity implements UserLoginInterfac
             Log.d("Login", "Network is working, let's log in");
             new UserLogin(this,username,password).execute();
         } else {
+            Toast.makeText(this, "No connection", Toast.LENGTH_LONG);
             Log.d("Login", "Network is not working");
         }
     }
 
+    //After the login button is pressed
     public void userLoginCallback(User data) {
         if (data != null) {
             if (data.getStatus()) { //User has logged in
                 data.getUserID(); //this needs to be stored somewhere
                 Log.d("Login", "Logged in");
-                Intent intent = new Intent(this, SubmitScoreActivity.class);
-//        EditText editText = (EditText) findViewById(R.id.edit_message);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
+                Intent intent = new Intent(this, SubmitScoreOtherActivity.class);
+
                 startActivity(intent);
             } else {
                 Log.d("Login", "Invalid credentials");
+                Toast toast = Toast.makeText(MainActivity.this, "Bad Details", Toast.LENGTH_LONG);
+                toast.show();
             }
         } else {
             Log.d("Login", "Error connecting and parsing");
+            Toast.makeText(MainActivity.this, "Bad Details", Toast.LENGTH_LONG);
+
         }
     }
 }

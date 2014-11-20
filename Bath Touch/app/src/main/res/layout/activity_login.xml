@@ -13,6 +13,7 @@
         android:background="?attr/colorPrimary"
         android:elevation="2dp"
         app:title="Log in to Bath Touch"
+
         app:titleMarginBottom="8dp"
         android:gravity="bottom"
         app:titleTextAppearance="@style/Base.TextAppearance.AppCompat.Headline"
@@ -42,7 +43,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:paddingTop="16dp"
+        android:paddingTop="32dp"
         android:layout_below="@+id/toolbar_login">
 
         <EditText

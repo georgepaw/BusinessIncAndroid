@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="company.businessinc.bathtouch" >
+
+    <uses-sdk android:minSdkVersion="11" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name="company.businessinc.bathtouch.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,9 +31,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SubmitScoreActivity"
+            android:name="company.businessinc.bathtouch.SubmitScoreActivity"
             android:label="@string/title_activity_submit_score"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="company.businessinc.bathtouch.SubmitScoreOtherActivity"
+            android:label="@string/title_activity_submit_score_other" >
+        </activity>
+        <activity
+            android:name="company.businessinc.bathtouch.activity_scrolll"
+            android:label="@string/title_activity_activity_scrolll" >
+        </activity>
+        <activity
+            android:name="company.businessinc.bathtouch.list_activity"
+            android:label="@string/title_activity_list_activity" >
         </activity>
     </application>
 
