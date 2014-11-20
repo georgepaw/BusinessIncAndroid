@@ -1,13 +1,10 @@
 package company.businessinc.bathtouch;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -40,7 +37,7 @@ public class MainActivity extends ActionBarActivity implements UserLoginInterfac
             Log.d("Login", "Network is working, let's log in");
             new UserLogin(this,username,password).execute();
         } else {
-            Toast.makeText(this, "No connection", Toast.LENGTH_LONG);
+            Toast.makeText(this, "No connection", Toast.LENGTH_SHORT);
             Log.d("Login", "Network is not working");
         }
     }
@@ -51,17 +48,17 @@ public class MainActivity extends ActionBarActivity implements UserLoginInterfac
             if (data.getStatus()) { //User has logged in
                 data.getUserID(); //this needs to be stored somewhere
                 Log.d("Login", "Logged in");
-                Intent intent = new Intent(this, SubmitScoreOtherActivity.class);
+                Intent intent = new Intent(this, SubmitScoreActivity.class);
 
                 startActivity(intent);
             } else {
                 Log.d("Login", "Invalid credentials");
-                Toast toast = Toast.makeText(MainActivity.this, "Bad Details", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainActivity.this, "Bad Details", Toast.LENGTH_SHORT);
                 toast.show();
             }
         } else {
             Log.d("Login", "Error connecting and parsing");
-            Toast.makeText(MainActivity.this, "Bad Details", Toast.LENGTH_LONG);
+            Toast.makeText(MainActivity.this, "Cannot connect", Toast.LENGTH_SHORT);
 
         }
     }

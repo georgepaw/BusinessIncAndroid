@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_submit_score"
@@ -10,88 +13,188 @@
         android:background="?attr/colorPrimary"
         android:elevation="2dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentTop="true"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp">
-        <Spinner
-            android:id="@+id/team1_spinner"
-            android:spinnerMode="dialog"
-            android:spinnerStyle="@style/Widget.AppCompat.Spinner.DropDown"
+        android:layout_height="190dp"
+        card_view:cardCornerRadius="4dp"
+        android:layout_margin="5dp"
+        android:id="@+id/team1_card"
+        android:layout_below="@id/toolbar_submit_score"
+        >
+
+        <View
+            android:id="@+id/team1_color_bar"
+            android:layout_width="100dp"
+            android:layout_height="fill_parent"
+            android:background="@color/red"
+            >
+
+        </View>
+
+        <LinearLayout
+            android:layout_marginLeft="100dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center" >
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:background="@color/white">
 
-            </Spinner>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="vs"
-            android:textAlignment="gravity"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
+            <TextView
+                android:gravity="bottom"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:textSize="24sp"
+                android:textColor="@color/grey"
+                android:text="Business Inc United"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
 
-            />
-        <Spinner
-            android:id="@+id/team2_spinner"
-            android:spinnerMode="dialog"
-            android:spinnerStyle="@style/Widget.AppCompat.Spinner.DropDown"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_width="fill_parent">
 
-        </Spinner>
+                />
+            
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="#8A8A8A">
+
+                </View>
+
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left"
+                android:gravity="center"
+                android:hint="Score"
+                android:textSize="24dp"
+                android:layout_margin="16dp"
+                android:textColorHint="@color/orange"
+                android:background="@color/white"
+                android:textColor="@color/orange"
+                android:layout_weight="2"
+                android:inputType="number"
+                />
+
 
 
         </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
+    </android.support.v7.widget.CardView>
+
+
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp">
-        <EditText
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:hint="Team 1 Score"
-            android:layout_weight="1"
-            android:inputType="number"/>
+        android:layout_height="190dp"
+        card_view:cardCornerRadius="4dp"
+        android:layout_margin="5dp"
+        android:id="@+id/team2_card"
+        android:layout_below="@id/team1_card" >
 
-        <TextView
-            android:layout_width="wrap_content"
+
+        <View
+            android:id="@+id/team2_color_bar"
+            android:layout_width="100dp"
+            android:layout_height="fill_parent"
+            android:background="@color/blue"
+            >
+
+        </View>
+
+        <LinearLayout
+            android:layout_marginLeft="100dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:background="@color/white"
+            >
+
+
+            <TextView
+                android:gravity="bottom"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:textSize="24sp"
+                android:textColor="@color/grey"
+                android:text="Autistics Athletic Club"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+
+                />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="#8A8A8A">
+
+            </View>
+
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left"
+                android:gravity="center"
+                android:hint="Score"
+                android:textSize="24dp"
+                android:layout_marginLeft="16dp"
+                android:textColorHint="@color/orange"
+                android:textColor="@color/orange"
+                android:background="@color/white"
+                android:layout_weight="2"
+                android:inputType="number"
+                />
+
+
+
+        </LinearLayout>
+
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_height="70dp"
+        android:layout_width="fill_parent"
+        card_view:cardCornerRadius="4dp"
+        android:layout_marginTop="16dp"
+        android:id="@+id/submit_score_card"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="fill_parent"
+            android:text="Submit Score"
+            android:textAllCaps="true"
+            android:textSize="24sp"
+            android:padding="8dp"
             android:layout_height="match_parent"
-            android:text="vs"
-            android:textAlignment="gravity"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            />
-        <EditText
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:hint="Team 2 Score"
-            android:layout_weight="1"
-            android:inputType="number"/>
+            android:layout_gravity="center"
+            android:textColor="@color/orange"/>
 
-    </LinearLayout>
 
-    <Button
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:text="Submit Score"
-        android:textColor="@color/red"
-        android:textAllCaps="true"
-        android:textSize="14sp"
-        android:padding="8dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
 
-</LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+
+
+
+
+
+</RelativeLayout>
