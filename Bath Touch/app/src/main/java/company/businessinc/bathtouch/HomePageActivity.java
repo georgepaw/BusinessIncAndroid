@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
 
 
@@ -36,9 +39,10 @@ public class HomePageActivity extends ActionBarActivity {
         // specify an adapter (see also next example)
         String[] myDataset = createDataset();
 
-        mAdapter = new HomePageAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
+        HomeCardData mCardData = new HomeCardData();
 
+        mAdapter = new HomePageAdapter(mCardData);
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 
@@ -61,15 +65,12 @@ public class HomePageActivity extends ActionBarActivity {
     }
 
     public String[] createDataset(){
-        String[] dataset = {"HOME PAGE", "adam", "bob", "charlie", "dave", "ed", "fred", "gavin"};
+        String[] dataset = {"HOME PAGE", "adam"};
         return dataset;
     }
 
 
 }
-
-
-
 
 
 // The data to show
