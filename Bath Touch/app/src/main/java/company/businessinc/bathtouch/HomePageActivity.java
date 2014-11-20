@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class list_activity extends ActionBarActivity {
+public class HomePageActivity extends ActionBarActivity {
 
     List<Map<String, String>> planetsList = new ArrayList<Map<String,String>>();
 
@@ -51,7 +51,7 @@ public class list_activity extends ActionBarActivity {
                 // We know the View is a TextView so we can cast it
                 TextView clickedView = (TextView) view;
 
-                Toast.makeText(list_activity.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomePageActivity.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
 
             }
         });
