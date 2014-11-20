@@ -42,13 +42,18 @@ public class MainActivity extends ActionBarActivity implements UserLoginInterfac
         }
     }
 
+    public void login_as_anonymous(View view) {
+        Intent intent = new Intent(this, HomePageActivity.class);
+        startActivity(intent);
+    }
+
     //After the login button is pressed
     public void userLoginCallback(User data) {
         if (data != null) {
             if (data.getStatus()) { //User has logged in
                 data.getUserID(); //this needs to be stored somewhere
                 Log.d("Login", "Logged in");
-                Intent intent = new Intent(this, SubmitScoreActivity.class);
+                Intent intent = new Intent(this, HomePageActivity.class);
 
                 startActivity(intent);
             } else {
@@ -62,4 +67,6 @@ public class MainActivity extends ActionBarActivity implements UserLoginInterfac
 
         }
     }
+
+
 }
