@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_page_card_home"
+    android:layout_width="fill_parent"
+    android:layout_height="140dp"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="2dp"
+    >
+
+
+    <TextView
+        android:id="@+id/home_page_card_home_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="Header text" />
+
+
+</android.support.v7.widget.CardView>
+
