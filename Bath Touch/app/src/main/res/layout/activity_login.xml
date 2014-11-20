@@ -58,7 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="@string/login_password_hint"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            />
 
         <Button
             android:id="@+id/button_login"
@@ -90,7 +91,8 @@
             android:textAllCaps="true"
             android:textSize="14sp"
             android:padding="8dp"
-            android:layout_height="48dp" />
+            android:layout_height="48dp"
+            android:onClick="login_as_anonymous"/>
 
 
         </LinearLayout>

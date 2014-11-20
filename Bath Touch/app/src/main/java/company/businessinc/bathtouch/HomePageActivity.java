@@ -2,9 +2,14 @@ package company.businessinc.bathtouch;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -16,10 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import company.businessinc.bathtouch.adapters.HomePageAdapter;
+
 
 public class HomePageActivity extends ActionBarActivity {
 
-    List<Map<String, String>> planetsList = new ArrayList<Map<String,String>>();
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -27,34 +36,22 @@ public class HomePageActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_activity);
 
-        initList();
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
-        // We get the ListView component from the layout
-        ListView lv = (ListView) findViewById(R.id.listView);
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
 
-        // This is a simple adapter that accepts as parameter
-        // Context
-        // Data list
-        // The row layout that is used during the row creation
-        // The keys used to retrieve the data
-        // The View id used to show the data. The key number and the view id must match
-        SimpleAdapter simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[] {"planet"}, new int[] {android.R.id.text1});
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        lv.setAdapter(simpleAdpt);
+        // specify an adapter (see also next example)
+        String[] myDataset = createDataset();
+        mAdapter = new HomePageAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);
 
-        // React to user clicks on item
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            public void onItemClick(AdapterView <?> parentAdapter, View view, int position,
-                                    long id) {
-
-                // We know the View is a TextView so we can cast it
-                TextView clickedView = (TextView) view;
-
-                Toast.makeText(HomePageActivity.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
 
@@ -71,37 +68,21 @@ public class HomePageActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void initList() {
-        // We populate the planets
-
-        planetsList.add(createPlanet("planet", "Mercury"));
-        planetsList.add(createPlanet("planet", "Venus"));
-        planetsList.add(createPlanet("planet", "Mars"));
-        planetsList.add(createPlanet("planet", "Jupiter"));
-        planetsList.add(createPlanet("planet", "Saturn"));
-        planetsList.add(createPlanet("planet", "Uranus"));
-        planetsList.add(createPlanet("planet", "Neptune"));
+        return false;
 
     }
 
-    private HashMap<String, String> createPlanet(String key, String name) {
-        HashMap<String, String> planet = new HashMap<String, String>();
-        planet.put(key, name);
-
-        return planet;
+    public String[] createDataset(){
+        String[] dataset = {"HOME PAGE", "adam", "bob", "charlie", "dave", "ed", "fred", "gavin"};
+        return dataset;
     }
 
 
 }
+
+
+
+
 
 // The data to show
 
