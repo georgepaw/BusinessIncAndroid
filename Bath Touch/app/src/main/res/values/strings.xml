@@ -4,10 +4,8 @@
     <string name="app_name">Bath Touch</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
     <string name="title_activity_login">Login</string>
     <string name="title_activity_submit_score">Submit Match Score</string>
-
     <string name="login_username_hint">Enter your username</string>
     <string name="login_password_hint">Enter your password</string>
     <string name="button_login">Login</string>
@@ -23,5 +21,9 @@
         <item>Team Uranus</item>
         <item>Team Neptune</item>
     </string-array>
+
+    <string name="title_activity_submit_score_other">SubmitScoreOtherActivity</string>
+    <string name="title_activity_activity_scrolll">activity_scrolll</string>
+    <string name="title_activity_list_activity">list_activity</string>
 
 </resources>
