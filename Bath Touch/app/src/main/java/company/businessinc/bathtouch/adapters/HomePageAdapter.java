@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import company.businessinc.bathtouch.HomeCardData;
 import company.businessinc.bathtouch.R;
 
 /**
@@ -15,7 +17,7 @@ import company.businessinc.bathtouch.R;
  */
 public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private String[] mDataset;
+    private HomeCardData mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -36,18 +38,46 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public CardView mCardView;
         public TextView mHeaderTextView;
         public TextView mSubHeaderTextView;
-//        public RecyclerView mRecyclerView;
+        public TextView mTeam1name, mTeam2name, mTeam3name;
+        public TextView mTeam1Number, mTeam2Number, mTeam3Number;
+        public TextView mTeam1Won, mTeam2Won, mTeam3Won;
+        public TextView mTeam1Draw, mTeam2Draw, mTeam3Draw;
+        public TextView mTeam1Lost, mTeam2Lost, mTeam3Lost;
+        public TextView mTeam1Pts, mTeam2Pts, mTeam3Pts;
+
         public ViewHolderTable(View v) {
             super(v);
             mCardView = (CardView) v.findViewById(R.id.home_page_card_table);
             mHeaderTextView = (TextView) v.findViewById(R.id.home_page_card_table_header);
             mSubHeaderTextView = (TextView) v.findViewById(R.id.home_page_card_table_subHeader);
-//            mRecyclerView = (RecyclerView) v.findViewById(R.id.home_page_table_recycle);
+            mTeam1name = (TextView) v.findViewById(R.id.team_name1);
+            mTeam2name = (TextView) v.findViewById(R.id.team_name2);
+            mTeam3name = (TextView) v.findViewById(R.id.team_name3);
+            mTeam1Number = (TextView) v.findViewById(R.id.team_number1);
+            mTeam2Number = (TextView) v.findViewById(R.id.team_number2);
+            mTeam3Number = (TextView) v.findViewById(R.id.team_number3);
+            mTeam1Won = (TextView) v.findViewById(R.id.team_won1);
+            mTeam2Won = (TextView) v.findViewById(R.id.team_won2);
+            mTeam3Won = (TextView) v.findViewById(R.id.team_won3);
+            mTeam1Draw = (TextView) v.findViewById(R.id.team_draw1);
+            mTeam2Draw = (TextView) v.findViewById(R.id.team_draw2);
+            mTeam3Draw = (TextView) v.findViewById(R.id.team_draw3);
+            mTeam1Lost = (TextView) v.findViewById(R.id.team_lose1);
+            mTeam2Lost = (TextView) v.findViewById(R.id.team_lose2);
+            mTeam3Lost = (TextView) v.findViewById(R.id.team_lose3);
+            mTeam1Pts = (TextView) v.findViewById(R.id.team_points1);
+            mTeam2Pts = (TextView) v.findViewById(R.id.team_points2);
+            mTeam3Pts = (TextView) v.findViewById(R.id.team_points3);
+
+
         }
+
+
+
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HomePageAdapter(String[] myDataset) {
+    public HomePageAdapter(HomeCardData myDataset) {
         mDataset = myDataset;
     }
 
@@ -63,7 +93,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_cards_content, parent, false);
-        // set the view's size, margins, paddings and layout parameters
+                // set the view's size, margins, paddings and layout parameters
 
         View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
 
@@ -93,8 +123,30 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else if (holder instanceof ViewHolderTable) {
             ViewHolderTable vht = (ViewHolderTable) holder;
             Log.d("ERR", "in viewholder table");
-            vht.mHeaderTextView.setText("TABLEHEADER MUTHAFUCKA");
-            vht.mSubHeaderTextView.setText("SUBHEADER MUTHAFUCKA");
+
+
+            vht.mHeaderTextView.setText("Bath Summer League 2015");
+            vht.mSubHeaderTextView.setText("Standings of Top 3");
+            vht.mTeam1name.setText(mDataset.teams.get(0).getTeamName());
+            vht.mTeam2name.setText(mDataset.teams.get(1).getTeamName());
+            vht.mTeam3name.setText(mDataset.teams.get(2).getTeamName());
+            vht.mTeam1Number.setText(mDataset.teams.get(0).getPosition().toString());
+            vht.mTeam2Number.setText(mDataset.teams.get(1).getPosition().toString());
+            vht.mTeam3Number.setText(mDataset.teams.get(2).getPosition().toString());
+            vht.mTeam1Won.setText(mDataset.teams.get(0).getWin().toString());
+            vht.mTeam2Won.setText(mDataset.teams.get(1).getWin().toString());
+            vht.mTeam3Won.setText(mDataset.teams.get(2).getWin().toString());
+            vht.mTeam1Draw.setText(mDataset.teams.get(0).getDraw().toString());
+            vht.mTeam2Draw.setText(mDataset.teams.get(1).getDraw().toString());
+            vht.mTeam3Draw.setText(mDataset.teams.get(2).getDraw().toString());
+            vht.mTeam1Lost.setText(mDataset.teams.get(0).getLose().toString());
+            vht.mTeam2Lost.setText(mDataset.teams.get(1).getLose().toString());
+            vht.mTeam2Lost.setText(mDataset.teams.get(2).getLose().toString());
+            vht.mTeam1Pts.setText(mDataset.teams.get(0).getPointsFor().toString());
+            vht.mTeam2Pts.setText(mDataset.teams.get(1).getPointsFor().toString());
+            vht.mTeam3Pts.setText(mDataset.teams.get(2).getPointsFor().toString());
+
+
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;
@@ -107,6 +159,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 }

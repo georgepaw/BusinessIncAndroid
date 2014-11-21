@@ -4,7 +4,9 @@
     android:id="@+id/home_page_card_home"
     android:layout_width="fill_parent"
     android:layout_height="140dp"
-    android:layout_margin="8dp"
+
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
     card_view:cardCornerRadius="2dp"
     >
 
@@ -13,7 +15,7 @@
         android:id="@+id/home_page_card_home_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_margin="8dp"
         android:text="Header text" />
 
 
