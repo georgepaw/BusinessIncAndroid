@@ -16,9 +16,9 @@ public class HomeCardData {
     public HomeCardData(){
         //TODO API CALLS TO GET DATA FROM SERVER
 
-        teams.add(new LeagueTeam("Business Inc United", 6, 2, 0, 0, 0 , 0, 5, 0));
-        teams.add(new LeagueTeam("Generic RFC", 6, 2, 0, 0, 0 , 1, 5, 0));
-        teams.add(new LeagueTeam("Another Rugby Team", 6, 2, 0, 0, 0, 2, 5, 0));
+        teams.add(new LeagueTeam("Business Inc United", 6, 2, 0, 0, 0 , 1, 5, 0));
+        teams.add(new LeagueTeam("Autistics Athletic Club", 4, 1, 1, 0, 0 , 2, 3, 0));
+        teams.add(new LeagueTeam("Dsylexis Tmea", 2, 0, 2, 1, 0, 3, 1, 0));
         cards.add("Hello card");
         cards.add("Team Card");
     }

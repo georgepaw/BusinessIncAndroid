@@ -38,9 +38,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public CardView mCardView;
         public TextView mHeaderTextView;
         public TextView mSubHeaderTextView;
-        public TextView mTeam1name;
-        public TextView mTeam2name;
-        public TextView mTeam3name;
+        public TextView mTeam1name, mTeam2name, mTeam3name;
+        public TextView mTeam1Number, mTeam2Number, mTeam3Number;
+        public TextView mTeam1Won, mTeam2Won, mTeam3Won;
+        public TextView mTeam1Draw, mTeam2Draw, mTeam3Draw;
+        public TextView mTeam1Lost, mTeam2Lost, mTeam3Lost;
+        public TextView mTeam1Pts, mTeam2Pts, mTeam3Pts;
+
         public ViewHolderTable(View v) {
             super(v);
             mCardView = (CardView) v.findViewById(R.id.home_page_card_table);
@@ -49,6 +53,22 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mTeam1name = (TextView) v.findViewById(R.id.team_name1);
             mTeam2name = (TextView) v.findViewById(R.id.team_name2);
             mTeam3name = (TextView) v.findViewById(R.id.team_name3);
+            mTeam1Number = (TextView) v.findViewById(R.id.team_number1);
+            mTeam2Number = (TextView) v.findViewById(R.id.team_number2);
+            mTeam3Number = (TextView) v.findViewById(R.id.team_number3);
+            mTeam1Won = (TextView) v.findViewById(R.id.team_won1);
+            mTeam2Won = (TextView) v.findViewById(R.id.team_won2);
+            mTeam3Won = (TextView) v.findViewById(R.id.team_won3);
+            mTeam1Draw = (TextView) v.findViewById(R.id.team_draw1);
+            mTeam2Draw = (TextView) v.findViewById(R.id.team_draw2);
+            mTeam3Draw = (TextView) v.findViewById(R.id.team_draw3);
+            mTeam1Lost = (TextView) v.findViewById(R.id.team_lose1);
+            mTeam2Lost = (TextView) v.findViewById(R.id.team_lose2);
+            mTeam3Lost = (TextView) v.findViewById(R.id.team_lose3);
+            mTeam1Pts = (TextView) v.findViewById(R.id.team_points1);
+            mTeam2Pts = (TextView) v.findViewById(R.id.team_points2);
+            mTeam3Pts = (TextView) v.findViewById(R.id.team_points3);
+
 
         }
 
@@ -110,6 +130,21 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vht.mTeam1name.setText(mDataset.teams.get(0).getTeamName());
             vht.mTeam2name.setText(mDataset.teams.get(1).getTeamName());
             vht.mTeam3name.setText(mDataset.teams.get(2).getTeamName());
+            vht.mTeam1Number.setText(mDataset.teams.get(0).getPosition().toString());
+            vht.mTeam2Number.setText(mDataset.teams.get(1).getPosition().toString());
+            vht.mTeam3Number.setText(mDataset.teams.get(2).getPosition().toString());
+            vht.mTeam1Won.setText(mDataset.teams.get(0).getWin().toString());
+            vht.mTeam2Won.setText(mDataset.teams.get(1).getWin().toString());
+            vht.mTeam3Won.setText(mDataset.teams.get(2).getWin().toString());
+            vht.mTeam1Draw.setText(mDataset.teams.get(0).getDraw().toString());
+            vht.mTeam2Draw.setText(mDataset.teams.get(1).getDraw().toString());
+            vht.mTeam3Draw.setText(mDataset.teams.get(2).getDraw().toString());
+            vht.mTeam1Lost.setText(mDataset.teams.get(0).getLose().toString());
+            vht.mTeam2Lost.setText(mDataset.teams.get(1).getLose().toString());
+            vht.mTeam2Lost.setText(mDataset.teams.get(2).getLose().toString());
+            vht.mTeam1Pts.setText(mDataset.teams.get(0).getPointsFor().toString());
+            vht.mTeam2Pts.setText(mDataset.teams.get(1).getPointsFor().toString());
+            vht.mTeam3Pts.setText(mDataset.teams.get(2).getPointsFor().toString());
 
 
         }

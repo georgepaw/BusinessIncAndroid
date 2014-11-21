@@ -67,7 +67,7 @@
                     />
 
                 <TextView
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:id="@+id/team_points"
                     android:layout_alignParentRight="true"
@@ -132,7 +132,7 @@
                     />
 
                 <TextView
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:id="@+id/team_points1"
                     android:layout_alignParentRight="true"
@@ -197,7 +197,7 @@
                     />
 
                 <TextView
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:id="@+id/team_points2"
                     android:layout_alignParentRight="true"
@@ -262,7 +262,7 @@
                     />
 
                 <TextView
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:id="@+id/team_points3"
                     android:layout_alignParentRight="true"
