@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_page_card_table"
+    android:layout_width="fill_parent"
+    android:layout_height="150dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    card_view:cardCornerRadius="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+
+        <TextView
+            android:id="@+id/home_card_next_match_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:text="Your next match" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+
+            android:orientation="horizontal"
+
+            >
+
+            <TextView
+                android:id="@+id/home_card_next_match_team1_name"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="Business Inc United"
+                android:textColor="@color/blue"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="VS"
+                android:textSize="15sp"
+
+                />
+
+            <TextView
+                android:id="@+id/home_card_next_match_team2_name"
+                android:layout_width="140dp"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="Autistics Athletics"
+                android:textColor="@color/red"
+                android:textSize="25sp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:text="This Tuesday at 18:00"
+            android:textSize="15sp" />
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
