@@ -21,7 +21,8 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/toolbar_home_screen"
         android:clickable="false"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        />
 
 
 </RelativeLayout>

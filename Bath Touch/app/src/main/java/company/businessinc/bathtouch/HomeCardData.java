@@ -32,7 +32,7 @@ public class HomeCardData {
     }
 
     public int size(){
-        return 2;
+        return 4;
     }
 
 }
