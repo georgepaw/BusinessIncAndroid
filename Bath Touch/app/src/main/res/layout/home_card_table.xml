@@ -39,7 +39,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="Subheader"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="horizontal" android:layout_width="match_parent"
@@ -164,7 +164,7 @@
                 <View
                     android:layout_alignParentLeft="true"
                     android:layout_width="fill_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="1px"
                     android:background="@color/grey"
                     android:layout_alignBottom="@id/team_name1"/>
 
@@ -229,7 +229,7 @@
                 <View
                     android:layout_alignParentLeft="true"
                     android:layout_width="fill_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="1px"
                     android:background="@color/grey"
                     android:layout_alignBottom="@id/team_name2"/>
 
