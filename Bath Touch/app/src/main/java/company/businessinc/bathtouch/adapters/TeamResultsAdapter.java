@@ -96,11 +96,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mImageView.setBackgroundColor(Color.parseColor("#FFFFBB33"));
         }
 
-//        v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));
-
-
-
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
