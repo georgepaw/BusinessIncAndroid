@@ -1,14 +1,18 @@
 package company.businessinc.bathtouch.adapters;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import company.businessinc.bathtouch.HomeCardData;
 import company.businessinc.bathtouch.R;
 import company.businessinc.bathtouch.TeamResultsData;
+import company.businessinc.dataModels.Match;
 
 /**
  * Created by user on 21/11/14.
@@ -18,11 +22,16 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private TeamResultsData mDataset;
 
     public class ViewHolderResults extends RecyclerView.ViewHolder {
-        public TextView mTeamName, mOppTeamName;
+        public TextView mTeam1Name, mTeam2Name, mTeam1Score, mTeam2Score;
+        public ImageView mImageView;
 
         public ViewHolderResults(View v){
             super(v);
-            mTeamName = (TextView) v.findViewById(R.id.match_result_item_match_team1_name);
+            mTeam1Name = (TextView) v.findViewById(R.id.match_result_item_match_team1_name);
+            mTeam2Name = (TextView) v.findViewById(R.id.match_result_item_match_team2_name);
+            mTeam1Score = (TextView) v.findViewById(R.id.match_result_item_match_team1_score);
+            mTeam2Score = (TextView) v.findViewById(R.id.match_result_item_match_team2_score);
+            mImageView = (ImageView) v.findViewById(R.id.match_result_item_result_image);
         }
 
 
@@ -55,9 +64,41 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-
+        Match match = mDataset.getMatch(position);
         ViewHolderResults v = (ViewHolderResults) holder;
-        v.mTeamName.setText(mDataset.getTeamName());
+        v.mTeam1Name.setText(match.getTeamOne());
+        v.mTeam2Name.setText(match.getTeamTwo());
+        v.mTeam1Score.setText(match.getTeamOnePoints().toString());
+        v.mTeam2Score.setText(match.getTeamTwoPoints().toString());
+
+        if(match.getTeamOne().equals(mDataset.getTeamName())){
+            v.mTeam1Name.setTypeface(null, Typeface.BOLD);
+            if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
+                //won, set green
+                v.mImageView.setBackgroundColor(Color.parseColor("#FF99CC00"));
+            }
+            else{
+                v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));
+            }
+        }
+        else{
+            v.mTeam2Name.setTypeface(null, Typeface.BOLD);
+            if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
+                //won, set green
+                v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));
+            }
+            else{
+                v.mImageView.setBackgroundColor(Color.parseColor("#FF99CC00"));
+            }
+        }
+
+        if(match.getTeamOnePoints() == match.getTeamTwoPoints()){
+            v.mImageView.setBackgroundColor(Color.parseColor("#FFFFBB33"));
+        }
+
+//        v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));
+
+
 
 
     }

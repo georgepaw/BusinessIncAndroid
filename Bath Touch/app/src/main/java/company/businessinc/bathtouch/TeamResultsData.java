@@ -19,8 +19,12 @@ public class TeamResultsData {
     public TeamResultsData(){
         //TODO API CALLS TO GET DATA FROM SERVER
 
-        matches.add(new Match("Business Inc", "Autistics United", 1, "JimRef", new Date(2006,11,1), "Home", 8, 3));
-        matches.add(new Match("Business Inc", "Another Team", 2, "JimRef", new Date(2006,11,2), "Home", 5, 11));
+        matches.add(new Match( "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 8, 3));
+        matches.add(new Match("Business Inc", "Another Team", 2, "JimRef", new Date(2006,11,9), "Home", 1, 27));
+        matches.add(new Match("Business Inc", "More Rugby Teams", 1, "JimRef", new Date(2006,11,4), "Home", 19, 11));
+        matches.add(new Match("Myle's Magnificents","Business Inc", 1, "JimRef", new Date(2006,11,4), "Home", 7, 7));
+        matches.add(new Match("George's Whipping Boys", "Business Inc", 1, "JimRef", new Date(2006,11,4), "Home", 5, 12));
+
 
     }
 
@@ -28,7 +32,11 @@ public class TeamResultsData {
         return teamName;
     }
 
+    public Match getMatch(int i){
+        return matches.get(i);
+    }
+
     public int size(){
-        return 8;
+        return matches.size();
     }
 }
