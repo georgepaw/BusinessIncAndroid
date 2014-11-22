@@ -12,18 +12,22 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        card_view:cardCornerRadius="2dp">
+        card_view:cardCornerRadius="2dp"
+        android:background="@drawable/bkg"
+        android:onClick="view_league_table"
+        android:clickable="true">
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="16dp">
 
             <RelativeLayout
                 android:id="@+id/home_page_card_table_header_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="@color/red">
 
                 <TextView
 
@@ -31,7 +35,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="EPL"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/white"
                     android:textSize="24sp" />
 
                 <TextView
@@ -41,6 +45,7 @@
                     android:layout_below="@id/home_page_card_table_header"
                     android:layout_marginTop="4dp"
                     android:text="Subheader"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
 
 

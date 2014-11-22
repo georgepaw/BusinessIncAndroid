@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import company.businessinc.bathtouch.HomeCardData;
 import company.businessinc.bathtouch.R;
-import company.businessinc.bathtouch.TeamResultsData;
+import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
 import company.businessinc.dataModels.Match;
 
 /**

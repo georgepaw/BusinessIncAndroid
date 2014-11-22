@@ -26,5 +26,6 @@
     <string name="title_activity_activity_scrolll">activity_scrolll</string>
     <string name="title_activity_list_activity">list_activity</string>
     <string name="title_activity_team_results">TeamResultsActivity</string>
+    <string name="title_activity_league_table">LeagueTableActivity</string>
 
 </resources>

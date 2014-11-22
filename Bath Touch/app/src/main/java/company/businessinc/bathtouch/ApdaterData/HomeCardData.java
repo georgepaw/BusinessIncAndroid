@@ -1,7 +1,6 @@
-package company.businessinc.bathtouch;
+package company.businessinc.bathtouch.ApdaterData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import company.businessinc.dataModels.LeagueTeam;
 

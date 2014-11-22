@@ -39,6 +39,10 @@
             android:name="company.businessinc.bathtouch.TeamResultsActivity"
             android:label="@string/title_activity_team_results" >
         </activity>
+        <activity
+            android:name="company.businessinc.bathtouch.LeagueTableActivity"
+            android:label="@string/title_activity_league_table" >
+        </activity>
     </application>
 
 </manifest>

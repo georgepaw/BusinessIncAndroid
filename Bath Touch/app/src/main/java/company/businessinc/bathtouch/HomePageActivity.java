@@ -1,18 +1,19 @@
 package company.businessinc.bathtouch;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
 
 
@@ -75,6 +76,11 @@ public class HomePageActivity extends ActionBarActivity {
         Intent intent = new Intent(this, TeamResultsActivity.class);
         startActivity(intent);
 
+    }
+
+    public void view_league_table(View v){
+        Intent intent = new Intent(this, LeagueTableActivity.class);
+        startActivity(intent);
     }
 
 
