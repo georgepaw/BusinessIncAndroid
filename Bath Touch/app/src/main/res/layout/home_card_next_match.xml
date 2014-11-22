@@ -22,7 +22,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:background="@color/red"
+            android:background="@color/transparent_grey"
             android:padding="16dp"
             android:text="Your next match"
             android:textSize="24sp"

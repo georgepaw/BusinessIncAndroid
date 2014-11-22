@@ -37,6 +37,8 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
+
+
     public TeamResultsAdapter(TeamResultsData myDataset) {
         mDataset = myDataset;
     }
@@ -72,6 +74,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if(match.getTeamOne().equals(mDataset.getTeamName())){
             v.mTeam1Name.setTypeface(null, Typeface.BOLD);
+            v.mTeam1Score.setTypeface(null, Typeface.BOLD);
             if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
                 //won, set green
                 v.mImageView.setBackgroundColor(Color.parseColor("#FF99CC00"));
@@ -82,6 +85,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         else{
             v.mTeam2Name.setTypeface(null, Typeface.BOLD);
+            v.mTeam2Score.setTypeface(null, Typeface.BOLD);
             if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
                 //won, set green
                 v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));

@@ -24,7 +24,7 @@
             android:paddingRight="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:background="@color/red">
+            android:background="@color/transparent_grey">
 
             <TextView
                 android:id="@+id/home_card_team_name"

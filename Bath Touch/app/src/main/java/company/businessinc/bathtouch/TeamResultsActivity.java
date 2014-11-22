@@ -1,11 +1,19 @@
 package company.businessinc.bathtouch;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
@@ -16,11 +24,19 @@ public class TeamResultsActivity extends ActionBarActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private static Context mContext;
+
+    @Override
+    public Context getApplicationContext() {
+        return super.getApplicationContext();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_results);
+
+        mContext = getApplicationContext();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.team_results_recycle);
 
@@ -39,9 +55,26 @@ public class TeamResultsActivity extends ActionBarActivity {
 
         mAdapter = new TeamResultsAdapter(mTeamResulstData);
         mRecyclerView.setAdapter(mAdapter);
+
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+
+
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+                Log.d("Hello", "item touched");
+                recyclerView.
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+//                Log.d("Hello", "item touched");
+
+            }
+        });
+
     }
-
-
 
 
     @Override
@@ -64,5 +97,10 @@ public class TeamResultsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void itemPressed(View v) {
+        TextView mTeam1Score = (TextView) findViewById(R.id.match_result_item_match_team1_score);
+//        Log.d("Happend", mTeam1Score.getText().toString());
     }
 }
