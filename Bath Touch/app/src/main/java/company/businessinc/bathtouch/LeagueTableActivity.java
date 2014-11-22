@@ -1,35 +1,30 @@
 package company.businessinc.bathtouch;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.RelativeLayout;
 
-import company.businessinc.bathtouch.ApdaterData.HomeCardData;
-import company.businessinc.bathtouch.adapters.HomePageAdapter;
+import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
+import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
+import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
+import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 
 
-public class HomePageActivity extends ActionBarActivity {
+public class LeagueTableActivity extends ActionBarActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homepage_activity);
+        setContentView(R.layout.activity_league_table);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.home_page_cards_recycle);
+        mRecyclerView = (RecyclerView) findViewById(R.id.league_table_recycle);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -40,20 +35,19 @@ public class HomePageActivity extends ActionBarActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] myDataset = createDataset();
+//        String[] myDataset = createDataset();
 
-        HomeCardData mCardData = new HomeCardData();
+        LeagueTableData mLeagueData = new LeagueTableData();
 
-        mAdapter = new HomePageAdapter(mCardData);
+        mAdapter = new LeagueTableAdapter(mLeagueData);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list_activity, menu);
+        getMenuInflater().inflate(R.menu.menu_league_table, menu);
         return true;
     }
 
@@ -63,34 +57,12 @@ public class HomePageActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        return false;
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
-
-    public String[] createDataset(){
-        String[] dataset = {"HOME PAGE", "adam"};
-        return dataset;
-    }
-
-    public void view_team_results(View v){
-        Intent intent = new Intent(this, TeamResultsActivity.class);
-        startActivity(intent);
-
-    }
-
-    public void view_league_table(View v){
-        Intent intent = new Intent(this, LeagueTableActivity.class);
-        startActivity(intent);
-    }
-
-
 }
-
-
-// The data to show
-
-
-
-
-
-

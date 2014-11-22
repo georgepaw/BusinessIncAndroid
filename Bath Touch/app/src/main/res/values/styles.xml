@@ -6,6 +6,13 @@
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryDark">@color/darkred</item>
         <item name="colorAccent">@color/red</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyleLight</item>
+    </style>
+
+    <style name="AppTheme.HomeCards" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryDark">@color/darkred</item>
+        <item name="colorAccent">@color/red</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
     </style>
 
@@ -19,6 +26,10 @@
     </style>
 
     <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="RobotoTextViewStyleLight" parent="android:Widget.TextView">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 

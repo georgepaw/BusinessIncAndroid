@@ -1,15 +1,13 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import company.businessinc.bathtouch.HomeCardData;
+import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.R;
 
 /**
@@ -30,6 +28,37 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(v);
             mCardView = (CardView) v.findViewById(R.id.home_page_card_home);
             mTextView = (TextView) v.findViewById(R.id.home_page_card_home_header);
+        }
+    }
+
+    public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
+
+        public TextView mTeam1Name, mTeam2Name;
+
+         public ViewHolderNextMatch(View v) {
+             super(v);
+             mTeam1Name = (TextView) v.findViewById(R.id.home_card_next_match_team1_name);
+             mTeam2Name = (TextView) v.findViewById(R.id.home_card_next_match_team2_name);
+         }
+
+    }
+
+    public class ViewHolderMyTeam extends RecyclerView.ViewHolder {
+
+        public TextView mTeamName, mTeam1Name, mTeam2Name;
+        public TextView mTeamScore1, mTeamScore2, mTeam1Score, mTeam2Score;
+
+        public ViewHolderMyTeam(View v) {
+            super(v);
+
+            mTeamName = (TextView) v.findViewById(R.id.home_card_team_name);
+            mTeam1Name = (TextView) v.findViewById(R.id.home_card_team_opp1_name);
+            mTeam2Name = (TextView) v.findViewById(R.id.home_card_team_opp2_name);
+            mTeamScore1 = (TextView) v.findViewById(R.id.home_card_team_score1);
+            mTeamScore2 = (TextView) v.findViewById(R.id.home_card_team_score2);
+            mTeam1Score = (TextView) v.findViewById(R.id.home_card_team_opp1_score);
+            mTeam2Score = (TextView) v.findViewById(R.id.home_card_team_opp2_score);
+
         }
     }
 
@@ -97,12 +126,17 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
 
+        View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
+
+        View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
 
         switch (viewType){
             case 0:
-                return new ViewHolderHome(v);
+                return new ViewHolderNextMatch(vnm);
             case 1:
                 return new ViewHolderTable(vt);
+            case 2:
+                return new ViewHolderMyTeam(vmt);
             default:
                 return new ViewHolderHome(v);
         }
@@ -122,11 +156,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         else if (holder instanceof ViewHolderTable) {
             ViewHolderTable vht = (ViewHolderTable) holder;
-            Log.d("ERR", "in viewholder table");
-
 
             vht.mHeaderTextView.setText("Bath Summer League 2015");
-            vht.mSubHeaderTextView.setText("Standings of Top 3");
+            vht.mSubHeaderTextView.setText("Standings of Top 3 Teams");
             vht.mTeam1name.setText(mDataset.teams.get(0).getTeamName());
             vht.mTeam2name.setText(mDataset.teams.get(1).getTeamName());
             vht.mTeam3name.setText(mDataset.teams.get(2).getTeamName());
@@ -147,6 +179,23 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vht.mTeam3Pts.setText(mDataset.teams.get(2).getPointsFor().toString());
 
 
+        }
+        else if(holder instanceof ViewHolderNextMatch) {
+            ViewHolderNextMatch vnm = (ViewHolderNextMatch) holder;
+
+            vnm.mTeam1Name.setText(mDataset.teams.get(0).getTeamName());
+            vnm.mTeam2Name.setText(mDataset.teams.get(1).getTeamName());
+        }
+        else if(holder instanceof ViewHolderMyTeam){
+            ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
+
+            vmt.mTeamName.setText("Business Inc United");
+            vmt.mTeam1Name.setText("Autistics Athletic Club");
+            vmt.mTeam2Name.setText("Dyslises Tmea");
+            vmt.mTeam1Score.setText("8");
+            vmt.mTeam2Score.setText("11");
+            vmt.mTeamScore1.setText("16");
+            vmt.mTeamScore2.setText("5");
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;
