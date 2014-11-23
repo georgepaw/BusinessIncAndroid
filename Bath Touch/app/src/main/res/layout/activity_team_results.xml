@@ -19,7 +19,8 @@
         android:layout_height="150dp"
         android:layout_below="@id/toolbar_team_results_screen"
         android:background="@color/red"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:elevation="2dp">
 
         <TextView
             android:id="@+id/team_results_header_team_name"
