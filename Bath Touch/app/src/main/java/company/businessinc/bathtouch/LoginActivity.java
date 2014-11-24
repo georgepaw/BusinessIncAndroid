@@ -1,6 +1,8 @@
 package company.businessinc.bathtouch;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,10 +20,16 @@ import company.businessinc.networking.CheckNetworkConnection;
 
 public class LoginActivity extends ActionBarActivity implements UserLoginInterface {
 
+    private SharedPreferences mSharedPreferences;
+    private String userLoggedIn = "login";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if(savedInstanceState == null)
+            mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_login);
         toolbar.hideOverflowMenu();
@@ -45,6 +53,8 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     public void login_as_anonymous(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
+        finish();
     }
 
     //After the login button is pressed
@@ -54,8 +64,9 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
                 data.getUserID(); //this needs to be stored somewhere
                 Log.d("Login", "Logged in");
                 Intent intent = new Intent(this, MainActivity.class);
-
                 startActivity(intent);
+                mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
+                finish();
             } else {
                 Log.d("Login", "Invalid credentials");
                 Toast toast = Toast.makeText(LoginActivity.this, "Bad Details", Toast.LENGTH_SHORT);

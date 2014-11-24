@@ -1,5 +1,8 @@
 package company.businessinc.bathtouch;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -13,6 +16,9 @@ public class MainActivity extends ActionBarActivity
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks{
 
+    private SharedPreferences mSharedPreferences;
+    private String userLoggedIn = "login";
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -21,7 +27,17 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
+        if(!mSharedPreferences.contains(userLoggedIn)) {
+            Log.d("MAIN", "HAS NOT LOGGED IN");
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         if(savedInstanceState == null) {
