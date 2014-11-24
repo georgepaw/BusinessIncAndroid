@@ -74,29 +74,18 @@ public class TeamResultsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        selectItem(position);
+                    }
+                }));
+
         TeamResultsData mTeamResultsData = new TeamResultsData();
 
         mAdapter = new TeamResultsAdapter(mTeamResultsData);
         mRecyclerView.setAdapter(mAdapter);
-
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-
-
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-                Log.d("Hello", "item touched");
-//                recyclerView.
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-//                Log.d("Hello", "item touched");
-
-            }
-        });
-
 
         return mLayout;
     }
@@ -124,16 +113,6 @@ public class TeamResultsFragment extends Fragment {
         mCallbacks = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface TeamResultsCallbacks {
 
         public void onTeamResultsItemSelected(int position);
