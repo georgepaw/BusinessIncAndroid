@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +37,11 @@ public class TeamResultsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_results);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_team_results_screen);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
         mContext = getApplicationContext();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.team_results_recycle);
@@ -63,7 +69,7 @@ public class TeamResultsActivity extends ActionBarActivity {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
                 Log.d("Hello", "item touched");
-                recyclerView.
+//                recyclerView.
                 return false;
             }
 

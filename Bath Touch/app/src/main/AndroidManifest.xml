@@ -29,19 +29,29 @@
         <activity
             android:name="company.businessinc.bathtouch.SubmitScoreActivity"
             android:label="@string/title_activity_submit_score"
+            android:parentActivityName="company.businessinc.bathtouch.HomePageActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="company.businessinc.bathtouch.HomePageActivity"
-            android:label="@string/title_activity_list_activity" >
+            android:label="@string/title_activity_list_activity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="company.businessinc.bathtouch.TeamResultsActivity"
-            android:label="@string/title_activity_team_results" >
+            android:label="@string/title_activity_team_results"
+            android:parentActivityName="company.businessinc.bathtouch.HomePageActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="company.businessinc.bathtouch.LeagueTableActivity"
-            android:label="@string/title_activity_league_table" >
+            android:label="@string/title_activity_league_table"
+            android:parentActivityName="company.businessinc.bathtouch.HomePageActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="company.businessinc.bathtouch.NavigationActivity"
+            android:label="@string/title_activity_navigation" >
         </activity>
     </application>
 

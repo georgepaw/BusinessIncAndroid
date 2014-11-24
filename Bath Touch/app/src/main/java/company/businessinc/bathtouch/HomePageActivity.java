@@ -1,17 +1,16 @@
 package company.businessinc.bathtouch;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
@@ -23,11 +22,38 @@ public class HomePageActivity extends ActionBarActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_activity);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_home_screen);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.abc_action_bar_home_description, R.string.abc_action_bar_home_description) {
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         mRecyclerView = (RecyclerView) findViewById(R.id.home_page_cards_recycle);
 
@@ -65,6 +91,12 @@ public class HomePageActivity extends ActionBarActivity {
         int id = item.getItemId();
         return false;
 
+    }
+
+    /* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
     }
 
     public String[] createDataset(){

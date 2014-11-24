@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity implements UserLoginInterfac
     }
 
     public void login_as_anonymous(View view) {
-        Intent intent = new Intent(this, HomePageActivity.class);
+        Intent intent = new Intent(this, NavigationActivity.class);
         startActivity(intent);
     }
 
