@@ -62,7 +62,7 @@ public class LeagueTableFragment extends Fragment {
         ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
-        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.home_page_cards_recycle);
+        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.league_table_recycle );
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView

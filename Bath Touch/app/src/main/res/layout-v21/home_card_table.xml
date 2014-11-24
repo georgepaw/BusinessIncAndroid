@@ -14,7 +14,6 @@
         android:layout_marginRight="8dp"
         card_view:cardCornerRadius="2dp"
         android:background="@drawable/bkg"
-        android:onClick="view_league_table"
         android:clickable="true"
         android:layout_marginBottom="8dp">
 

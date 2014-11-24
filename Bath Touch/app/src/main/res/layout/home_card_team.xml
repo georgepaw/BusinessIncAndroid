@@ -8,7 +8,6 @@
     android:layout_marginRight="8dp"
     card_view:cardCornerRadius="2dp"
     android:clickable="true"
-    android:onClick="view_team_results"
     android:id="@+id/home_page_card_team_container"
    >
 

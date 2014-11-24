@@ -41,7 +41,7 @@ public class NavigationActivity extends ActionBarActivity
         if(savedInstanceState == null) {
             mFragmentManager = getSupportFragmentManager();
             mFragmentManager.beginTransaction()
-                    .replace(R.id.container, TeamResultsFragment.newInstance())
+                    .replace(R.id.container, HomePageFragment.newInstance())
                     .commit();
         }
 
@@ -83,20 +83,20 @@ public class NavigationActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-//        switch (position) {
-//            case 0:
-//                view_home_page();
-//                break;
-//            case 1:
-//                view_league_table();
-//                break;
-//            case 2:
-//                view_team_results();
-//                break;
-//            default:
-//                break;
-//        }
+//        update the main content by replacing fragments
+        switch (position) {
+            case 0:
+                view_home_page();
+                break;
+            case 1:
+                view_league_table();
+                break;
+            case 2:
+                view_team_results();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -124,12 +124,16 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void view_home_page() {
+        if(mFragmentManager == null)
+            mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()
                 .replace(R.id.container, HomePageFragment.newInstance())
                 .commit();
     }
 
     public void view_team_results(){
+        if(mFragmentManager == null)
+            mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()
                 .replace(R.id.container, TeamResultsFragment.newInstance())
                 .commit();
@@ -137,6 +141,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void view_league_table(){
+        if(mFragmentManager == null)
+            mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()
                 .replace(R.id.container, LeagueTableFragment.newInstance())
                 .commit();
