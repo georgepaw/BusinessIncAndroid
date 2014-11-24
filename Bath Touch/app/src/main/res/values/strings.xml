@@ -24,15 +24,16 @@
 
     <string name="title_activity_submit_score_other">SubmitScoreOtherActivity</string>
     <string name="title_activity_activity_scrolll">activity_scrolll</string>
-    <string name="title_activity_list_activity">list_activity</string>
-    <string name="title_activity_team_results">TeamResultsActivity</string>
-    <string name="title_activity_league_table">LeagueTableActivity</string>
+    <string name="title_activity_list_activity">Home</string>
+    <string name="title_activity_team_results">Team Results</string>
+    <string name="title_activity_league_table">League Tables</string>
     <string name="title_activity_navigation">NavigationActivity</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Home</string>
+    <string name="title_section2">League Tables</string>
+    <string name="title_section3">Team Results</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
