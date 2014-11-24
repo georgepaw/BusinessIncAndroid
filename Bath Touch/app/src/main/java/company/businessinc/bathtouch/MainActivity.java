@@ -1,72 +1,136 @@
 package company.businessinc.bathtouch;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import company.businessinc.dataModels.User;
-import company.businessinc.endpoints.UserLogin;
-import company.businessinc.endpoints.UserLoginInterface;
-import company.businessinc.networking.CheckNetworkConnection;
+import android.support.v4.widget.DrawerLayout;
 
 
-public class MainActivity extends ActionBarActivity implements UserLoginInterface {
+public class MainActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        HomePageFragment.HomePageCallbacks,
+        TeamResultsFragment.TeamResultsCallbacks,
+        LeagueTableFragment.LeagueTableCallbacks{
+
+    /**
+     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     */
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_login);
-        toolbar.hideOverflowMenu();
-        setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        if(savedInstanceState == null) {
+            mFragmentManager = getSupportFragmentManager();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.container, HomePageFragment.newInstance())
+                    .commit();
+        }
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
+        // Set up the drawer.
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
-    public void login_as_user(View view) {
-        if (CheckNetworkConnection.check(this)) {
-            LinearLayout linearLayout = (LinearLayout)findViewById(R.id.login_boxes);
-            String username = ((EditText)linearLayout.getChildAt(0)).getText().toString();
-            String password = ((EditText)linearLayout.getChildAt(1)).getText().toString();
-            Log.d("Login", "Network is working, let's log in");
-            new UserLogin(this,username,password).execute();
-        } else {
-            Toast.makeText(this, "No connection", Toast.LENGTH_SHORT);
-            Log.d("Login", "Network is not working");
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+//            // Only show items in the action bar relevant to this screen
+//            // if the drawer is not showing. Otherwise, let the drawer
+//            // decide what to show in the action bar.
+//            getMenuInflater().inflate(R.menu.navigation, menu);
+//            return true;
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+//        update the main content by replacing fragments
+        switch (position) {
+            case 0:
+                view_home_page();
+                break;
+            case 1:
+                view_league_table();
+                break;
+            case 2:
+                view_team_results();
+                break;
+            default:
+                break;
         }
     }
 
-    public void login_as_anonymous(View view) {
-        Intent intent = new Intent(this, NavigationActivity.class);
-        startActivity(intent);
-    }
-
-    //After the login button is pressed
-    public void userLoginCallback(User data) {
-        if (data != null) {
-            if (data.getStatus()) { //User has logged in
-                data.getUserID(); //this needs to be stored somewhere
-                Log.d("Login", "Logged in");
-                Intent intent = new Intent(this, HomePageActivity.class);
-
-                startActivity(intent);
-            } else {
-                Log.d("Login", "Invalid credentials");
-                Toast toast = Toast.makeText(MainActivity.this, "Bad Details", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        } else {
-            Log.d("Login", "Error connecting and parsing");
-            Toast.makeText(MainActivity.this, "Cannot connect", Toast.LENGTH_SHORT);
-
+    @Override
+    public void onHomePageCardSelected(int position) {
+        switch(position) {
+            case 1:
+                view_league_table();
+                break;
+            case 2:
+                view_team_results();
+                break;
+            default:
+                break;
         }
     }
 
+    @Override
+    public void onLeagueTableItemSelected(int position) {
+        Log.d("LEAGUE", Integer.toString(position));
+    }
 
+    @Override
+    public void onTeamResultsItemSelected(int position) {
+        Log.d("TEAM", Integer.toString(position));
+    }
+
+    public void view_home_page() {
+        if(mFragmentManager == null)
+            mFragmentManager = getSupportFragmentManager();
+        mFragmentManager.beginTransaction()
+                .replace(R.id.container, HomePageFragment.newInstance())
+                .commit();
+    }
+
+    public void view_team_results(){
+        if(mFragmentManager == null)
+            mFragmentManager = getSupportFragmentManager();
+        mFragmentManager.beginTransaction()
+                .replace(R.id.container, TeamResultsFragment.newInstance())
+                .commit();
+
+    }
+
+    public void view_league_table(){
+        if(mFragmentManager == null)
+            mFragmentManager = getSupportFragmentManager();
+        mFragmentManager.beginTransaction()
+                .replace(R.id.container, LeagueTableFragment.newInstance())
+                .commit();
+    }
 }
