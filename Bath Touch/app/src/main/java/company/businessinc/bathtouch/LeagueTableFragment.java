@@ -72,6 +72,14 @@ public class LeagueTableFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        selectItem(position);
+                    }
+                }));
+
         LeagueTableData mLeagueData = new LeagueTableData();
 
         mAdapter = new LeagueTableAdapter(mLeagueData);
