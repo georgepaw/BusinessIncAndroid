@@ -65,6 +65,14 @@ public class HomePageFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+                new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                selectCard(position);
+            }
+        }));
+
         HomeCardData mCardData = new HomeCardData();
 
         mAdapter = new HomePageAdapter(mCardData);
@@ -95,16 +103,6 @@ public class HomePageFragment extends Fragment {
         mCallbacks = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public static interface HomePageCallbacks {
 
         void onHomePageCardSelected(int position);
