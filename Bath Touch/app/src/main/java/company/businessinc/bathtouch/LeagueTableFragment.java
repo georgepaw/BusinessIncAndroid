@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,25 +13,35 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
+import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
+import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 
 
-public class HomePageFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link company.businessinc.bathtouch.LeagueTableFragment.LeagueTableCallbacks} interface
+ * to handle interaction events.
+ * Use the {@link LeagueTableFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class LeagueTableFragment extends Fragment {
 
-    private HomePageCallbacks mCallbacks;
+    private LeagueTableCallbacks mCallbacks;
     private View mLayout;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public static HomePageFragment newInstance() {
-        HomePageFragment fragment = new HomePageFragment();
+    public static LeagueTableFragment newInstance() {
+        LeagueTableFragment fragment = new LeagueTableFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public HomePageFragment() {
+    public LeagueTableFragment() {
         // Required empty public constructor
     }
 
@@ -40,8 +49,6 @@ public class HomePageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -49,10 +56,10 @@ public class HomePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mLayout = inflater.inflate(R.layout.fragment_home_page, container, false);
+        mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
 
-        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar_home_screen);
-         ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar_league_screen);
+        ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.home_page_cards_recycle);
@@ -65,16 +72,16 @@ public class HomePageFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        HomeCardData mCardData = new HomeCardData();
+        LeagueTableData mLeagueData = new LeagueTableData();
 
-        mAdapter = new HomePageAdapter(mCardData);
+        mAdapter = new LeagueTableAdapter(mLeagueData);
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
     }
 
-    private void selectCard(int position) {
+    public void selectItem(int position) {
         if (mCallbacks != null) {
-            mCallbacks.onHomePageCardSelected(position );
+            mCallbacks.onLeagueTableItemSelected(position);
         }
     }
 
@@ -82,7 +89,7 @@ public class HomePageFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallbacks = (HomePageCallbacks) activity;
+            mCallbacks = (LeagueTableCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -105,8 +112,9 @@ public class HomePageFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public static interface HomePageCallbacks {
+    public interface LeagueTableCallbacks {
 
-        void onHomePageCardSelected(int position);
+        public void onLeagueTableItemSelected(int position);
     }
+
 }
