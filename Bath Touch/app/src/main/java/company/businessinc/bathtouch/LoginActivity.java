@@ -45,7 +45,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
             Log.d("Login", "Network is working, let's log in");
             new UserLogin(this,username,password).execute();
         } else {
-            Toast.makeText(this, "No connection", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
             Log.d("Login", "Network is not working");
         }
     }
