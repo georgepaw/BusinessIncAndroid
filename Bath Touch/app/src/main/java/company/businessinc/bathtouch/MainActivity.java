@@ -3,6 +3,8 @@ package company.businessinc.bathtouch;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -88,14 +90,16 @@ public class MainActivity extends ActionBarActivity
 //        update the main content by replacing fragments
         switch (position) {
             case 0:
-                view_home_page();
+                changeFragments("HOMEPAGETAG");
                 break;
             case 1:
-                view_league_table();
+                changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
-                view_team_results();
+                changeFragments("TEAMRESULTSTAG");
                 break;
+            case 3:
+                logOut();
             default:
                 break;
         }
@@ -105,10 +109,10 @@ public class MainActivity extends ActionBarActivity
     public void onHomePageCardSelected(int position) {
         switch(position) {
             case 1:
-                view_league_table();
+                changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
-                view_team_results();
+                changeFragments("TEAMRESULTSTAG");
                 break;
             default:
                 break;
@@ -125,28 +129,33 @@ public class MainActivity extends ActionBarActivity
         Log.d("TEAM", Integer.toString(position));
     }
 
-    public void view_home_page() {
+    public void changeFragments(String tag) {
         if(mFragmentManager == null)
             mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.beginTransaction()
-                .replace(R.id.container, HomePageFragment.newInstance())
-                .commit();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+        if(fragment == null) {
+            if(tag.equals("HOMEPAGETAG"))
+                ft.replace(R.id.container, HomePageFragment.newInstance(), tag);
+            if(tag.equals("LEAGUETABLETAG"))
+                ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
+            if(tag.equals("TEAMRESULTSTAG"))
+                ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
+            ft.addToBackStack(tag);
+            ft.commit();
+        }
+        else if(!fragment.isVisible()) {
+            ft.replace(R.id.container, fragment, tag);
+            ft.addToBackStack(tag);
+            ft.commit();
+        }
     }
 
-    public void view_team_results(){
-        if(mFragmentManager == null)
-            mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.beginTransaction()
-                .replace(R.id.container, TeamResultsFragment.newInstance())
-                .commit();
-
-    }
-
-    public void view_league_table(){
-        if(mFragmentManager == null)
-            mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.beginTransaction()
-                .replace(R.id.container, LeagueTableFragment.newInstance())
-                .commit();
+    private void logOut() {
+        Log.d("MAIN", "LOGGING OUT");
+        Intent intent = new Intent(this, LoginActivity.class);
+        mSharedPreferences.edit().remove(userLoggedIn).commit();
+        startActivity(intent);
+        finish();
     }
 }
