@@ -22,8 +22,9 @@ public class Match {
     private String place;
     private Integer teamOnePoints;
     private Integer teamTwoPoints;
+    private Boolean isForfeit;
 
-    public Match(String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints) {
+    public Match(String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
         this.teamOne = teamOne;
         this.teamTwo = teamTwo;
         this.refID = refID;
@@ -32,6 +33,7 @@ public class Match {
         this.place = place;
         this.teamOnePoints = teamOnePoints;
         this.teamTwoPoints = teamTwoPoints;
+        this.isForfeit = isForfeit;
     }
 
     public Match(JSONObject jsonObject) throws JSONException {
@@ -78,6 +80,11 @@ public class Match {
             this.teamTwoPoints = jsonObject.getInt("teamTwoPoints");
         } catch(JSONException e) {
             this.teamTwoPoints = null;
+        }
+        try {
+            this.isForfeit = jsonObject.getBoolean("isForfeit");
+        } catch(JSONException e) {
+            this.isForfeit = null;
         }
     }
 
@@ -143,5 +150,13 @@ public class Match {
 
     public void setTeamTwoPoints(Integer teamTwoPoints) {
         this.teamTwoPoints = teamTwoPoints;
+    }
+
+    public Boolean getIsForfeit() {
+        return isForfeit;
+    }
+
+    public void setIsForfeit(Boolean isForfeit) {
+        this.isForfeit = isForfeit;
     }
 }

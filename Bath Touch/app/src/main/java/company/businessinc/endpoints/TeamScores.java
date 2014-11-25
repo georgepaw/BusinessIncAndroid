@@ -7,7 +7,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,12 +19,12 @@ import company.businessinc.networking.APICallType;
 /**
  * Created by gp on 18/11/14.
  */
-public class TeamHistory extends AsyncTask<Void, Void, List<Match>> {
-    String TAG = "TeamHistory";
-    private TeamHistoryInterface callback;
+public class TeamScores extends AsyncTask<Void, Void, List<Match>> {
+    String TAG = "TeamScores";
+    private TeamScoresInterface callback;
     private List<NameValuePair> parameters;
 
-    public TeamHistory(TeamHistoryInterface callback, int leagueID, int teamID, Date dateFrom, Date dateTo) {
+    public TeamScores(TeamScoresInterface callback, int leagueID, int teamID, Date dateFrom, Date dateTo) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("leagueID", Integer.toString(leagueID)));
@@ -37,7 +36,7 @@ public class TeamHistory extends AsyncTask<Void, Void, List<Match>> {
     protected List<Match> doInBackground(Void... a) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(APICall.call(APICallType.TeamHistory, parameters));
+            jsonArray = new JSONArray(APICall.call(APICallType.TeamScores, parameters));
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
         }

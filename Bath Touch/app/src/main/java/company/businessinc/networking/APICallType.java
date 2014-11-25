@@ -10,7 +10,7 @@ public enum APICallType {
     LeagueView("/league/view/"),
     RefGames("/ref/games/"),
     ScoreSubmit("/score/submit/"),
-    TeamHistory("/team/history/"),
+    TeamScores("/team/scores/"),
     TeamList("/team/list/"),
     TeamSchedule("/team/schedule/"),
     UserEdit("/user/edit/"),
