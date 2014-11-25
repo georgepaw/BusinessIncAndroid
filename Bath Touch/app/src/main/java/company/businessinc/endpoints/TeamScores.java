@@ -56,6 +56,6 @@ public class TeamScores extends AsyncTask<Void, Void, List<Match>> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(List<Match> result) {
-        callback.teamHistoryCallback(result);
+        callback.teamScoresCallback(result);
     }
 }
