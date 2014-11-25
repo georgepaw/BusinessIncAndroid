@@ -74,8 +74,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
             }
         } else {
             Log.d("Login", "Error connecting and parsing");
-            Toast.makeText(LoginActivity.this, "Cannot connect", Toast.LENGTH_SHORT);
-
+            Toast.makeText(LoginActivity.this, "Cannot connect", Toast.LENGTH_SHORT).show();
         }
     }
 
