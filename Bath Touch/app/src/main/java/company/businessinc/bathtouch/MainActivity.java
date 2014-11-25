@@ -98,6 +98,8 @@ public class MainActivity extends ActionBarActivity
             case 2:
                 changeFragments("TEAMRESULTSTAG");
                 break;
+            case 3:
+                logOut();
             default:
                 break;
         }
@@ -147,5 +149,13 @@ public class MainActivity extends ActionBarActivity
             ft.addToBackStack(tag);
             ft.commit();
         }
+    }
+
+    private void logOut() {
+        Log.d("MAIN", "LOGGING OUT");
+        Intent intent = new Intent(this, LoginActivity.class);
+        mSharedPreferences.edit().remove(userLoggedIn).commit();
+        startActivity(intent);
+        finish();
     }
 }
