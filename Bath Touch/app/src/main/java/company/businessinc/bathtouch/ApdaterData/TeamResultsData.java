@@ -18,16 +18,16 @@ public class TeamResultsData {
     public TeamResultsData(){
         //TODO API CALLS TO GET DATA FROM SERVER
 
-        matches.add(new Match( "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 8, 3));
-        matches.add(new Match("Business Inc", "Another Team", 2, "JimRef", new Date(2006,11,9), "Home", 1, 27));
-        matches.add(new Match("Business Inc", "More Rugby Teams", 1, "JimRef", new Date(2006,11,4), "Home", 19, 11));
-        matches.add(new Match("Myle's Magnificents","Business Inc", 1, "JimRef", new Date(2006,11,4), "Home", 7, 7));
-        matches.add(new Match("George's Whipping Boys", "Business Inc", 1, "JimRef", new Date(2006,11,4), "Home", 5, 12));
-        matches.add(new Match( "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 9, 12));
-        matches.add(new Match("Business Inc", "Another Team", 2, "JimRef", new Date(2006,11,9), "Home", 13, 13));
-        matches.add(new Match("More Rugby Teams", "Business Inc",  1, "JimRef", new Date(2006,11,4), "Home", 6, 13));
-        matches.add(new Match("Business Inc","Myle's Magnificents", 1, "JimRef", new Date(2006,11,4), "Home", 31, 1));
-        matches.add(new Match("Business Inc", "George's Whipping Boys", 1, "JimRef", new Date(2006,11,4), "Home", 10, 12));
+        matches.add(new Match( "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 8, 3, false));
+        matches.add(new Match("Business Inc", "Another Team", 2, "JimRef", new Date(2006,11,9), "Home", 1, 27, false));
+        matches.add(new Match("Business Inc", "More Rugby Teams", 1, "JimRef", new Date(2006,11,4), "Home", 19, 11, false));
+        matches.add(new Match("Myle's Magnificents","Business Inc", 1, "JimRef", new Date(2006,11,4), "Home", 7, 7, false));
+        matches.add(new Match("George's Whipping Boys", "Business Inc", 1, "JimRef", new Date(2006,11,4), "Home", 5, 12, false));
+        matches.add(new Match( "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 9, 12, false));
+        matches.add(new Match("Business Inc", "Another Team", 2, "JimRef", new Date(2006,11,9), "Home", 13, 13, false));
+        matches.add(new Match("More Rugby Teams", "Business Inc",  1, "JimRef", new Date(2006,11,4), "Home", 6, 13, false));
+        matches.add(new Match("Business Inc","Myle's Magnificents", 1, "JimRef", new Date(2006,11,4), "Home", 31, 1, false));
+        matches.add(new Match("Business Inc", "George's Whipping Boys", 1, "JimRef", new Date(2006,11,4), "Home", 10, 12, false));
 
 
     }

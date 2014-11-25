@@ -24,12 +24,13 @@ public class ScoreSubmit extends AsyncTask<Void, Void, Status> {
     private ScoreSubmitInterface callback;
     private List<NameValuePair> parameters;
 
-    public ScoreSubmit(ScoreSubmitInterface callback, int matchID, int teamOneScore, int teamTwoScore) {
+    public ScoreSubmit(ScoreSubmitInterface callback, int matchID, int teamOneScore, int teamTwoScore, boolean isForfeit) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         parameters.add(new BasicNameValuePair("teamOneScore", Integer.toString(teamOneScore)));
         parameters.add(new BasicNameValuePair("teamTwoScore", Integer.toString(teamTwoScore)));
+        parameters.add(new BasicNameValuePair("isForfeit", Boolean.toString(isForfeit)));
     }
 
     @Override
