@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.R;
+import company.businessinc.dataModels.LeagueTeam;
 
 /**
  * Created by user on 20/11/14.
@@ -159,24 +162,25 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             vht.mHeaderTextView.setText("Bath Summer League 2015");
             vht.mSubHeaderTextView.setText("Standings of Top 3 Teams");
-            vht.mTeam1name.setText(mDataset.teams.get(0).getTeamName());
-            vht.mTeam2name.setText(mDataset.teams.get(1).getTeamName());
-            vht.mTeam3name.setText(mDataset.teams.get(2).getTeamName());
-            vht.mTeam1Number.setText(mDataset.teams.get(0).getPosition().toString());
-            vht.mTeam2Number.setText(mDataset.teams.get(1).getPosition().toString());
-            vht.mTeam3Number.setText(mDataset.teams.get(2).getPosition().toString());
-            vht.mTeam1Won.setText(mDataset.teams.get(0).getWin().toString());
-            vht.mTeam2Won.setText(mDataset.teams.get(1).getWin().toString());
-            vht.mTeam3Won.setText(mDataset.teams.get(2).getWin().toString());
-            vht.mTeam1Draw.setText(mDataset.teams.get(0).getDraw().toString());
-            vht.mTeam2Draw.setText(mDataset.teams.get(1).getDraw().toString());
-            vht.mTeam3Draw.setText(mDataset.teams.get(2).getDraw().toString());
-            vht.mTeam1Lost.setText(mDataset.teams.get(0).getLose().toString());
-            vht.mTeam2Lost.setText(mDataset.teams.get(1).getLose().toString());
-            vht.mTeam2Lost.setText(mDataset.teams.get(2).getLose().toString());
-            vht.mTeam1Pts.setText(mDataset.teams.get(0).getPointsFor().toString());
-            vht.mTeam2Pts.setText(mDataset.teams.get(1).getPointsFor().toString());
-            vht.mTeam3Pts.setText(mDataset.teams.get(2).getPointsFor().toString());
+            List<LeagueTeam> topTeams = mDataset.getTopTeams();
+            vht.mTeam1name.setText(topTeams.get(0).getTeamName());
+            vht.mTeam2name.setText(topTeams.get(1).getTeamName());
+            vht.mTeam3name.setText(topTeams.get(2).getTeamName());
+            vht.mTeam1Number.setText(topTeams.get(0).getPosition().toString());
+            vht.mTeam2Number.setText(topTeams.get(1).getPosition().toString());
+            vht.mTeam3Number.setText(topTeams.get(2).getPosition().toString());
+            vht.mTeam1Won.setText(topTeams.get(0).getWin().toString());
+            vht.mTeam2Won.setText(topTeams.get(1).getWin().toString());
+            vht.mTeam3Won.setText(topTeams.get(2).getWin().toString());
+            vht.mTeam1Draw.setText(topTeams.get(0).getDraw().toString());
+            vht.mTeam2Draw.setText(topTeams.get(1).getDraw().toString());
+            vht.mTeam3Draw.setText(topTeams.get(2).getDraw().toString());
+            vht.mTeam1Lost.setText(topTeams.get(0).getLose().toString());
+            vht.mTeam2Lost.setText(topTeams.get(1).getLose().toString());
+            vht.mTeam3Lost.setText(topTeams.get(2).getLose().toString());
+            vht.mTeam1Pts.setText(topTeams.get(0).getPointsFor().toString());
+            vht.mTeam2Pts.setText(topTeams.get(1).getPointsFor().toString());
+            vht.mTeam3Pts.setText(topTeams.get(2).getPointsFor().toString());
 
 
         }
