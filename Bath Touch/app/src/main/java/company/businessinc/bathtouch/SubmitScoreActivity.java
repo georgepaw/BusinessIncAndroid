@@ -5,9 +5,22 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import company.businessinc.dataModels.Status;
+import company.businessinc.endpoints.ScoreSubmit;
+import company.businessinc.endpoints.ScoreSubmitInterface;
 
 
-public class SubmitScoreActivity extends ActionBarActivity {
+public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmitInterface {
+
+    private Integer mMatchId, mTeamOneScore, mTeamTwoScore;
+    private Boolean mIsForfeit;
+    private EditText mTeamOneEditText, mTeamTwoEditText;
+    private CheckBox mTeamOneForfeit, mTeamTwoForfeit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,28 +31,38 @@ public class SubmitScoreActivity extends ActionBarActivity {
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
+        mTeamOneEditText = (EditText) findViewById(R.id.submit_score_team1_score);
+        mTeamTwoEditText = (EditText) findViewById(R.id.submit_score_team2_score);
+        mTeamOneForfeit = (CheckBox) findViewById(R.id.submit_score_team1_forfeit);
+        mTeamTwoForfeit = (CheckBox) findViewById(R.id.submit_score_team2_forfeit);
+
+        mMatchId = getMatchId();
+
     }
 
+    public void onSubmitScore(View v) {
+        mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+        mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+        if(mTeamOneForfeit.isChecked() || mTeamTwoForfeit.isChecked())
+            mIsForfeit = true;
+        else mIsForfeit = false;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_submit_score_other, menu);
-        return true;
+        new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+    }
+
+    private Integer getMatchId() {
+        //TODO FETCH THE REAL MATCH ID
+        return 0;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void scoreSubmitCallback(Status data) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        if(data.getStatus()) {
+            Toast.makeText(this, "Score submitted successfully", Toast.LENGTH_SHORT).show();
+            recreate();
+        } else
+            Toast.makeText(this, "Score could not be submitted", Toast.LENGTH_LONG).show();
     }
 }
