@@ -7,7 +7,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.bathtouch.R;
@@ -43,9 +47,15 @@ public class HomeCardData implements LeagueViewInterface{
         cards.add("Team Card");
     }
 
-    //TODO currently gets top 3 teams in list, not top 3 ranked by points etc.
     public List<LeagueTeam> getTopTeams(){
         List<LeagueTeam> topTeams = new ArrayList<LeagueTeam>();
+        Collections.sort(teams,new Comparator<LeagueTeam>() {
+            @Override
+            public int compare(LeagueTeam T1, LeagueTeam T2) {
+                return T1.getPosition() - T2.getPosition();
+            }
+        });
+
         for(int i = 0; i < 3; i++) {
             topTeams.add(teams.get(i));
         }

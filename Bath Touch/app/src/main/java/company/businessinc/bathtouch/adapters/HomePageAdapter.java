@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
@@ -224,28 +226,35 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void leagueViewCallback(List<LeagueTeam> data) {
-
-        setVisibility("table", View.VISIBLE);
-        mViewHolderTable.mProgressBar.setVisibility(View.GONE);
-        mViewHolderTable.mHeaderTextView.setText("Bath Summer League 2015");
-        mViewHolderTable.mTeam1name.setText(data.get(0).getTeamName());
-        mViewHolderTable.mTeam2name.setText(data.get(1).getTeamName());
-        mViewHolderTable.mTeam3name.setText(data.get(2).getTeamName());
-        mViewHolderTable.mTeam1Number.setText(data.get(0).getPosition().toString());
-        mViewHolderTable.mTeam2Number.setText(data.get(1).getPosition().toString());
-        mViewHolderTable.mTeam3Number.setText(data.get(2).getPosition().toString());
-        mViewHolderTable.mTeam1Won.setText(data.get(0).getWin().toString());
-        mViewHolderTable.mTeam2Won.setText(data.get(1).getWin().toString());
-        mViewHolderTable.mTeam3Won.setText(data.get(2).getWin().toString());
-        mViewHolderTable.mTeam1Draw.setText(data.get(0).getDraw().toString());
-        mViewHolderTable.mTeam2Draw.setText(data.get(1).getDraw().toString());
-        mViewHolderTable.mTeam3Draw.setText(data.get(2).getDraw().toString());
-        mViewHolderTable.mTeam1Lost.setText(data.get(0).getLose().toString());
-        mViewHolderTable.mTeam2Lost.setText(data.get(1).getLose().toString());
-        mViewHolderTable.mTeam3Lost.setText(data.get(2).getLose().toString());
-        mViewHolderTable.mTeam1Pts.setText(data.get(0).getPointsFor().toString());
-        mViewHolderTable.mTeam2Pts.setText(data.get(1).getPointsFor().toString());
-        mViewHolderTable.mTeam3Pts.setText(data.get(2).getPointsFor().toString());
+        if(data!= null) {
+            Collections.sort(data, new Comparator<LeagueTeam>() {
+                @Override
+                public int compare(LeagueTeam T1, LeagueTeam T2) {
+                    return T1.getPosition() - T2.getPosition();
+                }
+            });
+            setVisibility("table", View.VISIBLE);
+            mViewHolderTable.mProgressBar.setVisibility(View.GONE);
+            mViewHolderTable.mHeaderTextView.setText("Bath Summer League 2015");
+            mViewHolderTable.mTeam1name.setText(data.get(0).getTeamName());
+            mViewHolderTable.mTeam2name.setText(data.get(1).getTeamName());
+            mViewHolderTable.mTeam3name.setText(data.get(2).getTeamName());
+            mViewHolderTable.mTeam1Number.setText(data.get(0).getPosition().toString());
+            mViewHolderTable.mTeam2Number.setText(data.get(1).getPosition().toString());
+            mViewHolderTable.mTeam3Number.setText(data.get(2).getPosition().toString());
+            mViewHolderTable.mTeam1Won.setText(data.get(0).getWin().toString());
+            mViewHolderTable.mTeam2Won.setText(data.get(1).getWin().toString());
+            mViewHolderTable.mTeam3Won.setText(data.get(2).getWin().toString());
+            mViewHolderTable.mTeam1Draw.setText(data.get(0).getDraw().toString());
+            mViewHolderTable.mTeam2Draw.setText(data.get(1).getDraw().toString());
+            mViewHolderTable.mTeam3Draw.setText(data.get(2).getDraw().toString());
+            mViewHolderTable.mTeam1Lost.setText(data.get(0).getLose().toString());
+            mViewHolderTable.mTeam2Lost.setText(data.get(1).getLose().toString());
+            mViewHolderTable.mTeam3Lost.setText(data.get(2).getLose().toString());
+            mViewHolderTable.mTeam1Pts.setText(data.get(0).getPointsFor().toString());
+            mViewHolderTable.mTeam2Pts.setText(data.get(1).getPointsFor().toString());
+            mViewHolderTable.mTeam3Pts.setText(data.get(2).getPointsFor().toString());
+        }
 
     }
 
