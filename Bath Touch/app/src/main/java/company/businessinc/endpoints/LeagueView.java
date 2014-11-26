@@ -38,14 +38,15 @@ public class LeagueView extends AsyncTask<Void, Void, List<LeagueTeam>> {
         try {
             jsonArray = new JSONArray(APICall.call(APICallType.LeagueView, parameters));
         } catch (JSONException e) {
-            Log.d(TAG, "Couldn't parse String into JSON");
+            Log.e(TAG, "Couldn't parse String into JSON");
+            return null;
         }
         List<LeagueTeam> list = new LinkedList<LeagueTeam>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
                 list.add(new LeagueTeam(jsonArray.getJSONObject(i)));
             } catch (JSONException e){
-                Log.d(TAG, "Couldn't parse JSON into LeagueTeam object");
+                Log.e(TAG, "Couldn't parse JSON into LeagueTeam object");
                 return null;
             }
         }

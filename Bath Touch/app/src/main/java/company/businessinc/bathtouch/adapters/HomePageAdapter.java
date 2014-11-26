@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -12,13 +13,16 @@ import java.util.List;
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.endpoints.LeagueView;
+import company.businessinc.endpoints.LeagueViewInterface;
 
 /**
  * Created by user on 20/11/14.
  */
-public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
 
     private HomeCardData mDataset;
+    private ViewHolderTable mViewHolderTable;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -68,6 +72,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class ViewHolderTable extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public CardView mCardView;
+        public ProgressBar mProgressBar;
         public TextView mHeaderTextView;
         public TextView mSubHeaderTextView;
         public TextView mTeam1name, mTeam2name, mTeam3name;
@@ -80,6 +85,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ViewHolderTable(View v) {
             super(v);
             mCardView = (CardView) v.findViewById(R.id.home_page_card_table);
+            mProgressBar = (ProgressBar) v.findViewById(R.id.home_page_card_table_progressbar);
             mHeaderTextView = (TextView) v.findViewById(R.id.home_page_card_table_header);
             mSubHeaderTextView = (TextView) v.findViewById(R.id.home_page_card_table_subHeader);
             mTeam1name = (TextView) v.findViewById(R.id.team_name1);
@@ -158,29 +164,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vh.mTextView.setText("HOME PAGE MUTHAFUCKA");
         }
         else if (holder instanceof ViewHolderTable) {
-            ViewHolderTable vht = (ViewHolderTable) holder;
-
-            vht.mHeaderTextView.setText("Bath Summer League 2015");
-            vht.mSubHeaderTextView.setText("Standings of Top 3 Teams");
-            List<LeagueTeam> topTeams = mDataset.getTopTeams();
-            vht.mTeam1name.setText(topTeams.get(0).getTeamName());
-            vht.mTeam2name.setText(topTeams.get(1).getTeamName());
-            vht.mTeam3name.setText(topTeams.get(2).getTeamName());
-            vht.mTeam1Number.setText(topTeams.get(0).getPosition().toString());
-            vht.mTeam2Number.setText(topTeams.get(1).getPosition().toString());
-            vht.mTeam3Number.setText(topTeams.get(2).getPosition().toString());
-            vht.mTeam1Won.setText(topTeams.get(0).getWin().toString());
-            vht.mTeam2Won.setText(topTeams.get(1).getWin().toString());
-            vht.mTeam3Won.setText(topTeams.get(2).getWin().toString());
-            vht.mTeam1Draw.setText(topTeams.get(0).getDraw().toString());
-            vht.mTeam2Draw.setText(topTeams.get(1).getDraw().toString());
-            vht.mTeam3Draw.setText(topTeams.get(2).getDraw().toString());
-            vht.mTeam1Lost.setText(topTeams.get(0).getLose().toString());
-            vht.mTeam2Lost.setText(topTeams.get(1).getLose().toString());
-            vht.mTeam3Lost.setText(topTeams.get(2).getLose().toString());
-            vht.mTeam1Pts.setText(topTeams.get(0).getPointsFor().toString());
-            vht.mTeam2Pts.setText(topTeams.get(1).getPointsFor().toString());
-            vht.mTeam3Pts.setText(topTeams.get(2).getPointsFor().toString());
+            mViewHolderTable = (ViewHolderTable) holder;
+            mViewHolderTable.mSubHeaderTextView.setText("Standings of Top 3 Teams");
+           setVisibility("table", View.INVISIBLE);
+            mViewHolderTable.mProgressBar.setVisibility(View.VISIBLE);
+            new LeagueView(this, 3).execute();
 
 
         }
@@ -206,6 +194,58 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vho.mTextView.setText("HOME PAGE MUTHAFUCKA");
         }
 
+
+    }
+
+    private void setVisibility(String viewholdername, int visibility) {
+
+        mViewHolderTable.mSubHeaderTextView.setVisibility(visibility);
+        mViewHolderTable.mProgressBar.setVisibility(visibility);
+        mViewHolderTable.mHeaderTextView.setVisibility(visibility);
+        mViewHolderTable.mTeam1name.setVisibility(visibility);
+        mViewHolderTable.mTeam2name.setVisibility(visibility);
+        mViewHolderTable.mTeam3name.setVisibility(visibility);
+        mViewHolderTable.mTeam1Number.setVisibility(visibility);
+        mViewHolderTable.mTeam2Number.setVisibility(visibility);
+        mViewHolderTable.mTeam3Number.setVisibility(visibility);
+        mViewHolderTable.mTeam1Won.setVisibility(visibility);
+        mViewHolderTable.mTeam2Won.setVisibility(visibility);
+        mViewHolderTable.mTeam3Won.setVisibility(visibility);
+        mViewHolderTable.mTeam1Draw.setVisibility(visibility);
+        mViewHolderTable.mTeam2Draw.setVisibility(visibility);
+        mViewHolderTable.mTeam3Draw.setVisibility(visibility);
+        mViewHolderTable.mTeam1Lost.setVisibility(visibility);
+        mViewHolderTable.mTeam2Lost.setVisibility(visibility);
+        mViewHolderTable.mTeam3Lost.setVisibility(visibility);
+        mViewHolderTable.mTeam1Pts.setVisibility(visibility);
+        mViewHolderTable.mTeam2Pts.setVisibility(visibility);
+        mViewHolderTable.mTeam3Pts.setVisibility(visibility);
+    }
+
+    @Override
+    public void leagueViewCallback(List<LeagueTeam> data) {
+
+        setVisibility("table", View.VISIBLE);
+        mViewHolderTable.mProgressBar.setVisibility(View.GONE);
+        mViewHolderTable.mHeaderTextView.setText("Bath Summer League 2015");
+        mViewHolderTable.mTeam1name.setText(data.get(0).getTeamName());
+        mViewHolderTable.mTeam2name.setText(data.get(1).getTeamName());
+        mViewHolderTable.mTeam3name.setText(data.get(2).getTeamName());
+        mViewHolderTable.mTeam1Number.setText(data.get(0).getPosition().toString());
+        mViewHolderTable.mTeam2Number.setText(data.get(1).getPosition().toString());
+        mViewHolderTable.mTeam3Number.setText(data.get(2).getPosition().toString());
+        mViewHolderTable.mTeam1Won.setText(data.get(0).getWin().toString());
+        mViewHolderTable.mTeam2Won.setText(data.get(1).getWin().toString());
+        mViewHolderTable.mTeam3Won.setText(data.get(2).getWin().toString());
+        mViewHolderTable.mTeam1Draw.setText(data.get(0).getDraw().toString());
+        mViewHolderTable.mTeam2Draw.setText(data.get(1).getDraw().toString());
+        mViewHolderTable.mTeam3Draw.setText(data.get(2).getDraw().toString());
+        mViewHolderTable.mTeam1Lost.setText(data.get(0).getLose().toString());
+        mViewHolderTable.mTeam2Lost.setText(data.get(1).getLose().toString());
+        mViewHolderTable.mTeam3Lost.setText(data.get(2).getLose().toString());
+        mViewHolderTable.mTeam1Pts.setText(data.get(0).getPointsFor().toString());
+        mViewHolderTable.mTeam2Pts.setText(data.get(1).getPointsFor().toString());
+        mViewHolderTable.mTeam3Pts.setText(data.get(2).getPointsFor().toString());
 
     }
 
