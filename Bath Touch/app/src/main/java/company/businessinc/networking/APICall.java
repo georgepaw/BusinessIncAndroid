@@ -23,13 +23,16 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.HttpCookie;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gp on 17/11/14.
  */
-public class APICall{
+public class APICall {
 
     private static final String url = "http://www.watchanysport.com";
     private static final String TAG = "APICall";
@@ -50,35 +53,54 @@ public class APICall{
         HttpGet httpGet = new HttpGet(uri.build().toString());
         httpGet.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.NETSCAPE);
         HttpResponse httpResponse;
-        try{
+        try {
             httpResponse = httpclient.execute(httpGet, localContext);
-            if(httpResponse.getStatusLine().getStatusCode() != 200){
+            if (httpResponse.getStatusLine().getStatusCode() != 200) {
                 Log.d(TAG, "Request wasn't successful, returning null");
                 return null;
             }
-            if(apiCallType == APICallType.UserLogin){ //if this is a login then add cookies
-                Header[] headers = httpResponse.getHeaders("Set-Cookie");
-                for(Header a : headers){
-                    String[] getParts = a.getValue().split(";");
-                    BasicClientCookie cookie = new BasicClientCookie("Cookie", getParts[0]);
-                    String[] path = getParts[1].split("=");
-                    cookie.setPath(path[1]);
-                    cookieStore.addCookie(cookie);
-                }
-            }
             HttpEntity entity = httpResponse.getEntity();
-            if(entity != null){
+            if (entity != null) {
                 output = EntityUtils.toString(entity);
             }
-        } catch (IOException e){
-            Log.d(TAG,"Couldn't execute the httpGet");
+        } catch (IOException e) {
+            Log.d(TAG, "Couldn't execute the httpGet");
         }
         return output;
     }
 
-    public static void clearCookies(){
+    public static void clearCookies() {
         cookieStore.clear();
     }
+
+    public static void setCookie(String cookieString) {
+        cookieStore.addCookie(parseStringToCookie(cookieString));
+    }
+
+    public static String getCookie() {
+        String result = null;
+        for (Cookie a : cookieStore.getCookies()) {
+            if (a.getName().equals("session_id")) {
+                result = a.toString();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private static Cookie parseStringToCookie(String input){
+        input = input.substring(1,input.length() - 1).replace(" ", "");
+        String cookieArray[] = input.split("]\\[");
+        Map<String, String> cookieMap = new HashMap<String, String>();
+        for(String part : cookieArray){
+            String tuple[] = part.split(":",2);
+            cookieMap.put(tuple[0], tuple[1]);
+        }
+        BasicClientCookie cookie = new BasicClientCookie(cookieMap.get("name"), cookieMap.get("value"));
+        cookie.setVersion(Integer.parseInt(cookieMap.get("version")));
+        cookie.setDomain(cookieMap.get("domain"));
+        cookie.setPath(cookieMap.get("path"));
+
+        return cookie;
+    }
 }
-
-

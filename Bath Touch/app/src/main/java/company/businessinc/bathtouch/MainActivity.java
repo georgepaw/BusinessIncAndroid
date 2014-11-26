@@ -39,7 +39,9 @@ public class MainActivity extends ActionBarActivity
             startActivity(intent);
             finish();
         }
-
+        if(mSharedPreferences.contains("Cookie") && APICall.getCookie() == null) {
+            APICall.setCookie(mSharedPreferences.getString("Cookie", ""));
+        }
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -158,6 +160,9 @@ public class MainActivity extends ActionBarActivity
         Intent intent = new Intent(this, LoginActivity.class);
         APICall.clearCookies();
         mSharedPreferences.edit().remove(userLoggedIn).commit();
+        if(mSharedPreferences.contains("Cookie")){
+            mSharedPreferences.edit().remove("Cookie").commit();
+        }
         startActivity(intent);
         finish();
     }
