@@ -22,6 +22,7 @@ public class MainActivity extends ActionBarActivity
 
     private SharedPreferences mSharedPreferences;
     private String userLoggedIn = "login";
+    private static final String cookie = "Cookie";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -39,8 +40,14 @@ public class MainActivity extends ActionBarActivity
             startActivity(intent);
             finish();
         }
-        if(mSharedPreferences.contains("Cookie") && APICall.getCookie() == null) {
-            APICall.setCookie(mSharedPreferences.getString("Cookie", ""));
+        if(mSharedPreferences.getBoolean(userLoggedIn,false) && !mSharedPreferences.contains(cookie)) { //user logged in but no cookie string, kick him out
+            Log.d("MAIN", "USER LOGGED IN BUT NO COOKIE");
+            mSharedPreferences.edit().remove(userLoggedIn).commit();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else if(mSharedPreferences.contains(cookie)){
+            APICall.setCookie(mSharedPreferences.getString(cookie, ""));
         }
         super.onCreate(savedInstanceState);
 
@@ -160,8 +167,8 @@ public class MainActivity extends ActionBarActivity
         Intent intent = new Intent(this, LoginActivity.class);
         APICall.clearCookies();
         mSharedPreferences.edit().remove(userLoggedIn).commit();
-        if(mSharedPreferences.contains("Cookie")){
-            mSharedPreferences.edit().remove("Cookie").commit();
+        if(mSharedPreferences.contains(cookie)){
+            mSharedPreferences.edit().remove(cookie).commit();
         }
         startActivity(intent);
         finish();
