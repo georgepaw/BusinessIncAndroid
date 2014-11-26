@@ -22,19 +22,23 @@ import company.businessinc.networking.CheckNetworkConnection;
  */
 public class HomeCardData implements LeagueViewInterface{
 
+    private String TAG = "HomeCardData";
     public List<LeagueTeam> teams;
     public List<String> cards = new ArrayList<String>();
 
     public HomeCardData(){
 
-        //TODO Uncomment this when we have data
-//        getLeagueTeams();
+        getLeagueTeams();
 
-        if(teams == null)
+        if(teams == null) {
+            //Add dummy data if callback is returning nothing
             teams = new ArrayList<LeagueTeam>();
-        teams.add(new LeagueTeam("Business Inc United", 6, 2, 0, 0, 0 , 1, 5, 0));
-        teams.add(new LeagueTeam("Autistics Athletic Club", 4, 1, 1, 0, 0 , 2, 3, 0));
-        teams.add(new LeagueTeam("Dsylexis Tmea", 2, 0, 2, 1, 0, 3, 1, 0));
+            teams.add(new LeagueTeam("Business Inc United", 6, 2, 0, 0, 0, 1, 5, 0));
+            teams.add(new LeagueTeam("Autistics Athletic Club", 4, 1, 1, 0, 0, 2, 3, 0));
+            teams.add(new LeagueTeam("Dsylexis Tmea", 2, 0, 2, 1, 0, 3, 1, 0));
+            Log.e(TAG, "teams == null");
+        }
+
         cards.add("Hello card");
         cards.add("Team Card");
     }
@@ -57,11 +61,10 @@ public class HomeCardData implements LeagueViewInterface{
     }
 
     public void getLeagueTeams() {
-        new LeagueView(this, 0).execute();
+        new LeagueView(this, 3).execute();
     }
     public void leagueViewCallback(List<LeagueTeam> data) {
-        if(data != null) {
-            teams = (ArrayList<LeagueTeam>) data;
-        }
+        if(data != null)
+            teams = data;
     }
 }

@@ -21,6 +21,12 @@
             android:layout_height="fill_parent"
             android:layout_marginBottom="16dp">
 
+            <ProgressBar
+                android:id="@+id/home_page_card_table_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"/>
+
             <RelativeLayout
                 android:id="@+id/home_page_card_table_header_container"
                 android:layout_width="match_parent"

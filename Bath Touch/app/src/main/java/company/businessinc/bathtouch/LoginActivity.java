@@ -53,7 +53,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     public void login_as_anonymous(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
+        mSharedPreferences.edit().putBoolean(userLoggedIn, false).commit();
         finish();
     }
 
