@@ -75,6 +75,10 @@ public class APICall{
         }
         return output;
     }
+
+    public static void clearCookies(){
+        cookieStore.clear();
+    }
 }
 
 
