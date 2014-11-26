@@ -15,6 +15,7 @@ import android.widget.Toast;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.UserLogin;
 import company.businessinc.endpoints.UserLoginInterface;
+import company.businessinc.networking.APICall;
 import company.businessinc.networking.CheckNetworkConnection;
 
 
@@ -22,6 +23,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
 
     private SharedPreferences mSharedPreferences;
     private String userLoggedIn = "login";
+    private static final String cookie = "Cookie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
+                mSharedPreferences.edit().putString(cookie, APICall.getCookie()).commit();
                 finish();
             } else {
                 Log.d("Login", "Invalid credentials");
