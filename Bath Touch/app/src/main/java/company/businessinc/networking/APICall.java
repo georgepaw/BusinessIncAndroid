@@ -79,11 +79,9 @@ public class APICall {
 
     public static String getCookie() {
         String result = null;
-        for (Cookie a : cookieStore.getCookies()) {
-            if (a.getName().equals("session_id")) {
-                result = a.toString();
-                break;
-            }
+        try {
+            result = cookieStore.getCookies().get(0).toString(); //right now we only care about 1 cookie
+        } catch (Exception e){
         }
         return result;
     }
@@ -93,7 +91,7 @@ public class APICall {
         String cookieArray[] = input.split("]\\[");
         Map<String, String> cookieMap = new HashMap<String, String>();
         for(String part : cookieArray){
-            String tuple[] = part.split(":",2);
+            String tuple[] = part.split(":", 2);
             cookieMap.put(tuple[0], tuple[1]);
         }
         BasicClientCookie cookie = new BasicClientCookie(cookieMap.get("name"), cookieMap.get("value"));
