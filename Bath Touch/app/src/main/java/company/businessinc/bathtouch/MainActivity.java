@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.support.v4.widget.DrawerLayout;
 
+import company.businessinc.networking.APICall;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -154,6 +156,7 @@ public class MainActivity extends ActionBarActivity
     private void logOut() {
         Log.d("MAIN", "LOGGING OUT");
         Intent intent = new Intent(this, LoginActivity.class);
+        APICall.clearCookies();
         mSharedPreferences.edit().remove(userLoggedIn).commit();
         startActivity(intent);
         finish();
