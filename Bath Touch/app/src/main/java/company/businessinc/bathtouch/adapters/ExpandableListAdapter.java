@@ -16,19 +16,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.endpoints.LeagueList;
+import company.businessinc.endpoints.LeagueListInterface;
+import company.businessinc.endpoints.LeagueViewInterface;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ExpandableListAdapter extends BaseExpandableListAdapter implements LeagueListInterface {
 
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
 
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+    public ExpandableListAdapter(Context context) {
+
+
+        prepareListData();
         this._context = context;
-        this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
+        this._listDataHeader = new ArrayList<String>();
+        this._listDataChild = new HashMap<String, List<String>>();
+
     }
 
     @Override
@@ -123,6 +131,49 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
+
+    /*
+     * Preparing the list data
+     * Executes api call before firing the call back
+     */
+    private void prepareListData() {
+
+        new LeagueList(this).execute();
+
+    }
+
+    @Override
+    public void leagueListCallback(List<League> data) {
+
+//        listDataHeader = new ArrayList<String>();
+//        listDataChild = new HashMap<String, List<String>>();
+
+
+
+        // Adding child data
+        _listDataHeader.add("Home");
+        _listDataHeader.add("League Tables");
+        _listDataHeader.add("Team List");
+
+        List<String> home = new ArrayList<String>();
+        home.add("Home");
+
+        List<String> leagueTables = new ArrayList<String>();
+        for(League l: data){
+            leagueTables.add(l.getLeagueName());
+        }
+
+        List<String> teamList = new ArrayList<String>();
+        teamList.add("Business Inc");
+        teamList.add("Austistcs Athletics");
+        teamList.add("Myle's Wondermen");
+        teamList.add("Georges' Redoubt");
+        teamList.add("Joe Digglets");
+
+        _listDataChild.put(_listDataHeader.get(0), home);
+        _listDataChild.put(_listDataHeader.get(1), leagueTables);
+        _listDataChild.put(_listDataHeader.get(2), teamList);
+    }
 
 
 
