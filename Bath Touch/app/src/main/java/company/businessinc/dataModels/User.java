@@ -85,4 +85,18 @@ public class User  implements Parcelable {
             return new User[size];
         }
     };
+
+    public String toString(){
+        JSONObject jsonObject = new JSONObject();
+        try{
+            jsonObject.put("status", status);
+            if (status){
+                jsonObject.put("userID", userID);
+            }
+
+        } catch (JSONException e){
+
+        }
+        return  jsonObject.toString();
+    }
 }
