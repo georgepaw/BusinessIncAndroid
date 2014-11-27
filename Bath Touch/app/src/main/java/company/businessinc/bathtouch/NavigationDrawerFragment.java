@@ -30,6 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import company.businessinc.bathtouch.adapters.ExpandableListAdapter;
+import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.endpoints.LeagueList;
+import company.businessinc.endpoints.LeagueListInterface;
+import company.businessinc.endpoints.LeagueView;
+import company.businessinc.endpoints.LeagueViewInterface;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -90,6 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Select either the default item (0) or the last selected item.
 //        selectItem(mCurrentSelectedPosition);
+
     }
 
     @Override
@@ -125,9 +132,9 @@ public class NavigationDrawerFragment extends Fragment {
 //                        "LOG OUT (Temporary)"
 //                }));
 
-        prepareListData();
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+
+        listAdapter = new ExpandableListAdapter(getActivity());
         mDrawerListView.setAdapter(listAdapter);
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
@@ -146,46 +153,11 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
-
-
-
         return mDrawerListView;
     }
 
 
-    /*
-     * Preparing the list data
-     */
-    private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
 
-        // Adding child data
-        listDataHeader.add("Home");
-        listDataHeader.add("League Tables");
-        listDataHeader.add("Team List");
-
-        List<String> home = new ArrayList<String>();
-        home.add("Home");
-
-        List<String> leagueTables = new ArrayList<String>();
-        leagueTables.add("Summer league 2015");
-        leagueTables.add("Easter Tournament 2015");
-        leagueTables.add("Winter League 2015");
-        leagueTables.add("Autumn Rumble 2015");
-
-
-        List<String> teamList = new ArrayList<String>();
-        teamList.add("Business Inc");
-        teamList.add("Austistcs Athletics");
-        teamList.add("Myle's Wondermen");
-        teamList.add("Georges' Redoubt");
-        teamList.add("Joe Digglets");
-
-        listDataChild.put(listDataHeader.get(0), home); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), leagueTables);
-        listDataChild.put(listDataHeader.get(2), teamList);
-    }
 
 
     public boolean isDrawerOpen() {
@@ -269,8 +241,8 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int groupPosition, String childName) {
 
-        if(mCallbacks != null){
-            switch (groupPosition){
+        if (mCallbacks != null) {
+            switch (groupPosition) {
                 case 0:
                     //home menu
                     mCallbacks.onNavigationDrawerItemSelected(0, childName);
@@ -371,6 +343,9 @@ public class NavigationDrawerFragment extends Fragment {
     private ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
+
+
+
 
     /**
      * Callbacks interface that all activities using this fragment must implement.
