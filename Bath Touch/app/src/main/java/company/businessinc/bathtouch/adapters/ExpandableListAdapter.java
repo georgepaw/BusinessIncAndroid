@@ -17,10 +17,8 @@ import android.widget.Toast;
 
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.endpoints.LeagueList;
 import company.businessinc.endpoints.LeagueListInterface;
-import company.businessinc.endpoints.LeagueViewInterface;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter implements LeagueListInterface {
 
