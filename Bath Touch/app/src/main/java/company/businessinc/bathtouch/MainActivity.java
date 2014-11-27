@@ -1,15 +1,16 @@
 package company.businessinc.bathtouch;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.support.v4.widget.DrawerLayout;
+import android.widget.RelativeLayout;
 
 import company.businessinc.networking.APICall;
 
@@ -61,11 +62,11 @@ public class MainActivity extends ActionBarActivity
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
+                R.id.navigation_drawer_fragment,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
@@ -97,7 +98,7 @@ public class MainActivity extends ActionBarActivity
 //    }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(int position, String name) {
 //        update the main content by replacing fragments
         switch (position) {
             case 0:
@@ -107,6 +108,8 @@ public class MainActivity extends ActionBarActivity
                 changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
+                Log.d("CALLLBK", "in callback on main acitivy");
+
                 changeFragments("TEAMRESULTSTAG");
                 break;
             case 3:

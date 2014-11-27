@@ -20,8 +20,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import company.businessinc.bathtouch.adapters.ExpandableListAdapter;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -52,12 +60,16 @@ public class NavigationDrawerFragment extends Fragment {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerListView;
+    private ExpandableListView mDrawerListView;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
+    ExpandableListAdapter listAdapter;
 
     public NavigationDrawerFragment() {
     }
@@ -77,7 +89,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
+//        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -90,27 +102,91 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
+
+        mDrawerListView = (ExpandableListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+//        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                selectItem(position);
+//            }
+//        });
+
+//        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+//                getActivity().getBaseContext(),
+//                android.R.layout.simple_list_item_activated_1,
+//                android.R.id.text1,
+//                new String[]{
+//                        getString(R.string.title_section1),
+//                        getString(R.string.title_section2),
+//                        getString(R.string.title_section3),
+//                        "LOG OUT (Temporary)"
+//                }));
+
+        prepareListData();
+
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+        mDrawerListView.setAdapter(listAdapter);
+
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        mDrawerListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                //Nothing here ever fires
+
+                String childName = (String) parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
+                selectItem(groupPosition, childName);
+                System.err.println("child clicked");
+                Toast.makeText(getActivity(), "child clicked" + childName, Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActivity().getBaseContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                        "LOG OUT (Temporary)"
-                }));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+
+
+
         return mDrawerListView;
     }
+
+
+    /*
+     * Preparing the list data
+     */
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Home");
+        listDataHeader.add("League Tables");
+        listDataHeader.add("Team List");
+
+        List<String> home = new ArrayList<String>();
+        home.add("Home");
+
+        List<String> leagueTables = new ArrayList<String>();
+        leagueTables.add("Summer league 2015");
+        leagueTables.add("Easter Tournament 2015");
+        leagueTables.add("Winter League 2015");
+        leagueTables.add("Autumn Rumble 2015");
+
+
+        List<String> teamList = new ArrayList<String>();
+        teamList.add("Business Inc");
+        teamList.add("Austistcs Athletics");
+        teamList.add("Myle's Wondermen");
+        teamList.add("Georges' Redoubt");
+        teamList.add("Joe Digglets");
+
+        listDataChild.put(listDataHeader.get(0), home); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), leagueTables);
+        listDataChild.put(listDataHeader.get(2), teamList);
+    }
+
 
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
@@ -129,7 +205,6 @@ public class NavigationDrawerFragment extends Fragment {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-
 
 
 //        ActionBar actionBar = getActionBar();
@@ -192,17 +267,40 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void selectItem(int position) {
-        mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
+    private void selectItem(int groupPosition, String childName) {
+
+        if(mCallbacks != null){
+            switch (groupPosition){
+                case 0:
+                    //home menu
+                    mCallbacks.onNavigationDrawerItemSelected(0, childName);
+                    break;
+                case 1:
+                    //league menu
+                    mCallbacks.onNavigationDrawerItemSelected(1, childName);
+                    break;
+                case 2:
+                    //team menu
+//                    Log.d("CALLBK", "nav callback for team");
+                    mCallbacks.onNavigationDrawerItemSelected(2, childName);
+                    break;
+            }
         }
+
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
-        }
+//
+//
+//        if (mDrawerListView != null) {
+//            mDrawerListView.setItemChecked(position, true);
+//        }
+//        if (mDrawerLayout != null) {
+//            mDrawerLayout.closeDrawer(mFragmentContainerView);
+//        }
+//        if (mCallbacks != null) {
+//            mCallbacks.onNavigationDrawerItemSelected(position);
+//        }
     }
 
     @Override
@@ -281,6 +379,6 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
+        void onNavigationDrawerItemSelected(int position, String name);
     }
 }
