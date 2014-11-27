@@ -80,7 +80,7 @@ public class Match {
         }
         try {
             String dT = jsonObject.getString("dateTime");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.UK);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
             this.dateTime = sdf.parse(dT);
         } catch(JSONException e) {
             this.dateTime = null;

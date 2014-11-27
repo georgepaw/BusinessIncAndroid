@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
@@ -193,8 +194,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(User.isLoggedIn()){
                 mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
                 new RefGames(this, User.getUserID()).execute();
-            } else {
-                mViewHolderNextMatch.mCardView.setVisibility(View.GONE);
             }
         }
         else if(holder instanceof ViewHolderMyTeam){
@@ -279,8 +278,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
    @Override
    public void refGamesCallback(List<Match> data){
+       //data.add(new Match(1,1,1, "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 8, 3, false));
        if(data != null){
-    Log.d("", "");
+           Collections.sort(data, new Comparator<Match>() {
+               public int compare(Match m1, Match m2) {
+                   return m1.getDateTime().compareTo(m2.getDateTime());
+               }
+           });
+
        }
    }
 
