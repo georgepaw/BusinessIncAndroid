@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
+import company.businessinc.dataModels.User;
 
 
 public class HomePageFragment extends Fragment {
@@ -24,6 +25,8 @@ public class HomePageFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private User user;
+
 
     public static HomePageFragment newInstance() {
         HomePageFragment fragment = new HomePageFragment();
@@ -73,11 +76,13 @@ public class HomePageFragment extends Fragment {
             }
         }));
 
-        HomeCardData mCardData = new HomeCardData();
-
-        mAdapter = new HomePageAdapter(mCardData);
+        mAdapter = new HomePageAdapter(user);
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 
     private void selectCard(int position) {

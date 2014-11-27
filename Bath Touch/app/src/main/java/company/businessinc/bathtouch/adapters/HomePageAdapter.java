@@ -2,6 +2,7 @@ package company.businessinc.bathtouch.adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +16,22 @@ import java.util.List;
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueView;
 import company.businessinc.endpoints.LeagueViewInterface;
+import company.businessinc.endpoints.RefGames;
+import company.businessinc.endpoints.RefGamesInterface;
 
 /**
  * Created by user on 20/11/14.
  */
-public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
+public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
 
-    private HomeCardData mDataset;
+    private User user;
     private ViewHolderTable mViewHolderTable;
+    ViewHolderNextMatch mViewHolderNextMatch;
+    private int items = 4;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -40,14 +47,24 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
+    public class ViewHolderEmpty extends RecyclerView.ViewHolder {
+        public ViewHolderEmpty(View v) {
+            super(v);
+        }
+    }
 
-        public TextView mTeam1Name, mTeam2Name;
+    public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
+        public CardView mCardView;
+        public TextView mTeam1Name, mTeam2Name, mDate, mParticipation;
+        public Match match;
 
          public ViewHolderNextMatch(View v) {
              super(v);
+             mCardView = (CardView) v.findViewById(R.id.home_page_card_table);
              mTeam1Name = (TextView) v.findViewById(R.id.home_card_next_match_team1_name);
              mTeam2Name = (TextView) v.findViewById(R.id.home_card_next_match_team2_name);
+             mDate = (TextView) v.findViewById(R.id.home_card_next_match_pretty_time);
+             mParticipation = (TextView) v.findViewById(R.id.home_card_next_match_participation);
          }
 
     }
@@ -117,8 +134,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HomePageAdapter(HomeCardData myDataset) {
-        mDataset = myDataset;
+    public HomePageAdapter(User user) {
+        this.user = user;
     }
 
     @Override
@@ -134,13 +151,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_cards_content, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-
         View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
-
         View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
-
         View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
-
         switch (viewType){
             case 0:
                 return new ViewHolderNextMatch(vnm);
@@ -160,10 +173,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-
         if(holder instanceof ViewHolderHome){
             ViewHolderHome vh = (ViewHolderHome) holder;
-            vh.mTextView.setText("HOME PAGE MUTHAFUCKA");
+            vh.mTextView.setText("HOME PAGE");
         }
         else if (holder instanceof ViewHolderTable) {
             mViewHolderTable = (ViewHolderTable) holder;
@@ -171,14 +183,15 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
            setVisibility("table", View.INVISIBLE);
             mViewHolderTable.mProgressBar.setVisibility(View.VISIBLE);
             new LeagueView(this, 3).execute();
-
-
         }
         else if(holder instanceof ViewHolderNextMatch) {
-            ViewHolderNextMatch vnm = (ViewHolderNextMatch) holder;
-
-            vnm.mTeam1Name.setText(mDataset.teams.get(0).getTeamName());
-            vnm.mTeam2Name.setText(mDataset.teams.get(1).getTeamName());
+            mViewHolderNextMatch = (ViewHolderNextMatch) holder;
+            if(user != null && user.getStatus()){
+                mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
+                new RefGames(this, user.getUserID()).execute();
+            } else {
+                mViewHolderNextMatch.mCardView.setVisibility(View.GONE);
+            }
         }
         else if(holder instanceof ViewHolderMyTeam){
             ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
@@ -193,7 +206,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;
-            vho.mTextView.setText("HOME PAGE MUTHAFUCKA");
+            vho.mTextView.setText("HOME PAGE");
         }
 
 
@@ -258,9 +271,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
+   @Override
+   public void refGamesCallback(List<Match> data){
+       if(data != null){
+    Log.d("", "");
+       }
+   }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return items;
     }
 }

@@ -69,6 +69,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
                 startActivity(intent);
                 mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
                 mSharedPreferences.edit().putString(cookie, APICall.getCookie()).commit();
+                mSharedPreferences.edit().putString("user", data.toString()).commit();
                 finish();
             } else {
                 Log.d("Login", "Invalid credentials");

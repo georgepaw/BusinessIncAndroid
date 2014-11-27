@@ -27,7 +27,7 @@ public class RefGames extends AsyncTask<Void, Void, List<Match>> {
     public RefGames(RefGamesInterface callback, int userID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("userID", Integer.toString(userID)));
+        parameters.add(new BasicNameValuePair("refID", Integer.toString(userID)));
     }
 
     @Override
