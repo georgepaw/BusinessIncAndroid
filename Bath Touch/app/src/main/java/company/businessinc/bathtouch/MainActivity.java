@@ -89,7 +89,7 @@ public class MainActivity extends ActionBarActivity
 //    }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(int position, String name) {
 //        update the main content by replacing fragments
         switch (position) {
             case 0:
@@ -99,6 +99,8 @@ public class MainActivity extends ActionBarActivity
                 changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
+                Log.d("CALLLBK", "in callback on main acitivy");
+
                 changeFragments("TEAMRESULTSTAG");
                 break;
             case 3:

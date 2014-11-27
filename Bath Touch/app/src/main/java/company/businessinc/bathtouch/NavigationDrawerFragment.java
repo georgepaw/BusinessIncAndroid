@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
+//        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -131,6 +132,22 @@ public class NavigationDrawerFragment extends Fragment {
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
+        mDrawerListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                //Nothing here ever fires
+
+                String childName = (String) parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
+                selectItem(groupPosition, childName);
+                System.err.println("child clicked");
+                Toast.makeText(getActivity(), "child clicked" + childName, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+
+
 
         return mDrawerListView;
     }
@@ -144,38 +161,30 @@ public class NavigationDrawerFragment extends Fragment {
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data
-        listDataHeader.add("Top 250");
-        listDataHeader.add("Now Showing");
-        listDataHeader.add("Coming Soon..");
+        listDataHeader.add("Home");
+        listDataHeader.add("League Tables");
+        listDataHeader.add("Team List");
 
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
+        List<String> home = new ArrayList<String>();
+        home.add("Home");
 
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
+        List<String> leagueTables = new ArrayList<String>();
+        leagueTables.add("Summer league 2015");
+        leagueTables.add("Easter Tournament 2015");
+        leagueTables.add("Winter League 2015");
+        leagueTables.add("Autumn Rumble 2015");
 
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
 
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        List<String> teamList = new ArrayList<String>();
+        teamList.add("Business Inc");
+        teamList.add("Austistcs Athletics");
+        teamList.add("Myle's Wondermen");
+        teamList.add("Georges' Redoubt");
+        teamList.add("Joe Digglets");
+
+        listDataChild.put(listDataHeader.get(0), home); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), leagueTables);
+        listDataChild.put(listDataHeader.get(2), teamList);
     }
 
 
@@ -258,17 +267,40 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void selectItem(int position) {
-        mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
+    private void selectItem(int groupPosition, String childName) {
+
+        if(mCallbacks != null){
+            switch (groupPosition){
+                case 0:
+                    //home menu
+                    mCallbacks.onNavigationDrawerItemSelected(0, childName);
+                    break;
+                case 1:
+                    //league menu
+                    mCallbacks.onNavigationDrawerItemSelected(1, childName);
+                    break;
+                case 2:
+                    //team menu
+//                    Log.d("CALLBK", "nav callback for team");
+                    mCallbacks.onNavigationDrawerItemSelected(2, childName);
+                    break;
+            }
         }
+
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
-        }
+//
+//
+//        if (mDrawerListView != null) {
+//            mDrawerListView.setItemChecked(position, true);
+//        }
+//        if (mDrawerLayout != null) {
+//            mDrawerLayout.closeDrawer(mFragmentContainerView);
+//        }
+//        if (mCallbacks != null) {
+//            mCallbacks.onNavigationDrawerItemSelected(position);
+//        }
     }
 
     @Override
@@ -347,6 +379,6 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
+        void onNavigationDrawerItemSelected(int position, String name);
     }
 }
