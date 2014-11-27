@@ -44,11 +44,13 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public LeagueTableAdapter(LeagueTableData mDataSet) {
 
+        //get the league data to display
         getLeagueData();
 
         mDataset = mDataSet;
     }
 
+    //Sends a request to the api for league data
     public void getLeagueData() {
 
         new LeagueView(this, 3).execute(); //just gets the comski league
@@ -61,14 +63,10 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void leagueViewCallback(List<LeagueTeam> data) {
 
-        Log.d("CALLLBK", "Hello ");
         for(LeagueTeam t: data){
 
             leagueTeams.add(t);
         }
-
-
-        this.notifyDataSetChanged();
 
     }
 

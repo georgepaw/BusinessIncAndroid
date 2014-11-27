@@ -56,7 +56,6 @@ public class LeagueView extends AsyncTask<Void, Void, List<LeagueTeam>> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(List<LeagueTeam> result) {
-        Log.d("CALLLBK", "Hello ");
         callback.leagueViewCallback(result);
     }
 }
