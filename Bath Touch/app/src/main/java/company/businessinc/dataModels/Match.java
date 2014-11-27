@@ -14,6 +14,9 @@ import java.util.Locale;
  * Created by gp on 18/11/14.
  */
 public class Match {
+    private Integer matchID;
+    private Integer teamOneID;
+    private Integer teamTwoID;
     private String teamOne;
     private String teamTwo;
     private Integer refID;
@@ -24,7 +27,10 @@ public class Match {
     private Integer teamTwoPoints;
     private Boolean isForfeit;
 
-    public Match(String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
+    public Match(Integer matchID, Integer teamOneID, Integer teamTwoID, String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
+        this.matchID = matchID;
+        this.teamOneID = teamOneID;
+        this.teamTwoID = teamTwoID;
         this.teamOne = teamOne;
         this.teamTwo = teamTwo;
         this.refID = refID;
@@ -37,6 +43,21 @@ public class Match {
     }
 
     public Match(JSONObject jsonObject) throws JSONException {
+        try {
+            this.matchID = jsonObject.getInt("matchID");
+        } catch(JSONException e) {
+            this.matchID = null;
+        }
+        try {
+            this.teamOneID = jsonObject.getInt("teamOneID");
+        } catch(JSONException e) {
+            this.teamOneID = null;
+        }
+        try {
+            this.teamTwoID = jsonObject.getInt("teamTwoID");
+        } catch(JSONException e) {
+            this.teamTwoID = null;
+        }
         try {
             this.teamOne = jsonObject.getString("teamOne");
         } catch(JSONException e) {
@@ -86,6 +107,30 @@ public class Match {
         } catch(JSONException e) {
             this.isForfeit = null;
         }
+    }
+
+    public Integer getMatchID() {
+        return matchID;
+    }
+
+    public void setMatchID(Integer matchID) {
+        this.matchID = matchID;
+    }
+
+    public Integer getTeamOneID() {
+        return teamOneID;
+    }
+
+    public void setTeamOneID(Integer teamOneID) {
+        this.teamOneID = teamOneID;
+    }
+
+    public Integer getTeamTwoID() {
+        return teamTwoID;
+    }
+
+    public void setTeamTwoID(Integer teamTwoID) {
+        this.teamTwoID = teamTwoID;
     }
 
     public String getTeamOne() {
