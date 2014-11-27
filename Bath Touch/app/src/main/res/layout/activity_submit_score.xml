@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -20,7 +20,7 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
 
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="170dp"
         card_view:cardCornerRadius="4dp"
         android:layout_margin="5dp"
         android:id="@+id/team1_card"
@@ -29,7 +29,7 @@
 
         <View
             android:id="@+id/team1_color_bar"
-            android:layout_width="100dp"
+            android:layout_width="56dp"
             android:layout_height="fill_parent"
             android:background="@color/red"
             >
@@ -37,13 +37,14 @@
         </View>
 
         <LinearLayout
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="56dp"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
             android:background="@color/white">
 
             <TextView
+                android:id="@+id/submit_score_team1_name"
                 android:gravity="bottom"
                 android:focusable="true"
                 android:clickable="true"
@@ -66,51 +67,84 @@
 
                 </View>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="left"
-                android:gravity="center"
-                android:hint="Score"
-                android:textSize="24dp"
-                android:layout_margin="16dp"
-                android:textColorHint="@color/orange"
-                android:background="@color/white"
-                android:textColor="@color/orange"
-                android:layout_weight="2"
-                android:inputType="number"
-                />
+                <EditText
+                    android:id="@+id/submit_score_team1_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:gravity="center"
+                    android:hint="Score"
+                    android:textSize="24sp"
+                    android:layout_margin="16dp"
+                    android:textColorHint="@color/orange"
+                    android:background="@color/white"
+                    android:textColor="@color/orange"
+                    android:inputType="number"
+                    />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forfeit?"
+                    android:layout_toLeftOf="@+id/submit_score_team1_forfeit"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true"/>
+
+                <CheckBox
+                    android:id="@+id/submit_score_team1_forfeit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="16dp"/>
+             </RelativeLayout>
 
 
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Captain approved"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/submit_score_team1_approve"
+            android:layout_toStartOf="@+id/submit_score_team1_approve" />
+
+        <CheckBox
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/submit_score_team1_approve" />
+
+    </RelativeLayout>
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="170dp"
         card_view:cardCornerRadius="4dp"
         android:layout_margin="5dp"
-        android:id="@+id/team2_card"
-        android:layout_below="@id/team1_card" >
-
-
-        <View
-            android:id="@+id/team2_color_bar"
-            android:layout_width="100dp"
-            android:layout_height="fill_parent"
-            android:background="@color/blue"
-            >
-
-        </View>
+        android:id="@+id/team2_card" >
 
         <LinearLayout
-            android:layout_marginLeft="100dp"
+            android:layout_marginRight="56dp"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
@@ -140,61 +174,116 @@
             </View>
 
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="left"
-                android:gravity="center"
-                android:hint="Score"
-                android:textSize="24dp"
-                android:layout_marginLeft="16dp"
-                android:textColorHint="@color/orange"
-                android:textColor="@color/orange"
-                android:background="@color/white"
-                android:layout_weight="2"
-                android:inputType="number"
-                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/submit_score_team2_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:gravity="center"
+                    android:hint="Score"
+                    android:textSize="24sp"
+                    android:layout_margin="16dp"
+                    android:textColorHint="@color/orange"
+                    android:background="@color/white"
+                    android:textColor="@color/orange"
+                    android:inputType="number"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forfeit?"
+                    android:layout_toLeftOf="@+id/submit_score_team2_forfeit"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true"/>
+
+                <CheckBox
+                    android:id="@+id/submit_score_team2_forfeit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="16dp"/>
+            </RelativeLayout>
 
 
 
         </LinearLayout>
 
+        <View
+            android:id="@+id/team2_color_bar"
+            android:layout_width="56dp"
+            android:layout_height="fill_parent"
+            android:background="@color/blue"
+            android:layout_gravity="right"
+            >
 
+        </View>
 
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:layout_height="70dp"
-        android:layout_width="fill_parent"
-        card_view:cardCornerRadius="4dp"
-        android:layout_marginTop="16dp"
-        android:id="@+id/submit_score_card"
-        android:background="@color/white"
-        android:layout_alignParentBottom="true"
-        >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <Button
-            style="?android:attr/borderlessButtonStyle"
+        <TextView
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:id="@+id/submit_score_captain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Captain approved"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+
+            android:layout_toRightOf="@+id/submit_score_captain"
+            android:layout_toEndOf="@+id/submit_score_captain"
+            android:id="@+id/submit_score_team2_approve" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_height="56dp"
             android:layout_width="fill_parent"
-            android:text="Submit Score"
-            android:textAllCaps="true"
-            android:textSize="24sp"
-            android:padding="8dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:textColor="@color/orange"/>
+            card_view:cardCornerRadius="4dp"
+            android:layout_marginTop="16dp"
+            android:id="@+id/submit_score_card"
+            android:background="@color/white"
+            android:layout_alignParentBottom="true"
+            >
+
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="fill_parent"
+                android:text="Submit Score"
+                android:textAllCaps="true"
+                android:textSize="24sp"
+                android:padding="8dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:textColor="@color/orange"
+                android:onClick="onSubmitScore"/>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
 
 
-
-    </android.support.v7.widget.CardView>
-
-
-
-
-
-
-
-
-</RelativeLayout>
+</LinearLayout>
