@@ -62,7 +62,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     //After the login button is pressed
     public void userLoginCallback(User data) {
         if (data != null) {
-            if (data.getStatus()) { //User has logged in
+            if (data.isLoggedIn()) { //User has logged in
                 data.getUserID(); //this needs to be stored somewhere
                 Log.d("Login", "Logged in");
                 Intent intent = new Intent(this, MainActivity.class);

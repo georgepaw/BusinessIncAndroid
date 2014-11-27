@@ -25,7 +25,6 @@ public class HomePageFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private User user;
 
 
     public static HomePageFragment newInstance() {
@@ -76,13 +75,9 @@ public class HomePageFragment extends Fragment {
             }
         }));
 
-        mAdapter = new HomePageAdapter(user);
+        mAdapter = new HomePageAdapter();
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
-    }
-
-    public void setUser(User user){
-        this.user = user;
     }
 
     private void selectCard(int position) {

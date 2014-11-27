@@ -28,7 +28,6 @@ import company.businessinc.endpoints.RefGamesInterface;
  */
 public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
 
-    private User user;
     private ViewHolderTable mViewHolderTable;
     ViewHolderNextMatch mViewHolderNextMatch;
     private int items = 4;
@@ -134,8 +133,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HomePageAdapter(User user) {
-        this.user = user;
+    public HomePageAdapter() {
+
     }
 
     @Override
@@ -154,9 +153,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
         View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
         View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
+        View ve = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_empty, parent, false);
         switch (viewType){
             case 0:
-                return new ViewHolderNextMatch(vnm);
+                if(User.isLoggedIn()){
+                    return new ViewHolderNextMatch(vnm);
+                } else {
+                    return new ViewHolderEmpty(ve);
+                }
             case 1:
                 return new ViewHolderTable(vt);
             case 2:
@@ -186,9 +190,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         else if(holder instanceof ViewHolderNextMatch) {
             mViewHolderNextMatch = (ViewHolderNextMatch) holder;
-            if(user != null && user.getStatus()){
+            if(User.isLoggedIn()){
                 mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
-                new RefGames(this, user.getUserID()).execute();
+                new RefGames(this, User.getUserID()).execute();
             } else {
                 mViewHolderNextMatch.mCardView.setVisibility(View.GONE);
             }
@@ -203,6 +207,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vmt.mTeam2Score.setText("11");
             vmt.mTeamScore1.setText("16");
             vmt.mTeamScore2.setText("5");
+        }else if(holder instanceof  ViewHolderEmpty) {
+            ViewHolderEmpty ve = (ViewHolderEmpty) holder;
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;

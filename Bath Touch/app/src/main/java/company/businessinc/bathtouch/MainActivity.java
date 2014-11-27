@@ -28,7 +28,6 @@ public class MainActivity extends ActionBarActivity
     private SharedPreferences mSharedPreferences;
     private String userLoggedIn = "login";
     private static final String cookie = "Cookie";
-    private User user = null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -55,9 +54,9 @@ public class MainActivity extends ActionBarActivity
         } else if(mSharedPreferences.contains(cookie)){
             APICall.setCookie(mSharedPreferences.getString(cookie, ""));
         }
-        if(mSharedPreferences.getBoolean(userLoggedIn,false) && user == null){
+        if(mSharedPreferences.getBoolean(userLoggedIn,false) != User.isLoggedIn()){
             try{
-                user = new User(new JSONObject(mSharedPreferences.getString("user", "")));
+                new User(new JSONObject(mSharedPreferences.getString("user", "")));
             } catch (JSONException e){
                 Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
             }
@@ -68,7 +67,6 @@ public class MainActivity extends ActionBarActivity
 
         if(savedInstanceState == null) {
             HomePageFragment homePageFragment = HomePageFragment.newInstance();
-            homePageFragment.setUser(user);
             mFragmentManager = getSupportFragmentManager();
             mFragmentManager.beginTransaction()
                     .replace(R.id.container, homePageFragment)
@@ -190,7 +188,7 @@ public class MainActivity extends ActionBarActivity
         if(mSharedPreferences.contains("user")){
             mSharedPreferences.edit().remove("user").commit();
         }
-        user = null;
+        new User(null,false);
         startActivity(intent);
         finish();
     }
