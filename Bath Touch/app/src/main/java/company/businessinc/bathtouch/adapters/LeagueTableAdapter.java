@@ -2,22 +2,30 @@ package company.businessinc.bathtouch.adapters;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.endpoints.LeagueView;
+import company.businessinc.endpoints.LeagueViewInterface;
 
 /**
  * Created by user on 22/11/14.
  */
-public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
 
 
     private LeagueTableData mDataset;
+    private ArrayList<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
+
 
     public class ViewHolderLeague extends RecyclerView.ViewHolder {
         public TextView mTeamName, mTeamPos, mTeamWin, mTeamLose, mTeamDraw, mTeamPts;
@@ -35,7 +43,31 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public LeagueTableAdapter(LeagueTableData mDataSet) {
+
+        //get the league data to display
+        getLeagueData();
+
         mDataset = mDataSet;
+    }
+
+    //Sends a request to the api for league data
+    public void getLeagueData() {
+
+        new LeagueView(this, 3).execute(); //just gets the comski league
+
+    }
+
+    /*
+    Callback for getting league data
+    */
+    @Override
+    public void leagueViewCallback(List<LeagueTeam> data) {
+
+        for(LeagueTeam t: data){
+
+            leagueTeams.add(t);
+        }
+
     }
 
     @Override
@@ -56,10 +88,14 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position){
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        LeagueTeam team = mDataset.getTeam(position);
+        LeagueTeam team = leagueTeams.get(position);
         ViewHolderLeague v = (ViewHolderLeague) holder;
+
+
+
+
 
         v.mTeamName.setText(team.getTeamName());
         v.mTeamPos.setText(team.getPosition().toString());
@@ -75,7 +111,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return leagueTeams.size();
     }
 
 
