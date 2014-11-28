@@ -80,12 +80,12 @@ public class Match {
         }
         try {
             String dT = jsonObject.getString("dateTime");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
             this.dateTime = sdf.parse(dT);
         } catch(JSONException e) {
-            this.refName = null;
+            this.dateTime = null;
         } catch (ParseException e){
-            throw new JSONException("couldn't parse dateTime");
+            this.dateTime = null;
         }
         try {
             this.place = jsonObject.getString("place");

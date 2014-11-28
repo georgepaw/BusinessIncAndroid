@@ -9,88 +9,41 @@ import org.json.JSONObject;
 /**
  * Created by gp on 18/11/14.
  */
-public class User  implements Parcelable {
-    private Integer userID;
-    private Boolean status;
+public class User {
+    private static Integer userID = null;
+    private static Boolean isLoggedIn = false;
 
     public User(Integer userID, boolean status) {
         this.userID = userID;
-        this.status = status;
+        this.isLoggedIn = status;
     }
 
     public User(JSONObject jsonObject) throws JSONException{
         try {
             this.userID = jsonObject.getInt("userID");
         } catch(JSONException e){
-            this.userID = null;
+            this.userID = 2;
         }
         try {
-            this.status = jsonObject.getBoolean("status");
+            this.isLoggedIn = jsonObject.getBoolean("status");
         } catch (JSONException e){
-            this.status = null;
+            this.isLoggedIn = null;
         }
     }
 
-    public Integer getUserID() {
+    public static Integer getUserID() {
         return userID;
     }
 
-    public void setUserID(Integer userID) {
-        this.userID = userID;
+    public static Boolean isLoggedIn() {
+        return isLoggedIn;
     }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status =  status;
-    }
-
-    protected User(Parcel in) {
-        userID = in.readByte() == 0x00 ? null : in.readInt();
-        byte statusVal = in.readByte();
-        status = statusVal == 0x02 ? null : statusVal != 0x00;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if (userID == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(userID);
-        }
-        if (status == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (status ? 0x01 : 0x00));
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 
     public String toString(){
         JSONObject jsonObject = new JSONObject();
         try{
-            jsonObject.put("status", status);
-            if (status){
+            jsonObject.put("status", isLoggedIn);
+            if (isLoggedIn){
                 jsonObject.put("userID", userID);
             }
 

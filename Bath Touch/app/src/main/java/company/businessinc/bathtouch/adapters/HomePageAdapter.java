@@ -2,29 +2,39 @@ package company.businessinc.bathtouch.adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueView;
 import company.businessinc.endpoints.LeagueViewInterface;
+import company.businessinc.endpoints.RefGames;
+import company.businessinc.endpoints.RefGamesInterface;
 
 /**
  * Created by user on 20/11/14.
  */
-public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
+public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
 
-    private HomeCardData mDataset;
     private ViewHolderTable mViewHolderTable;
+    ViewHolderNextMatch mViewHolderNextMatch;
+    private int items = 4;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -40,14 +50,25 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
+    public class ViewHolderEmpty extends RecyclerView.ViewHolder {
+        public ViewHolderEmpty(View v) {
+            super(v);
+        }
+    }
 
-        public TextView mTeam1Name, mTeam2Name;
+    public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
+        public CardView mCardView;
+        public TextView mTeam1Name, mTeam2Name, mDate, mParticipation, mVS;
+        public Match match;
 
          public ViewHolderNextMatch(View v) {
              super(v);
+             mCardView = (CardView) v.findViewById(R.id.home_page_card_table);
              mTeam1Name = (TextView) v.findViewById(R.id.home_card_next_match_team1_name);
              mTeam2Name = (TextView) v.findViewById(R.id.home_card_next_match_team2_name);
+             mDate = (TextView) v.findViewById(R.id.home_card_next_match_pretty_time);
+             mParticipation = (TextView) v.findViewById(R.id.home_card_next_match_participation);
+             mVS = (TextView) v.findViewById(R.id.home_card_next_match_vs);
          }
 
     }
@@ -117,8 +138,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HomePageAdapter(HomeCardData myDataset) {
-        mDataset = myDataset;
+    public HomePageAdapter() {
+
     }
 
     @Override
@@ -134,16 +155,17 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_cards_content, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-
         View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
-
         View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
-
         View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
-
+        View ve = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_empty, parent, false);
         switch (viewType){
             case 0:
-                return new ViewHolderNextMatch(vnm);
+                if(User.isLoggedIn()){
+                    return new ViewHolderNextMatch(vnm);
+                } else {
+                    return new ViewHolderEmpty(ve);
+                }
             case 1:
                 return new ViewHolderTable(vt);
             case 2:
@@ -160,10 +182,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-
         if(holder instanceof ViewHolderHome){
             ViewHolderHome vh = (ViewHolderHome) holder;
-            vh.mTextView.setText("HOME PAGE MUTHAFUCKA");
+            vh.mTextView.setText("HOME PAGE");
         }
         else if (holder instanceof ViewHolderTable) {
             mViewHolderTable = (ViewHolderTable) holder;
@@ -171,14 +192,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
            setVisibility("table", View.INVISIBLE);
             mViewHolderTable.mProgressBar.setVisibility(View.VISIBLE);
             new LeagueView(this, 3).execute();
-
-
         }
         else if(holder instanceof ViewHolderNextMatch) {
-            ViewHolderNextMatch vnm = (ViewHolderNextMatch) holder;
-
-            vnm.mTeam1Name.setText(mDataset.teams.get(0).getTeamName());
-            vnm.mTeam2Name.setText(mDataset.teams.get(1).getTeamName());
+            mViewHolderNextMatch = (ViewHolderNextMatch) holder;
+            if(User.isLoggedIn()){
+                mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
+                new RefGames(this, User.getUserID()).execute();
+            }
         }
         else if(holder instanceof ViewHolderMyTeam){
             ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
@@ -190,10 +210,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vmt.mTeam2Score.setText("11");
             vmt.mTeamScore1.setText("16");
             vmt.mTeamScore2.setText("5");
+        }else if(holder instanceof  ViewHolderEmpty) {
+            ViewHolderEmpty ve = (ViewHolderEmpty) holder;
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;
-            vho.mTextView.setText("HOME PAGE MUTHAFUCKA");
+            vho.mTextView.setText("HOME PAGE");
         }
 
 
@@ -258,9 +280,44 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
+   @Override
+   public void refGamesCallback(List<Match> data){
+       if(data != null){
+           data.add(new Match(1,1,1, "Autistics United", "Business Inc", 1, "JimRef", new GregorianCalendar(2014,10,28,13,00).getTime(), "Home", 8, 3, false));
+           //sort the games in ascending order
+           Collections.sort(data, new Comparator<Match>() {
+               public int compare(Match m1, Match m2) {
+                   return m1.getDateTime().compareTo(m2.getDateTime());
+               }
+           });
+           //find the next game
+           Match nextMach = null;
+           //Should probably replace this with a better search
+           GregorianCalendar gc = new GregorianCalendar();
+           gc.add(GregorianCalendar.HOUR,4); //add 4 hours so that he can see the next game during and after it's being played
+           for(Match m : data){
+               if(m.getDateTime().compareTo(gc.getTime()) > -1){
+                   nextMach = m;
+               }
+           }
+           if(nextMach!=null){
+               mViewHolderNextMatch.mParticipation.setText("Refereeing");
+               mViewHolderNextMatch.mTeam1Name.setText(nextMach.getTeamOne());
+               mViewHolderNextMatch.mTeam2Name.setText(nextMach.getTeamTwo());
+               mViewHolderNextMatch.mVS.setText("VS");
+               SimpleDateFormat sdf = new SimpleDateFormat("HH:mm EEEE, d MMM yy");
+               mViewHolderNextMatch.mDate.setText(sdf.format(nextMach.getDateTime()));
+           } else {
+               //didn't find an upcoming game
+
+
+           }
+       }
+   }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return items;
     }
 }

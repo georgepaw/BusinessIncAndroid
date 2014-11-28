@@ -24,12 +24,11 @@ public class TeamScores extends AsyncTask<Void, Void, List<Match>> {
     private TeamScoresInterface callback;
     private List<NameValuePair> parameters;
 
-    public TeamScores(TeamScoresInterface callback, int leagueID, int teamID, Date dateFrom, Date dateTo) {
+    public TeamScores(TeamScoresInterface callback, int leagueID, int teamID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("leagueID", Integer.toString(leagueID)));
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
-        //TODO how to pass date range as a parameter
     }
 
     @Override

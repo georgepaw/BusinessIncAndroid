@@ -12,6 +12,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
 
 
@@ -49,6 +53,13 @@ public class MainActivity extends ActionBarActivity
             finish();
         } else if(mSharedPreferences.contains(cookie)){
             APICall.setCookie(mSharedPreferences.getString(cookie, ""));
+        }
+        if(mSharedPreferences.getBoolean(userLoggedIn,false) != User.isLoggedIn()){
+            try{
+                new User(new JSONObject(mSharedPreferences.getString("user", "")));
+            } catch (JSONException e){
+                Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
+            }
         }
         super.onCreate(savedInstanceState);
 
@@ -173,6 +184,10 @@ public class MainActivity extends ActionBarActivity
         if(mSharedPreferences.contains(cookie)){
             mSharedPreferences.edit().remove(cookie).commit();
         }
+        if(mSharedPreferences.contains("user")){
+            mSharedPreferences.edit().remove("user").commit();
+        }
+        new User(null,false);
         startActivity(intent);
         finish();
     }
