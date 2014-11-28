@@ -66,10 +66,9 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         if(savedInstanceState == null) {
-            HomePageFragment homePageFragment = HomePageFragment.newInstance();
             mFragmentManager = getSupportFragmentManager();
             mFragmentManager.beginTransaction()
-                    .replace(R.id.container, homePageFragment)
+                    .replace(R.id.container, HomePageFragment.newInstance())
                     .commit();
         }
 
