@@ -58,7 +58,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
         public CardView mCardView;
-        public TextView mTeam1Name, mTeam2Name, mDate, mParticipation;
+        public TextView mTeam1Name, mTeam2Name, mDate, mParticipation, mVS;
         public Match match;
 
          public ViewHolderNextMatch(View v) {
@@ -68,6 +68,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
              mTeam2Name = (TextView) v.findViewById(R.id.home_card_next_match_team2_name);
              mDate = (TextView) v.findViewById(R.id.home_card_next_match_pretty_time);
              mParticipation = (TextView) v.findViewById(R.id.home_card_next_match_participation);
+             mVS = (TextView) v.findViewById(R.id.home_card_next_match_vs);
          }
 
     }
@@ -282,6 +283,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    @Override
    public void refGamesCallback(List<Match> data){
        if(data != null){
+           data.add(new Match(1,1,1, "Autistics United", "Business Inc", 1, "JimRef", new GregorianCalendar(2014,10,28,13,00).getTime(), "Home", 8, 3, false));
            //sort the games in ascending order
            Collections.sort(data, new Comparator<Match>() {
                public int compare(Match m1, Match m2) {
@@ -291,8 +293,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
            //find the next game
            Match nextMach = null;
            //Should probably replace this with a better search
+           GregorianCalendar gc = new GregorianCalendar();
+           gc.add(GregorianCalendar.HOUR,4); //add 4 hours so that he can see the next game during and after it's being played
            for(Match m : data){
-               if(m.getDateTime().compareTo(new GregorianCalendar().getTime()) > -1){
+               if(m.getDateTime().compareTo(gc.getTime()) > -1){
                    nextMach = m;
                }
            }
@@ -300,10 +304,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                mViewHolderNextMatch.mParticipation.setText("Refereeing");
                mViewHolderNextMatch.mTeam1Name.setText(nextMach.getTeamOne());
                mViewHolderNextMatch.mTeam2Name.setText(nextMach.getTeamTwo());
-               SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yy");
+               mViewHolderNextMatch.mVS.setText("VS");
+               SimpleDateFormat sdf = new SimpleDateFormat("HH:mm EEEE, d MMM yy");
                mViewHolderNextMatch.mDate.setText(sdf.format(nextMach.getDateTime()));
            } else {
-               //get rid off the card
+               //didn't find an upcoming game
+
+
            }
        }
    }
