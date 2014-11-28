@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
@@ -278,14 +281,30 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
    @Override
    public void refGamesCallback(List<Match> data){
-       //data.add(new Match(1,1,1, "Autistics United", "Business Inc", 1, "JimRef", new Date(2006,11,1), "Home", 8, 3, false));
        if(data != null){
+           //sort the games in ascending order
            Collections.sort(data, new Comparator<Match>() {
                public int compare(Match m1, Match m2) {
                    return m1.getDateTime().compareTo(m2.getDateTime());
                }
            });
-
+           //find the next game
+           Match nextMach = null;
+           //Should probably replace this with a better search
+           for(Match m : data){
+               if(m.getDateTime().compareTo(new GregorianCalendar().getTime()) > -1){
+                   nextMach = m;
+               }
+           }
+           if(nextMach!=null){
+               mViewHolderNextMatch.mParticipation.setText("Refereeing");
+               mViewHolderNextMatch.mTeam1Name.setText(nextMach.getTeamOne());
+               mViewHolderNextMatch.mTeam2Name.setText(nextMach.getTeamTwo());
+               SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yy");
+               mViewHolderNextMatch.mDate.setText(sdf.format(nextMach.getDateTime()));
+           } else {
+               //get rid off the card
+           }
        }
    }
 
