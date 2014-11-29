@@ -1,5 +1,6 @@
 package company.businessinc.bathtouch;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +18,7 @@ import company.businessinc.endpoints.ScoreSubmitInterface;
 
 public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmitInterface {
 
-    private Integer mMatchId, mTeamOneScore, mTeamTwoScore;
-    private Boolean mIsForfeit;
+    private Integer mMatchId;
     private EditText mTeamOneEditText, mTeamTwoEditText;
     private CheckBox mTeamOneForfeit, mTeamTwoForfeit;
 
@@ -26,6 +26,13 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_score);
+
+        Intent intent = getIntent();
+        mMatchId = intent.getIntExtra("matchId", -1);
+        if(mMatchId == -1) {
+            Toast.makeText(this, "Invalid matchId! Something went wrong", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_submit_score);
         toolbar.hideOverflowMenu();
@@ -37,23 +44,17 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
         mTeamOneForfeit = (CheckBox) findViewById(R.id.submit_score_team1_forfeit);
         mTeamTwoForfeit = (CheckBox) findViewById(R.id.submit_score_team2_forfeit);
 
-        mMatchId = getMatchId();
-
     }
 
     public void onSubmitScore(View v) {
-        mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
-        mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+        Integer mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+        Integer mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+        Boolean mIsForfeit;
         if(mTeamOneForfeit.isChecked() || mTeamTwoForfeit.isChecked())
             mIsForfeit = true;
         else mIsForfeit = false;
 
         new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
-    }
-
-    private Integer getMatchId() {
-        //TODO FETCH THE REAL MATCH ID
-        return 0;
     }
 
     @Override
