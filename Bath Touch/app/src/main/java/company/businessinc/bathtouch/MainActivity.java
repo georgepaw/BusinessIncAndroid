@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
 
@@ -135,6 +136,15 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onHomePageCardSelected(int position) {
         switch(position) {
+            case 0:
+                //TODO Add a check to make sure nextMatch exists
+                Match nextMatch = DataStore.getNextMatch();
+                Intent intent = new Intent(this, SubmitScoreActivity.class);
+                intent.putExtra("matchId", nextMatch.getMatchID());
+                intent.putExtra("teamOneName", nextMatch.getTeamOne());
+                intent.putExtra("teamTwoName", nextMatch.getTeamTwo());
+                startActivity(intent);
+                break;
             case 1:
                 changeFragments("LEAGUETABLETAG");
                 break;
@@ -190,6 +200,7 @@ public class MainActivity extends ActionBarActivity
             mSharedPreferences.edit().remove("user").commit();
         }
         new User(null,false);
+        DataStore.clearData();
         startActivity(intent);
         finish();
     }
