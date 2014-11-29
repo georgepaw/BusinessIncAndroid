@@ -46,7 +46,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         //get the league data to display
         getLeagueData();
-
         mDataset = mDataSet;
     }
 
@@ -67,6 +66,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             leagueTeams.add(t);
         }
+
+        notifyDataSetChanged();
 
     }
 
@@ -92,9 +93,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         LeagueTeam team = leagueTeams.get(position);
         ViewHolderLeague v = (ViewHolderLeague) holder;
-
-
-
 
 
         v.mTeamName.setText(team.getTeamName());
