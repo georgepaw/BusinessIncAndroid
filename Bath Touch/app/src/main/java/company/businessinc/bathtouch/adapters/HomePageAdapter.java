@@ -32,6 +32,7 @@ import company.businessinc.endpoints.RefGamesInterface;
  */
 public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
 
+    private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
     ViewHolderNextMatch mViewHolderNextMatch;
     private int items = 4;
@@ -283,7 +284,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    @Override
    public void refGamesCallback(List<Match> data){
        if(data != null){
-           data.add(new Match(1,1,1, "Autistics United", "Business Inc", 1, "JimRef", new GregorianCalendar(2014,10,28,13,00).getTime(), "Home", 8, 3, false));
+           GregorianCalendar now = new GregorianCalendar();
+           now.add(GregorianCalendar.HOUR, 1);
+           data.add(new Match(1,1,1, "Autistics United", "Business Inc", User.getUserID(), "JimRef", now.getTime(), "Home", 8, 3, false));
            //sort the games in ascending order
            Collections.sort(data, new Comparator<Match>() {
                public int compare(Match m1, Match m2) {
@@ -294,7 +297,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
            Match nextMach = null;
            //Should probably replace this with a better search
            GregorianCalendar gc = new GregorianCalendar();
-           gc.add(GregorianCalendar.HOUR,4); //add 4 hours so that he can see the next game during and after it's being played
+           gc.add(GregorianCalendar.HOUR,-4); //minus 4 hours so that he can see the next game during and after it's being played
            for(Match m : data){
                if(m.getDateTime().compareTo(gc.getTime()) > -1){
                    nextMach = m;
@@ -309,7 +312,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                mViewHolderNextMatch.mDate.setText(sdf.format(nextMach.getDateTime()));
            } else {
                //didn't find an upcoming game
-
+                Log.e(TAG, "Didn't find any upcoming games");
 
            }
        }
