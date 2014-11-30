@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
+import company.businessinc.bathtouch.DataStore;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
@@ -32,6 +33,7 @@ import company.businessinc.endpoints.RefGamesInterface;
  */
 public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
 
+    private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
     ViewHolderNextMatch mViewHolderNextMatch;
     private int items = 4;
@@ -197,7 +199,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewHolderNextMatch = (ViewHolderNextMatch) holder;
             if(User.isLoggedIn()){
                 mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
-                new RefGames(this, User.getUserID()).execute();
+                if(DataStore.getNextMatch() != null)
+                    setNextMatchText(DataStore.getNextMatch());
+                else
+                    new RefGames(this, User.getUserID()).execute();
             }
         }
         else if(holder instanceof ViewHolderMyTeam){
@@ -283,7 +288,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    @Override
    public void refGamesCallback(List<Match> data){
        if(data != null){
-           data.add(new Match(1,1,1, "Autistics United", "Business Inc", 1, "JimRef", new GregorianCalendar(2014,10,28,13,00).getTime(), "Home", 8, 3, false));
+//           GregorianCalendar now = new GregorianCalendar();
+//           now.add(GregorianCalendar.HOUR, 1);
+//           data.add(new Match(1,1,1, "Autistics United", "Business Inc", User.getUserID(), "JimRef", now.getTime(), "Home", 8, 3, false));
            //sort the games in ascending order
            Collections.sort(data, new Comparator<Match>() {
                public int compare(Match m1, Match m2) {
@@ -291,29 +298,35 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                }
            });
            //find the next game
-           Match nextMach = null;
+           Match nextMatch = null;
            //Should probably replace this with a better search
            GregorianCalendar gc = new GregorianCalendar();
-           gc.add(GregorianCalendar.HOUR,4); //add 4 hours so that he can see the next game during and after it's being played
+           gc.add(GregorianCalendar.HOUR,-4); //minus 4 hours so that he can see the next game during and after it's being played
            for(Match m : data){
                if(m.getDateTime().compareTo(gc.getTime()) > -1){
-                   nextMach = m;
+                   nextMatch = m;
                }
            }
-           if(nextMach!=null){
-               mViewHolderNextMatch.mParticipation.setText("Refereeing");
-               mViewHolderNextMatch.mTeam1Name.setText(nextMach.getTeamOne());
-               mViewHolderNextMatch.mTeam2Name.setText(nextMach.getTeamTwo());
-               mViewHolderNextMatch.mVS.setText("VS");
-               SimpleDateFormat sdf = new SimpleDateFormat("HH:mm EEEE, d MMM yy");
-               mViewHolderNextMatch.mDate.setText(sdf.format(nextMach.getDateTime()));
+           nextMatch = data.get(0);
+           if(nextMatch!=null){
+               DataStore.setNextMatch(nextMatch);
+               setNextMatchText(nextMatch);
            } else {
                //didn't find an upcoming game
-
+                Log.e(TAG, "Didn't find any upcoming games");
 
            }
        }
    }
+
+    public void setNextMatchText(Match nextMatch) {
+        mViewHolderNextMatch.mParticipation.setText("Refereeing");
+        mViewHolderNextMatch.mTeam1Name.setText(nextMatch.getTeamOne());
+        mViewHolderNextMatch.mTeam2Name.setText(nextMatch.getTeamTwo());
+        mViewHolderNextMatch.mVS.setText("VS");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm EEEE, d MMM yy");
+        mViewHolderNextMatch.mDate.setText(sdf.format(nextMatch.getDateTime()));
+    }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override

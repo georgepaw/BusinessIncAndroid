@@ -1,13 +1,16 @@
 package company.businessinc.bathtouch;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import company.businessinc.dataModels.Status;
@@ -17,8 +20,9 @@ import company.businessinc.endpoints.ScoreSubmitInterface;
 
 public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmitInterface {
 
-    private Integer mMatchId, mTeamOneScore, mTeamTwoScore;
-    private Boolean mIsForfeit;
+    private String TAG = "SubmitScoreActivity";
+    private Integer mMatchId;
+    private TextView mTeamOneName, mTeamTwoName;
     private EditText mTeamOneEditText, mTeamTwoEditText;
     private CheckBox mTeamOneForfeit, mTeamTwoForfeit;
 
@@ -26,24 +30,36 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_score);
+        String teamOneNameText = "NULL";
+        String teamTwoNameText = "NULL";
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            mMatchId = extras.getInt("matchId");
+            teamOneNameText = extras.getString("teamOneName");
+            teamTwoNameText = extras.getString("teamTwoName");
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_submit_score);
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
+        mTeamOneName = (TextView) findViewById(R.id.submit_score_team1_name);
+        mTeamTwoName = (TextView) findViewById(R.id.submit_score_team2_name);
         mTeamOneEditText = (EditText) findViewById(R.id.submit_score_team1_score);
         mTeamTwoEditText = (EditText) findViewById(R.id.submit_score_team2_score);
         mTeamOneForfeit = (CheckBox) findViewById(R.id.submit_score_team1_forfeit);
         mTeamTwoForfeit = (CheckBox) findViewById(R.id.submit_score_team2_forfeit);
 
-        mMatchId = getMatchId();
-
+        mTeamOneName.setText(teamOneNameText);
+        mTeamTwoName.setText(teamTwoNameText);
     }
 
     public void onSubmitScore(View v) {
-        mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
-        mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+        Integer mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+        Integer mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+        Boolean mIsForfeit;
         if(mTeamOneForfeit.isChecked() || mTeamTwoForfeit.isChecked())
             mIsForfeit = true;
         else mIsForfeit = false;
@@ -51,17 +67,12 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
         new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
     }
 
-    private Integer getMatchId() {
-        //TODO FETCH THE REAL MATCH ID
-        return 0;
-    }
-
     @Override
     public void scoreSubmitCallback(Status data) {
 
         if(data.getStatus()) {
             Toast.makeText(this, "Score submitted successfully", Toast.LENGTH_SHORT).show();
-            recreate();
+            finish();
         } else
             Toast.makeText(this, "Score could not be submitted", Toast.LENGTH_LONG).show();
     }

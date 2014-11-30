@@ -153,6 +153,7 @@
 
 
             <TextView
+                android:id="@+id/submit_score_team2_name"
                 android:gravity="bottom"
                 android:focusable="true"
                 android:clickable="true"

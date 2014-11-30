@@ -59,12 +59,12 @@ public class Match {
             this.teamTwoID = null;
         }
         try {
-            this.teamOne = jsonObject.getString("teamOne");
+            this.teamOne = jsonObject.getString("teamOneName");
         } catch(JSONException e) {
             this.teamOne = null;
         }
         try {
-            this.teamTwo = jsonObject.getString("teamTwo");
+            this.teamTwo = jsonObject.getString("teamTwoName");
         } catch(JSONException e) {
             this.teamTwo = null;
         }
