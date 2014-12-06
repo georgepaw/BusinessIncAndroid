@@ -196,6 +196,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             new LeagueView(this, 3).execute();
         }
         else if(holder instanceof ViewHolderNextMatch) {
+
             mViewHolderNextMatch = (ViewHolderNextMatch) holder;
             if(User.isLoggedIn()){
                 mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
@@ -324,7 +325,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mViewHolderNextMatch.mTeam1Name.setText(nextMatch.getTeamOne());
         mViewHolderNextMatch.mTeam2Name.setText(nextMatch.getTeamTwo());
         mViewHolderNextMatch.mVS.setText("VS");
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm EEEE, d MMM yy");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
         mViewHolderNextMatch.mDate.setText(sdf.format(nextMatch.getDateTime()));
     }
 
