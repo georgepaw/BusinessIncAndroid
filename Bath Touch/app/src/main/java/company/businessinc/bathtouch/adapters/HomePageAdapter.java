@@ -209,9 +209,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else if(holder instanceof ViewHolderMyTeam){
             ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
 
-            vmt.mTeamName.setText("Business Inc United");
-            vmt.mTeam1Name.setText("Autistics Athletic Club");
-            vmt.mTeam2Name.setText("Dyslises Tmea");
+            vmt.mTeamName.setText("TeamA");
+            vmt.mTeam1Name.setText("TeamB");
+            vmt.mTeam2Name.setText("TeamC");
             vmt.mTeam1Score.setText("8");
             vmt.mTeam2Score.setText("11");
             vmt.mTeamScore1.setText("16");
@@ -289,9 +289,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    @Override
    public void refGamesCallback(List<Match> data){
        if(data != null){
-//           GregorianCalendar now = new GregorianCalendar();
-//           now.add(GregorianCalendar.HOUR, 1);
-//           data.add(new Match(1,1,1, "Autistics United", "Business Inc", User.getUserID(), "JimRef", now.getTime(), "Home", 8, 3, false));
            //sort the games in ascending order
            Collections.sort(data, new Comparator<Match>() {
                public int compare(Match m1, Match m2) {
@@ -308,8 +305,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                    nextMatch = m;
                }
            }
-           nextMatch = data.get(0);
            if(nextMatch!=null){
+               nextMatch = data.get(0);
                DataStore.setNextMatch(nextMatch);
                setNextMatchText(nextMatch);
            } else {

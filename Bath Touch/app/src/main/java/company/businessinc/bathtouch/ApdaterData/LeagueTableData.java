@@ -19,15 +19,15 @@ public class LeagueTableData {
     public LeagueTableData() {
         //TODO API CALLS TO GET DATA FROM SERVER
 
-        leagueTeams.add(new LeagueTeam("Business Inc United", 18, 10, 0, 0, 0 , 1, 5, 0));
-        leagueTeams.add(new LeagueTeam("Autistics Athletic Club", 4, 1, 1, 0, 0 , 2, 3, 0));
-        leagueTeams.add(new LeagueTeam("Dsylexis Tmea", 2, 0, 2, 1, 0, 3, 1, 0));
-        leagueTeams.add(new LeagueTeam("Aasawdawd", 1, 2, 0, 0, 0 , 4, 5, 0));
-        leagueTeams.add(new LeagueTeam("Aawdawdawd", 4, 1, 1, 0, 0 , 5, 3, 0));
-        leagueTeams.add(new LeagueTeam("jlhefhe", 1, 0, 2, 1, 0, 6, 1, 0));
-        leagueTeams.add(new LeagueTeam("uihwefuhwufh", 1, 2, 0, 0, 0 , 7, 5, 0));
-        leagueTeams.add(new LeagueTeam("HDWDAWDG", 1, 1, 1, 0, 0 , 8, 3, 0));
-        leagueTeams.add(new LeagueTeam("&^!@EGYU", 1, 0, 2, 1, 0, 27, 1, 0));
+        leagueTeams.add(new LeagueTeam("TeamA", 18, 10, 0, 0, 0 , 1, 5, 0));
+        leagueTeams.add(new LeagueTeam("TeamB", 4, 1, 1, 0, 0 , 2, 3, 0));
+        leagueTeams.add(new LeagueTeam("TeamC", 2, 0, 2, 1, 0, 3, 1, 0));
+        leagueTeams.add(new LeagueTeam("TeamD", 1, 2, 0, 0, 0 , 4, 5, 0));
+        leagueTeams.add(new LeagueTeam("TeamE", 4, 1, 1, 0, 0 , 5, 3, 0));
+        leagueTeams.add(new LeagueTeam("TeamF", 1, 0, 2, 1, 0, 6, 1, 0));
+        leagueTeams.add(new LeagueTeam("TeamG", 1, 2, 0, 0, 0 , 7, 5, 0));
+        leagueTeams.add(new LeagueTeam("TeamH", 1, 1, 1, 0, 0 , 8, 3, 0));
+        leagueTeams.add(new LeagueTeam("TeamI", 1, 0, 2, 1, 0, 9, 1, 0));
 
 
 

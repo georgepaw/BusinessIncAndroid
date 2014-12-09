@@ -30,7 +30,7 @@
                 android:id="@+id/team_results_header_team_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Business Inc's Results"
+                android:text="TeamA Results"
                 android:textSize="24sp"
                 android:textColor="@color/white"/>
 
