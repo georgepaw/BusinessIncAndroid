@@ -52,7 +52,7 @@
                 android:layout_width="fill_parent"
                 android:textSize="24sp"
                 android:textColor="@color/grey"
-                android:text="Business Inc United"
+                android:text="TeamA"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
                 android:layout_gravity="center"
@@ -161,7 +161,7 @@
                 android:layout_width="fill_parent"
                 android:textSize="24sp"
                 android:textColor="@color/grey"
-                android:text="Autistics Athletic Club"
+                android:text="TeamB"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
 
