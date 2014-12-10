@@ -150,8 +150,8 @@
         </View>
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="56dp"
             android:background="@color/white"
             android:orientation="vertical">
@@ -160,12 +160,17 @@
                 android:id="@+id/submit_score_team2_name"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="bottom"
-                android:text="Business Inc United"
+                android:text="TeamB"
                 android:textColor="@color/grey"
-                android:textSize="24sp"         />
+                android:textSize="24sp"
+                />
+
 
             <View
                 android:layout_width="fill_parent"

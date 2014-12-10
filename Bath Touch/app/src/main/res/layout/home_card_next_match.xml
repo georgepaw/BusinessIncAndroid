@@ -13,7 +13,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bkg">
+        android:background="@drawable/bkg"
+        >
 
         <TextView
             android:id="@+id/home_card_next_match_heading"
@@ -22,20 +23,13 @@
             android:layout_alignParentLeft="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:padding="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
             android:text="Your next match"
-            android:textSize="24sp"
+            android:textSize="16dp"
             android:textColor="@color/grey"
             />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/grey"
-            android:layout_below="@id/home_card_next_match_heading"
-            >
-
-            </View>
 
         <RelativeLayout
             android:id="@+id/home_card_next_match_name_layout"
@@ -47,7 +41,7 @@
             <RelativeLayout
 
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 android:layout_centerInParent="true"
                 android:orientation="horizontal"
 
@@ -59,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
-                    android:gravity="left"
+                    android:gravity="center"
                     android:text=""
                     android:textSize="20sp" />
 
@@ -81,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
-                    android:gravity="right"
+                    android:gravity="center"
                     android:text=""
                     android:textSize="20sp" />
 
@@ -109,7 +103,7 @@
             android:layout_margin="16dp"
             android:layout_marginTop="8dp"
             android:text=""
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/home_card_next_match_participation"
@@ -121,7 +115,7 @@
             android:layout_marginTop="8dp"
             android:text=""
             android:textColor="@color/orange"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
 
     </RelativeLayout>
