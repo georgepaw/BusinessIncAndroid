@@ -35,7 +35,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
-    ViewHolderNextMatch mViewHolderNextMatch;
+    private ViewHolderNextMatch mViewHolderNextMatch;
     private int items = 4;
 
     // Provide a reference to the views for each data item

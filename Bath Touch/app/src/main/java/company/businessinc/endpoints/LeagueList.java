@@ -35,7 +35,7 @@ public class LeagueList extends AsyncTask<Void, Void, List<League>> {
         try {
             jsonArray = new JSONArray(APICall.call(APICallType.LeagueList, parameters));
         } catch (JSONException e) {
-            Log.d(TAG, "Couldn't parse String into JSON");
+            Log.d(TAG, "Couldn't parse String into JSONNN");
         }
 
         List<League> list = new LinkedList<League>();
