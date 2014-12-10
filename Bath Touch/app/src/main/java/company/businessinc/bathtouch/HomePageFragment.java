@@ -51,13 +51,13 @@ public class HomePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mLayout = inflater.inflate(R.layout.fragment_home_page, container, false);
+        mLayout = inflater.inflate(R.layout.alternative_home_page, container, false);
 
-        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar_home_screen);
+        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.alt_toolbar_home_screen);
          ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
-        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.home_page_cards_recycle);
+        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.alt_home_page_cards_recycle);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView

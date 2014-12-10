@@ -16,7 +16,7 @@ import company.businessinc.dataModels.Match;
 /**
  * Created by user on 21/11/14.
  */
-public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private TeamResultsData mDataset;
 
