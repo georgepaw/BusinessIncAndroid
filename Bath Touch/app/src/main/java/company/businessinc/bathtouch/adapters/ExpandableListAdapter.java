@@ -162,11 +162,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
         }
 
         List<String> teamList = new ArrayList<String>();
-        teamList.add("Business Inc");
-        teamList.add("Austistcs Athletics");
-        teamList.add("Myle's Wondermen");
-        teamList.add("Georges' Redoubt");
-        teamList.add("Joe Digglets");
+        teamList.add("TeamA");
+        teamList.add("TeamB");
+        teamList.add("TeamC");
+        teamList.add("TeamD");
+        teamList.add("TeamE");
 
         _listDataChild.put(_listDataHeader.get(0), home);
         _listDataChild.put(_listDataHeader.get(1), leagueTables);
