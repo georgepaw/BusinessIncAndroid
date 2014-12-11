@@ -38,8 +38,9 @@ public class ScoreSubmit extends AsyncTask<Void, Void, Status> {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(APICall.call(APICallType.ScoreSubmit, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
+            return null;
         }
         company.businessinc.dataModels.Status bool = null;
         try{

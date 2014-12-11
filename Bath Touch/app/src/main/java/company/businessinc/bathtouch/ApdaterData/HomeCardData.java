@@ -37,7 +37,7 @@ public class HomeCardData implements LeagueViewInterface{
         if(teams == null) {
             //Add dummy data if callback is returning nothing
             teams = new ArrayList<LeagueTeam>();
-            teams.add(new LeagueTeam("TeamA", 6, 2, 0, 0, 0, 1, 5, 0));
+            teams.add(new LeagueTeam("CompSci Vipers", 6, 2, 0, 0, 0, 1, 5, 0));
             teams.add(new LeagueTeam("TeamB", 4, 1, 1, 0, 0, 2, 3, 0));
             teams.add(new LeagueTeam("TeamC", 2, 0, 2, 1, 0, 3, 1, 0));
             Log.e(TAG, "teams == null");

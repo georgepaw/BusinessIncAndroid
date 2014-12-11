@@ -31,7 +31,7 @@
                 android:id="@+id/alt_home_page_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Test McGubbins"
+                android:text="Hello, \'name\'"
                 android:textSize="22sp"
                 android:textColor="@color/white"
                 android:layout_alignParentTop="true"
