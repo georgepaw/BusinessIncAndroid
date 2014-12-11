@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        card_view:cardCornerRadius="2dp"
         android:background="@drawable/bkg"
-        android:clickable="true">
+        android:clickable="true"
+        card_view:cardCornerRadius="2dp">
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -25,14 +25,13 @@
                 android:id="@+id/home_page_card_table_progressbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
 
             <RelativeLayout
                 android:id="@+id/home_page_card_table_header_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:background="@color/transparent_grey">
+                android:padding="16dp">
 
                 <TextView
 
@@ -40,7 +39,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="EPL"
-                    android:textColor="@color/white"
+                    android:textColor="@color/grey"
                     android:textSize="24sp" />
 
                 <TextView
@@ -50,7 +49,7 @@
                     android:layout_below="@id/home_page_card_table_header"
                     android:layout_marginTop="4dp"
                     android:text="Subheader"
-                    android:textColor="@color/white"
+                    android:textColor="@color/grey"
                     android:textSize="18sp" />
 
 

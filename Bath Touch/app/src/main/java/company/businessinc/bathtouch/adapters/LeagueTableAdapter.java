@@ -52,7 +52,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     //Sends a request to the api for league data
     public void getLeagueData() {
 
-        new LeagueView(this, 3).execute(); //just gets the comski league
+        new LeagueView(this, 1).execute(); //just gets the comski league
 
     }
 
