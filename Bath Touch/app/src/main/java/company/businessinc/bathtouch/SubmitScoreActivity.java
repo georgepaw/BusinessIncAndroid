@@ -69,11 +69,15 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
 
     @Override
     public void scoreSubmitCallback(Status data) {
-
-        if(data.getStatus()) {
-            Toast.makeText(this, "Score submitted successfully", Toast.LENGTH_SHORT).show();
-            finish();
-        } else
+        if(data != null){
+            if(data.getStatus()) {
+                Toast.makeText(this, "Score submitted successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Score could not be submitted", Toast.LENGTH_LONG).show();
+            }
+        } else {
             Toast.makeText(this, "Score could not be submitted", Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -54,7 +54,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text="TeamA"
+                    android:text="CompSci Vipers"
                     android:textColor="@color/blue"
                     android:textSize="24sp" />
 

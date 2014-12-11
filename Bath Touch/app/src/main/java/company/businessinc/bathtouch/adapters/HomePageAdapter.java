@@ -209,13 +209,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else if(holder instanceof ViewHolderMyTeam){
             ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
 
-            vmt.mTeamName.setText("TeamA");
-            vmt.mTeam1Name.setText("TeamB");
-            vmt.mTeam2Name.setText("TeamC");
-            vmt.mTeam1Score.setText("8");
-            vmt.mTeam2Score.setText("11");
-            vmt.mTeamScore1.setText("16");
-            vmt.mTeamScore2.setText("5");
+            vmt.mTeamName.setText("CompSci Vipers");
+            vmt.mTeam1Name.setText("EE Tigers");
+            vmt.mTeam2Name.setText("HP All Stars");
+            vmt.mTeam1Score.setText("4");
+            vmt.mTeam2Score.setText("0");
+            vmt.mTeamScore1.setText("28");
+            vmt.mTeamScore2.setText("11");
         }else if(holder instanceof  ViewHolderEmpty) {
             ViewHolderEmpty ve = (ViewHolderEmpty) holder;
         }

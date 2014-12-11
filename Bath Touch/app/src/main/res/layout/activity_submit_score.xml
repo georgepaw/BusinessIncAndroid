@@ -3,167 +3,57 @@
 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_submit_score"
         android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
         android:background="?attr/colorPrimary"
         android:elevation="2dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_alignParentTop="true"/>
+        android:minHeight="?attr/actionBarSize" />
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
 
+        android:id="@+id/team1_card"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        card_view:cardCornerRadius="4dp"
-        android:layout_margin="5dp"
-        android:id="@+id/team1_card"
         android:layout_below="@id/toolbar_submit_score"
-        >
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="4dp">
 
         <View
             android:id="@+id/team1_color_bar"
             android:layout_width="56dp"
             android:layout_height="fill_parent"
-            android:background="@color/red"
-            >
+            android:background="@color/red">
 
         </View>
 
         <LinearLayout
-            android:layout_marginLeft="56dp"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="@color/white">
+            android:layout_marginLeft="56dp"
+            android:background="@color/white"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/submit_score_team1_name"
-                android:gravity="bottom"
-                android:focusable="true"
-                android:clickable="true"
-                android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
-                android:textSize="24sp"
-                android:textColor="@color/grey"
-                android:text="TeamA"
-                android:layout_margin="16dp"
-                android:layout_weight="1"
+                android:layout_height="fill_parent"
                 android:layout_gravity="center"
-
-
-                />
-            
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#8A8A8A">
-
-                </View>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/submit_score_team1_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:gravity="center"
-                    android:hint="Score"
-                    android:textSize="24sp"
-                    android:layout_margin="16dp"
-                    android:textColorHint="@color/orange"
-                    android:background="@color/white"
-                    android:textColor="@color/orange"
-                    android:inputType="number"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Forfeit?"
-                    android:layout_toLeftOf="@+id/submit_score_team1_forfeit"
-                    android:textSize="20sp"
-                    android:layout_centerVertical="true"/>
-
-                <CheckBox
-                    android:id="@+id/submit_score_team1_forfeit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="16dp"/>
-             </RelativeLayout>
-
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Captain approved"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/submit_score_team1_approve"
-            android:layout_toStartOf="@+id/submit_score_team1_approve" />
-
-        <CheckBox
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/submit_score_team1_approve" />
-
-    </RelativeLayout>
-
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="170dp"
-        card_view:cardCornerRadius="4dp"
-        android:layout_margin="5dp"
-        android:id="@+id/team2_card" >
-
-        <LinearLayout
-            android:layout_marginRight="56dp"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="@color/white"
-            >
-
-
-            <TextView
-                android:id="@+id/submit_score_team2_name"
-                android:gravity="bottom"
-                android:focusable="true"
-                android:clickable="true"
-                android:layout_height="fill_parent"
-                android:layout_width="fill_parent"
-                android:textSize="24sp"
-                android:textColor="@color/grey"
-                android:text="TeamB"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="bottom"
+                android:text="CompSci Vipers"
+                android:textColor="@color/grey"
+                android:textSize="24sp"
+
 
                 />
 
@@ -174,7 +64,6 @@
 
             </View>
 
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -184,105 +73,201 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
+                    android:layout_margin="16dp"
+                    android:background="@color/white"
                     android:gravity="center"
                     android:hint="Score"
-                    android:textSize="24sp"
-                    android:layout_margin="16dp"
-                    android:textColorHint="@color/orange"
-                    android:background="@color/white"
-                    android:textColor="@color/orange"
                     android:inputType="number"
-                    />
+                    android:textColor="@color/orange"
+                    android:textColorHint="@color/orange"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Forfeit?"
-                    android:layout_toLeftOf="@+id/submit_score_team2_forfeit"
-                    android:textSize="20sp"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/submit_score_team1_approve"
+                    android:text="Captain Approve"
+                    android:textSize="16sp" />
 
                 <CheckBox
-                    android:id="@+id/submit_score_team2_forfeit"
+                    android:id="@+id/submit_score_team1_approve"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_margin="16dp"/>
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="16dp" />
             </RelativeLayout>
 
 
-
         </LinearLayout>
-
-        <View
-            android:id="@+id/team2_color_bar"
-            android:layout_width="56dp"
-            android:layout_height="fill_parent"
-            android:background="@color/blue"
-            android:layout_gravity="right"
-            >
-
-        </View>
 
     </android.support.v7.widget.CardView>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginBottom="16dp"
+        android:paddingRight="26dp">
 
         <TextView
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="8dp"
-            android:id="@+id/submit_score_captain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Captain approved"
-            android:textSize="20sp"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_toLeftOf="@+id/submit_score_team1_forfeit"
+            android:text="Forfeit"
+            android:textSize="16sp" />
 
         <CheckBox
+
+            android:id="@+id/submit_score_team1_forfeit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+        android:id="@+id/team2_card"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_below="@id/toolbar_submit_score"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="4dp">
+
+        <View
+            android:id="@+id/team2_color_bar"
+            android:layout_width="56dp"
+            android:layout_height="fill_parent"
+            android:background="@color/green">
+
+        </View>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="56dp"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/submit_score_team2_name"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="bottom"
+                android:text="TeamB"
+                android:textColor="@color/grey"
+                android:textSize="24sp"
+                />
+
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="#8A8A8A">
+
+            </View>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp">
+
+                <EditText
+                    android:id="@+id/submit_score_team1_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:hint="Score"
+                    android:inputType="number"
+                    android:textColor="@color/orange"
+                    android:textColorHint="@color/orange"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/submit_score_team2_approve"
+                    android:text="Captain Approve"
+                    android:textSize="16sp" />
+
+                <CheckBox
+                    android:id="@+id/submit_score_team2_approve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:paddingRight="26dp">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/submit_score_team2_forfeit"
+            android:text="Forfeit"
+            android:textSize="16sp" />
 
-            android:layout_toRightOf="@+id/submit_score_captain"
-            android:layout_toEndOf="@+id/submit_score_captain"
-            android:id="@+id/submit_score_team2_approve" />
+        <CheckBox
+            android:id="@+id/submit_score_team2_forfeit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
 
     </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_height="56dp"
-            android:layout_width="fill_parent"
-            card_view:cardCornerRadius="4dp"
-            android:layout_marginTop="16dp"
             android:id="@+id/submit_score_card"
-            android:background="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
             android:layout_alignParentBottom="true"
-            >
+            android:background="@color/white"
+            card_view:cardCornerRadius="4dp">
 
             <Button
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="fill_parent"
-                android:text="Submit Score"
-                android:textAllCaps="true"
-                android:textSize="24sp"
-                android:padding="8dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:onClick="onSubmitScore"
+                android:padding="8dp"
+                android:text="Submit Score"
+                android:textAllCaps="true"
                 android:textColor="@color/orange"
-                android:onClick="onSubmitScore"/>
+                android:textSize="24sp" />
         </android.support.v7.widget.CardView>
     </RelativeLayout>
 
