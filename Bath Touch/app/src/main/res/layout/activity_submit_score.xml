@@ -50,7 +50,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="bottom"
-                android:text="TeamA"
+                android:text="CompSci Vipers"
                 android:textColor="@color/grey"
                 android:textSize="24sp"
 

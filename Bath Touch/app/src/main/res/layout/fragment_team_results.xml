@@ -30,7 +30,7 @@
                 android:id="@+id/team_results_header_team_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TeamA Results"
+                android:text="CompSci Vipers Results"
                 android:textSize="28sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
@@ -49,7 +49,7 @@
                 android:layout_above="@id/team_results_header_team_pos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bath Touch Summer League 2015"
+                android:text="Bath Touch Winter League 2015"
                 android:textSize="18sp"
                 android:textColor="@color/white"/>
 

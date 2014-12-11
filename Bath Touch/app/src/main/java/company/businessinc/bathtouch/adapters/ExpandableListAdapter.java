@@ -162,7 +162,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
         }
 
         List<String> teamList = new ArrayList<String>();
-        teamList.add("TeamA");
+        teamList.add("CompSci Vipers");
         teamList.add("TeamB");
         teamList.add("TeamC");
         teamList.add("TeamD");

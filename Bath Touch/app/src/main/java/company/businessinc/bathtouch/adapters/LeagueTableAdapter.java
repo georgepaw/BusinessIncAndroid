@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
@@ -61,10 +63,19 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     */
     @Override
     public void leagueViewCallback(List<LeagueTeam> data) {
+        if(data != null){
 
-        for(LeagueTeam t: data){
+            Collections.sort(data, new Comparator<LeagueTeam>() {
+                @Override
+                public int compare(LeagueTeam T1, LeagueTeam T2) {
+                    return T1.getPosition() - T2.getPosition();
+                }
+            });
 
-            leagueTeams.add(t);
+            for(LeagueTeam t: data){
+
+                leagueTeams.add(t);
+            }
         }
 
         notifyDataSetChanged();

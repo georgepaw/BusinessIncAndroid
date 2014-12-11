@@ -19,7 +19,7 @@ public class LeagueTableData {
     public LeagueTableData() {
         //TODO API CALLS TO GET DATA FROM SERVER
 
-        leagueTeams.add(new LeagueTeam("TeamA", 18, 10, 0, 0, 0 , 1, 5, 0));
+        leagueTeams.add(new LeagueTeam("CompSci Vipers", 18, 10, 0, 0, 0 , 1, 5, 0));
         leagueTeams.add(new LeagueTeam("TeamB", 4, 1, 1, 0, 0 , 2, 3, 0));
         leagueTeams.add(new LeagueTeam("TeamC", 2, 0, 2, 1, 0, 3, 1, 0));
         leagueTeams.add(new LeagueTeam("TeamD", 1, 2, 0, 0, 0 , 4, 5, 0));
