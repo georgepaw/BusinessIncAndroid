@@ -35,7 +35,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
-    ViewHolderNextMatch mViewHolderNextMatch;
+    private ViewHolderNextMatch mViewHolderNextMatch;
     private int items = 4;
 
     // Provide a reference to the views for each data item
@@ -193,7 +193,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewHolderTable.mSubHeaderTextView.setText("Standings of Top 3 Teams");
            setVisibility("table", View.INVISIBLE);
             mViewHolderTable.mProgressBar.setVisibility(View.VISIBLE);
-            new LeagueView(this, 3).execute();
+            new LeagueView(this, 1).execute(); //TODO remove hard coding here
         }
         else if(holder instanceof ViewHolderNextMatch) {
 

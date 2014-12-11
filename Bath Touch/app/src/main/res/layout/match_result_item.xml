@@ -13,31 +13,36 @@
         android:layout_height="88dp"
         android:paddingTop="8dp"
         android:clickable="true"
-        android:background="@drawable/bkg">
+        android:background="@drawable/bkg"
+        android:gravity="center">
 
-        <ImageView
-            android:id="@+id/match_result_item_result_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/red"/>
 
         <RelativeLayout
-            android:layout_toRightOf="@id/match_result_item_result_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true">
 
+            <ImageView
+                android:id="@+id/match_result_item_result_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/red"
+                android:paddingBottom="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:paddingTop="32dp"
+                />
+
 
             <RelativeLayout
                 android:id="@+id/match_result_item_team1_container"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
+                android:paddingLeft="70dp"
                 android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                >
 
                 <TextView
                     android:id="@+id/match_result_item_match_team1_name"
@@ -64,10 +69,10 @@
 
             <RelativeLayout
                 android:id="@+id/match_result_item_team2_container"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/match_result_item_team1_container"
-                android:paddingLeft="16dp"
+                android:paddingLeft="70dp"
                 android:paddingRight="16dp"
                 android:paddingTop="4dp">
 
@@ -90,22 +95,15 @@
                     android:textSize="16sp">
 
                 </TextView>
+
+
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/match_result_item_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="14/2/15"
-                android:textSize="14dp"
-                android:textColor="@color/transparent_grey"
-                android:layout_alignParentBottom="true"
-                />
+
+
         </RelativeLayout>
+
+
 
     </RelativeLayout>
 

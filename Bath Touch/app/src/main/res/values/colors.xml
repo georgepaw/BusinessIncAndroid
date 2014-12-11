@@ -14,6 +14,7 @@
     <item name="white" type="color">#FFF</item>
     <item name="grey" type="color">#666666</item>
     <item name="black" type="color">#000000</item>
+    <item name="redLight" type="color">#FF4444</item>
 
 
 
