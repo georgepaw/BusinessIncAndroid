@@ -54,6 +54,7 @@ public class NavigationDrawerFragment extends Fragment {
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    private static final String TAG = "NavigationDrawerFragment";
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -114,6 +115,7 @@ public class NavigationDrawerFragment extends Fragment {
                 R.layout.fragment_navigation_drawer, container, false);
 
 
+
 //        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -134,7 +136,7 @@ public class NavigationDrawerFragment extends Fragment {
 
 
 
-        listAdapter = new ExpandableListAdapter(getActivity());
+        listAdapter = new ExpandableListAdapter(getActivity().getBaseContext());
         mDrawerListView.setAdapter(listAdapter);
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
@@ -171,6 +173,7 @@ public class NavigationDrawerFragment extends Fragment {
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
