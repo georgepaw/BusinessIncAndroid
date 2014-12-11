@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity
         if(mSharedPreferences.contains("user")){
             mSharedPreferences.edit().remove("user").commit();
         }
-        new User(null,false);
+        new User();
         DataStore.clearData();
         startActivity(intent);
         finish();
