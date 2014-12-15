@@ -279,9 +279,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewHolderTable.mTeam1Lost.setText(data.get(0).getLose().toString());
             mViewHolderTable.mTeam2Lost.setText(data.get(1).getLose().toString());
             mViewHolderTable.mTeam3Lost.setText(data.get(2).getLose().toString());
-            mViewHolderTable.mTeam1Pts.setText(data.get(0).getPointsFor().toString());
-            mViewHolderTable.mTeam2Pts.setText(data.get(1).getPointsFor().toString());
-            mViewHolderTable.mTeam3Pts.setText(data.get(2).getPointsFor().toString());
+            mViewHolderTable.mTeam1Pts.setText(data.get(0).getLeaguePoints().toString());
+            mViewHolderTable.mTeam2Pts.setText(data.get(1).getLeaguePoints().toString());
+            mViewHolderTable.mTeam3Pts.setText(data.get(2).getLeaguePoints().toString());
         }
 
     }

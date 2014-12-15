@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/submit_score_team2_score"
+                    android:id="@+id/submit_score_team1_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -185,7 +185,7 @@
                 android:layout_margin="16dp">
 
                 <EditText
-                    android:id="@+id/submit_score_team1_score"
+                    android:id="@+id/submit_score_team2_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
