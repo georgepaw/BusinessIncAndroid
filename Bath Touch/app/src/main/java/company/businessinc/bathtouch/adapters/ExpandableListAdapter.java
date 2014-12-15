@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,7 @@ import company.businessinc.endpoints.LeagueListInterface;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter implements LeagueListInterface {
 
+    private static final String TAG = "ExpandableListAdapter";
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
@@ -112,6 +114,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
     @Override
     public void onGroupCollapsed(int groupPosition) {
         super.onGroupCollapsed(groupPosition);
+        notifyDataSetInvalidated();
     }
 
     @Override
@@ -147,7 +150,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
 //        listDataChild = new HashMap<String, List<String>>();
 
 
-
         // Adding child data
         _listDataHeader.add("Home");
         _listDataHeader.add("League Tables");
@@ -171,8 +173,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
         _listDataChild.put(_listDataHeader.get(0), home);
         _listDataChild.put(_listDataHeader.get(1), leagueTables);
         _listDataChild.put(_listDataHeader.get(2), teamList);
+
+        notifyDataSetChanged();
     }
-
-
 
 }
