@@ -52,6 +52,18 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public class ViewHolderGreeting extends RecyclerView.ViewHolder {
+        public TextView mUserName;
+        public TextView mTeamName;
+
+        public ViewHolderGreeting(View v) {
+            super(v);
+            mUserName = (TextView) v.findViewById(R.id.alt_home_page_username);
+            mTeamName = (TextView) v.findViewById(R.id.alt_home_page_user_team);
+        }
+
+    }
+
     public class ViewHolderEmpty extends RecyclerView.ViewHolder {
         public ViewHolderEmpty(View v) {
             super(v);
@@ -132,11 +144,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mTeam2Pts = (TextView) v.findViewById(R.id.team_points2);
             mTeam3Pts = (TextView) v.findViewById(R.id.team_points3);
 
-
         }
-
-
-
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -161,16 +169,22 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
         View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
         View ve = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_empty, parent, false);
+        View vg = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_greeting, parent, false);
+
         switch (viewType){
             case 0:
+                if(User.isLoggedIn()){
+                    return new ViewHolderGreeting(vg);
+                }
+            case 1:
                 if(User.isLoggedIn()){
                     return new ViewHolderNextMatch(vnm);
                 } else {
                     return new ViewHolderEmpty(ve);
                 }
-            case 1:
-                return new ViewHolderTable(vt);
             case 2:
+                return new ViewHolderTable(vt);
+            case 3:
                 return new ViewHolderMyTeam(vmt);
             default:
                 return new ViewHolderEmpty(ve);
@@ -206,7 +220,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     new RefGames(this).execute();
             }
         }
-        else if(holder instanceof ViewHolderMyTeam){
+        else if(holder instanceof ViewHolderMyTeam){ //TODO remove hardcoding
             ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
 
             vmt.mTeamName.setText("CompSci Vipers");
@@ -218,6 +232,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vmt.mTeamScore2.setText("11");
         }else if(holder instanceof  ViewHolderEmpty) {
             ViewHolderEmpty ve = (ViewHolderEmpty) holder;
+        }
+        else if(holder instanceof ViewHolderGreeting){
+            ViewHolderGreeting vg = (ViewHolderGreeting) holder;
+            if(User.isLoggedIn()){
+                vg.mUserName.setText(User.getName());
+                vg.mTeamName.setText(User.getTeamName());
+            }
+
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;

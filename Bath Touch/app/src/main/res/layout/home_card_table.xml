@@ -14,7 +14,9 @@
         android:layout_marginRight="8dp"
         android:background="@drawable/bkg"
         android:clickable="true"
-        card_view:cardCornerRadius="2dp">
+        card_view:cardCornerRadius="2dp"
+        android:layout_marginBottom="16dp"
+        >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -31,7 +33,8 @@
                 android:id="@+id/home_page_card_table_header_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="@color/red_monza" >
 
                 <TextView
 
@@ -39,8 +42,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="EPL"
-                    android:textColor="@color/grey"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="26sp" />
 
                 <TextView
                     android:id="@+id/home_page_card_table_subHeader"
@@ -49,8 +52,8 @@
                     android:layout_below="@id/home_page_card_table_header"
                     android:layout_marginTop="4dp"
                     android:text="Subheader"
-                    android:textColor="@color/grey"
-                    android:textSize="18sp" />
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
 
 
             </RelativeLayout>
@@ -64,13 +67,15 @@
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingRight="16dp"
+                android:paddingBottom="4dp">
 
                 <TextView
                     android:id="@+id/team_number"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:text="#"
+                    android:textSize="18dp"
 
 
                     />
@@ -81,35 +86,45 @@
                     android:layout_height="20dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@id/team_number"
-                    android:text="Team" />
+                    android:text="Team"
+                    android:textSize="18dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_points"
-                    android:layout_width="30dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
-                    android:text="PTS" />
+                    android:text="PTS"
+                    android:textSize="18dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_lose"
                     android:layout_width="35dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_points"
-                    android:text="L" />
+                    android:text="L"
+                    android:textSize="18dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_draw"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_lose"
-                    android:text="D" />
+                    android:text="D"
+                    android:textSize="18dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_won"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_draw"
-                    android:text="W" />
+                    android:text="W"
+                    android:textSize="18dp"
+                    />
 
             </RelativeLayout>
 
@@ -137,6 +152,7 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="8dp"
                     android:text="#"
+                    android:textSize="16dp"
 
                     />
 
@@ -146,35 +162,45 @@
                     android:layout_height="20dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@id/team_number1"
-                    android:text="Team" />
+                    android:text="Team"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_points1"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
-                    android:text="PTS" />
+                    android:text="PTS"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_lose1"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_points1"
-                    android:text="L" />
+                    android:text="L"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_draw1"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_lose1"
-                    android:text="D" />
+                    android:text="D"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_won1"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_draw1"
-                    android:text="W" />
+                    android:text="W"
+                    android:textSize="16dp"
+                    />
 
 
             </RelativeLayout>
@@ -203,7 +229,7 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="8dp"
                     android:text="#"
-
+                    android:textSize="16dp"
                     />
 
                 <TextView
@@ -212,35 +238,45 @@
                     android:layout_height="20dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@id/team_number2"
-                    android:text="Team" />
+                    android:text="Team"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_points2"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
-                    android:text="PTS" />
+                    android:text="PTS"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_lose2"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_points2"
-                    android:text="L" />
+                    android:text="L"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_draw2"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_lose2"
-                    android:text="D" />
+                    android:text="D"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_won2"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_draw2"
-                    android:text="W" />
+                    android:text="W"
+                    android:textSize="16dp"
+                    />
 
             </RelativeLayout>
 
@@ -267,6 +303,7 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="8dp"
                     android:text="#"
+                    android:textSize="16dp"
 
                     />
 
@@ -276,35 +313,45 @@
                     android:layout_height="20dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@id/team_number3"
-                    android:text="Team" />
+                    android:text="Team"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_points3"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
-                    android:text="PTS" />
+                    android:text="PTS"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_lose3"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_points3"
-                    android:text="L" />
+                    android:text="L"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_draw3"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_lose3"
-                    android:text="D" />
+                    android:text="D"
+                    android:textSize="16dp"
+                    />
 
                 <TextView
                     android:id="@+id/team_won3"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/team_draw3"
-                    android:text="W" />
+                    android:text="W"
+                    android:textSize="16dp"
+                    />
 
 
             </RelativeLayout>
