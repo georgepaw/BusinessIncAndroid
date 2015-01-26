@@ -38,6 +38,7 @@ public class TeamSchedule extends AsyncTask<Void, Void, List<Match>> {
             jsonArray = new JSONArray(APICall.call(APICallType.TeamSchedule, parameters));
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
+            return null;
         }
 
         List<Match> list = new LinkedList<Match>();
