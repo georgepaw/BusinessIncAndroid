@@ -30,6 +30,11 @@ public class RefGames extends AsyncTask<Void, Void, List<Match>> {
         parameters.add(new BasicNameValuePair("refID", Integer.toString(userID)));
     }
 
+    public RefGames(RefGamesInterface callback) {
+        this.callback = callback;
+        parameters = new LinkedList<NameValuePair>();
+    }
+
     @Override
     protected List<Match> doInBackground(Void... a) {
         JSONArray jsonArray = null;

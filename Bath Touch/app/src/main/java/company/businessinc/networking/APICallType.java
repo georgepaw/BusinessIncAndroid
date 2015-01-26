@@ -14,7 +14,9 @@ public enum APICallType {
     TeamList("/team/list/"),
     TeamSchedule("/team/schedule/"),
     UserEdit("/user/edit/"),
-    UserLogin("/user/login/");
+    UserLogin("/user/login/"),
+    UserReset("/user/reset/"),
+    UserResetPassword("/user/reset/password");
 
     public String getEndPoint(){
         return text.toString();
