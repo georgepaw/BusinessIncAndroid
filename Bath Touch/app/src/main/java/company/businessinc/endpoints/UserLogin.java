@@ -37,6 +37,7 @@ public class UserLogin extends AsyncTask<Void, Void, User> {
             jsonObject = new JSONObject(APICall.call(APICallType.UserLogin, parameters));
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
+            return null;
         }
         User user = null;
         try {

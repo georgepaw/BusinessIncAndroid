@@ -42,6 +42,7 @@ public class UserEdit extends AsyncTask<Void, Void, Status> {
             jsonObject = new JSONObject(APICall.call(APICallType.UserEdit, parameters));
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
+            return null;
         }
 
         company.businessinc.dataModels.Status bool = null;
