@@ -15,6 +15,14 @@
     <item name="grey" type="color">#666666</item>
     <item name="black" type="color">#000000</item>
     <item name="redLight" type="color">#FF4444</item>
+    <item name="red_flamingo" type="color">#EF4836</item>
+    <item name="red_monza" type="color">#CF000F</item>
+    <item name="red_cinnebar" type="color">#E74C3C</item>
+    <item name="red_pomegranite" type="color">#F22613</item>
+    <item name="red_thunderbird" type="color">#D91E18</item>
+
+
+
 
 
 
