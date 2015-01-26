@@ -203,7 +203,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if(DataStore.getNextMatch() != null)
                     setNextMatchText(DataStore.getNextMatch());
                 else
-                    new RefGames(this, User.getUserID()).execute();
+                    new RefGames(this).execute();
             }
         }
         else if(holder instanceof ViewHolderMyTeam){

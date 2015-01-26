@@ -10,14 +10,12 @@ import org.json.JSONObject;
  * Created by gp on 18/11/14.
  */
 public class User {
-    private static Integer userID = null;
     private static Boolean isLoggedIn = false;
     private static String name = null;
     private static String teamName = null;
     private static Integer teamID = null;
 
     public User() {
-        userID = null;
         isLoggedIn = false;
         name = null;
         teamName = null;
@@ -25,11 +23,6 @@ public class User {
     }
 
     public User(JSONObject jsonObject) throws JSONException{
-        try {
-            this.userID = jsonObject.getInt("userID");
-        } catch(JSONException e){
-            this.userID = -1;
-        }
         try {
             this.isLoggedIn = jsonObject.getBoolean("status");
         } catch (JSONException e){
@@ -50,10 +43,6 @@ public class User {
         } catch (JSONException e){
             this.teamID = null;
         }
-    }
-
-    public static Integer getUserID() {
-        return userID;
     }
 
     public static Boolean isLoggedIn() {
@@ -82,7 +71,6 @@ public class User {
             jsonObject.put("status", isLoggedIn);
             jsonObject.put("name", name);
             if (isLoggedIn){
-                jsonObject.put("userID", userID);
                 jsonObject.put("teamName", teamName);
                 jsonObject.put("teamID", teamID);
 
