@@ -173,7 +173,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case 2:
                 return new ViewHolderMyTeam(vmt);
             default:
-                return new ViewHolderHome(v);
+                return new ViewHolderEmpty(ve);
         }
 
 
