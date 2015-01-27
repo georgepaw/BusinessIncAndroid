@@ -20,10 +20,10 @@ import company.businessinc.networking.APICallType;
  */
 public class TeamLeagues extends AsyncTask<Void, Void, List<League>> {
     String TAG = "TeamLeagues";
-    private TeamLeagueInterface callback;
+    private TeamLeaguesInterface callback;
     private List<NameValuePair> parameters;
 
-    public TeamLeagues(TeamLeagueInterface callback, int teamID) {
+    public TeamLeagues(TeamLeaguesInterface callback, int teamID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));

@@ -1,5 +1,7 @@
 package company.businessinc.dataModels;
 
+import android.content.ContentValues;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -117,5 +119,16 @@ public class Team {
 
     public void setTeamColorSecondary(Integer teamColorSecondary) {
         this.teamColorSecondary = teamColorSecondary;
+    }
+
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(KEY_TEAMID,teamID);
+        values.put(KEY_TEAMNAME, teamName);
+        values.put(KEY_CAPTAINID, captainID);
+        values.put(KEY_CAPTAINNAME, captainName);
+        values.put(KEY_TEAMCOLORPRIMARY, teamColorPrimary);
+        values.put(KEY_TEAMCOLORSECONDARY, teamColorSecondary);
+        return values;
     }
 }

@@ -1,77 +1,89 @@
 package company.businessinc.bathtouch;
 
+import android.content.ContentProvider;
+import android.content.ContentProviderClient;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.net.Uri;
 
-import company.businessinc.dataModels.League;
+import java.util.List;
+
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
+import company.businessinc.endpoints.TeamList;
+import company.businessinc.endpoints.TeamListInterface;
 
 /**
  * Created by Louis on 29/11/2014.
  */
-public class DataStore extends SQLiteOpenHelper {
+public class DataStore implements TeamListInterface{
 
     private static DataStore sInstance;
+    private Context context;
 
     private static final String TAG = "DataStore";
-    private static Match nextMatch;
+    private static Match nextRefMatch;
 
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    // Database Name
-    private static final String DATABASE_NAME = "BathTouchDB";
-    private static final String TABLE_LEAGUELISTS = "LeagueLists";
-    private static final String CREATE_LEAGUELISTS_TABLE = "CREATE TABLE " + TABLE_LEAGUELISTS + "( " + League.CREATE_TABLE + " )";
-    private static final String[] TABLES = {TABLE_LEAGUELISTS};
 
     public static DataStore getInstance(Context context) {
 
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
         if (sInstance == null) {
-            sInstance = new DataStore(context.getApplicationContext());
+            sInstance = new DataStore(context);
         }
         return sInstance;
     }
 
     private DataStore(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.getWritableDatabase();
+        this.context = context;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        // SQL statement to create table
-        db.execSQL(CREATE_LEAGUELISTS_TABLE);
+    public static void newInstance(Context context) {
+        sInstance = new DataStore(context);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        for(String table : TABLES) {
-            db.execSQL("DROP TABLE IF EXISTS " + table);
+
+    public void loadAllTeams(){
+        //check if table exists
+       if(isTableEmpty(DBProviderContract.ALLTEAMS_TABLE_NAME)) {
+            //if it doesn't then call the API
+            new TeamList(this).execute();
+       }
+    }
+
+    public void teamListCallback(List<Team> data){
+        if(data != null){
+            ContentValues[] contentValues = new ContentValues[data.size()];
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                contentValues[i] = data.get(i).getContentValues();
+            }
+
+            context.getContentResolver().bulkInsert(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI,contentValues);
         }
-
-        // create fresh books tables
-        this.onCreate(db);
     }
 
-    public static void newInstance(Context c) {
-        sInstance = new DataStore(c.getApplicationContext());
+    public void clearUserData() {
+        nextRefMatch = null;
+        //drop any tables relevent to the user
     }
 
-    public static void clearData() {
-        nextMatch = null;
+    public void setNextRefMatch(Match match) {
+        nextRefMatch = match;
     }
 
-    public static void setNextMatch(Match match) {
-        nextMatch = match;
+    public Match getNextRefMatch() {
+        return nextRefMatch;
     }
 
-    public static Match getNextMatch() {
-        return nextMatch;
+    private boolean isTableEmpty(String tableName){
+        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
+        return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
     }
 
 }

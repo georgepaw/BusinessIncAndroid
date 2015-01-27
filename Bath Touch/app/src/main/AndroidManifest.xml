@@ -43,6 +43,10 @@
             android:name=".CreateAccountActivity"
             android:label="@string/title_activity_create_account" >
         </activity>
+        <provider
+            android:name=".DBProvider"
+            android:authorities="company.businessinc.bathtouch" >
+        </provider>
     </application>
 
 </manifest>

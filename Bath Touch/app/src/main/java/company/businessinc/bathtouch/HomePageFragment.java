@@ -85,7 +85,7 @@ public class HomePageFragment extends Fragment {
             }
         }));
 
-        mAdapter = new HomePageAdapter();
+        mAdapter = new HomePageAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
     }

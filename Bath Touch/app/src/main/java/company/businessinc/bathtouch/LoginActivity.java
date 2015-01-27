@@ -56,14 +56,13 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         mSharedPreferences.edit().putBoolean(userLoggedIn, false).commit();
-        DataStore.newInstance(this);
         finish();
     }
 
     public void create_account(View view) {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
-        DataStore.newInstance(this);
+        DataStore.getInstance(this).loadAllTeams();
         finish();
     }
 
@@ -77,7 +76,6 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
                 mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
                 mSharedPreferences.edit().putString(cookie, APICall.getCookie()).commit();
                 mSharedPreferences.edit().putString("user", data.toString()).commit();
-                DataStore.newInstance(this);
                 finish();
             } else {
                 Log.d("Login", "Invalid credentials");

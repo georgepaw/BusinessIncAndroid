@@ -138,7 +138,7 @@ public class MainActivity extends ActionBarActivity
         switch(position) {
             case 0:
                 //TODO Add a check to make sure nextMatch exists
-                Match nextMatch = DataStore.getNextMatch();
+                Match nextMatch = DataStore.getInstance(this).getNextRefMatch();
                 Intent intent = new Intent(this, SubmitScoreActivity.class);
                 intent.putExtra("matchId", nextMatch.getMatchID());
                 intent.putExtra("teamOneName", nextMatch.getTeamOne());
@@ -200,7 +200,7 @@ public class MainActivity extends ActionBarActivity
             mSharedPreferences.edit().remove("user").commit();
         }
         new User();
-        DataStore.clearData();
+        DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();
     }

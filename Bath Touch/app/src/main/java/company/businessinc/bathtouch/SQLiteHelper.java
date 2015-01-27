@@ -4,42 +4,48 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.Team;
 
 /**
  * Created by Grzegorz on 27/01/2015.
  */
-public class SQLiteHelper extends SQLiteOpenHelper {
+public class SQLiteHelper extends SQLiteOpenHelper{
 
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    // Database Name
-    private static final String DATABASE_NAME = "BathTouchDB";
-    private static final String TABLE_LEAGUELISTS = "LeagueLists";
-    private static final String CREATE_LEAGUELISTS_TABLE = "CREATE TABLE " + TABLE_LEAGUELISTS + "( " + League.CREATE_TABLE + " )";
-    private static final String[] TABLES = {TABLE_LEAGUELISTS};
+    /**
+     * Create tables strings
+     */
+    private static final String CREATE_ALLTEAMS_TABLE = "CREATE TABLE " + DBProviderContract.ALLTEAMS_TABLE_NAME + "( " + Team.CREATE_TABLE + " )";
 
-    public SQLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    SQLiteHelper(Context context) {
+        super(context, DBProviderContract.DATABASE_NAME, null, DBProviderContract.DATABASE_VERSION);
+        this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // SQL statement to create book table
-
-        // create books table
-        db.execSQL(CREATE_LEAGUELISTS_TABLE);
+        // SQL statement to create table
+        db.execSQL(CREATE_ALLTEAMS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older books table if existed
-        for(String table : TABLES) {
+        // Drop older tables if existed
+        for(String table : DBProviderContract.TABLES) {
             db.execSQL("DROP TABLE IF EXISTS " + table);
         }
 
-        // create fresh books table
+        // create fresh books tables
         this.onCreate(db);
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Drop newer tables if existed
+        for(String table : DBProviderContract.TABLES) {
+            db.execSQL("DROP TABLE IF EXISTS " + table);
+        }
+
+        // create fresh books tables
+        this.onCreate(db);
+    }
 }
