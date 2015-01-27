@@ -83,7 +83,6 @@ public class TeamResultsFragment extends Fragment {
                 }));
 
         TeamResultsData mTeamResultsData = new TeamResultsData();
-
         mAdapter = new TeamResultsAdapter(mTeamResultsData);
         mRecyclerView.setAdapter(mAdapter);
 

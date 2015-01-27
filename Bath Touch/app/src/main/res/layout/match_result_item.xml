@@ -24,17 +24,14 @@
 
             <ImageView
                 android:id="@+id/match_result_item_result_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:src="@drawable/ic_thumb_down"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@color/red"
-                android:paddingBottom="32dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerInParent="true"
-                android:paddingTop="32dp"
                 />
-
 
             <RelativeLayout
                 android:id="@+id/match_result_item_team1_container"
