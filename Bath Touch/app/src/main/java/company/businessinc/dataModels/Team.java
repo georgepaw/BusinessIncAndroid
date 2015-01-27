@@ -1,6 +1,7 @@
 package company.businessinc.dataModels;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,34 +41,67 @@ public class Team {
         this.teamColorSecondary = teamColorSecondary;
     }
 
+    public Team(Cursor cursor){
+        try {
+            this.teamID = cursor.getInt(cursor.getColumnIndex(KEY_TEAMID));
+        } catch(Exception e) {
+            this.teamID = null;
+        }
+        try {
+            this.teamName = cursor.getString(cursor.getColumnIndex(KEY_TEAMNAME));
+        } catch(Exception e) {
+            this.teamName = null;
+        }
+        try {
+            this.captainID = cursor.getInt(cursor.getColumnIndex(KEY_CAPTAINID));
+        } catch(Exception e) {
+            this.captainID = null;
+        }
+        try {
+            this.captainName = cursor.getString(cursor.getColumnIndex(KEY_CAPTAINNAME));
+        } catch(Exception e) {
+            this.captainName = null;
+        }
+        try {
+            this.teamColorPrimary = cursor.getInt(cursor.getColumnIndex(KEY_TEAMCOLORPRIMARY));
+        } catch(Exception e) {
+            this.teamColorPrimary = null;
+        }
+        try {
+            this.teamColorSecondary = cursor.getInt(cursor.getColumnIndex(KEY_TEAMCOLORSECONDARY));
+        } catch(Exception e) {
+            this.teamColorSecondary = null;
+        }
+    }
+
     public Team (JSONObject jsonObject) throws JSONException{
         try {
-            this.teamID = jsonObject.getInt("teamID");
+            this.teamID = jsonObject.getInt(KEY_TEAMID);
         } catch(JSONException e) {
             this.teamID = null;
         }
         try {
-            this.teamName = jsonObject.getString("teamName");
+            this.teamName = jsonObject.getString(KEY_TEAMNAME);
         } catch(JSONException e) {
             this.teamName = null;
         }
         try {
-            this.captainID = jsonObject.getInt("captainID");
+            this.captainID = jsonObject.getInt(KEY_CAPTAINID);
         } catch(JSONException e) {
             this.captainID = null;
         }
         try {
-            this.captainName = jsonObject.getString("captainName");
+            this.captainName = jsonObject.getString(KEY_CAPTAINNAME);
         } catch(JSONException e) {
             this.captainName = null;
         }
         try {
-            this.teamColorPrimary = jsonObject.getInt("teamColorPrimary");
+            this.teamColorPrimary = jsonObject.getInt(KEY_TEAMCOLORPRIMARY);
         } catch(JSONException e) {
             this.teamColorPrimary = null;
         }
         try {
-            this.teamColorSecondary = jsonObject.getInt("teamColorSecondary");
+            this.teamColorSecondary = jsonObject.getInt(KEY_TEAMCOLORSECONDARY);
         } catch(JSONException e) {
             this.teamColorSecondary = null;
         }

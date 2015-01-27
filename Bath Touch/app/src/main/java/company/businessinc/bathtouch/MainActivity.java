@@ -205,7 +205,7 @@ public class MainActivity extends ActionBarActivity
             mSharedPreferences.edit().remove("user").commit();
         }
         new User();
-        DataStore.clearData();
+        DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();
     }

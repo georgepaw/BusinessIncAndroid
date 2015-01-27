@@ -19,6 +19,12 @@ public class DBProviderContract {
      */
     public static final Uri CONTENT_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
 
+
+    /**
+     * Integers which indicate which query to run
+     */
+    public static final int GETALLTEAMS_URL_QUERY = 0;
+
     /**
      * Table names
      */

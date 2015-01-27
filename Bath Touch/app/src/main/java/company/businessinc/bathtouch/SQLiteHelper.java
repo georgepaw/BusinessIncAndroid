@@ -33,8 +33,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         for(String table : DBProviderContract.TABLES) {
             db.execSQL("DROP TABLE IF EXISTS " + table);
         }
-
-        // create fresh books tables
+        // create fresh tables
         this.onCreate(db);
     }
 
@@ -44,8 +43,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         for(String table : DBProviderContract.TABLES) {
             db.execSQL("DROP TABLE IF EXISTS " + table);
         }
-
-        // create fresh books tables
+        // create fresh tables
         this.onCreate(db);
     }
 }

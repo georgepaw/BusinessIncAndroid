@@ -1,27 +1,21 @@
 package company.businessinc.bathtouch;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-
-import company.businessinc.dataModels.Team;
+import android.util.Log;
 
 /**
  * Created by Grzegorz on 27/01/2015.
  */
 public class DBProvider extends ContentProvider {
-    /**
-     * Integers which indicate which query to run
-     */
-    public static final int GETALLTEAMS_URL_QUERY = 0;
+
+    private static final String TAG = "DBProvider";
 
     // Defines an helper object for the backing database
     private SQLiteOpenHelper mHelper;
@@ -34,11 +28,11 @@ public class DBProvider extends ContentProvider {
         // Creates an object that associates content URIs with numeric codes
         sUriMatcher = new UriMatcher(0);
 
-        // Adds a URI "match" entry that maps picture URL content URIs to a numeric code
+        // Adds a URI "match" entry that maps content URIs to a numeric code
         sUriMatcher.addURI(
                 DBProviderContract.AUTHORITY,
                 DBProviderContract.ALLTEAMS_TABLE_NAME,
-                GETALLTEAMS_URL_QUERY);
+                DBProviderContract.GETALLTEAMS_URL_QUERY);
 
     }
 
@@ -55,22 +49,18 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
         SQLiteDatabase db = mHelper.getReadableDatabase();
+        String tableName = "";
         switch (sUriMatcher.match(uri)) {
-            case GETALLTEAMS_URL_QUERY:
-                // Does the query against a read-only version of the database
-                Cursor returnCursor = db.query(
-                        DBProviderContract.ALLTEAMS_TABLE_NAME,
-                        projection,
-                        null, null, null, null, null);
-
-                // Sets the ContentResolver to watch this content URI for data changes
-                returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                return returnCursor;
+            case DBProviderContract.GETALLTEAMS_URL_QUERY:
+                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
             default:
-                throw new IllegalArgumentException("Invalid URI:" + uri);
+                Log.d(TAG, "Failed query");
+                //throw new IllegalArgumentException("Invalid URI:" + uri);
         }
+        Cursor returnCursor = db.query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return returnCursor;
     }
 
     @Override
@@ -80,45 +70,41 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        String tableName = "";
         switch (sUriMatcher.match(uri)) {
             // For the modification
-            case GETALLTEAMS_URL_QUERY:
-                // Creates a writeable database or gets one from cache
-                SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
-                long id = localSQLiteDatabase.insert(DBProviderContract.ALLTEAMS_TABLE_NAME, null, values);
+            case DBProviderContract.GETALLTEAMS_URL_QUERY:
+                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
+                break;
+                default:
+                Log.d(TAG, "Failed insert");
+                return null;
+                //throw new IllegalArgumentException("Invalid URI:" + uri);
 
-                // If the insert succeeded, notify a change and return the new row's content URI.
-                if (-1 != id) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                    return Uri.withAppendedPath(uri, Long.toString(id));
-                } else {
-                    throw new SQLiteException("Insert error:" + uri);
-                }
-
-            default:
-                throw new IllegalArgumentException("Invalid URI:" + uri);
-
+        }
+        // Get the database
+        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
+        long id = localSQLiteDatabase.insert(tableName, null, values);
+        //check if it was correct
+        if (-1 != id) {
+            getContext().getContentResolver().notifyChange(uri, null);
+            return Uri.withAppendedPath(uri, Long.toString(id));
+        } else {
+            throw new SQLiteException("Insert error:" + uri);
         }
     }
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] insertValuesArray) {
-
-        // Decodes the content URI and choose which insert to use
         switch (sUriMatcher.match(uri)) {
-            case GETALLTEAMS_URL_QUERY:
-                // Do inserts by calling SQLiteDatabase.insert on each row in insertValuesArray
-                int i = 0;
-                for(ContentValues a : insertValuesArray){
-                    insert(uri,a);
-                    i++;
-                }
-                return i;
-
+            case DBProviderContract.GETALLTEAMS_URL_QUERY:
+                return super.bulkInsert(uri, insertValuesArray);
             default:
-                throw new IllegalArgumentException("Invalid URI:" + uri);
+                //throw new IllegalArgumentException("Invalid URI:" + uri);
+                Log.d(TAG, "Failed bulk insert");
 
         }
+        return 0;
     }
 
     @Override
@@ -130,26 +116,21 @@ public class DBProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
+        String tableName = "";
         switch (sUriMatcher.match(uri)) {
-            case GETALLTEAMS_URL_QUERY:
-                SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
-                // Updates the table
-                int rows = localSQLiteDatabase.update(
-                        DBProviderContract.ALLTEAMS_TABLE_NAME,
-                        values,
-                        selection,
-                        selectionArgs);
-
-                // If the update succeeded, notify a change and return the number of updated rows.
-                if (0 != rows) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                    return rows;
-                } else {
-                    throw new SQLiteException("Update error:" + uri);
-                }
-
+            case DBProviderContract.GETALLTEAMS_URL_QUERY:
+                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
             default:
-                throw new IllegalArgumentException("Update: Invalid URI: " + uri);
+                Log.d(TAG, "Failed updates");
+                //throw new IllegalArgumentException("Update: Invalid URI: " + uri);
+        }
+        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
+        int rows = localSQLiteDatabase.update(tableName, values, selection, selectionArgs);
+        if (0 != rows) {
+            getContext().getContentResolver().notifyChange(uri, null);
+            return rows;
+        } else {
+            throw new SQLiteException("Update error:" + uri);
         }
     }
 
