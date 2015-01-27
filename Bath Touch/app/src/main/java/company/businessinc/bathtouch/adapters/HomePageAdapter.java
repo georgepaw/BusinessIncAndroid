@@ -1,5 +1,6 @@
 package company.businessinc.bathtouch.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,6 +34,7 @@ import company.businessinc.endpoints.RefGamesInterface;
  */
 public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
 
+    private Context context;
     private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
     private ViewHolderNextMatch mViewHolderNextMatch;
@@ -148,8 +150,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HomePageAdapter() {
-
+    public HomePageAdapter(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -212,8 +214,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewHolderNextMatch = (ViewHolderNextMatch) holder;
             if(User.isLoggedIn()){
                 mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
-                if(DataStore.getNextMatch() != null)
-                    setNextMatchText(DataStore.getNextMatch());
+                if(DataStore.getInstance(context).getNextRefMatch() != null)
+                    setNextMatchText(DataStore.getInstance(context).getNextRefMatch());
                 else
                     new RefGames(this).execute();
             }
@@ -333,7 +335,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
            }
            if(nextMatch!=null){
                nextMatch = data.get(0);
-               DataStore.setNextMatch(nextMatch);
+               DataStore.getInstance(context).setNextRefMatch(nextMatch);
                setNextMatchText(nextMatch);
            } else {
                //didn't find an upcoming game
