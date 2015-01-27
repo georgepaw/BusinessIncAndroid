@@ -60,6 +60,13 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         finish();
     }
 
+    public void create_account(View view) {
+        Intent intent = new Intent(this, CreateAccountActivity.class);
+        startActivity(intent);
+        DataStore.newInstance();
+        finish();
+    }
+
     //After the login button is pressed
     public void userLoginCallback(User data) {
         if (data != null) {
