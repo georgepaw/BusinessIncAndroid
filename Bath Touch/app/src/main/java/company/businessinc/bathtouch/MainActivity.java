@@ -139,6 +139,10 @@ public class MainActivity extends ActionBarActivity
             case 0:
                 //TODO Add a check to make sure nextMatch exists
                 Match nextMatch = DataStore.getNextMatch();
+                if(nextMatch == null){
+                    Log.d("ERROR", "match is null, not opening fragment");
+                    break; //TODO fix this happeneing
+                }
                 Intent intent = new Intent(this, SubmitScoreActivity.class);
                 intent.putExtra("matchId", nextMatch.getMatchID());
                 intent.putExtra("teamOneName", nextMatch.getTeamOne());
@@ -146,10 +150,10 @@ public class MainActivity extends ActionBarActivity
                 startActivity(intent);
                 break;
             case 1:
-                changeFragments("LEAGUETABLETAG");
+                changeFragments("TEAMRESULTSTAG");
                 break;
             case 2:
-                changeFragments("TEAMRESULTSTAG");
+                changeFragments("LEAGUETABLETAG");
                 break;
             default:
                 break;

@@ -6,7 +6,7 @@
     <RelativeLayout
         android:id="@+id/alt_home_age_header_box"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:background="@color/red"
         android:paddingLeft="16dp"
         android:paddingBottom="16dp"
@@ -14,6 +14,17 @@
         android:elevation="2dp"
         android:layout_marginBottom="16dp"
         >
+
+        <TextView
+            android:id="@+id/alt_home_page_user_team"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Business Inc Club"
+            android:textColor="@color/white"
+            android:textSize="22dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/alt_home_page_username"
@@ -27,17 +38,6 @@
             android:layout_centerHorizontal="true"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"/>
-
-        <TextView
-            android:id="@+id/alt_home_page_user_team"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Business Inc Club"
-            android:textColor="@color/white"
-            android:textSize="22dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerHorizontal="true"/>
 
 
     </RelativeLayout>
