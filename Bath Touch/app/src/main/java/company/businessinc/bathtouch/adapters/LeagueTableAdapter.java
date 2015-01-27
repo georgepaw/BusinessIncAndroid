@@ -44,17 +44,17 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public LeagueTableAdapter(LeagueTableData mDataSet) {
+    public LeagueTableAdapter(int leagueID) {
 
         //get the league data to display
-        getLeagueData();
-        mDataset = mDataSet;
+        getLeagueData(leagueID);
+//        mDataset = mDataSet;
     }
 
     //Sends a request to the api for league data
-    public void getLeagueData() {
-
-        new LeagueView(this, 1).execute(); //just gets the comski league
+    public void getLeagueData(int id) {
+        Log.d("APADTER", Integer.toString(id));
+        new LeagueView(this, id).execute(); //just gets the comski league
 
     }
 
@@ -104,7 +104,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         LeagueTeam team = leagueTeams.get(position);
         ViewHolderLeague v = (ViewHolderLeague) holder;
-
 
         v.mTeamName.setText(team.getTeamName());
         v.mTeamPos.setText(team.getPosition().toString());

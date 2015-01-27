@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,6 +141,7 @@ public class MainActivity extends ActionBarActivity
                 if(nextMatch == null){
                     Log.d("ERROR", "match is null, not opening fragment");
                     break; //TODO fix this happeneing
+
                 }
                 Intent intent = new Intent(this, SubmitScoreActivity.class);
                 intent.putExtra("matchId", nextMatch.getMatchID());
@@ -153,7 +153,9 @@ public class MainActivity extends ActionBarActivity
                 changeFragments("TEAMRESULTSTAG");
                 break;
             case 2:
-                changeFragments("LEAGUETABLETAG");
+                intent = new Intent(this, LeagueTableActivity.class);
+                startActivity(intent);
+//                changeFragments("LEAGUETABLETAG");
                 break;
             default:
                 break;

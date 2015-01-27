@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:background="@color/red_monza" >
+                android:background="@drawable/button_raised_primary" >
 
                 <TextView
 
@@ -54,6 +54,13 @@
                     android:text="Subheader"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_more_horiz"
+                    android:layout_alignParentRight="true"
+                    android:scaleType="fitXY"/>
 
 
             </RelativeLayout>
