@@ -27,6 +27,15 @@ public class LeagueTeam {
     public static final String KEY_POINTSFOR = "pointsFor";
     public static final String KEY_POINTSAGAINST = "pointsAgainst";
     public static final String[] COLUMNS = {KEY_TEAMNAME,KEY_LEAGUEPOINTS, KEY_WIN, KEY_DRAW, KEY_LOSE, KEY_FORFEIT, KEY_POSITION, KEY_POINTSFOR, KEY_POINTSAGAINST};
+    public static final String CREATE_TABLE =   KEY_TEAMNAME + "\tTEXT PRIMARY KEY,\n" +
+                                                KEY_LEAGUEPOINTS + "\tINTEGER,\n" +
+                                                KEY_WIN + "\tINTEGER,\n" +
+                                                KEY_DRAW + "\tINTEGER,\n" +
+                                                KEY_LOSE + "\tINTEGER,\n" +
+                                                KEY_FORFEIT + "\tINTEGER,\n" +
+                                                KEY_POSITION + "\tINTEGER,\n" +
+                                                KEY_POINTSFOR + "\tINTEGER,\n" +
+                                                KEY_POINTSAGAINST + "\tINTEGER";
 
     public LeagueTeam(String teamName, Integer leaguePoints, Integer win, Integer draw, Integer lose, Integer forfeit, Integer position, Integer pointsFor, Integer pointsAgainst) {
         this.teamName = teamName;

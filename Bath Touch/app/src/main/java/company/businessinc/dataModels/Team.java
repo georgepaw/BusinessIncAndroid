@@ -14,6 +14,20 @@ public class Team {
     private Integer teamColorPrimary;
     private Integer teamColorSecondary;
 
+    public static final String KEY_TEAMID = "teamID";
+    public static final String KEY_TEAMNAME = "teamName";
+    public static final String KEY_CAPTAINID = "captainID";
+    public static final String KEY_CAPTAINNAME = "captainName";
+    public static final String KEY_TEAMCOLORPRIMARY = "teamColorPrimary";
+    public static final String KEY_TEAMCOLORSECONDARY = "teamColorSecondary";
+    public static final String[] COLUMNS = {KEY_TEAMID, KEY_TEAMNAME, KEY_CAPTAINID, KEY_CAPTAINNAME, KEY_TEAMCOLORPRIMARY, KEY_TEAMCOLORSECONDARY};
+    public static final String CREATE_TABLE =   KEY_TEAMID + "\tINTEGER PRIMARY KEY,\n" +
+                                                KEY_TEAMNAME + "\tTEXT,\n" +
+                                                KEY_CAPTAINID + "\tINTEGER,\n" +
+                                                KEY_CAPTAINNAME + "\tTEXT,\n" +
+                                                KEY_TEAMCOLORPRIMARY + "\tINTEGER,\n" +
+                                                KEY_TEAMCOLORSECONDARY + "\tINTEGER";
+
 
     public Team(Integer teamID, String teamName, Integer captainID, String captainName, Integer teamColorPrimary, Integer teamColorSecondary) {
         this.teamID = teamID;

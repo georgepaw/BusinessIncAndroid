@@ -27,6 +27,32 @@ public class Match {
     private Integer teamTwoPoints;
     private Boolean isForfeit;
 
+    public static final String KEY_MATCHID = "matchID";
+    public static final String KEY_TEAMONEID = "teamOneID";
+    public static final String KEY_TEAMTWOID = "teamTwoID";
+    public static final String KEY_TEAMONE = "teamOne";
+    public static final String KEY_TEAMTWO = "teamTwo";
+    public static final String KEY_REFID = "refID";
+    public static final String KEY_REFNAME = "refName";
+    public static final String KEY_DATETIME = "dateTime";
+    public static final String KEY_PLACE = "place";
+    public static final String KEY_TEAMONEPOINTS = "teamOnePoints";
+    public static final String KEY_TEAMTWOPOINTS = "teamTwoPoints";
+    public static final String KEY_ISFORFEIT = "isForfeit";
+    public static final String[] COLUMNS = {KEY_MATCHID,KEY_TEAMONEID, KEY_TEAMTWOID, KEY_TEAMONE, KEY_TEAMTWO, KEY_REFID, KEY_REFNAME, KEY_DATETIME, KEY_PLACE, KEY_TEAMONEPOINTS, KEY_TEAMTWOPOINTS, KEY_ISFORFEIT};
+    public static final String CREATE_TABLE =   KEY_MATCHID + "\tINTEGER PRIMARY KEY,\n" +
+                                                KEY_TEAMONEID + "\tINTEGER,\n" +
+                                                KEY_TEAMTWOID + "\tINTEGER,\n" +
+                                                KEY_TEAMONE + "\tTEXT,\n" +
+                                                KEY_TEAMTWO + "\tTEXT,\n" +
+                                                KEY_REFID + "\tINTEGER,\n" +
+                                                KEY_REFNAME + "\tTEXT,\n" +
+                                                KEY_DATETIME + "\tTEXT,\n" +
+                                                KEY_PLACE + "\tTEXT,\n" +
+                                                KEY_TEAMONEPOINTS + "\tINTEGER,\n" +
+                                                KEY_TEAMTWOPOINTS + "\tINTEGER,\n" +
+                                                KEY_ISFORFEIT + "\tINTEGER";
+
     public Match(Integer matchID, Integer teamOneID, Integer teamTwoID, String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
         this.matchID = matchID;
         this.teamOneID = teamOneID;

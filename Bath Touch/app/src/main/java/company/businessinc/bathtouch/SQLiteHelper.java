@@ -16,7 +16,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "BathTouchDB";
     private static final String TABLE_LEAGUELISTS = "LeagueLists";
-    private static final String CREATE_LEAGUELISTS_TABLE = "CREATE TABLE " + TABLE_LEAGUELISTS + ( " + League.tableString() + " )";
+    private static final String CREATE_LEAGUELISTS_TABLE = "CREATE TABLE " + TABLE_LEAGUELISTS + "( " + League.CREATE_TABLE + " )";
+    private static final String[] TABLES = {TABLE_LEAGUELISTS};
 
     public SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,7 +34,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older books table if existed
-        db.execSQL("DROP TABLE IF EXISTS LeagueLists");
+        for(String table : TABLES) {
+            db.execSQL("DROP TABLE IF EXISTS " + table);
+        }
 
         // create fresh books table
         this.onCreate(db);
