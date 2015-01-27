@@ -17,8 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import company.businessinc.bathtouch.MainActivity;
 import company.businessinc.bathtouch.R;
+import company.businessinc.dataModels.League;
+import company.businessinc.endpoints.LeagueList;
+import company.businessinc.endpoints.LeagueListInterface;
 
 
 /**
@@ -41,6 +47,7 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
      * The {@link android.support.v4.view.ViewPager} that will display the object collection.
      */
     ViewPager mViewPager;
+    private static List<League> leagues = new LinkedList<League>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,7 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
         // Set up the ViewPager, attaching the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mDemoCollectionPagerAdapter);
+
     }
 
     @Override
@@ -69,6 +77,8 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
 
     }
 
+
+    //TODO put in datastore
 
     /**
      * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment
@@ -84,39 +94,24 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
         public Fragment getItem(int i) {
             Fragment fragment = new LeagueTableFragment();
             Bundle args = new Bundle();
+            args.putInt("LEAGUEID", i + 1);
+
             args.putInt(LeagueTableFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
             fragment.setArguments(args);
             return fragment;
         }
 
         @Override
+        //Number of leagues in system
         public int getCount() {
-            // For this contrived example, we have a 100-object collection.
-            return 100;
+            return 3; //TODO remove hardcoding
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
-        }
-    }
-
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public static class LeagueObjectFragment extends Fragment {
-
-        public static final String ARG_OBJECT = "object";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_league_table, container, false);
-            Bundle args = getArguments();
-//            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-//                    Integer.toString(args.getInt(ARG_OBJECT)));
-            return rootView;
+            return "LEAGUE " + (position + 1);
         }
     }
 }
+
 
