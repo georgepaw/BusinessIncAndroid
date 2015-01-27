@@ -144,7 +144,7 @@ public class CreateAccountActivity extends ActionBarActivity implements UserNewI
             }
         }
         data.close();
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.create_account_boxes);
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.create_account_boxes); //TODO data is loaded into an arrayList, display it nicely wizards
         ((EditText)linearLayout.getChildAt(4)).setText(leagueTeams.get(0).getTeamName());
     }
 
