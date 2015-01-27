@@ -95,7 +95,7 @@ public class HomePageFragment extends Fragment {
             }
         }));
 
-        mAdapter = new HomePageAdapter();
+        mAdapter = new HomePageAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         //set the onclick events for the home cards
