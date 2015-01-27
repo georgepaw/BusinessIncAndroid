@@ -14,20 +14,18 @@ public class TeamResultsData {
     public ArrayList<Match> matches = new ArrayList<Match>();
 //    public ArrayList<String> cards = new ArrayList<String>();
 
-    private String teamName = "TeamB";
+    private String teamName = "CompSci Vipers";
 
     public TeamResultsData(){
         //TODO API CALLS TO GET DATA FROM SERVER
 
         matches.add(new Match(1,1,1, "CompSci Vipers", "EE Tigers", 1, "Ref1", new GregorianCalendar(2006,11,1).getTime(), "Home", 28, 4, false));
-        matches.add(new Match(1,1,1, "EE Tigers", "HP All Stars", 2, "Ref1", new GregorianCalendar(2006,11,9).getTime(), "Home", 10, 10, false));
-        //matches.add(new Match(1,1,1, "TeamE","TeamB", 1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 7, 7, false));
-        //matches.add(new Match(1,1,1, "TeamF", "TeamB", 1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 5, 12, false));
-        matches.add(new Match(1,1,1, "CompSci Vipers", "EE Tigers", 1, "Ref1", new GregorianCalendar(2006,11,1).getTime(), "Home", 11, 0, false));
-        //matches.add(new Match(1,1,1,"TeamB", "TeamC", 2, "Ref1", new GregorianCalendar(2006,11,9).getTime(), "Home", 13, 13, false));
-        //matches.add(new Match(1,1,1,"TeamD", "TeamB",  1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 6, 13, false));
-        //matches.add(new Match(1,1,1,"TeamB","TeamE", 1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 31, 1, false));
-        //matches.add(new Match(1,1,1,"TeamB", "TeamF", 1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 10, 12, false));
+        matches.add(new Match(1,1,1, "CompSci Vipers", "HP All Stars", 2, "Ref1", new GregorianCalendar(2006,11,9).getTime(), "Home", 10, 10, false));
+        matches.add(new Match(1,1,1, "CompSci Vipers", "EE Tigers", 1, "Ref1", new GregorianCalendar(2006,11,1).getTime(), "Home", 25, 2, false));
+        matches.add(new Match(1,1,1,"CompSci Vipers", "EE Tigers", 2, "Ref1", new GregorianCalendar(2006,11,9).getTime(), "Home", 13, 13, false));
+        matches.add(new Match(1,1,1,"HP All Stars", "CompSci Vipers",  1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 6, 19, false));
+        matches.add(new Match(1,1,1,"EE Tigers","CompSci Vipers", 1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 31, 1, false));
+        matches.add(new Match(1,1,1,"CompSci Vipers", "HP All Stars", 1, "Ref1", new GregorianCalendar(2006,11,4).getTime(), "Home", 7, 12, false));
 
 
     }
