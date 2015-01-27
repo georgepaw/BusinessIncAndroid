@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_page_card_table"
@@ -8,7 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    card_view:cardCornerRadius="2dp">
+    card_view:cardCornerRadius="2dp"
+    android:layout_marginBottom="16dp"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         <TextView
             android:id="@+id/home_card_next_match_heading"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
@@ -27,8 +27,9 @@
             android:paddingRight="16dp"
             android:paddingTop="16dp"
             android:text="Your next match"
-            android:textSize="16dp"
-            android:textColor="@color/grey"
+            android:textSize="26dp"
+            android:textColor="@color/white"
+            android:background="@color/red_monza"
             />
 
         <RelativeLayout
@@ -54,8 +55,9 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text=""
-                    android:textSize="20sp" />
+                    android:text="team 1"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"/>
 
                 <TextView
                     android:id="@+id/home_card_next_match_vs"
@@ -76,8 +78,9 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text=""
-                    android:textSize="20sp" />
+                    android:text="team 2"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"/>
 
 
             </RelativeLayout>

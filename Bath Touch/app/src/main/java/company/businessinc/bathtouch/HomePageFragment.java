@@ -53,15 +53,15 @@ public class HomePageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.alternative_home_page, container, false);
-        TextView username = (TextView)mLayout.findViewById(R.id.alt_home_page_username);
-        TextView teamName = (TextView)mLayout.findViewById(R.id.alt_home_page_user_team);
-        if(User.isLoggedIn()){
-            username.setText("Hello, " + User.getName());
-            teamName.setText(User.getTeamName());
-        } else {
-            username.setText("Hello, Anonymous");
-            teamName.setVisibility(View.INVISIBLE);
-        }
+//        TextView username = (TextView)mLayout.findViewById(R.id.alt_home_page_username);
+//        TextView teamName = (TextView)mLayout.findViewById(R.id.alt_home_page_user_team);
+//        if(User.isLoggedIn()){
+//            username.setText("Hello, " + User.getName());
+//            teamName.setText(User.getTeamName());
+//        } else {
+//            username.setText("Hello, Anonymous");
+//            teamName.setVisibility(View.INVISIBLE);
+//        }
 
         Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.alt_toolbar_home_screen);
          ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
