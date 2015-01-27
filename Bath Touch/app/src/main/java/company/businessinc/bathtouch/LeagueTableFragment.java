@@ -8,14 +8,23 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
+import company.businessinc.dataModels.League;
+import company.businessinc.endpoints.LeagueList;
+import company.businessinc.endpoints.LeagueListInterface;
 
 
 /**
@@ -26,13 +35,17 @@ import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
  * Use the {@link LeagueTableFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LeagueTableFragment extends Fragment {
+public class LeagueTableFragment extends Fragment implements LeagueListInterface{
+
+    public static final String ARG_OBJECT = "object";
 
     private LeagueTableCallbacks mCallbacks;
     private View mLayout;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private List<League> leagueNames = new LinkedList<League>();
+    private int leagueID;
 
     public static LeagueTableFragment newInstance() {
         LeagueTableFragment fragment = new LeagueTableFragment();
@@ -42,7 +55,11 @@ public class LeagueTableFragment extends Fragment {
     }
 
     public LeagueTableFragment() {
+
         // Required empty public constructor
+        //get the league name with a call back
+        new LeagueList(this).execute();
+
     }
 
     @Override
@@ -55,12 +72,22 @@ public class LeagueTableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        //get the data from the league activity on what league to display
+        Bundle bundle = this.getArguments();
+        leagueID = 0;
+        if(bundle == null){
+            Log.d("League fragment", "no bundle");
+        }
+        else{
+            leagueID = bundle.getInt("LEAGUEID");
+        }
+
+
+
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
-
-        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar_league_screen);
-        ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.league_table_recycle );
 
@@ -80,9 +107,8 @@ public class LeagueTableFragment extends Fragment {
                     }
                 }));
 
-        LeagueTableData mLeagueData = new LeagueTableData();
-
-        mAdapter = new LeagueTableAdapter(mLeagueData);
+        //Adapter loads the data fror the leagues
+        mAdapter = new LeagueTableAdapter(leagueID);
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
     }
@@ -108,6 +134,18 @@ public class LeagueTableFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    @Override
+    public void leagueListCallback(List<League> data) {
+        leagueNames = data;
+        updateName();
+    }
+
+    public void updateName(){
+        String leagueName = leagueNames.get(leagueID - 1).getLeagueName();
+        TextView mLeagueName = (TextView) mLayout.findViewById(R.id.league_table_name);
+        mLeagueName.setText(leagueName);
     }
 
     /**

@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,15 +54,6 @@ public class HomePageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.alternative_home_page, container, false);
-//        TextView username = (TextView)mLayout.findViewById(R.id.alt_home_page_username);
-//        TextView teamName = (TextView)mLayout.findViewById(R.id.alt_home_page_user_team);
-//        if(User.isLoggedIn()){
-//            username.setText("Hello, " + User.getName());
-//            teamName.setText(User.getTeamName());
-//        } else {
-//            username.setText("Hello, Anonymous");
-//            teamName.setVisibility(View.INVISIBLE);
-//        }
 
         Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.alt_toolbar_home_screen);
          ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
@@ -81,12 +73,34 @@ public class HomePageFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                switch (view.getId()){
+                    //the card clicked decides which fragment to start
+                    case(R.id.home_page_card_team_container):
+                        Log.d("fragment", "changing on id for team container");
+                        selectCard(1);
+                        break;
+                    case(R.id.home_page_card_table):
+                        Log.d("fragment", "changing on id for table container");
+                        selectCard(2);
+                        break;
+                    case(R.id.home_page_card_next_match_container):
+                        selectCard(0);
+                        break;
+                    default:
+                        Log.d("FRAGMENT", "doing defalt");
+                        selectCard(position);
+                        break;
+                }
                 selectCard(position);
             }
         }));
 
         mAdapter = new HomePageAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
+
+        //set the onclick events for the home cards
+
+
         return mLayout;
     }
 

@@ -1,11 +1,8 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape xmlns:android="http://schemas.android.com/apk/res/android"
-            android:shape="rectangle">
-            <solid android:color="@color/red"/>
-            <corners android:radius="2dp"/>
-        </shape>
-    </item>
-    <item android:drawable="?android:selectableItemBackground"/>
-
-</layer-list>
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true"
+        android:drawable="@color/red_brick" /> <!-- pressed -->
+    <!--<item android:state_focused="true"-->
+        <!--android:drawable="@color/red_brick" /> &lt;!&ndash; focused &ndash;&gt;-->
+    <item android:drawable="@color/red_monza" /> <!-- default -->
+</selector>

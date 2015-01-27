@@ -27,6 +27,7 @@
             android:elevation="2dp">
 
             <TextView
+                android:id="@+id/league_table_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bath Touch Winter League 2015"
