@@ -30,7 +30,7 @@
             android:text="Your next match"
             android:textSize="26dp"
             android:textColor="@color/white"
-            android:background="@color/red_monza"
+            android:background="@drawable/button_raised_primary"
             />
 
 
@@ -130,7 +130,9 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/home_card_next_match_name_layout"
             android:scaleType="fitXY"
-            android:layout_margin="8dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"/>
 
 
     </RelativeLayout>
