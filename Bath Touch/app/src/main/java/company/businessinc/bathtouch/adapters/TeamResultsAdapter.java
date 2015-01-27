@@ -32,14 +32,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTeam2Score = (TextView) v.findViewById(R.id.match_result_item_match_team2_score);
             mImageView = (ImageView) v.findViewById(R.id.match_result_item_result_image);
         }
-
-
-
     }
 
 
 
     public TeamResultsAdapter(TeamResultsData myDataset) {
+
         mDataset = myDataset;
     }
 
@@ -77,10 +75,11 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mTeam1Score.setTypeface(null, Typeface.BOLD);
             if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
                 //won, set green
-                v.mImageView.setBackgroundColor(Color.parseColor("#FF99CC00"));
+//                v.mImageView.setBackgroundColor(Color.parseColor("#FF99CC00"));
+                v.mImageView.setImageResource(R.drawable.ic_thumb_up);
             }
             else{
-                v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));
+                v.mImageView.setImageResource(R.drawable.ic_thumb_down);
             }
         }
         else{
@@ -88,10 +87,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mTeam2Score.setTypeface(null, Typeface.BOLD);
             if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
                 //won, set green
-                v.mImageView.setBackgroundColor(Color.parseColor("#FFFF4444"));
+                v.mImageView.setImageResource(R.drawable.ic_thumb_up);
             }
             else{
-                v.mImageView.setBackgroundColor(Color.parseColor("#FF99CC00"));
+                v.mImageView.setImageResource(R.drawable.ic_thumb_down);
             }
         }
 

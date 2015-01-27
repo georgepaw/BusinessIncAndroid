@@ -7,7 +7,7 @@
         android:id="@+id/alt_home_age_header_box"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@color/red"
+        android:background="?attr/colorPrimary"
         android:paddingLeft="16dp"
         android:paddingBottom="16dp"
         android:paddingRight="16dp"
