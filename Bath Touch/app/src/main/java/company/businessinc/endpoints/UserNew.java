@@ -25,13 +25,14 @@ public class UserNew extends AsyncTask<Void, Void, Status> {
     private UserNewInterface callback;
     private List<NameValuePair> parameters;
 
-    public UserNew(UserNewInterface callback, String username, String password, String email, String name) {
+    public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("username", username));
         parameters.add(new BasicNameValuePair("password", password));
         parameters.add(new BasicNameValuePair("email", email));
         parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
     }
 
     @Override

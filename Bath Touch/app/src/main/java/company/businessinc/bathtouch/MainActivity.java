@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,12 +138,12 @@ public class MainActivity extends ActionBarActivity
         switch(position) {
             case 0:
                 //TODO Add a check to make sure nextMatch exists
-                Match nextMatch = DataStore.getNextMatch();
+                Match nextMatch = DataStore.getInstance(this).getNextRefMatch();
                 if(nextMatch == null){
                     Log.d("ERROR", "match is null, not opening fragment");
                     break; //TODO fix this happeneing
 
-                }
+                } 
                 Intent intent = new Intent(this, SubmitScoreActivity.class);
                 intent.putExtra("matchId", nextMatch.getMatchID());
                 intent.putExtra("teamOneName", nextMatch.getTeamOne());
@@ -150,12 +151,10 @@ public class MainActivity extends ActionBarActivity
                 startActivity(intent);
                 break;
             case 1:
-                changeFragments("TEAMRESULTSTAG");
+                changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
-                intent = new Intent(this, LeagueTableActivity.class);
-                startActivity(intent);
-//                changeFragments("LEAGUETABLETAG");
+                changeFragments("TEAMRESULTSTAG");
                 break;
             default:
                 break;
@@ -206,7 +205,7 @@ public class MainActivity extends ActionBarActivity
             mSharedPreferences.edit().remove("user").commit();
         }
         new User();
-        DataStore.clearData();
+        DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();
     }
