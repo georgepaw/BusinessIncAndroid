@@ -22,10 +22,10 @@ import company.businessinc.networking.APICallType;
  */
 public class UserNew extends AsyncTask<Void, Void, Status> {
     String TAG = "UserEdit";
-    private UserEditInterface callback;
+    private UserNewInterface callback;
     private List<NameValuePair> parameters;
 
-    public UserNew(UserEditInterface callback, String username, String password, String email, String name) {
+    public UserNew(UserNewInterface callback, String username, String password, String email, String name) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("username", username));
