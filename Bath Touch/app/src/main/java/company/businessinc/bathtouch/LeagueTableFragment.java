@@ -88,13 +88,6 @@ public class LeagueTableFragment extends Fragment implements LeagueListInterface
 
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
-//        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar_league_screen);
-//        ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-//        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
-//        String leagueName = leagueNames.get(leagueID - 1).getLeagueName();
-//        TextView mLeagueName = (TextView) mLayout.findViewById(R.id.league_table_name);
-//        mLeagueName.setText(leagueName);
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.league_table_recycle );
 
