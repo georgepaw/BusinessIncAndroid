@@ -88,7 +88,7 @@ public class CreateAccountActivity extends ActionBarActivity implements UserNewI
                 mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
                 mSharedPreferences.edit().putString(cookie, APICall.getCookie()).commit();
                 mSharedPreferences.edit().putString("user", data.toString()).commit();
-                DataStore.newInstance();
+                DataStore.newInstance(this);
                 finish();
             } else {
                 Log.d("Create User", "Invalid credentials");
