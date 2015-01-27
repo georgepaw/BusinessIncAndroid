@@ -17,6 +17,17 @@ public class LeagueTeam {
     private Integer pointsFor;
     private Integer pointsAgainst;
 
+    public static final String KEY_TEAMNAME = "teamName";
+    public static final String KEY_LEAGUEPOINTS = "leaguePoints";
+    public static final String KEY_WIN = "win";
+    public static final String KEY_DRAW = "draw";
+    public static final String KEY_LOSE = "lose";
+    public static final String KEY_FORFEIT = "forfeit";
+    public static final String KEY_POSITION = "position";
+    public static final String KEY_POINTSFOR = "pointsFor";
+    public static final String KEY_POINTSAGAINST = "pointsAgainst";
+    public static final String[] COLUMNS = {KEY_TEAMNAME,KEY_LEAGUEPOINTS, KEY_WIN, KEY_DRAW, KEY_LOSE, KEY_FORFEIT, KEY_POSITION, KEY_POINTSFOR, KEY_POINTSAGAINST};
+
     public LeagueTeam(String teamName, Integer leaguePoints, Integer win, Integer draw, Integer lose, Integer forfeit, Integer position, Integer pointsFor, Integer pointsAgainst) {
         this.teamName = teamName;
         this.leaguePoints = leaguePoints;
