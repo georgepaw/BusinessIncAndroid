@@ -77,7 +77,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
          public ViewHolderNextMatch(View v) {
              super(v);
-             mCardView = (CardView) v.findViewById(R.id.home_page_card_table);
+             mCardView = (CardView) v.findViewById(R.id.home_page_card_next_match_container);
              mTeam1Name = (TextView) v.findViewById(R.id.home_card_next_match_team1_name);
              mTeam2Name = (TextView) v.findViewById(R.id.home_card_next_match_team2_name);
              mDate = (TextView) v.findViewById(R.id.home_card_next_match_pretty_time);
@@ -173,9 +173,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         switch (viewType){
             case 0:
-                if(User.isLoggedIn()){
-                    return new ViewHolderGreeting(vg);
-                }
+                return new ViewHolderGreeting(vg);
             case 1:
                 if(User.isLoggedIn()){
                     return new ViewHolderNextMatch(vnm);
@@ -230,7 +228,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vmt.mTeam2Score.setText("0");
             vmt.mTeamScore1.setText("28");
             vmt.mTeamScore2.setText("11");
-        }else if(holder instanceof  ViewHolderEmpty) {
+
+        }
+        else if(holder instanceof  ViewHolderEmpty) {
             ViewHolderEmpty ve = (ViewHolderEmpty) holder;
         }
         else if(holder instanceof ViewHolderGreeting){
@@ -238,6 +238,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(User.isLoggedIn()){
                 vg.mUserName.setText(User.getName());
                 vg.mTeamName.setText(User.getTeamName());
+            }
+            else{
+                vg.mUserName.setText("Bath Touch Leagues");
+                vg.mTeamName.setText("Log in to view your teams");
             }
 
         }
