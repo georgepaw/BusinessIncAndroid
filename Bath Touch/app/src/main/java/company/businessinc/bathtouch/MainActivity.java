@@ -151,9 +151,14 @@ public class MainActivity extends ActionBarActivity
                 startActivity(intent);
                 break;
             case 1:
-                changeFragments("LEAGUETABLETAG");
+                Log.d("MATCH", "starting leage table activity");
+                intent = new Intent(this, LeagueTableActivity.class);
+                startActivity(intent);
+//                changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
+                Log.d("MATCH", "starting team results fragment");
+
                 changeFragments("TEAMRESULTSTAG");
                 break;
             default:

@@ -73,25 +73,27 @@ public class HomePageFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Log.d("FRAGMENT", Integer.toString(view.getId()));
+                Log.d("FRAGMENT", Integer.toString(R.id.home_page_card_table));
+
                 switch (view.getId()){
                     //the card clicked decides which fragment to start
                     case(R.id.home_page_card_team_container):
                         Log.d("fragment", "changing on id for team container");
-                        selectCard(1);
+                        selectCard(2);
                         break;
                     case(R.id.home_page_card_table):
                         Log.d("fragment", "changing on id for table container");
-                        selectCard(2);
+                        selectCard(1);
                         break;
                     case(R.id.home_page_card_next_match_container):
                         selectCard(0);
                         break;
                     default:
-                        Log.d("FRAGMENT", "doing defalt");
+                        Log.d("FRAGMENT", Integer.toString(view.getId()));
                         selectCard(position);
                         break;
                 }
-                selectCard(position);
             }
         }));
 

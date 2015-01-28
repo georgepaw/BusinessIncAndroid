@@ -223,7 +223,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else if(holder instanceof ViewHolderMyTeam){ //TODO remove hardcoding
             ViewHolderMyTeam vmt = (ViewHolderMyTeam) holder;
 
-            vmt.mTeamName.setText("CompSci Vipers");
+            vmt.mTeamName.setText("ALL HARDCODED");
             vmt.mTeam1Name.setText("EE Tigers");
             vmt.mTeam2Name.setText("HP All Stars");
             vmt.mTeam1Score.setText("4");
@@ -345,6 +345,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
        }
    }
 
+    //TODO isn't called
     public void setNextMatchText(Match nextMatch) {
         mViewHolderNextMatch.mParticipation.setText("Refereeing");
         mViewHolderNextMatch.mTeam1Name.setText(nextMatch.getTeamOne());
