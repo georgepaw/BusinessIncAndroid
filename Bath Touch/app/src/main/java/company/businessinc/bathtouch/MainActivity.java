@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
@@ -26,7 +27,8 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
-        LeagueTableFragment.LeagueTableCallbacks{
+        LeagueTableFragment.LeagueTableCallbacks,
+        HomePageAdapter.homePageAdapterCallbacks{
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -152,9 +154,14 @@ public class MainActivity extends ActionBarActivity
                 startActivity(intent);
                 break;
             case 1:
-                changeFragments("LEAGUETABLETAG");
+                Log.d("MATCH", "starting leage table activity");
+                intent = new Intent(this, LeagueTableActivity.class);
+                startActivity(intent);
+//                changeFragments("LEAGUETABLETAG");
                 break;
             case 2:
+                Log.d("MATCH", "starting team results fragment");
+
                 changeFragments("TEAMRESULTSTAG");
                 break;
             default:
@@ -208,5 +215,21 @@ public class MainActivity extends ActionBarActivity
         DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onNextMatchCardSelected() {
+        Log.d("CALLABCL", "we got a callack!");
+        onHomePageCardSelected(0);
+    }
+
+    @Override
+    public void onTeamResultsCardSelected() {
+        onHomePageCardSelected(2);
+    }
+
+    @Override
+    public void onLeagueCardSelected() {
+        onHomePageCardSelected(1);
     }
 }

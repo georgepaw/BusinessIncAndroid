@@ -27,9 +27,6 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:background="@drawable/button_raised_primary"
-            android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:focusable="true"
 
             >
 
@@ -46,22 +43,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/home_card_team_name"
-                android:text="1st in League"
+                android:text="Recent Results"
                 android:textSize="20sp"
                 android:textColor="@color/white"/>
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_more_horiz"
-                android:layout_alignParentRight="true"
-                android:scaleType="fitXY"/>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_arrow_forward"
+            android:layout_alignParentRight="true"
+            />
 
         </RelativeLayout>
 
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/home_card_team_nameandpos"
@@ -74,14 +71,30 @@
                 android:layout_below="@id/home_card_team_nameandpos"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="16dp"
+                android:text="Teams"
+                android:textSize="16dp"
+                android:id="@+id/home_card_team_title"
+                android:paddingBottom="8dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/home_card_team_nameandpos"
+                android:layout_marginTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingRight="16dp"
                 android:text="Scores"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textSize="16dp"
+                android:layout_alignParentRight="true"
+
+                />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/grey" />
+                android:background="@color/grey"
+                android:layout_below="@id/home_card_team_title"/>
 
             <LinearLayout
                 android:id="@+id/home_card_team_res1"
@@ -92,11 +105,13 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
+                android:layout_below="@id/home_card_team_title"
                 >
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp">
 
                     <TextView
                         android:id="@id/home_card_team_name"
@@ -104,7 +119,7 @@
                         android:layout_height="wrap_content"
                         android:text="CompSci Vipers"
                         android:textStyle="bold"
-                        android:textSize="16dp"/>
+                        android:textSize="18dp"/>
 
                     <TextView
                         android:id="@+id/home_card_team_score1"
@@ -113,14 +128,15 @@
                         android:layout_alignParentRight="true"
                         android:text="16"
                         android:textStyle="bold"
-                        android:textSize="16dp"/>
+                        android:textSize="18dp"/>
 
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp">
 
 
                     <TextView
@@ -129,7 +145,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Autistics United"
-                        android:textSize="16dp"
+                        android:textSize="18dp"
                     />
 
                     <TextView
@@ -138,7 +154,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:text="5"
-                        android:textSize="16dp"
+                        android:textSize="18dp"
                         />
 
                 </RelativeLayout>
@@ -161,11 +177,13 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                android:paddingTop="8dp"
+                android:layout_below="@id/home_card_team_res1">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp">
 
                     <TextView
                         android:id="@id/home_card_team_name"
@@ -173,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:text="CompSci Vipers"
                         android:textStyle="bold"
-                        android:textSize="16dp"
+                        android:textSize="18dp"
                         />
 
                     <TextView
@@ -183,14 +201,15 @@
                         android:layout_alignParentRight="true"
                         android:text="8"
                         android:textStyle="bold"
-                        android:textSize="16dp"
+                        android:textSize="18dp"
                         />
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp">
 
 
                     <TextView
@@ -199,7 +218,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Dsylexis Tmea"
-                        android:textSize="16dp"
+                        android:textSize="18dp"
                         />
 
                     <TextView
@@ -208,14 +227,14 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:text="17"
-                        android:textSize="16dp"
+                        android:textSize="18dp"
                         />
 
                 </RelativeLayout>
             </LinearLayout>
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </RelativeLayout>
