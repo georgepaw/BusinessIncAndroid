@@ -2,10 +2,12 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
@@ -20,7 +24,7 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.dataModels.User;
 
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment{
 
     private HomePageCallbacks mCallbacks;
     private View mLayout;
@@ -69,31 +73,40 @@ public class HomePageFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                switch (view.getId()){
-                    //the card clicked decides which fragment to start
-                    case(R.id.home_page_card_team_container):
-                        Log.d("fragment", "changing on id for team container");
-                        selectCard(1);
-                        break;
-                    case(R.id.home_page_card_table):
-                        Log.d("fragment", "changing on id for table container");
-                        selectCard(2);
-                        break;
-                    case(R.id.home_page_card_next_match_container):
-                        selectCard(0);
-                        break;
-                    default:
-                        Log.d("FRAGMENT", "doing defalt");
-                        selectCard(position);
-                        break;
-                }
-                selectCard(position);
-            }
-        }));
+//        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+//                new RecyclerItemClickListener.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position) {
+//                Log.d("FRAGMENT", Integer.toString(view.getId()));
+//                Log.d("FRAGMENT", Integer.toString(R.id.home_page_card_team_container));
+//
+//                switch (view.getId()){
+//                    //the card clicked decides which fragment to start
+//                    case(R.id.home_page_card_team_container):
+//                        if(position == 3) {
+//                            Log.d("fragment", "changing on id for team container");
+//                            selectCard(2);
+//                        }
+//                        break;
+//                    case(R.id.home_page_card_table):
+//                        Log.d("fragment", "changing on id for table container");
+//                        selectCard(1);
+//                        break;
+//                    case(R.id.home_page_card_next_match_container):
+//                        selectCard(0);
+//                        break;
+//                    case(R.id.card_team_overview_next_match_box):
+////                        Log.d("ANIMATION", "doing animaltion");
+////                        Animation slide = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.slide_down);
+////                        CardView cardView = (CardView) mLayout.findViewById(R.id.card_team_overview_next_match_box);
+////                        cardView.startAnimation(slide);
+//                    default:
+//                        Log.d("FRAGMENT", Integer.toString(view.getId()));
+//                        selectCard(position);
+//                        break;
+//                }
+//            }
+//        }));
 
         mAdapter = new HomePageAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
@@ -127,8 +140,10 @@ public class HomePageFragment extends Fragment {
         mCallbacks = null;
     }
 
+
     public static interface HomePageCallbacks {
 
         void onHomePageCardSelected(int position);
     }
+
 }

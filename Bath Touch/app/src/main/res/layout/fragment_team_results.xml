@@ -53,6 +53,13 @@
                 android:textSize="18sp"
                 android:textColor="@color/white"/>
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:src="@drawable/ic_more_horiz"/>
+
 
 
         </RelativeLayout>
