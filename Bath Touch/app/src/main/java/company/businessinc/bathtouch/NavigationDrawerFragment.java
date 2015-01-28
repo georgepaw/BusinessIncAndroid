@@ -1,5 +1,10 @@
 package company.businessinc.bathtouch;
 
+import android.database.Cursor;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -30,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import company.businessinc.bathtouch.adapters.ExpandableListAdapter;
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.endpoints.LeagueList;
@@ -42,7 +49,7 @@ import company.businessinc.endpoints.LeagueViewInterface;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     /**
      * Remember the position of the selected item.
@@ -95,6 +102,11 @@ public class NavigationDrawerFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
+
+        getLoaderManager().initLoader(DBProviderContract.GETALLLEAGUES_URL_QUERY, null, this);
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+            getLoaderManager().initLoader(DBProviderContract.GETMYLEAGUES_URL_QUERY, null, this);
+        }
         // Select either the default item (0) or the last selected item.
 //        selectItem(mCurrentSelectedPosition);
 
@@ -358,5 +370,48 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position, String name);
+    }
+
+
+
+    //Invoked when the cursor loader is created
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
+        switch (loaderID) {
+            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.MYLEAGUES_TABLE_CONTENTURI, null, null, null, null);
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    //query has finished
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        List<String> child = new ArrayList<>();
+        if (data.moveToFirst()){
+            while(!data.isAfterLast()){
+                child.add(new League(data).getLeagueName());
+                data.moveToNext();
+            }
+        }
+        switch(loader.getId()){
+            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+                listAdapter.updateAllLeagues(child);
+                break;
+            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+                listAdapter.updateMyLeagues(child);
+                break;
+        }
+    }
+
+    //when data gets updated, first reset everything
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }
