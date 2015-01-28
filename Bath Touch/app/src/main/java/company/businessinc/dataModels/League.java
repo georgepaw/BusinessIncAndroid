@@ -1,5 +1,8 @@
 package company.businessinc.dataModels;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,14 +26,27 @@ public class League {
         this.leagueName = leagueName;
     }
 
+    public League(Cursor cursor){
+        try {
+            this.leagueID = cursor.getInt(cursor.getColumnIndex(KEY_LEAGUEID));
+        } catch(Exception e) {
+            this.leagueID = null;
+        }
+        try {
+            this.leagueName = cursor.getString(cursor.getColumnIndex(KEY_LEAGUENAME));
+        } catch(Exception e) {
+            this.leagueName = null;
+        }
+    }
+
     public League(JSONObject jsonObject){
         try {
-            this.leagueID = jsonObject.getInt("leagueID");
+            this.leagueID = jsonObject.getInt(KEY_LEAGUEID);
         } catch (JSONException e){
             this.leagueID = null;
         }
         try {
-            this.leagueName = jsonObject.getString("leagueName");
+            this.leagueName = jsonObject.getString(KEY_LEAGUENAME);
         } catch (JSONException e){
             this.leagueName = null;
         }
@@ -50,5 +66,12 @@ public class League {
 
     public void setLeagueName(String leagueName) {
         this.leagueName = leagueName;
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(KEY_LEAGUEID,leagueID);
+        values.put(KEY_LEAGUENAME, leagueName);
+        return values;
     }
 }

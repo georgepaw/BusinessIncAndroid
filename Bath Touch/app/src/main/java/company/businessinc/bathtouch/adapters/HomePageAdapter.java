@@ -11,15 +11,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import company.businessinc.bathtouch.ApdaterData.HomeCardData;
-import company.businessinc.bathtouch.DataStore;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
@@ -177,7 +174,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case 0:
                 return new ViewHolderGreeting(vg);
             case 1:
-                if(User.isLoggedIn()){
+                if(DataStore.getInstance(context).isUserLoggedIn()){
                     return new ViewHolderNextMatch(vnm);
                 } else {
                     return new ViewHolderEmpty(ve);
@@ -212,7 +209,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else if(holder instanceof ViewHolderNextMatch) {
 
             mViewHolderNextMatch = (ViewHolderNextMatch) holder;
-            if(User.isLoggedIn()){
+            if(DataStore.getInstance(context).isUserLoggedIn()){
                 mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
                 if(DataStore.getInstance(context).getNextRefMatch() != null)
                     setNextMatchText(DataStore.getInstance(context).getNextRefMatch());
@@ -237,9 +234,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         else if(holder instanceof ViewHolderGreeting){
             ViewHolderGreeting vg = (ViewHolderGreeting) holder;
-            if(User.isLoggedIn()){
-                vg.mUserName.setText(User.getName());
-                vg.mTeamName.setText(User.getTeamName());
+            if(DataStore.getInstance(context).isUserLoggedIn()){
+                vg.mUserName.setText(DataStore.getInstance(context).getUserName());
+                vg.mTeamName.setText(DataStore.getInstance(context).getUserTeam());
             }
             else{
                 vg.mUserName.setText("Bath Touch Leagues");

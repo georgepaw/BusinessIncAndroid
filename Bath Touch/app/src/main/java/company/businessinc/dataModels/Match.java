@@ -1,5 +1,7 @@
 package company.businessinc.dataModels;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.text.format.DateFormat;
 
 import org.json.JSONException;
@@ -66,6 +68,71 @@ public class Match {
         this.teamOnePoints = teamOnePoints;
         this.teamTwoPoints = teamTwoPoints;
         this.isForfeit = isForfeit;
+    }
+
+    public Match(Cursor cursor){
+        try {
+            this.matchID = cursor.getInt(cursor.getColumnIndex(KEY_MATCHID));
+        } catch(Exception e) {
+            this.matchID = null;
+        }
+        try {
+            this.teamOneID = cursor.getInt(cursor.getColumnIndex(KEY_TEAMONEID));
+        } catch(Exception e) {
+            this.teamOneID = null;
+        }
+        try {
+            this.teamTwoID = cursor.getInt(cursor.getColumnIndex(KEY_TEAMTWOID));
+        } catch(Exception e) {
+            this.teamTwoID = null;
+        }
+        try {
+            this.teamOne = cursor.getString(cursor.getColumnIndex(KEY_TEAMONE));
+        } catch(Exception e) {
+            this.teamOne = null;
+        }
+        try {
+            this.teamTwo = cursor.getString(cursor.getColumnIndex(KEY_TEAMTWO));
+        } catch(Exception e) {
+            this.teamTwo = null;
+        }
+        try {
+            this.refID = cursor.getInt(cursor.getColumnIndex(KEY_REFID));
+        } catch(Exception e) {
+            this.refID = null;
+        }
+        try {
+            this.refName = cursor.getString(cursor.getColumnIndex(KEY_REFNAME));
+        } catch(Exception e) {
+            this.refName = null;
+        }
+        try {
+            String dT = cursor.getString(cursor.getColumnIndex(KEY_DATETIME));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+            this.dateTime = sdf.parse(dT);
+        } catch(Exception e) {
+            this.dateTime = null;
+        }
+        try {
+            this.place = cursor.getString(cursor.getColumnIndex(KEY_PLACE));
+        } catch(Exception e) {
+            this.place = null;
+        }
+        try {
+            this.teamOnePoints = cursor.getInt(cursor.getColumnIndex(KEY_TEAMONEPOINTS));
+        } catch(Exception e) {
+            this.teamOnePoints = null;
+        }
+        try {
+            this.teamTwoPoints = cursor.getInt(cursor.getColumnIndex(KEY_TEAMTWOPOINTS));
+        } catch(Exception e) {
+            this.teamTwoPoints = null;
+        }
+        try {
+            this.isForfeit = (cursor.getInt(cursor.getColumnIndex(KEY_ISFORFEIT)) == 1); //Convert int to boolean
+        } catch(Exception e) {
+            this.isForfeit = null;
+        }
     }
 
     public Match(JSONObject jsonObject) throws JSONException {
@@ -229,5 +296,23 @@ public class Match {
 
     public void setIsForfeit(Boolean isForfeit) {
         this.isForfeit = isForfeit;
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(KEY_MATCHID,matchID);
+        values.put(KEY_TEAMONEID, teamOneID);
+        values.put(KEY_TEAMTWOID, teamTwoID);
+        values.put(KEY_TEAMONE, teamOne);
+        values.put(KEY_TEAMTWO, teamTwo);
+        values.put(KEY_REFID, refID);
+        values.put(KEY_REFNAME, refName);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+        values.put(KEY_DATETIME, sdf.format(dateTime));
+        values.put(KEY_PLACE, place);
+        values.put(KEY_TEAMONEPOINTS, teamOnePoints);
+        values.put(KEY_TEAMTWOPOINTS, teamTwoPoints);
+        values.put(KEY_ISFORFEIT, isForfeit ? 1 : 0); //convert boolean to int
+        return values;
     }
 }

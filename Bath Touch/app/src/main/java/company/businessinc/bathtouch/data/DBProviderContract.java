@@ -1,4 +1,4 @@
-package company.businessinc.bathtouch;
+package company.businessinc.bathtouch.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
