@@ -84,21 +84,31 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
        }
     }
 
-    public void teamListCallback(List<Team> data){
+    public void loadLeaguesTeams(int leagueID){
+
+    }
+
+    public void teamListCallback(List<Team> data, TeamList.CallType callType){
         if(data != null){
-            LinkedList<ContentValues> cV = new LinkedList<>();
-            List<Integer> teamIdsAlreadyAdded = new LinkedList<>();
-            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
-                if(!teamIdsAlreadyAdded.contains(data.get(i).getTeamID())) {
-                    //only add unique teams
-                    //this is due to TeamList returning duplicates of teams that are in mote than one league
-                    //when getting all the teams from the endpoitns
-                    cV.add(data.get(i).toContentValues());
-                    teamIdsAlreadyAdded.add(data.get(i).getTeamID());
-                }
+            switch(callType){
+                case GETALLLTEAMS:
+                    LinkedList<ContentValues> cV = new LinkedList<>();
+                    List<Integer> teamIdsAlreadyAdded = new LinkedList<>();
+                    for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                        if(!teamIdsAlreadyAdded.contains(data.get(i).getTeamID())) {
+                            //only add unique teams
+                            //this is due to TeamList returning duplicates of teams that are in mote than one league
+                            //when getting all the teams from the endpoitns
+                            cV.add(data.get(i).toContentValues());
+                            teamIdsAlreadyAdded.add(data.get(i).getTeamID());
+                        }
+                    }
+                    ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+                    context.getContentResolver().bulkInsert(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI,contentValues);
+                    break;
+                case GETLEAGUETEAMS:
+                    break;
             }
-            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI,contentValues);
         }
     }
 
@@ -152,15 +162,11 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     }
 
-    public void getAllLeagueTeams(int leagueID){
+    public void loadTeamsFutureFixtures(int teamID, int leagueID){
 
     }
 
-    public void getTeamsFutureFixtures(int teamID, int leagueID){
-
-    }
-
-    public void getTeamsLeagueScore(int teamID, int leagueID){
+    public void loadTeamsLeagueScore(int teamID, int leagueID){
 
     }
 
