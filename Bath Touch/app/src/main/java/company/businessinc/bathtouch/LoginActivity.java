@@ -59,6 +59,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         startActivity(intent);
         mSharedPreferences.edit().putBoolean(USERLOGGEDIN, false).commit();
         DataStore.getInstance(this).setUser(new User());
+        DataStore.getInstance(this).loadAllLeagues();
         finish();
     }
 
@@ -74,6 +75,8 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         if (data != null) {
             DataStore.getInstance(this).setUser(data);
             if (DataStore.getInstance(this).isUserLoggedIn()) { //User has logged in
+                DataStore.getInstance(this).loadAllLeagues();
+                DataStore.getInstance(this).loadMyLeagues();
                 Log.d("Login", "Logged in");
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

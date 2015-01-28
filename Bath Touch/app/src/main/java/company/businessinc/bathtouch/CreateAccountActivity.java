@@ -134,21 +134,22 @@ public class CreateAccountActivity extends ActionBarActivity implements UserNewI
     //query has finished
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        leagueTeams = new ArrayList<>();
         if (data.moveToFirst()){
             while(!data.isAfterLast()){
                 leagueTeams.add(new Team(data));
                 data.moveToNext();
             }
         }
-        data.close();
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.create_account_boxes); //TODO data is loaded into an arrayList, display it nicely wizards
-        ((EditText)linearLayout.getChildAt(4)).setText(leagueTeams.get(0).getTeamName());
+        if(leagueTeams.size()>0) {
+            ((EditText) linearLayout.getChildAt(4)).setText(leagueTeams.get(0).getTeamName());
+        }
     }
 
     //when data gets updated, first reset everything
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        leagueTeams = new ArrayList<>();
     }
 
 

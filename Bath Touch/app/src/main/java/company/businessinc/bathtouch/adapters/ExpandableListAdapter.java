@@ -5,23 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter implements LeagueListInterface {
+public class ExpandableListAdapter extends BaseExpandableListAdapter{
 
     private static final String TAG = "ExpandableListAdapter";
     private Context _context;
@@ -29,14 +32,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
 
+    //headers ID's
+    private int HOME = -1;
+    private int MYLEAGUES = -1;
+    private int ALLLEAGUES = -1;
+
     public ExpandableListAdapter(Context context) {
-
-
-        prepareListData();
         this._context = context;
         this._listDataHeader = new ArrayList<String>();
         this._listDataChild = new HashMap<String, List<String>>();
-
+        prepareListData();
     }
 
     @Override
@@ -133,46 +138,44 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter implements 
     }
 
 
+    public void updateMyLeagues(List<String> data){
+        _listDataChild.remove(_listDataHeader.get(MYLEAGUES));
+        _listDataChild.put(_listDataHeader.get(MYLEAGUES), data);
+
+        notifyDataSetChanged();
+    }
+
+    public void updateAllLeagues(List<String> data){
+        _listDataChild.remove(_listDataHeader.get(ALLLEAGUES));
+        _listDataChild.put(_listDataHeader.get(ALLLEAGUES), data);
+
+        notifyDataSetChanged();
+    }
     /*
      * Preparing the list data
      * Executes api call before firing the call back
      */
     private void prepareListData() {
-
-        new LeagueList(this).execute();
-
-    }
-
-    @Override
-    public void leagueListCallback(List<League> data) {
-
-//        listDataHeader = new ArrayList<String>();
-//        listDataChild = new HashMap<String, List<String>>();
-
-
-        // Adding child data
+        int id = 0;
         _listDataHeader.add("Home");
-        _listDataHeader.add("League Tables");
-        _listDataHeader.add("Team List");
+        List<String> child = new ArrayList<>();
+        child.add("Home");
+        HOME = id;
+        _listDataChild.put(_listDataHeader.get(HOME), child);
+        id++;
 
-        List<String> home = new ArrayList<String>();
-        home.add("Home");
-
-        List<String> leagueTables = new ArrayList<String>();
-        for(League l: data){
-            leagueTables.add(l.getLeagueName());
+        if(DataStore.getInstance(_context).isUserLoggedIn()){
+            _listDataHeader.add("My Leagues");
+            child = new ArrayList<>();
+            MYLEAGUES = id;
+            id++;
         }
 
-        List<String> teamList = new ArrayList<String>();
-        teamList.add("CompSci Vipers");
-        teamList.add("TeamB");
-        teamList.add("TeamC");
-        teamList.add("TeamD");
-        teamList.add("TeamE");
-
-        _listDataChild.put(_listDataHeader.get(0), home);
-        _listDataChild.put(_listDataHeader.get(1), leagueTables);
-        _listDataChild.put(_listDataHeader.get(2), teamList);
+        _listDataHeader.add("All Leagues");
+        child = new ArrayList<>();
+        ALLLEAGUES = id;
+        _listDataChild.put(_listDataHeader.get(ALLLEAGUES), child);
+        id++;
 
         notifyDataSetChanged();
     }

@@ -25,7 +25,7 @@ public class TeamLeagues extends AsyncTask<Void, Void, List<League>> {
 
     public TeamLeagues(TeamLeaguesInterface callback, int teamID) {
         this.callback = callback;
-        parameters = new LinkedList<NameValuePair>();
+        parameters = new LinkedList<>();
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
     }
 
@@ -54,6 +54,6 @@ public class TeamLeagues extends AsyncTask<Void, Void, List<League>> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(List<League> result) {
-        callback.teamLeagueCallback(result);
+        callback.teamLeaguesCallback(result);
     }
 }

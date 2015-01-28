@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
+import java.util.LinkedList;
+
 /**
  * Created by Grzegorz on 27/01/2015.
  */
@@ -34,6 +36,18 @@ public class DBProvider extends ContentProvider {
                 DBProviderContract.ALLTEAMS_TABLE_NAME,
                 DBProviderContract.GETALLTEAMS_URL_QUERY);
 
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.ALLLEAGUES_TABLE_NAME,
+                DBProviderContract.GETALLLEAGUES_URL_QUERY);
+
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.MYLEAGUES_TABLE_NAME,
+                DBProviderContract.GETMYLEAGUES_URL_QUERY);
+
     }
 
     // Closes the SQLite database helper class, to avoid memory leaks
@@ -54,6 +68,13 @@ public class DBProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case DBProviderContract.GETALLTEAMS_URL_QUERY:
                 tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
+                break;
+            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.ALLLEAGUES_TABLE_NAME;
+                break;
+            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.MYLEAGUES_TABLE_NAME;
+                break;
             default:
                 Log.d(TAG, "Failed query");
                 //throw new IllegalArgumentException("Invalid URI:" + uri);
@@ -72,9 +93,14 @@ public class DBProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         String tableName = "";
         switch (sUriMatcher.match(uri)) {
-            // For the modification
             case DBProviderContract.GETALLTEAMS_URL_QUERY:
                 tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
+                break;
+            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.ALLLEAGUES_TABLE_NAME;
+                break;
+            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.MYLEAGUES_TABLE_NAME;
                 break;
                 default:
                 Log.d(TAG, "Failed insert");
@@ -96,15 +122,33 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] insertValuesArray) {
+        String tableName = "";
         switch (sUriMatcher.match(uri)) {
             case DBProviderContract.GETALLTEAMS_URL_QUERY:
-                return super.bulkInsert(uri, insertValuesArray);
+                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
+                break;
+            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.ALLLEAGUES_TABLE_NAME;
+                break;
+            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.MYLEAGUES_TABLE_NAME;
+                break;
             default:
                 //throw new IllegalArgumentException("Invalid URI:" + uri);
                 Log.d(TAG, "Failed bulk insert");
-
+                return 0;
         }
-        return 0;
+
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.beginTransaction();
+        for(ContentValues cv : insertValuesArray) {
+            db.insertOrThrow(tableName, null, cv);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        getContext().getApplicationContext().getContentResolver().notifyChange(uri, null);
+        return insertValuesArray.length;
     }
 
     @Override
@@ -120,6 +164,13 @@ public class DBProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case DBProviderContract.GETALLTEAMS_URL_QUERY:
                 tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
+                break;
+            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.ALLLEAGUES_TABLE_NAME;
+                break;
+            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+                tableName = DBProviderContract.MYLEAGUES_TABLE_NAME;
+                break;
             default:
                 Log.d(TAG, "Failed updates");
                 //throw new IllegalArgumentException("Update: Invalid URI: " + uri);
@@ -145,5 +196,21 @@ public class DBProvider extends ContentProvider {
             cursor.close();
         }
         return true;
+    }
+
+    public void dropUserData(LinkedList<String> userTables){
+        //first drop the tables that always exist
+        SQLiteHelper db = (SQLiteHelper)mHelper;
+        db.dropTable(DBProviderContract.MYLEAGUES_TABLE_NAME);
+        db.createTable(DBProviderContract.CREATE_MYLEAGUES_TABLE);
+        //then drop any user tables that dont always exist
+
+    }
+
+    private void addNewUri(String tableName, int urlQuery){
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                tableName,
+                urlQuery);
     }
 }

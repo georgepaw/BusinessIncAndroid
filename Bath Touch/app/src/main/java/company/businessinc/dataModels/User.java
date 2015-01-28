@@ -24,9 +24,9 @@ public class User {
         teamID = null;
     }
 
-    public static final String KEY_NAME = "teamID";
+    public static final String KEY_NAME = "name";
     public static final String KEY_TEAMNAME = "teamName";
-    public static final String KEY_TEAMID = "captainID";
+    public static final String KEY_TEAMID = "teamID";
     public static final String[] COLUMNS = {KEY_NAME, KEY_TEAMNAME, KEY_TEAMID};
     public static final String CREATE_TABLE =   KEY_NAME + "\tTEXT,\n" +
             KEY_TEAMNAME + "\tTEXT,\n" +
