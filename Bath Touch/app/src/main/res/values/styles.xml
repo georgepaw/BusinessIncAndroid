@@ -3,16 +3,16 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/darkred</item>
-        <item name="colorAccent">@color/red</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/primary_hovered</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyleLight</item>
     </style>
 
     <style name="AppTheme.HomeCards" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/darkred</item>
-        <item name="colorAccent">@color/red</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/primary_hovered</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
     </style>
 
