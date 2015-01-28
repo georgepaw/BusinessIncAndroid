@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
@@ -26,7 +27,8 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
-        LeagueTableFragment.LeagueTableCallbacks{
+        LeagueTableFragment.LeagueTableCallbacks,
+        HomePageAdapter.homePageAdapterCallbacks{
 
     private SharedPreferences mSharedPreferences;
     private String userLoggedIn = "login";
@@ -213,5 +215,21 @@ public class MainActivity extends ActionBarActivity
         DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onNextMatchCardSelected() {
+        Log.d("CALLABCL", "we got a callack!");
+        onHomePageCardSelected(0);
+    }
+
+    @Override
+    public void onTeamResultsCardSelected() {
+        onHomePageCardSelected(2);
+    }
+
+    @Override
+    public void onLeagueCardSelected() {
+        onHomePageCardSelected(1);
     }
 }

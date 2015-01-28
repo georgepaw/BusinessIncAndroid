@@ -1,6 +1,9 @@
 package company.businessinc.bathtouch.adapters;
 
+import android.app.Fragment;
 import android.content.Context;
+import android.nfc.cardemulation.CardEmulation;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -39,10 +43,18 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ViewHolderTable mViewHolderTable;
     private ViewHolderNextMatch mViewHolderNextMatch;
     private int items = 5;
+    private homePageAdapterCallbacks mCallbacks;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
+
+    public static interface homePageAdapterCallbacks {
+        void onNextMatchCardSelected();
+        void onTeamResultsCardSelected();
+        void onLeagueCardSelected();
+
+    }
 
     public class ViewHolderHome extends RecyclerView.ViewHolder {
         public CardView mCardView;
@@ -66,9 +78,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-    public class ViewHolderTeamOverview extends RecyclerView.ViewHolder {
+    public class ViewHolderTeamOverview extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ViewHolderTeamOverview(View v){
             super(v);
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v){
+            Log.d(TAG, "woo");
+            Toast.makeText(v.getContext(), "Clicked box", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -78,7 +97,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public class ViewHolderNextMatch extends RecyclerView.ViewHolder {
+    public class ViewHolderNextMatch extends RecyclerView.ViewHolder implements View.OnClickListener {
         public CardView mCardView;
         public TextView mTeam1Name, mTeam2Name, mDate, mParticipation, mVS;
         public Match match;
@@ -91,14 +110,24 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
              mDate = (TextView) v.findViewById(R.id.home_card_next_match_pretty_time);
              mParticipation = (TextView) v.findViewById(R.id.home_card_next_match_participation);
              mVS = (TextView) v.findViewById(R.id.home_card_next_match_vs);
+             mCardView.setOnClickListener(this);
          }
 
+        @Override
+        public void onClick(View v){
+            if(mCallbacks != null){
+                if (v.getId() == mCardView.getId()){
+                    mCallbacks.onNextMatchCardSelected();
+                }
+            }
+        }
     }
 
-    public class ViewHolderMyTeam extends RecyclerView.ViewHolder {
+    public class ViewHolderMyTeam extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView mTeamName, mTeam1Name, mTeam2Name;
         public TextView mTeamScore1, mTeamScore2, mTeam1Score, mTeam2Score;
+        public CardView mCardView;
 
         public ViewHolderMyTeam(View v) {
             super(v);
@@ -110,11 +139,18 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mTeamScore2 = (TextView) v.findViewById(R.id.home_card_team_score2);
             mTeam1Score = (TextView) v.findViewById(R.id.home_card_team_opp1_score);
             mTeam2Score = (TextView) v.findViewById(R.id.home_card_team_opp2_score);
+            mCardView = (CardView) v.findViewById(R.id.home_page_card_team_container);
+            mCardView.setOnClickListener(this);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCallbacks.onTeamResultsCardSelected();
         }
     }
 
-    public class ViewHolderTable extends RecyclerView.ViewHolder {
+    public class ViewHolderTable extends RecyclerView.ViewHolder implements View.OnClickListener{
         // each data item is just a string in this case
         public CardView mCardView;
         public ProgressBar mProgressBar;
@@ -151,13 +187,20 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mTeam1Pts = (TextView) v.findViewById(R.id.team_points1);
             mTeam2Pts = (TextView) v.findViewById(R.id.team_points2);
             mTeam3Pts = (TextView) v.findViewById(R.id.team_points3);
+            mCardView.setOnClickListener(this);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCallbacks.onLeagueCardSelected();
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HomePageAdapter(Context context) {
-        this.context = context;
+    public HomePageAdapter(FragmentActivity activity) {
+        //add the callbacks of the fragment
+        mCallbacks = (homePageAdapterCallbacks) activity;
     }
 
     @Override

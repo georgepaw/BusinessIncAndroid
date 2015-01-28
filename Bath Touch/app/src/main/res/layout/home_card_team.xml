@@ -27,9 +27,6 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:background="@drawable/button_raised_primary"
-            android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:focusable="true"
 
             >
 
