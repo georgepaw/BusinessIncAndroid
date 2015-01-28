@@ -38,7 +38,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
     private ViewHolderNextMatch mViewHolderNextMatch;
-    private int items = 4;
+    private int items = 5;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -64,6 +64,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mTeamName = (TextView) v.findViewById(R.id.alt_home_page_user_team);
         }
 
+    }
+
+    public class ViewHolderTeamOverview extends RecyclerView.ViewHolder {
+        public ViewHolderTeamOverview(View v){
+            super(v);
+        }
     }
 
     public class ViewHolderEmpty extends RecyclerView.ViewHolder {
@@ -175,8 +181,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         switch (viewType){
             case 0:
+
                 return new ViewHolderGreeting(vg);
             case 1:
+
                 if(User.isLoggedIn()){
                     return new ViewHolderNextMatch(vnm);
                 } else {
@@ -186,6 +194,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return new ViewHolderTable(vt);
             case 3:
                 return new ViewHolderMyTeam(vmt);
+            case 4:
+                View vto = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_team_overview, parent, false);
+                return new ViewHolderTeamOverview(vto);
             default:
                 return new ViewHolderEmpty(ve);
         }
@@ -246,6 +257,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 vg.mTeamName.setText("Log in to view your teams");
             }
 
+        }
+        else if(holder instanceof ViewHolderTeamOverview){
+            ViewHolderTeamOverview vto = (ViewHolderTeamOverview) holder;
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;
