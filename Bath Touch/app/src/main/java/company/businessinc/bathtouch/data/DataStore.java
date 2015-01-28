@@ -144,6 +144,26 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     }
 
+    public void loadLeagueFutureFixtures(int leagueID){
+
+    }
+
+    public void loadLeagueStandings(int leagueID){
+
+    }
+
+    public void getAllLeagueTeams(int leagueID){
+
+    }
+
+    public void getTeamsFutureFixtures(int teamID, int leagueID){
+
+    }
+
+    public void getTeamsLeagueScore(int teamID, int leagueID){
+
+    }
+
     public void setNextRefMatch(Match match) {
         nextRefMatch = match;
     }
