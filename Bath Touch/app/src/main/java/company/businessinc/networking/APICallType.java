@@ -6,6 +6,7 @@ package company.businessinc.networking;
  */
 public enum APICallType {
     LeagueList("/league/list/"),
+    LeagueSchedule("/league/schedule/"),
     LeagueScores("/league/scores/"),
     LeagueView("/league/view/"),
     RefGames("/ref/games/"),

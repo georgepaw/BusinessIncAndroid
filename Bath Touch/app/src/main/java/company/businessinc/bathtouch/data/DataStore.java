@@ -140,6 +140,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+    public void loadLeagueScores(int leagueID){
+
+    }
+
     public void setNextRefMatch(Match match) {
         nextRefMatch = match;
     }
