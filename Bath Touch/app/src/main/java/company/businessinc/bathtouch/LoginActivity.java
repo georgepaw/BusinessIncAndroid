@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.UserLogin;
 import company.businessinc.endpoints.UserLoginInterface;
@@ -22,8 +23,9 @@ import company.businessinc.networking.CheckNetworkConnection;
 public class LoginActivity extends ActionBarActivity implements UserLoginInterface {
 
     private SharedPreferences mSharedPreferences;
-    private String userLoggedIn = "login";
-    private static final String cookie = "Cookie";
+    private static final String USERLOGGEDIN = "login";
+    private static final String COOKIE = "cookie";
+    private static final String USER = "user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,8 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     public void login_as_anonymous(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        mSharedPreferences.edit().putBoolean(userLoggedIn, false).commit();
+        mSharedPreferences.edit().putBoolean(USERLOGGEDIN, false).commit();
+        DataStore.getInstance(this).setUser(new User());
         finish();
     }
 
@@ -69,13 +72,14 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     //After the login button is pressed
     public void userLoginCallback(User data) {
         if (data != null) {
-            if (data.isLoggedIn()) { //User has logged in
+            DataStore.getInstance(this).setUser(data);
+            if (DataStore.getInstance(this).isUserLoggedIn()) { //User has logged in
                 Log.d("Login", "Logged in");
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
-                mSharedPreferences.edit().putBoolean(userLoggedIn, true).commit();
-                mSharedPreferences.edit().putString(cookie, APICall.getCookie()).commit();
-                mSharedPreferences.edit().putString("user", data.toString()).commit();
+                mSharedPreferences.edit().putBoolean(USERLOGGEDIN, true).commit();
+                mSharedPreferences.edit().putString(COOKIE, APICall.getCookie()).commit();
+                mSharedPreferences.edit().putString(USER, DataStore.getInstance(this).userToJSON()).commit();
                 finish();
             } else {
                 Log.d("Login", "Invalid credentials");

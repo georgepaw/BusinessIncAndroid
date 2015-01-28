@@ -1,5 +1,7 @@
 package company.businessinc.dataModels;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,16 +12,42 @@ import org.json.JSONObject;
  * Created by gp on 18/11/14.
  */
 public class User {
-    private static Boolean isLoggedIn = false;
-    private static String name = null;
-    private static String teamName = null;
-    private static Integer teamID = null;
+    private Boolean isLoggedIn = false;
+    private String name = null;
+    private String teamName = null;
+    private Integer teamID = null;
 
     public User() {
         isLoggedIn = false;
         name = null;
         teamName = null;
         teamID = null;
+    }
+
+    public static final String KEY_NAME = "teamID";
+    public static final String KEY_TEAMNAME = "teamName";
+    public static final String KEY_TEAMID = "captainID";
+    public static final String[] COLUMNS = {KEY_NAME, KEY_TEAMNAME, KEY_TEAMID};
+    public static final String CREATE_TABLE =   KEY_NAME + "\tTEXT,\n" +
+            KEY_TEAMNAME + "\tTEXT,\n" +
+            KEY_TEAMID + "\tINTEGER,\n";
+
+    public User(Cursor cursor){
+        try {
+            this.teamID = cursor.getInt(cursor.getColumnIndex(KEY_TEAMID));
+        } catch(Exception e) {
+            this.teamID = null;
+        }
+        try {
+            this.teamName = cursor.getString(cursor.getColumnIndex(KEY_TEAMNAME));
+        } catch(Exception e) {
+            this.teamName = null;
+        }
+        try {
+            this.name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+        } catch(Exception e) {
+            this.name = null;
+        }
     }
 
     public User(JSONObject jsonObject) throws JSONException{
@@ -29,39 +57,39 @@ public class User {
             this.isLoggedIn = null;
         }
         try {
-            this.name = jsonObject.getString("name");
+            this.name = jsonObject.getString(KEY_NAME);
         } catch(JSONException e){
             this.name = null;
         }
         try {
-            this.teamName = jsonObject.getString("teamName");
+            this.teamName = jsonObject.getString(KEY_TEAMNAME);
         } catch (JSONException e){
             this.teamName = null;
         }
         try {
-            this.teamID = jsonObject.getInt("teamID");
+            this.teamID = jsonObject.getInt(KEY_TEAMID);
         } catch (JSONException e){
             this.teamID = null;
         }
     }
 
-    public static Boolean isLoggedIn() {
+    public Boolean isLoggedIn() {
         return isLoggedIn;
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 
-    public static void setName(String Name){
+    public void setName(String Name){
         name = Name;
     }
 
-    public static String getTeamName() {
+    public String getTeamName() {
         return teamName;
     }
 
-    public static Integer getTeamID() {
+    public Integer getTeamID() {
         return teamID;
     }
 
@@ -69,16 +97,23 @@ public class User {
         JSONObject jsonObject = new JSONObject();
         try{
             jsonObject.put("status", isLoggedIn);
-            jsonObject.put("name", name);
+            jsonObject.put(KEY_NAME, name);
             if (isLoggedIn){
-                jsonObject.put("teamName", teamName);
-                jsonObject.put("teamID", teamID);
-
+                jsonObject.put(KEY_TEAMNAME, teamName);
+                jsonObject.put(KEY_TEAMID, teamID);
             }
 
         } catch (JSONException e){
 
         }
         return  jsonObject.toString();
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, name);
+        values.put(KEY_TEAMNAME, teamName);
+        values.put(KEY_TEAMID,teamID);
+        return values;
     }
 }

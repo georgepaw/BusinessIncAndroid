@@ -1,9 +1,10 @@
-package company.businessinc.bathtouch;
+package company.businessinc.bathtouch.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.Team;
 
 /**

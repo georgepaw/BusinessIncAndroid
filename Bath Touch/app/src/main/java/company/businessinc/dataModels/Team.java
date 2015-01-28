@@ -155,7 +155,7 @@ public class Team {
         this.teamColorSecondary = teamColorSecondary;
     }
 
-    public ContentValues getContentValues() {
+    public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_TEAMID,teamID);
         values.put(KEY_TEAMNAME, teamName);

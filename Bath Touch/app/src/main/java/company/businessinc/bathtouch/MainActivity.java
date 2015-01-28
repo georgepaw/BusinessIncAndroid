@@ -12,12 +12,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
@@ -31,8 +31,9 @@ public class MainActivity extends ActionBarActivity
         HomePageAdapter.homePageAdapterCallbacks{
 
     private SharedPreferences mSharedPreferences;
-    private String userLoggedIn = "login";
-    private static final String cookie = "Cookie";
+    private static final String USERLOGGEDIN = "login";
+    private static final String COOKIE = "cookie";
+    private static final String USER = "user";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,24 +45,24 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
-        if(!mSharedPreferences.contains(userLoggedIn)) {
+        if(!mSharedPreferences.contains(USERLOGGEDIN)) {
             Log.d("MAIN", "HAS NOT LOGGED IN");
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
-        if(mSharedPreferences.getBoolean(userLoggedIn,false) && !mSharedPreferences.contains(cookie)) { //user logged in but no cookie string, kick him out
+        if(mSharedPreferences.getBoolean(USERLOGGEDIN,false) && !mSharedPreferences.contains(COOKIE)) { //user logged in but no cookie string, kick him out
             Log.d("MAIN", "USER LOGGED IN BUT NO COOKIE");
-            mSharedPreferences.edit().remove(userLoggedIn).commit();
+            mSharedPreferences.edit().remove(USERLOGGEDIN).commit();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
-        } else if(mSharedPreferences.contains(cookie)){
-            APICall.setCookie(mSharedPreferences.getString(cookie, ""));
+        } else if(mSharedPreferences.contains(COOKIE)){
+            APICall.setCookie(mSharedPreferences.getString(COOKIE, ""));
         }
-        if(mSharedPreferences.getBoolean(userLoggedIn,false) != User.isLoggedIn()){
+        if(mSharedPreferences.getBoolean(USERLOGGEDIN,false) != DataStore.getInstance(this).isUserLoggedIn()){
             try{
-                new User(new JSONObject(mSharedPreferences.getString("user", "")));
+                DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
             } catch (JSONException e){
                 Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
             }
@@ -204,14 +205,13 @@ public class MainActivity extends ActionBarActivity
         Log.d("MAIN", "LOGGING OUT");
         Intent intent = new Intent(this, LoginActivity.class);
         APICall.clearCookies();
-        mSharedPreferences.edit().remove(userLoggedIn).commit();
-        if(mSharedPreferences.contains(cookie)){
-            mSharedPreferences.edit().remove(cookie).commit();
+        mSharedPreferences.edit().remove(USERLOGGEDIN).commit();
+        if(mSharedPreferences.contains(COOKIE)){
+            mSharedPreferences.edit().remove(COOKIE).commit();
         }
-        if(mSharedPreferences.contains("user")){
-            mSharedPreferences.edit().remove("user").commit();
+        if(mSharedPreferences.contains(USER)){
+            mSharedPreferences.edit().remove(USER).commit();
         }
-        new User();
         DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();

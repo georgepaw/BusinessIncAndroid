@@ -1,21 +1,15 @@
-package company.businessinc.bathtouch;
+package company.businessinc.bathtouch.data;
 
-import android.content.ContentProvider;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.UriMatcher;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
+import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.TeamList;
 import company.businessinc.endpoints.TeamListInterface;
 
@@ -28,7 +22,8 @@ public class DataStore implements TeamListInterface{
     private Context context;
 
     private static final String TAG = "DataStore";
-    private static Match nextRefMatch;
+    private User user;
+    private Match nextRefMatch;
 
 
     public static DataStore getInstance(Context context) {
@@ -43,12 +38,36 @@ public class DataStore implements TeamListInterface{
 
     private DataStore(Context context) {
         this.context = context;
+        this.user = new User();
     }
 
     public static void newInstance(Context context) {
         sInstance = new DataStore(context);
     }
 
+    public void setUser(User user){
+        this.user = user;
+    }
+
+    public boolean isUserLoggedIn(){
+        return user.isLoggedIn();
+    }
+
+    public String getUserName(){
+        return user.getName();
+    }
+
+    public String getUserTeam(){
+        return user.getTeamName();
+    }
+
+    public int getUserTeamID(){
+        return user.getTeamID();
+    }
+
+    public String userToJSON(){
+        return user.toString();
+    }
 
     public void loadAllTeams(){
         //check if table exists
@@ -67,18 +86,13 @@ public class DataStore implements TeamListInterface{
                     //only add unique teams
                     //this is due to TeamList returning duplicates of teams that are in mote than one league
                     //when getting all the teams from the endpoitns
-                    cV.add(data.get(i).getContentValues());
+                    cV.add(data.get(i).toContentValues());
                     teamIdsAlreadyAdded.add(data.get(i).getTeamID());
                 }
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
             context.getContentResolver().bulkInsert(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI,contentValues);
         }
-    }
-
-    public void clearUserData() {
-        nextRefMatch = null;
-        //drop any tables relevent to the user
     }
 
     public void setNextRefMatch(Match match) {
@@ -92,6 +106,12 @@ public class DataStore implements TeamListInterface{
     private boolean isTableEmpty(String tableName){
         ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
         return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
+    }
+
+    public void clearUserData() {
+        nextRefMatch = null;
+        user = new User();
+        //drop any tables relevent to the user
     }
 
 }
