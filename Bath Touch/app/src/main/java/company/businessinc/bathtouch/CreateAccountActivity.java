@@ -10,17 +10,14 @@ import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import company.businessinc.dataModels.League;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.Status;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;

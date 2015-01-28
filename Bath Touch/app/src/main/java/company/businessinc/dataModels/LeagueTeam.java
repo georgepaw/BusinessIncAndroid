@@ -1,5 +1,8 @@
 package company.businessinc.dataModels;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,49 +52,97 @@ public class LeagueTeam {
         this.pointsAgainst = pointsAgainst;
     }
 
+    public LeagueTeam(Cursor cursor){
+        try {
+            this.teamName = cursor.getString(cursor.getColumnIndex(KEY_TEAMNAME));
+        } catch(Exception e) {
+            this.teamName = null;
+        }
+        try {
+            this.leaguePoints = cursor.getInt(cursor.getColumnIndex(KEY_LEAGUEPOINTS));
+        } catch(Exception e) {
+            this.leaguePoints = null;
+        }
+        try {
+            this.win = cursor.getInt(cursor.getColumnIndex(KEY_WIN));
+        } catch(Exception e) {
+            this.win = null;
+        }
+        try {
+            this.draw = cursor.getInt(cursor.getColumnIndex(KEY_DRAW));
+        } catch(Exception e) {
+            this.draw = null;
+        }
+        try {
+            this.lose = cursor.getInt(cursor.getColumnIndex(KEY_LOSE));
+        } catch(Exception e) {
+            this.lose = null;
+        }
+        try {
+            this.forfeit = cursor.getInt(cursor.getColumnIndex(KEY_FORFEIT));
+        } catch(Exception e) {
+            this.forfeit = null;
+        }
+        try {
+            this.position = cursor.getInt(cursor.getColumnIndex(KEY_POSITION));
+        } catch(Exception e) {
+            this.position = null;
+        }
+        try {
+            this.pointsFor = cursor.getInt(cursor.getColumnIndex(KEY_POINTSFOR));
+        } catch(Exception e) {
+            this.pointsFor = null;
+        }
+        try {
+            this.pointsAgainst = cursor.getInt(cursor.getColumnIndex(KEY_POINTSAGAINST));
+        } catch(Exception e) {
+            this.pointsAgainst = null;
+        }
+    }
+
     public LeagueTeam(JSONObject jsonObject) throws JSONException{
         try {
-            this.teamName = jsonObject.getString("teamName");
+            this.teamName = jsonObject.getString(KEY_TEAMNAME);
         } catch(JSONException e) {
             this.teamName = null;
         }
         try {
-            this.leaguePoints = jsonObject.getInt("leaguePoints");
+            this.leaguePoints = jsonObject.getInt(KEY_LEAGUEPOINTS);
         } catch(JSONException e) {
             this.leaguePoints = null;
         }
         try {
-            this.win = jsonObject.getInt("win");
+            this.win = jsonObject.getInt(KEY_WIN);
         } catch(JSONException e) {
             this.win = null;
         }
         try {
-            this.draw = jsonObject.getInt("draw");
+            this.draw = jsonObject.getInt(KEY_DRAW);
         } catch(JSONException e) {
             this.draw = null;
         }
         try {
-            this.lose = jsonObject.getInt("lose");
+            this.lose = jsonObject.getInt(KEY_LOSE);
         } catch(JSONException e) {
             this.lose = null;
         }
         try {
-            this.forfeit = jsonObject.getInt("forfeit");
+            this.forfeit = jsonObject.getInt(KEY_FORFEIT);
         } catch(JSONException e) {
             this.forfeit = null;
         }
         try {
-            this.position = jsonObject.getInt("position");
+            this.position = jsonObject.getInt(KEY_POSITION);
         } catch(JSONException e) {
             this.position = null;
         }
         try {
-            this.pointsFor = jsonObject.getInt("pointsFor");
+            this.pointsFor = jsonObject.getInt(KEY_POINTSFOR);
         } catch(JSONException e) {
             this.pointsFor = null;
         }
         try {
-            this.pointsAgainst = jsonObject.getInt("pointsAgainst");
+            this.pointsAgainst = jsonObject.getInt(KEY_POINTSAGAINST);
         } catch(JSONException e) {
             this.pointsAgainst = null;
         }
@@ -167,5 +218,19 @@ public class LeagueTeam {
 
     public void setPointsAgainst(Integer pointsAgainst) {
         this.pointsAgainst = pointsAgainst;
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(KEY_TEAMNAME, teamName);
+        values.put(KEY_LEAGUEPOINTS, leaguePoints);
+        values.put(KEY_WIN, win);
+        values.put(KEY_DRAW, draw);
+        values.put(KEY_LOSE, lose);
+        values.put(KEY_FORFEIT, forfeit);
+        values.put(KEY_POSITION, position);
+        values.put(KEY_POINTSFOR, pointsFor);
+        values.put(KEY_POINTSAGAINST, pointsAgainst);
+        return values;
     }
 }

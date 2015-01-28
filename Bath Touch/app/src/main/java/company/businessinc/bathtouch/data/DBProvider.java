@@ -1,4 +1,4 @@
-package company.businessinc.bathtouch;
+package company.businessinc.bathtouch.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
