@@ -6,7 +6,7 @@
     <RelativeLayout
         android:id="@+id/alt_home_age_header_box"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="160dp"
         android:background="?attr/colorPrimary"
         android:paddingLeft="16dp"
         android:paddingBottom="16dp"
@@ -14,6 +14,17 @@
         android:elevation="2dp"
         android:layout_marginBottom="16dp"
         >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your home cards"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            />
 
         <TextView
             android:id="@+id/alt_home_page_user_team"

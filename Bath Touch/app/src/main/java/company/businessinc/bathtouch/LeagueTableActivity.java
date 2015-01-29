@@ -1,30 +1,18 @@
 package company.businessinc.bathtouch;
 
-import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.Menu;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import company.businessinc.bathtouch.MainActivity;
-import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.League;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
 
 
 /**
@@ -51,7 +39,7 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_collection_demo);
+        setContentView(R.layout.activity_view_leagues);
 
         // Create an adapter that when requested, will return a fragment representing an object in
         // the collection.
@@ -69,6 +57,21 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mDemoCollectionPagerAdapter);
 
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+//            // Only show items in the action bar relevant to this screen
+//            // if the drawer is not showing. Otherwise, let the drawer
+//            // decide what to show in the action bar.
+//            getMenuInflater().inflate(R.menu.menu_main, menu);
+//            return true;
+//        }
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
