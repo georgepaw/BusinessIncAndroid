@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/match_result_item_container"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="80dp"
         android:paddingTop="8dp"
         android:clickable="true"
         android:background="@drawable/bkg"
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="CompSci Vipers"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
 
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="16"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
 
 
@@ -80,7 +80,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:text="Autistics Athletics"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/match_result_item_match_team2_score"
@@ -89,7 +89,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerHorizontal="true"
                     android:text="8"
-                    android:textSize="16sp">
+                    android:textSize="14sp">
 
                 </TextView>
 
