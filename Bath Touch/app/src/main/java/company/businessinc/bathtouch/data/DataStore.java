@@ -3,7 +3,11 @@ package company.businessinc.bathtouch.data;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +17,8 @@ import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueList;
 import company.businessinc.endpoints.LeagueListInterface;
+import company.businessinc.endpoints.RefGames;
+import company.businessinc.endpoints.RefGamesInterface;
 import company.businessinc.endpoints.TeamLeagues;
 import company.businessinc.endpoints.TeamLeaguesInterface;
 import company.businessinc.endpoints.TeamList;
@@ -21,14 +27,13 @@ import company.businessinc.endpoints.TeamListInterface;
 /**
  * Created by Louis on 29/11/2014.
  */
-public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface{
+public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface{
 
     private static DataStore sInstance;
     private Context context;
 
     private static final String TAG = "DataStore";
     private User user;
-    private Match nextRefMatch;
 
     public static DataStore getInstance(Context context) {
 
@@ -67,6 +72,14 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     public int getUserTeamID(){
         return user.getTeamID();
+    }
+
+    public boolean isUserCaptain(){
+        return true;//TODO hardcoded, need to get WEB team to pass us this when user logs in
+    }
+
+    public boolean isReferee(){
+        return true;//TODO hardcoded, need to get WEB team to pass us this when user logs in
     }
 
     public String userToJSON(){
@@ -160,19 +173,32 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyUpcomingRefGames(){
-
+        new RefGames(this).execute();
     }
 
-    public void setNextRefMatch(Match match) {
-        nextRefMatch = match;
-    }
-
-    public Match getNextRefMatch() {
-        return nextRefMatch;
+    @Override
+    public void refGamesCallback(List<Match> data){
+        if(data != null){
+            //sort the games in ascending order
+            Collections.sort(data, new Comparator<Match>() {
+                public int compare(Match m1, Match m2) {
+                    return m1.getDateTime().compareTo(m2.getDateTime());
+                }
+            });
+            //find the next game
+            Match nextMatch = null;
+            //Should probably replace this with a better search
+            GregorianCalendar gc = new GregorianCalendar();
+            gc.add(GregorianCalendar.HOUR,-4); //minus 4 hours so that he can see the next game during and after it's being played
+            for(Match m : data){
+                if(m.getDateTime().compareTo(gc.getTime()) > 0){
+                    context.getContentResolver().insert(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI, m.toContentValues());
+                }
+            }
+        }
     }
 
     public void clearUserData() {
-        nextRefMatch = null;
         user = new User();
         dropUserTables();
     }

@@ -1,8 +1,6 @@
 package company.businessinc.bathtouch.adapters;
 
-import android.app.Fragment;
 import android.content.Context;
-import android.nfc.cardemulation.CardEmulation;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,30 +15,38 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueView;
 import company.businessinc.endpoints.LeagueViewInterface;
-import company.businessinc.endpoints.RefGames;
-import company.businessinc.endpoints.RefGamesInterface;
 
 /**
  * Created by user on 20/11/14.
  */
-public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface, RefGamesInterface {
+public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
 
     private Context context;
     private String TAG = "HomePageAdapter";
     private ViewHolderTable mViewHolderTable;
+    private ViewHolderNextMatch mViewHolderNextRefMatch;
     private ViewHolderNextMatch mViewHolderNextMatch;
-    private int items = 5;
+    private int items = 6;
     private homePageAdapterCallbacks mCallbacks;
+    private Match nextMatch = null;
+    private Match nextRefMatch = null;
+
+    //card positions
+    public static final int GREETINGCARD = 0;
+    public static final int NEXTREFGAME = 1;
+    public static final int NEXTGAME = 2;
+    public static final int TABLE = 3;
+    public static final int TEAMRESULTS = 4;
+    public static final int TEAMOVERVIEW = 5;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -50,6 +56,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onNextMatchCardSelected();
         void onTeamResultsCardSelected();
         void onLeagueCardSelected();
+        void onNextRefMatchCardSelected();
 
     }
 
@@ -98,9 +105,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public CardView mCardView;
         public TextView mTeam1Name, mTeam2Name, mDate, mParticipation, mVS;
         public Match match;
+        public boolean isRef = false;
 
-         public ViewHolderNextMatch(View v) {
+         public ViewHolderNextMatch(View v, boolean isRef) {
              super(v);
+             this.isRef = isRef;
              mCardView = (CardView) v.findViewById(R.id.home_page_card_next_match_container);
              mTeam1Name = (TextView) v.findViewById(R.id.home_card_next_match_team1_name);
              mTeam2Name = (TextView) v.findViewById(R.id.home_card_next_match_team2_name);
@@ -114,7 +123,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void onClick(View v){
             if(mCallbacks != null){
                 if (v.getId() == mCardView.getId()){
-                    mCallbacks.onNextMatchCardSelected();
+                    if(isRef) {
+                        mCallbacks.onNextRefMatchCardSelected();
+                    } else {
+                        mCallbacks.onNextMatchCardSelected();
+                    }
                 }
             }
         }
@@ -213,28 +226,33 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_cards_content, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-        View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
-        View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
-        View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
         View ve = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_empty, parent, false);
-        View vg = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_greeting, parent, false);
 
         switch (viewType){
-            case 0:
-
+            case GREETINGCARD:
+                View vg = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_greeting, parent, false);
                 return new ViewHolderGreeting(vg);
-            case 1:
-
-                if(DataStore.getInstance(context).isUserLoggedIn()){
-                    return new ViewHolderNextMatch(vnm);
+            case NEXTREFGAME:
+                if(DataStore.getInstance(context).isUserLoggedIn() && DataStore.getInstance(context).isReferee()){
+                    View vnrm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
+                    return new ViewHolderNextMatch(vnrm, true);
                 } else {
                     return new ViewHolderEmpty(ve);
                 }
-            case 2:
+            case NEXTGAME:
+                if(DataStore.getInstance(context).isUserLoggedIn()){
+                    View vnm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
+                    return new ViewHolderNextMatch(vnm, false);
+                } else {
+                    return new ViewHolderEmpty(ve);
+                }
+            case TABLE:
+                View vt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_table, parent, false);
                 return new ViewHolderTable(vt);
-            case 3:
+            case TEAMRESULTS:
+                View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
                 return new ViewHolderMyTeam(vmt);
-            case 4:
+            case TEAMOVERVIEW:
                 View vto = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_team_overview, parent, false);
                 return new ViewHolderTeamOverview(vto);
             default:
@@ -261,14 +279,23 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             new LeagueView(this, 1).execute(); //TODO remove hard coding here
         }
         else if(holder instanceof ViewHolderNextMatch) {
-
-            mViewHolderNextMatch = (ViewHolderNextMatch) holder;
-            if(DataStore.getInstance(context).isUserLoggedIn()){
-                mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
-                if(DataStore.getInstance(context).getNextRefMatch() != null)
-                    setNextMatchText(DataStore.getInstance(context).getNextRefMatch());
-                else
-                    new RefGames(this).execute();
+            switch(position){
+                case NEXTREFGAME:
+                    mViewHolderNextRefMatch = (ViewHolderNextMatch) holder;
+                    if(DataStore.getInstance(context).isUserLoggedIn()){
+                        if(nextRefMatch!=null) {
+                            setNextRefMatch(nextRefMatch);
+                        }
+                    }
+                    break;
+                case NEXTGAME:
+                    mViewHolderNextMatch = (ViewHolderNextMatch) holder;
+                    if(DataStore.getInstance(context).isUserLoggedIn()){
+                        if(nextRefMatch!=null) {
+                            setNextMatch(nextMatch);
+                        }
+                    }
+                    break;
             }
         }
         else if(holder instanceof ViewHolderMyTeam){ //TODO remove hardcoding
@@ -368,45 +395,26 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-   @Override
-   public void refGamesCallback(List<Match> data){
-       if(data != null){
-           //sort the games in ascending order
-           Collections.sort(data, new Comparator<Match>() {
-               public int compare(Match m1, Match m2) {
-                   return m1.getDateTime().compareTo(m2.getDateTime());
-               }
-           });
-           //find the next game
-           Match nextMatch = null;
-           //Should probably replace this with a better search
-           GregorianCalendar gc = new GregorianCalendar();
-           gc.add(GregorianCalendar.HOUR,-4); //minus 4 hours so that he can see the next game during and after it's being played
-           for(Match m : data){
-               if(m.getDateTime().compareTo(gc.getTime()) > -1){
-                   nextMatch = m;
-               }
-           }
-           if(nextMatch!=null){
-               nextMatch = data.get(0);
-               DataStore.getInstance(context).setNextRefMatch(nextMatch);
-               setNextMatchText(nextMatch);
-           } else {
-               //didn't find an upcoming game
-                Log.e(TAG, "Didn't find any upcoming games");
+    public void setNextRefMatch(Match nextRefMatch){
+        this.nextRefMatch = nextRefMatch;
+        mViewHolderNextRefMatch.mParticipation.setText("Refereeing");
+        mViewHolderNextRefMatch.mTeam1Name.setText(nextRefMatch.getTeamOne());
+        mViewHolderNextRefMatch.mTeam2Name.setText(nextRefMatch.getTeamTwo());
+        mViewHolderNextRefMatch.mVS.setText("VS");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
+        mViewHolderNextRefMatch.mDate.setText(sdf.format(nextRefMatch.getDateTime()));
+        mViewHolderNextRefMatch.mCardView.setVisibility(View.VISIBLE);
+    }
 
-           }
-       }
-   }
-
-    //TODO isn't called
-    public void setNextMatchText(Match nextMatch) {
-        mViewHolderNextMatch.mParticipation.setText("Refereeing");
+    public void setNextMatch(Match nextMatch){
+        this.nextMatch = nextMatch;
+        mViewHolderNextMatch.mParticipation.setText("Playing");
         mViewHolderNextMatch.mTeam1Name.setText(nextMatch.getTeamOne());
         mViewHolderNextMatch.mTeam2Name.setText(nextMatch.getTeamTwo());
         mViewHolderNextMatch.mVS.setText("VS");
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
         mViewHolderNextMatch.mDate.setText(sdf.format(nextMatch.getDateTime()));
+        mViewHolderNextMatch.mCardView.setVisibility(View.VISIBLE);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
