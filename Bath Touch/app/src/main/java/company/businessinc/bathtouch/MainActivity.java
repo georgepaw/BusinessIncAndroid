@@ -47,14 +47,14 @@ public class MainActivity extends ActionBarActivity
         mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         if(!mSharedPreferences.contains(USERLOGGEDIN)) {
             Log.d("MAIN", "HAS NOT LOGGED IN");
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
             finish();
         }
         if(mSharedPreferences.getBoolean(USERLOGGEDIN,false) && !mSharedPreferences.contains(COOKIE)) { //user logged in but no cookie string, kick him out
             Log.d("MAIN", "USER LOGGED IN BUT NO COOKIE");
             mSharedPreferences.edit().remove(USERLOGGEDIN).commit();
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
             finish();
         } else if(mSharedPreferences.contains(COOKIE)){
@@ -206,7 +206,7 @@ public class MainActivity extends ActionBarActivity
 
     private void logOut() {
         Log.d("MAIN", "LOGGING OUT");
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, SignInActivity.class);
         APICall.clearCookies();
         mSharedPreferences.edit().remove(USERLOGGEDIN).commit();
         if(mSharedPreferences.contains(COOKIE)){
