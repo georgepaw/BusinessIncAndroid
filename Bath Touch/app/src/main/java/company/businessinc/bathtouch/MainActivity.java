@@ -139,9 +139,9 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onHomePageCardSelected(int position) {
         switch(position) {
-            case 0:
+            case HomePageAdapter.NEXTREFGAME:
                 //TODO Add a check to make sure nextMatch exists
-                Match nextMatch = DataStore.getInstance(this).getNextRefMatch();
+                Match nextMatch = null;//DataStore.getInstance(this).getNextRefMatch();
                 if(nextMatch == null){
                     Log.d("ERROR", "match is null, not opening fragment");
                     break; //TODO fix this happeneing
@@ -153,13 +153,16 @@ public class MainActivity extends ActionBarActivity
                 intent.putExtra("teamTwoName", nextMatch.getTeamTwo());
                 startActivity(intent);
                 break;
-            case 1:
+            case HomePageAdapter.NEXTGAME:
+                Log.d("CARDS", "Next game card selected");
+                break;
+            case HomePageAdapter.TABLE:
                 Log.d("MATCH", "starting leage table activity");
                 intent = new Intent(this, LeagueTableActivity.class);
                 startActivity(intent);
 //                changeFragments("LEAGUETABLETAG");
                 break;
-            case 2:
+            case HomePageAdapter.TEAMRESULTS:
                 Log.d("MATCH", "starting team results fragment");
 
                 changeFragments("TEAMRESULTSTAG");
@@ -219,17 +222,21 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onNextMatchCardSelected() {
-        Log.d("CALLABCL", "we got a callack!");
-        onHomePageCardSelected(0);
+        onHomePageCardSelected(HomePageAdapter.NEXTGAME);
+    }
+
+    @Override
+    public void onNextRefMatchCardSelected() {
+        onHomePageCardSelected(HomePageAdapter.NEXTREFGAME);
     }
 
     @Override
     public void onTeamResultsCardSelected() {
-        onHomePageCardSelected(2);
+        onHomePageCardSelected(HomePageAdapter.TEAMRESULTS);
     }
 
     @Override
     public void onLeagueCardSelected() {
-        onHomePageCardSelected(1);
+        onHomePageCardSelected(HomePageAdapter.TABLE);
     }
 }
