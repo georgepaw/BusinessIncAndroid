@@ -98,7 +98,7 @@
         <Button
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
-            android:text="@string/button_login_anon"
+            android:text="@string/button_anonymous_sign_in"
             android:textAllCaps="true"
             android:textSize="14sp"
             android:padding="8dp"

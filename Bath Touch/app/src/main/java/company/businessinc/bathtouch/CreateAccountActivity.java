@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -152,6 +155,19 @@ public class CreateAccountActivity extends ActionBarActivity implements UserNewI
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
+    public static class CreateAccountStart extends Fragment {
 
+
+        public CreateAccountStart() {
+
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_create_account_start, container, false);
+            return rootView;
+        }
+    }
 
 }

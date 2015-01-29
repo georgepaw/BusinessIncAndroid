@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -57,7 +58,7 @@ public class SignInActivity extends ActionBarActivity {
         private SharedPreferences mSharedPreferences;
         private ActionBarActivity mActivity;
         private EditText mUsernameEditText;
-        private Button mSkipNext, mNewAccount;
+        private Button mSkipNext, mNewAccount, mAnonymous;
 
         public SignInStart() {
         }
@@ -72,32 +73,12 @@ public class SignInActivity extends ActionBarActivity {
             mUsernameEditText.clearFocus();
             mSkipNext = (Button) rootView.findViewById(R.id.fragment_sign_in_start_button_skip_next);
             mNewAccount = (Button) rootView.findViewById(R.id.fragment_sign_in_start_button_no_account);
-            mUsernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            mAnonymous = (Button) rootView.findViewById(R.id.fragment_sign_in_start_button_anonymous);
+            mSkipNext.setOnClickListener(new View.OnClickListener() {
+
                 @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if(hasFocus) {
-                        Log.d("Login", "Edit text has focus");
-                        mSkipNext.setText("Next");
-                        mSkipNext.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                next(v);
-                            }
-                        });
-                    } else {
-//                        if(mUsernameEditText.getText().toString().length() == 0){
-                        Log.d("Login", "Edit text does not have focus");
-                            mSkipNext.setText("Skip");
-                            mSkipNext.setOnClickListener(new View.OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-                                    skip(v);
-                                }
-                            });
-//                        }
-                    }
+                public void onClick(View v) {
+                    next(v);
                 }
             });
             mNewAccount.setOnClickListener(new View.OnClickListener() {
@@ -107,24 +88,32 @@ public class SignInActivity extends ActionBarActivity {
                     startActivity(intent);
                 }
             });
+            mAnonymous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    login_as_anonymous(v);
+                }
+            });
             return rootView;
         }
 
         public void next(View view) {
-            FragmentManager fm = mActivity.getSupportFragmentManager();
+            FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
             SignInPassword pw = new SignInPassword();
             Bundle args = new Bundle();
             args.putString("username", mUsernameEditText.getText().toString());
             pw.setArguments(args);
-            fm.beginTransaction()
-                    .replace(R.id.container, pw)
-                    .commit();
+            ft.replace(R.id.container, pw);
+            ft.addToBackStack(null);
+            ft.commit();
         }
-        public void skip(View view) {
+
+        public void login_as_anonymous(View view) {
             Intent intent = new Intent(mActivity, MainActivity.class);
             startActivity(intent);
             mSharedPreferences.edit().putBoolean(USERLOGGEDIN, false).commit();
             DataStore.getInstance(mActivity).setUser(new User());
+            mActivity.finish();
         }
 
         public void create_account(View view) {
