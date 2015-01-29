@@ -42,7 +42,7 @@ public class CreateAccountActivity extends ActionBarActivity implements UserNewI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
         leagueTeams = new ArrayList<>();
-        getLoaderManager().initLoader(DBProviderContract.GETALLTEAMS_URL_QUERY, null, this);
+        getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
         if(savedInstanceState == null)
             mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
     }
@@ -122,7 +122,7 @@ public class CreateAccountActivity extends ActionBarActivity implements UserNewI
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
         switch (loaderID) {
-            case DBProviderContract.GETALLTEAMS_URL_QUERY:
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(this, DBProviderContract.ALLTEAMS_TABLE_CONTENTURI, null, null, null, null);
             default:

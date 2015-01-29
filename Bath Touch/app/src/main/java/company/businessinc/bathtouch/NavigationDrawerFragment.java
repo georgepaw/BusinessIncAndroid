@@ -4,10 +4,7 @@ import android.database.Cursor;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,18 +13,10 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -38,11 +27,6 @@ import company.businessinc.bathtouch.adapters.ExpandableListAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
-import company.businessinc.endpoints.LeagueView;
-import company.businessinc.endpoints.LeagueViewInterface;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -103,9 +87,9 @@ public class NavigationDrawerFragment extends Fragment implements LoaderManager.
         }
 
 
-        getLoaderManager().initLoader(DBProviderContract.GETALLLEAGUES_URL_QUERY, null, this);
+        getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
-            getLoaderManager().initLoader(DBProviderContract.GETMYLEAGUES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
         }
         // Select either the default item (0) or the last selected item.
 //        selectItem(mCurrentSelectedPosition);
@@ -378,10 +362,10 @@ public class NavigationDrawerFragment extends Fragment implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
         switch (loaderID) {
-            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+            case DBProviderContract.MYLEAGUES_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.MYLEAGUES_TABLE_CONTENTURI, null, null, null, null);
             default:
@@ -401,10 +385,10 @@ public class NavigationDrawerFragment extends Fragment implements LoaderManager.
             }
         }
         switch(loader.getId()){
-            case DBProviderContract.GETALLLEAGUES_URL_QUERY:
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 listAdapter.updateAllLeagues(child);
                 break;
-            case DBProviderContract.GETMYLEAGUES_URL_QUERY:
+            case DBProviderContract.MYLEAGUES_URL_QUERY:
                 listAdapter.updateMyLeagues(child);
                 break;
         }
