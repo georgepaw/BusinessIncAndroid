@@ -24,15 +24,13 @@ import company.businessinc.networking.CheckNetworkConnection;
 /**
  * Created by user on 20/11/14.
  */
-public class HomeCardData implements LeagueViewInterface{
+public class HomeCardData {
 
     private String TAG = "HomeCardData";
     public List<LeagueTeam> teams;
     public List<String> cards = new ArrayList<String>();
 
     public HomeCardData(){
-
-        getLeagueTeams();
 
         if(teams == null) {
             //Add dummy data if callback is returning nothing
@@ -68,13 +66,5 @@ public class HomeCardData implements LeagueViewInterface{
 
     public int size(){
         return 4;
-    }
-
-    public void getLeagueTeams() {
-        new LeagueView(this, 3).execute();
-    }
-    public void leagueViewCallback(List<LeagueTeam> data) {
-        if(data != null)
-            teams = data;
     }
 }

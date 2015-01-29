@@ -6,5 +6,5 @@ import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.User;
 
 public interface LeagueViewInterface {
-    public void leagueViewCallback(List<LeagueTeam> data);
+    public void leagueViewCallback(List<LeagueTeam> data, int leagueID);
 }

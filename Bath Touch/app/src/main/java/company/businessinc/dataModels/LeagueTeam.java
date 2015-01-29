@@ -30,7 +30,7 @@ public class LeagueTeam {
     public static final String KEY_POINTSFOR = "pointsFor";
     public static final String KEY_POINTSAGAINST = "pointsAgainst";
     public static final String[] COLUMNS = {KEY_TEAMNAME,KEY_LEAGUEPOINTS, KEY_WIN, KEY_DRAW, KEY_LOSE, KEY_FORFEIT, KEY_POSITION, KEY_POINTSFOR, KEY_POINTSAGAINST};
-    public static final String CREATE_TABLE =   KEY_TEAMNAME + "\tTEXT PRIMARY KEY,\n" +
+    public static final String CREATE_TABLE =   KEY_TEAMNAME + "\tTEXT,\n" +
                                                 KEY_LEAGUEPOINTS + "\tINTEGER,\n" +
                                                 KEY_WIN + "\tINTEGER,\n" +
                                                 KEY_DRAW + "\tINTEGER,\n" +

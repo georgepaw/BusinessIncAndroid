@@ -51,11 +51,6 @@ public class DBProvider extends ContentProvider {
 
         sUriMatcher.addURI(
                 DBProviderContract.AUTHORITY,
-                DBProviderContract.LEAGUESTEAMS_TABLE_NAME,
-                DBProviderContract.LEAGUESTEAMS_URL_QUERY);
-
-        sUriMatcher.addURI(
-                DBProviderContract.AUTHORITY,
                 DBProviderContract.LEAGUESFIXTURES_TABLE_NAME,
                 DBProviderContract.LEAGUESFIXTURES_URL_QUERY);
 
@@ -119,22 +114,29 @@ public class DBProvider extends ContentProvider {
                     DataStore.getInstance(getContext()).loadMyLeagues();
                     break;
                 case DBProviderContract.LEAGUESSCORE_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
-                    break;
-                case DBProviderContract.LEAGUESTEAMS_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
+                    if(selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                        DataStore.getInstance(getContext()).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
+                    }
                     break;
                 case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
+                    if(selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                        DataStore.getInstance(getContext()).loadLeagueFutureFixtures(Integer.valueOf(selectionArgs[0]));
+                    }
                     break;
                 case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
+                    if(selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                        DataStore.getInstance(getContext()).loadLeagueStandings(Integer.valueOf(selectionArgs[0]));
+                    }
                     break;
                 case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
+                    if(selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
+                        DataStore.getInstance(getContext()).loadTeamsFutureFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+                    }
                     break;
                 case DBProviderContract.TEAMSSCORES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
+                    if(selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
+                        DataStore.getInstance(getContext()).loadTeamsLeagueScore(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+                    }
                     break;
                 case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
                     DataStore.getInstance(getContext()).loadMyUpcomingGames();
@@ -235,8 +237,6 @@ public class DBProvider extends ContentProvider {
                 return DBProviderContract.MYLEAGUES_TABLE_NAME;
             case DBProviderContract.LEAGUESSCORE_URL_QUERY:
                 return DBProviderContract.LEAGUESSCORE_TABLE_NAME;
-            case DBProviderContract.LEAGUESTEAMS_URL_QUERY:
-                return DBProviderContract.LEAGUESTEAMS_TABLE_NAME;
             case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
                 return DBProviderContract.LEAGUESFIXTURES_TABLE_NAME;
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
