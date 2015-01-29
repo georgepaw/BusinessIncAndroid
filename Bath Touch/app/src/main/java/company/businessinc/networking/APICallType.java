@@ -18,7 +18,7 @@ public enum APICallType {
     UserEdit("/user/edit/"),
     UserLogin("/user/login/"),
     UserReset("/user/reset/"),
-    UserResetPassword("/user/reset/password");
+    UserResetPassword("/user/reset/password/");
 
     public String getEndPoint(){
         return text.toString();

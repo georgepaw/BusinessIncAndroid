@@ -57,7 +57,7 @@ public class SignInActivity extends ActionBarActivity {
         private SharedPreferences mSharedPreferences;
         private ActionBarActivity mActivity;
         private EditText mUsernameEditText;
-        private Button mSkipNext;
+        private Button mSkipNext, mNewAccount;
 
         public SignInStart() {
         }
@@ -71,6 +71,7 @@ public class SignInActivity extends ActionBarActivity {
             mUsernameEditText = (EditText) rootView.findViewById(R.id.fragment_sign_in_start_username_edit_text);
             mUsernameEditText.clearFocus();
             mSkipNext = (Button) rootView.findViewById(R.id.fragment_sign_in_start_button_skip_next);
+            mNewAccount = (Button) rootView.findViewById(R.id.fragment_sign_in_start_button_no_account);
             mUsernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -97,6 +98,13 @@ public class SignInActivity extends ActionBarActivity {
                             });
 //                        }
                     }
+                }
+            });
+            mNewAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, CreateAccountActivity.class);
+                    startActivity(intent);
                 }
             });
             return rootView;
