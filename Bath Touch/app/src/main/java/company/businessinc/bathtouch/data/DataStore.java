@@ -30,9 +30,6 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private User user;
     private Match nextRefMatch;
 
-    public LinkedList<String> userTables;
-
-
     public static DataStore getInstance(Context context) {
 
         // Use the application context, which will ensure that you
@@ -77,11 +74,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllTeams(){
-        //check if table exists
-       if(isTableEmpty(DBProviderContract.ALLTEAMS_TABLE_NAME)) {
-            //if it doesn't then call the API
-            new TeamList(this).execute();
-       }
+        new TeamList(this).execute();
     }
 
     public void loadLeaguesTeams(int leagueID){
@@ -113,11 +106,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyLeagues(){
-        //check if table exists
-        if(isTableEmpty(DBProviderContract.MYLEAGUES_TABLE_NAME)) {
-            //if it doesn't then call the API
-            new TeamLeagues(this, user.getTeamID()).execute();
-        }
+        new TeamLeagues(this, user.getTeamID()).execute();
     }
 
     public void teamLeaguesCallback(List<League> data){
@@ -132,11 +121,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllLeagues(){
-        //check if table exists
-        if(isTableEmpty(DBProviderContract.ALLLEAGUES_TABLE_NAME)) {
-            //if it doesn't then call the API
-            new LeagueList(this).execute();
-        }
+        new LeagueList(this).execute();
     }
 
     public void leagueListCallback(List<League> data){
@@ -170,17 +155,20 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     }
 
+    public void loadMyUpcomingGames(){
+
+    }
+
+    public void loadMyUpcomingRefGames(){
+
+    }
+
     public void setNextRefMatch(Match match) {
         nextRefMatch = match;
     }
 
     public Match getNextRefMatch() {
         return nextRefMatch;
-    }
-
-    private boolean isTableEmpty(String tableName){
-        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
-        return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
     }
 
     public void clearUserData() {
@@ -191,7 +179,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     private void dropUserTables(){
         ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
-        ((DBProvider)client.getLocalContentProvider()).dropUserData(userTables);
+        ((DBProvider)client.getLocalContentProvider()).dropUserData();
     }
 
 }
