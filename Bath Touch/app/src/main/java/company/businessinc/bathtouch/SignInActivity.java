@@ -47,7 +47,7 @@ public class SignInActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new SignInStart())
+                    .add(R.id.activity_sign_in_container, new SignInStart())
                     .commit();
 
         }
@@ -103,7 +103,7 @@ public class SignInActivity extends ActionBarActivity {
             Bundle args = new Bundle();
             args.putString("username", mUsernameEditText.getText().toString());
             pw.setArguments(args);
-            ft.replace(R.id.container, pw);
+            ft.replace(R.id.activity_sign_in_container, pw);
             ft.addToBackStack(null);
             ft.commit();
         }
