@@ -53,12 +53,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-        <provider
-            android:name=".data.DBProvider"
-            android:authorities="company.businessinc.bathtouch" >
-        </provider>
-
         <activity
             android:name=".SignInActivity"
             android:label="@string/title_activity_sign_in" >
@@ -67,6 +61,10 @@
             android:name=".ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" >
         </activity>
+        <provider
+            android:name=".data.DBProvider"
+            android:authorities="company.businessinc.bathtouch" >
+        </provider>
     </application>
 
 </manifest>
