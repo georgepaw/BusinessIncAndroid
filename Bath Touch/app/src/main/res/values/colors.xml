@@ -26,14 +26,14 @@
     <item name="blue_royal" type="color">#4183D7</item>
     <item name="blue_marino" type="color">#446CB3</item>
 
-    <item name="primary" type="color">#59ABE3</item>
-    <item name="primary_dark" type="color">#4183D7</item>
-    <item name="primary_hovered" type="color">#446CB3</item>
+    <!--<item name="primary" type="color">#59ABE3</item>-->
+    <!--<item name="primary_dark" type="color">#4183D7</item>-->
+    <!--<item name="primary_hovered" type="color">#446CB3</item>-->
 
 
-    <!--<item name="primary" type="color">#FF4444</item>-->
-    <!--<item name="primary_dark" type="color">#CF000F</item>-->
-    <!--<item name="primary_hovered" type="color">#96281B</item>-->
+    <item name="primary" type="color">#FF4444</item>
+    <item name="primary_dark" type="color">#CF000F</item>
+    <item name="primary_hovered" type="color">#96281B</item>
 
 
 

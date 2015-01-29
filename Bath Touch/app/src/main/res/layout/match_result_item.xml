@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_page_card_table"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    card_view:cardCornerRadius="2dp"
+    android:clickable="true"
 
     >
 
@@ -105,11 +110,11 @@
     </RelativeLayout>
 
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:layout_alignBottom="@id/match_result_item_container"
-        android:background="@color/grey"></View>
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="1px"-->
+        <!--android:layout_alignBottom="@id/match_result_item_container"-->
+        <!--android:background="@color/grey"></View>-->
 
 
-</RelativeLayout>
+</android.support.v7.widget.CardView>
