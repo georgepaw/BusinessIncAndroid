@@ -24,7 +24,7 @@ public class Team {
     public static final String KEY_TEAMCOLORPRIMARY = "teamColorPrimary";
     public static final String KEY_TEAMCOLORSECONDARY = "teamColorSecondary";
     public static final String[] COLUMNS = {KEY_TEAMID, KEY_TEAMNAME, KEY_CAPTAINID, KEY_CAPTAINNAME, KEY_TEAMCOLORPRIMARY, KEY_TEAMCOLORSECONDARY};
-    public static final String CREATE_TABLE =   KEY_TEAMID + "\tINTEGER PRIMARY KEY,\n" +
+    public static final String CREATE_TABLE =   KEY_TEAMID + "\tINTEGER,\n" +
                                                 KEY_TEAMNAME + "\tTEXT,\n" +
                                                 KEY_CAPTAINID + "\tINTEGER,\n" +
                                                 KEY_CAPTAINNAME + "\tTEXT,\n" +

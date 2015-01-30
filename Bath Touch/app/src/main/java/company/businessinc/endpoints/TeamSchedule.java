@@ -23,9 +23,13 @@ public class TeamSchedule extends AsyncTask<Void, Void, List<Match>> {
     String TAG = "TeamSchedule";
     private TeamScheduleInterface callback;
     private List<NameValuePair> parameters;
+    private int leagueID;
+    private int teamID;
 
     public TeamSchedule(TeamScheduleInterface callback, int leagueID, int teamID) {
         this.callback = callback;
+        this.leagueID = leagueID;
+        this.teamID = teamID;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("leagueID", Integer.toString(leagueID)));
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
@@ -56,6 +60,6 @@ public class TeamSchedule extends AsyncTask<Void, Void, List<Match>> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(List<Match> result) {
-        callback.teamScheduleCallback(result);
+        callback.teamScheduleCallback(result, leagueID, teamID);
     }
 }

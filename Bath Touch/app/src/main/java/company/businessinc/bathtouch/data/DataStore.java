@@ -3,6 +3,8 @@ package company.businessinc.bathtouch.data;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import java.util.Collections;
@@ -12,22 +14,34 @@ import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueList;
 import company.businessinc.endpoints.LeagueListInterface;
+import company.businessinc.endpoints.LeagueSchedule;
+import company.businessinc.endpoints.LeagueScheduleInterface;
+import company.businessinc.endpoints.LeagueScores;
+import company.businessinc.endpoints.LeagueScoresInterface;
+import company.businessinc.endpoints.LeagueView;
+import company.businessinc.endpoints.LeagueViewInterface;
 import company.businessinc.endpoints.RefGames;
 import company.businessinc.endpoints.RefGamesInterface;
 import company.businessinc.endpoints.TeamLeagues;
 import company.businessinc.endpoints.TeamLeaguesInterface;
 import company.businessinc.endpoints.TeamList;
 import company.businessinc.endpoints.TeamListInterface;
+import company.businessinc.endpoints.TeamSchedule;
+import company.businessinc.endpoints.TeamScheduleInterface;
+import company.businessinc.endpoints.TeamScores;
+import company.businessinc.endpoints.TeamScoresInterface;
 
 /**
  * Created by Louis on 29/11/2014.
  */
-public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface{
+public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface, LeagueViewInterface, LeagueScheduleInterface,
+        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface{
 
     private static DataStore sInstance;
     private Context context;
@@ -149,23 +163,100 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueScores(int leagueID){
+        new LeagueScores(this, leagueID).execute();
+    }
 
+    @Override
+    public void leagueScoresCallback(List<Match> data, int leagueID){
+        if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                ContentValues dis = data.get(i).toContentValues();
+                dis.put(League.KEY_LEAGUEID, leagueID);
+                cV.add(dis);
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+            context.getContentResolver().bulkInsert(DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI, contentValues);
+        }
     }
 
     public void loadLeagueFutureFixtures(int leagueID){
+        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_NAME)) {
+            new LeagueSchedule(this, leagueID).execute();
+        }
+    }
 
+    @Override
+    public void leagueScheduleCallback(List<Match> data, int leagueID){
+        if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                ContentValues dis = data.get(i).toContentValues();
+                dis.put(League.KEY_LEAGUEID, leagueID);
+                cV.add(dis);
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+            context.getContentResolver().bulkInsert(DBProviderContract.LEAGUESFIXTURES_TABLE_CONTENTURI, contentValues);
+        }
     }
 
     public void loadLeagueStandings(int leagueID){
-
+        new LeagueView(this, leagueID).execute();
+    }
+    @Override
+    public void leagueViewCallback(List<LeagueTeam> data, int leagueID) {
+        if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                ContentValues dis = data.get(i).toContentValues();
+                dis.put(League.KEY_LEAGUEID, leagueID);
+                cV.add(dis);
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+            context.getContentResolver().bulkInsert(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, contentValues);
+        }
     }
 
     public void loadTeamsFutureFixtures(int teamID, int leagueID){
+        new TeamSchedule(this,leagueID,teamID).execute();
+    }
 
+    @Override
+    public void teamScheduleCallback(List<Match> data, int leagueID, int teamID){
+        if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                ContentValues dis = data.get(i).toContentValues();
+                //check is this is a game that current user would play in, if yes add it to upcoming games
+                if(data.get(i).getTeamOneID() == user.getTeamID() || data.get(i).getTeamOneID() == user.getTeamID()){
+                    context.getContentResolver().insert(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, data.get(i).toContentValues());
+                }
+                dis.put(League.KEY_LEAGUEID, leagueID);
+                dis.put(Team.KEY_TEAMID, teamID);
+                cV.add(dis);
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+            context.getContentResolver().bulkInsert(DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI, contentValues);
+        }
     }
 
     public void loadTeamsLeagueScore(int teamID, int leagueID){
+        new TeamScores(this,leagueID,teamID).execute();
+    }
 
+    @Override
+    public void teamScoresCallback(List<Match> data, int leagueID, int teamID){
+        if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                ContentValues dis = data.get(i).toContentValues();
+                dis.put(League.KEY_LEAGUEID, leagueID);
+                dis.put(Team.KEY_TEAMID, teamID);
+                cV.add(dis);
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+            context.getContentResolver().bulkInsert(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, contentValues);
+        }
     }
 
     public void loadMyUpcomingGames(){
@@ -196,6 +287,11 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 }
             }
         }
+    }
+
+    private boolean isTableEmpty(String tableName){
+        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
+        return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
     }
 
     public void clearUserData() {

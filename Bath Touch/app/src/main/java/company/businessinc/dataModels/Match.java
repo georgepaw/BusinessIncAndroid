@@ -42,7 +42,7 @@ public class Match {
     public static final String KEY_TEAMTWOPOINTS = "teamTwoPoints";
     public static final String KEY_ISFORFEIT = "isForfeit";
     public static final String[] COLUMNS = {KEY_MATCHID,KEY_TEAMONEID, KEY_TEAMTWOID, KEY_TEAMONE, KEY_TEAMTWO, KEY_REFID, KEY_REFNAME, KEY_DATETIME, KEY_PLACE, KEY_TEAMONEPOINTS, KEY_TEAMTWOPOINTS, KEY_ISFORFEIT};
-    public static final String CREATE_TABLE =   KEY_MATCHID + "\tINTEGER PRIMARY KEY,\n" +
+    public static final String CREATE_TABLE =   KEY_MATCHID + "\tINTEGER,\n" +
                                                 KEY_TEAMONEID + "\tINTEGER,\n" +
                                                 KEY_TEAMTWOID + "\tINTEGER,\n" +
                                                 KEY_TEAMONE + "\tTEXT,\n" +
