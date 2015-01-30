@@ -1,5 +1,7 @@
 package company.businessinc.bathtouch;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,9 +11,18 @@ import android.content.SharedPreferences;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+import com.heinrichreimersoftware.materialdrawer.DrawerView;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,12 +31,12 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
+import company.businessinc.endpoints.UserReset;
 import company.businessinc.networking.APICall;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        HomePageFragment.HomePageCallbacks,
+        implements HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
         HomePageAdapter.homePageAdapterCallbacks{
@@ -38,7 +49,8 @@ public class MainActivity extends ActionBarActivity
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private DrawerFrameLayout mNavigationDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragmentManager;
 
     @Override
@@ -74,66 +86,222 @@ public class MainActivity extends ActionBarActivity
         if(savedInstanceState == null) {
             mFragmentManager = getSupportFragmentManager();
             mFragmentManager.beginTransaction()
-                    .replace(R.id.container, HomePageFragment.newInstance())
+                    .replace(R.id.container, HomePageFragment.newInstance(), "fragmentTag")
                     .commit();
         }
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
+        mNavigationDrawerLayout = (DrawerFrameLayout) findViewById(R.id.drawer_layout);
+//        DrawerView navigationDrawer = (DrawerView) findViewById(R.id.drawer);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
 
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer_fragment,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        if(!DataStore.getInstance(this).isUserLoggedIn()) {
+            mNavigationDrawerLayout.setProfile(
+                    new DrawerProfile()
+                            .setAvatar(getResources().getDrawable(R.color.accent_material_light))
+                            .setBackground(getResources().getDrawable(R.color.primary))
+                            .setName("Anonymous User")
+                            .setDescription("Not signed in")
+                            .setOnProfileClickListener(new DrawerProfile.OnProfileClickListener() {
+                                @Override
+                                public void onClick(DrawerProfile drawerProfile) {
+                                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                                    alertDialog.setMessage("Do you want to sign in?");
+                                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Sign in", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            logOut();
+                                        }
+                                    });
+                                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    alertDialog.show();
+                                }
+                            })
+            );
+        } else {
+            mNavigationDrawerLayout.setProfile(
+                    new DrawerProfile()
+                            .setAvatar(getResources().getDrawable(R.color.accent_material_light))
+                            .setBackground(getResources().getDrawable(R.color.primary))
+                            .setName(DataStore.getInstance(MainActivity.this).getUserName())
+                            .setDescription(DataStore.getInstance(MainActivity.this).getUserTeam())
+                            .setOnProfileClickListener(new DrawerProfile.OnProfileClickListener() {
+                                @Override
+                                public void onClick(DrawerProfile drawerProfile) {
+                                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                                    alertDialog.setMessage("Do you want to sign out?");
+                                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Sign out", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            logOut();
+                                        }
+                                    });
+                                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    alertDialog.show();
+                                }
+                            })
+            );
+        }
+        mNavigationDrawerLayout.addItem(
+                new DrawerItem()
+                        .setImage(getResources().getDrawable(R.drawable.ic_thumb_up))
+                        .setTextPrimary("Home")
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int id, int position) {
+                                changeFragments("HOMEPAGETAG");
+                            }
+                        })
+        );
+        mNavigationDrawerLayout.addItem(
+                new DrawerItem()
+                        .setImage(getResources().getDrawable(R.drawable.ic_thumbs_up_down))
+                        .setTextPrimary("League Tables")
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int id, int position) {
+                                Toast.makeText(MainActivity.this, "No league tables fragment yet", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+        );
+        mNavigationDrawerLayout.addItem(
+                new DrawerItem()
+                        .setImage(getResources().getDrawable(R.drawable.ic_thumb_up))
+                        .setTextPrimary("Previous Results")
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int id, int position) {
+                                changeFragments("TEAMRESULTSTAG");
+                            }
+                        })
+        );
+        if(DataStore.getInstance(this).isUserCaptain()) { //TODO This call is hardcoded, should work later
+            mNavigationDrawerLayout.addItem(
+                    new DrawerItem()
+                            .setImage(getResources().getDrawable(R.drawable.ic_thumbs_up_down))
+                            .setTextPrimary("Organise Team")
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int id, int position) {
+                                    Toast.makeText(MainActivity.this, "No team organise fragment yet", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+            );
+        }
+        mNavigationDrawerLayout.addDivider();
+        mNavigationDrawerLayout.addItem(
+                new DrawerItem()
+                        .setImage(getResources().getDrawable(R.drawable.ic_thumb_down))
+                        .setTextPrimary("Settings")
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int id, int position) {
+                                Toast.makeText(MainActivity.this, "No settings activity yet", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+        );
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mNavigationDrawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        ){
+
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu();
+            }
+        };
+
+        setSupportActionBar(toolbar);
+
+        mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
+        mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
+//        mNavigationDrawerLayout.closeDrawer(navigationDrawer);
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+//            // Only show items in the action bar relevant to this screen
+//            // if the drawer is not showing. Otherwise, let the drawer
+//            // decide what to show in the action bar.
+//            getMenuInflater().inflate(R.menu.menu_main, menu);
+//            return true;
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_log_out) {
+//            logOut();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+
+//    @Override
+//    public void onNavigationDrawerItemSelected(int position, String name) {
+////        update the main content by replacing fragments
+//        switch (position) {
+//            case 0:
+//                changeFragments("HOMEPAGETAG");
+//                break;
+//            case 1:
+//                changeFragments("LEAGUETABLETAG");
+//                break;
+//            case 2:
+//                Log.d("CALLLBK", "in callback on main acitivy");
+//
+//                changeFragments("TEAMRESULTSTAG");
+//                break;
+//            case 3:
+//                logOut();
+//            default:
+//                break;
+//        }
+//    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.menu_main, menu);
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_log_out) {
-            logOut();
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onNavigationDrawerItemSelected(int position, String name) {
-//        update the main content by replacing fragments
-        switch (position) {
-            case 0:
-                changeFragments("HOMEPAGETAG");
-                break;
-            case 1:
-                changeFragments("LEAGUETABLETAG");
-                break;
-            case 2:
-                Log.d("CALLLBK", "in callback on main acitivy");
-
-                changeFragments("TEAMRESULTSTAG");
-                break;
-            case 3:
-                logOut();
-            default:
-                break;
-        }
     }
 
     @Override

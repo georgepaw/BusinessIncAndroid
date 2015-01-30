@@ -80,9 +80,8 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.alternative_home_page, container, false);
 
-        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.alt_toolbar_home_screen);
-         ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle("Home");
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.alt_home_page_cards_recycle);
 
