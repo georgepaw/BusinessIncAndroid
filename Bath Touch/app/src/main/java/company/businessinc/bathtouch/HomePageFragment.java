@@ -77,6 +77,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
         } else {
             getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
         }
+        getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
     }
 
     @Override
@@ -175,6 +176,15 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.MYLEAGUES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.MYLEAGUES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -184,6 +194,41 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     //query has finished
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (!data.moveToFirst()){
+            return;
+        }
+        switch(loader.getId()) {
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+                List<Match> nextRefMatch = new ArrayList<>();
+                while(!data.isAfterLast()){
+                    nextRefMatch.add(new Match(data));
+                    data.moveToNext();
+                }
+                if(nextRefMatch.size() > 0){
+                    nextRefMatch = Match.sortList(nextRefMatch, Match.SortType.ASCENDING);
+                    ((HomePageAdapter)mAdapter).setNextRefMatch(nextRefMatch.get(0));
+                }
+                break;
+            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+                List<Match> nextMatch = new ArrayList<>();
+                while(!data.isAfterLast()){
+                    nextMatch.add(new Match(data));
+                    data.moveToNext();
+                }
+                if(nextMatch.size() > 0){
+                    nextMatch = Match.sortList(nextMatch, Match.SortType.ASCENDING);
+                    ((HomePageAdapter)mAdapter).setNextMatch(nextMatch.get(0));
+                }
+                break;
+            case DBProviderContract.MYLEAGUES_URL_QUERY:
+                break;
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                break;
+            case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
+                break;
+        }
+
+
         List<Match> matches = new ArrayList<>();
         if (data.moveToFirst()){
             while(!data.isAfterLast()){

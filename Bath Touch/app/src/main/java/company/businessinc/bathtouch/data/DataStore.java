@@ -271,11 +271,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public void refGamesCallback(List<Match> data){
         if(data != null){
             //sort the games in ascending order
-            Collections.sort(data, new Comparator<Match>() {
-                public int compare(Match m1, Match m2) {
-                    return m1.getDateTime().compareTo(m2.getDateTime());
-                }
-            });
+            data = Match.sortList(data, Match.SortType.ASCENDING);
             //find the next game
             Match nextMatch = null;
             //Should probably replace this with a better search
