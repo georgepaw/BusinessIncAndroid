@@ -36,7 +36,7 @@
                 <TextView
 
                     android:id="@+id/home_page_card_table_header"
-                    android:layout_width="fill_parent"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:text="EPL"
                     android:textColor="@color/white"
@@ -147,7 +147,10 @@
                 android:layout_height="2px"
                 android:layout_alignBottom="@id/home_page_card_table_table_header"
                 android:layout_alignParentLeft="true"
-                android:background="@color/grey" />
+                android:background="@color/grey"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                />
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/home_page_card_table_row1"
@@ -229,7 +232,9 @@
                 android:layout_height="1px"
                 android:layout_alignBottom="@id/home_page_card_table_row1"
                 android:layout_alignParentLeft="true"
-                android:background="@color/grey" />
+                android:background="@color/grey"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/home_page_card_table_row2"
@@ -312,7 +317,9 @@
                 android:layout_height="1px"
                 android:layout_alignBottom="@id/home_page_card_table_row2"
                 android:layout_alignParentLeft="true"
-                android:background="@color/grey" />
+                android:background="@color/grey"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/home_page_card_table_row3"
