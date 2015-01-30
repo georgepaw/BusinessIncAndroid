@@ -101,9 +101,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllTeams(){
-        if(isTableEmpty(DBProviderContract.ALLTEAMS_TABLE_NAME)) {
-            new TeamList(this).execute();
-        }
+        new TeamList(this).execute();
     }
 
     public void loadLeaguesTeams(int leagueID){
@@ -135,9 +133,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyLeagues(){
-        if(isTableEmpty(DBProviderContract.MYLEAGUES_TABLE_NAME)) {
-            new TeamLeagues(this, user.getTeamID()).execute();
-        }
+        new TeamLeagues(this, user.getTeamID()).execute();
     }
 
     public void teamLeaguesCallback(List<League> data){
@@ -152,9 +148,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllLeagues(){
-        if(isTableEmpty(DBProviderContract.ALLLEAGUES_TABLE_NAME)) {
-            new LeagueList(this).execute();
-        }
+        new LeagueList(this).execute();
     }
 
     public void leagueListCallback(List<League> data){
@@ -169,9 +163,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueScores(int leagueID){
-        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_NAME)) {
-            new LeagueScores(this, leagueID).execute();
-        }
+        new LeagueScores(this, leagueID).execute();
     }
 
     @Override
@@ -209,9 +201,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueStandings(int leagueID){
-        if(isTableEmpty(DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME)) {
-            new LeagueView(this, leagueID).execute();
-        }
+        new LeagueView(this, leagueID).execute();
     }
     @Override
     public void leagueViewCallback(List<LeagueTeam> data, int leagueID) {
@@ -228,9 +218,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadTeamsFutureFixtures(int teamID, int leagueID){
-        if(isTableEmpty(DBProviderContract.TEAMSFIXTURES_TABLE_NAME)){
-            new TeamSchedule(this,leagueID,teamID).execute();
-        }
+        new TeamSchedule(this,leagueID,teamID).execute();
     }
 
     @Override
@@ -253,9 +241,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadTeamsLeagueScore(int teamID, int leagueID){
-        if(isTableEmpty(DBProviderContract.TEAMSSCORES_TABLE_NAME)){
-            new TeamScores(this,leagueID,teamID).execute();
-        }
+        new TeamScores(this,leagueID,teamID).execute();
     }
 
     @Override
@@ -278,9 +264,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyUpcomingRefGames(){
-        if(isTableEmpty(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME)){
-            new RefGames(this).execute();
-        }
+        new RefGames(this).execute();
     }
 
     @Override

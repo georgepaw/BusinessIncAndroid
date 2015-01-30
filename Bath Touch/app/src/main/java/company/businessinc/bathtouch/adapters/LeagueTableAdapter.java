@@ -1,6 +1,8 @@
 package company.businessinc.bathtouch.adapters;
 
+import android.database.Cursor;
 import android.graphics.Typeface;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.endpoints.LeagueView;
 import company.businessinc.endpoints.LeagueViewInterface;
@@ -22,11 +25,11 @@ import company.businessinc.endpoints.LeagueViewInterface;
 /**
  * Created by user on 22/11/14.
  */
-public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
+public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 
     private LeagueTableData mDataset;
-    private ArrayList<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
+    private List<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
 
 
     public class ViewHolderLeague extends RecyclerView.ViewHolder {
@@ -44,43 +47,15 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public LeagueTableAdapter(int leagueID) {
-
-        //get the league data to display
-        getLeagueData(leagueID);
-//        mDataset = mDataSet;
-    }
-
-    //Sends a request to the api for league data
-    public void getLeagueData(int id) {
-        Log.d("APADTER", Integer.toString(id));
-        new LeagueView(this, id).execute(); //just gets the comski league
+    public LeagueTableAdapter() {
 
     }
 
-    /*
-    Callback for getting league data
-    */
-    @Override
-    public void leagueViewCallback(List<LeagueTeam> data, int league) {
-        if(data != null){
-
-            Collections.sort(data, new Comparator<LeagueTeam>() {
-                @Override
-                public int compare(LeagueTeam T1, LeagueTeam T2) {
-                    return T1.getPosition() - T2.getPosition();
-                }
-            });
-
-            for(LeagueTeam t: data){
-
-                leagueTeams.add(t);
-            }
-        }
-
+    public void setLeagueTeams(List<LeagueTeam> leagueTeams){
+        this.leagueTeams = leagueTeams;
         notifyDataSetChanged();
-
     }
+
 
     @Override
     public int getItemViewType(int position) {
