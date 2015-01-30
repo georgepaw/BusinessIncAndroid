@@ -13,6 +13,7 @@ public enum APICallType {
     ScoreSubmit("/score/submit/"),
     TeamScores("/team/scores/"),
     TeamList("/team/list/"),
+    TeamLeagues("/team/leagues/"),
     TeamSchedule("/team/schedule/"),
     UserNew("/user/new/"),
     UserEdit("/user/edit/"),

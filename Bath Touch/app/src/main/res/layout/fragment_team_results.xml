@@ -8,49 +8,22 @@
         android:layout_height="match_parent"
         tools:context="company.businessinc.bathtouch.TeamResultsActivity">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_team_results_screen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="?attr/colorPrimary"
-            android:elevation="2dp"
-            android:minHeight="?attr/actionBarSize" />
-
         <RelativeLayout
             android:id="@+id/team_results_header"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@id/toolbar_team_results_screen"
+            android:layout_height="48dp"
+            android:layout_below="@id/activity_main_toolbar"
             android:background="?attr/colorPrimary"
             android:padding="16dp"
             android:elevation="2dp">
 
             <TextView
-                android:id="@+id/team_results_header_team_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CompSci Vipers Results"
-                android:textSize="28sp"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/team_results_header_team_pos"
-                android:layout_alignParentBottom="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1st in League"
-                android:textSize="18sp"
-                android:textColor="@color/white"/>
-
-            <TextView
                 android:id="@+id/team_results_header_league_name"
-                android:layout_above="@id/team_results_header_team_pos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bath Touch Winter League 2015"
-                android:textSize="18sp"
+                android:text="Winter League 2015"
+                android:textSize="14sp"
+                android:textAllCaps="true"
                 android:textColor="@color/white"/>
 
             <ImageView

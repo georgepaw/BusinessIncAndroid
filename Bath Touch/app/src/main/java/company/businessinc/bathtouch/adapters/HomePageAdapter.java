@@ -19,6 +19,7 @@ import java.util.List;
 
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.bathtouch.R;
+import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.endpoints.LeagueView;
@@ -27,7 +28,7 @@ import company.businessinc.endpoints.LeagueViewInterface;
 /**
  * Created by user on 20/11/14.
  */
-public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements LeagueViewInterface {
+public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
     private String TAG = "HomePageAdapter";
@@ -38,6 +39,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private homePageAdapterCallbacks mCallbacks;
     private Match nextMatch = null;
     private Match nextRefMatch = null;
+    private List<LeagueTeam> leagueTeam = null;
+    private League league = null;
 
     //card positions
     public static final int GREETINGCARD = 0;
@@ -68,18 +71,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mCardView = (CardView) v.findViewById(R.id.home_page_card_home);
             mTextView = (TextView) v.findViewById(R.id.home_page_card_home_header);
         }
-    }
-
-    public class ViewHolderGreeting extends RecyclerView.ViewHolder {
-        public TextView mUserName;
-        public TextView mTeamName;
-
-        public ViewHolderGreeting(View v) {
-            super(v);
-            mUserName = (TextView) v.findViewById(R.id.alt_home_page_username);
-            mTeamName = (TextView) v.findViewById(R.id.alt_home_page_user_team);
-        }
-
     }
 
     public class ViewHolderTeamOverview extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -229,9 +220,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View ve = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_empty, parent, false);
 
         switch (viewType){
-            case GREETINGCARD:
-                View vg = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_greeting, parent, false);
-                return new ViewHolderGreeting(vg);
             case NEXTREFGAME:
                 if(DataStore.getInstance(context).isUserLoggedIn() && DataStore.getInstance(context).isReferee()){
                     View vnrm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
@@ -276,7 +264,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewHolderTable.mSubHeaderTextView.setText("Standings of Top 3 Teams");
            setVisibility("table", View.INVISIBLE);
             mViewHolderTable.mProgressBar.setVisibility(View.VISIBLE);
-            new LeagueView(this, 1).execute(); //TODO remove hard coding here
+            loadData();
         }
         else if(holder instanceof ViewHolderNextMatch) {
             switch(position){
@@ -313,18 +301,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else if(holder instanceof  ViewHolderEmpty) {
             ViewHolderEmpty ve = (ViewHolderEmpty) holder;
         }
-        else if(holder instanceof ViewHolderGreeting){
-            ViewHolderGreeting vg = (ViewHolderGreeting) holder;
-            if(DataStore.getInstance(context).isUserLoggedIn()){
-                vg.mUserName.setText(DataStore.getInstance(context).getUserName());
-                vg.mTeamName.setText(DataStore.getInstance(context).getUserTeam());
-            }
-            else{
-                vg.mUserName.setText("Bath Touch Leagues");
-                vg.mTeamName.setText("Log in to view your teams");
-            }
-
-        }
         else if(holder instanceof ViewHolderTeamOverview){
             ViewHolderTeamOverview vto = (ViewHolderTeamOverview) holder;
         }
@@ -360,11 +336,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mViewHolderTable.mTeam2Pts.setVisibility(visibility);
         mViewHolderTable.mTeam3Pts.setVisibility(visibility);
     }
+    
+    public void setLeague(List<LeagueTeam> data, League league){
+        this.leagueTeam = data;
+        this.league = league;
+        notifyDataSetChanged();
+    }
 
-    @Override
-    public void leagueViewCallback(List<LeagueTeam> data) {
-        if(data!= null) {
-            Collections.sort(data, new Comparator<LeagueTeam>() {
+    private void loadData() {
+        if(leagueTeam!= null) {
+            Collections.sort(leagueTeam, new Comparator<LeagueTeam>() {
                 @Override
                 public int compare(LeagueTeam T1, LeagueTeam T2) {
                     return T1.getPosition() - T2.getPosition();
@@ -372,25 +353,25 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
             setVisibility("table", View.VISIBLE);
             mViewHolderTable.mProgressBar.setVisibility(View.GONE);
-            mViewHolderTable.mHeaderTextView.setText("Bath Summer League 2015");
-            mViewHolderTable.mTeam1name.setText(data.get(0).getTeamName());
-            mViewHolderTable.mTeam2name.setText(data.get(1).getTeamName());
-            mViewHolderTable.mTeam3name.setText(data.get(2).getTeamName());
-            mViewHolderTable.mTeam1Number.setText(data.get(0).getPosition().toString());
-            mViewHolderTable.mTeam2Number.setText(data.get(1).getPosition().toString());
-            mViewHolderTable.mTeam3Number.setText(data.get(2).getPosition().toString());
-            mViewHolderTable.mTeam1Won.setText(data.get(0).getWin().toString());
-            mViewHolderTable.mTeam2Won.setText(data.get(1).getWin().toString());
-            mViewHolderTable.mTeam3Won.setText(data.get(2).getWin().toString());
-            mViewHolderTable.mTeam1Draw.setText(data.get(0).getDraw().toString());
-            mViewHolderTable.mTeam2Draw.setText(data.get(1).getDraw().toString());
-            mViewHolderTable.mTeam3Draw.setText(data.get(2).getDraw().toString());
-            mViewHolderTable.mTeam1Lost.setText(data.get(0).getLose().toString());
-            mViewHolderTable.mTeam2Lost.setText(data.get(1).getLose().toString());
-            mViewHolderTable.mTeam3Lost.setText(data.get(2).getLose().toString());
-            mViewHolderTable.mTeam1Pts.setText(data.get(0).getLeaguePoints().toString());
-            mViewHolderTable.mTeam2Pts.setText(data.get(1).getLeaguePoints().toString());
-            mViewHolderTable.mTeam3Pts.setText(data.get(2).getLeaguePoints().toString());
+            mViewHolderTable.mHeaderTextView.setText(league.getLeagueName());
+            mViewHolderTable.mTeam1name.setText(leagueTeam.get(0).getTeamName());
+            mViewHolderTable.mTeam2name.setText(leagueTeam.get(1).getTeamName());
+            mViewHolderTable.mTeam3name.setText(leagueTeam.get(2).getTeamName());
+            mViewHolderTable.mTeam1Number.setText(leagueTeam.get(0).getPosition().toString());
+            mViewHolderTable.mTeam2Number.setText(leagueTeam.get(1).getPosition().toString());
+            mViewHolderTable.mTeam3Number.setText(leagueTeam.get(2).getPosition().toString());
+            mViewHolderTable.mTeam1Won.setText(leagueTeam.get(0).getWin().toString());
+            mViewHolderTable.mTeam2Won.setText(leagueTeam.get(1).getWin().toString());
+            mViewHolderTable.mTeam3Won.setText(leagueTeam.get(2).getWin().toString());
+            mViewHolderTable.mTeam1Draw.setText(leagueTeam.get(0).getDraw().toString());
+            mViewHolderTable.mTeam2Draw.setText(leagueTeam.get(1).getDraw().toString());
+            mViewHolderTable.mTeam3Draw.setText(leagueTeam.get(2).getDraw().toString());
+            mViewHolderTable.mTeam1Lost.setText(leagueTeam.get(0).getLose().toString());
+            mViewHolderTable.mTeam2Lost.setText(leagueTeam.get(1).getLose().toString());
+            mViewHolderTable.mTeam3Lost.setText(leagueTeam.get(2).getLose().toString());
+            mViewHolderTable.mTeam1Pts.setText(leagueTeam.get(0).getLeaguePoints().toString());
+            mViewHolderTable.mTeam2Pts.setText(leagueTeam.get(1).getLeaguePoints().toString());
+            mViewHolderTable.mTeam3Pts.setText(leagueTeam.get(2).getLeaguePoints().toString());
         }
 
     }
