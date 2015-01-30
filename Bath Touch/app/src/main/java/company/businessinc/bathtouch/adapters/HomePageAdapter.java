@@ -73,18 +73,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public class ViewHolderGreeting extends RecyclerView.ViewHolder {
-        public TextView mUserName;
-        public TextView mTeamName;
-
-        public ViewHolderGreeting(View v) {
-            super(v);
-            mUserName = (TextView) v.findViewById(R.id.alt_home_page_username);
-            mTeamName = (TextView) v.findViewById(R.id.alt_home_page_user_team);
-        }
-
-    }
-
     public class ViewHolderTeamOverview extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ViewHolderTeamOverview(View v){
             super(v);
@@ -232,9 +220,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View ve = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_empty, parent, false);
 
         switch (viewType){
-            case GREETINGCARD:
-                View vg = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_greeting, parent, false);
-                return new ViewHolderGreeting(vg);
             case NEXTREFGAME:
                 if(DataStore.getInstance(context).isUserLoggedIn() && DataStore.getInstance(context).isReferee()){
                     View vnrm = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_next_match, parent, false);
@@ -315,18 +300,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         else if(holder instanceof  ViewHolderEmpty) {
             ViewHolderEmpty ve = (ViewHolderEmpty) holder;
-        }
-        else if(holder instanceof ViewHolderGreeting){
-            ViewHolderGreeting vg = (ViewHolderGreeting) holder;
-            if(DataStore.getInstance(context).isUserLoggedIn()){
-                vg.mUserName.setText(DataStore.getInstance(context).getUserName());
-                vg.mTeamName.setText(DataStore.getInstance(context).getUserTeam());
-            }
-            else{
-                vg.mUserName.setText("Bath Touch Leagues");
-                vg.mTeamName.setText("Log in to view your teams");
-            }
-
         }
         else if(holder instanceof ViewHolderTeamOverview){
             ViewHolderTeamOverview vto = (ViewHolderTeamOverview) holder;

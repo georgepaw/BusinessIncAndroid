@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -68,9 +69,8 @@ public class TeamResultsFragment extends Fragment {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_team_results, container, false);
 
-        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar_team_results_screen);
-        ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle("Past Results");
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.team_results_recycle);
 
