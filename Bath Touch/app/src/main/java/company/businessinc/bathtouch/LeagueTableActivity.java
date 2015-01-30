@@ -10,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 
@@ -26,7 +27,7 @@ import company.businessinc.dataModels.League;
  */
 
 
-public class LeagueTableActivity extends FragmentActivity implements LeagueTableFragment.LeagueTableCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
+public class LeagueTableActivity extends ActionBarActivity implements LeagueTableFragment.LeagueTableCallbacks {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
@@ -41,7 +42,7 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
      * The {@link android.support.v4.view.ViewPager} that will display the object collection.
      */
     ViewPager mViewPager;
-    private static List<League> leagueNames = new LinkedList<League>();
+    private static List<League> leagues = new LinkedList<League>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +63,6 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
         // Set up the ViewPager, attaching the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mDemoCollectionPagerAdapter);
-        getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
 
     }
 
@@ -87,39 +87,8 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
 
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        switch (loaderID) {
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                return new CursorLoader(this, DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
 
-    //query has finished
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()){
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                if (data.moveToFirst()){
-
-                    leagueNames = new ArrayList<>();
-                    while(!data.isAfterLast()){
-                        leagueNames.add(new League(data));
-                        data.moveToNext();
-                    }
-                    mDemoCollectionPagerAdapter.notifyDataSetChanged();
-                }
-                break;
-        }
-    }
-
-    //when data gets updated, first reset everything
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
+    //TODO put in datastore
 
     /**
      * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment
@@ -136,12 +105,7 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
             Fragment fragment = new LeagueTableFragment();
             Bundle args = new Bundle();
             args.putInt("LEAGUEID", i + 1);
-            //find the league with this ID
-            for(League l : leagueNames){
-                if(l.getLeagueID() == i+1){
-                    args.putString("LEAGUENAME", l.getLeagueName());
-                }
-            }
+
             args.putInt(LeagueTableFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
             fragment.setArguments(args);
             return fragment;
@@ -150,7 +114,7 @@ public class LeagueTableActivity extends FragmentActivity implements LeagueTable
         @Override
         //Number of leagues in system
         public int getCount() {
-            return leagueNames.size();
+            return 3; //TODO remove hardcoding
         }
 
         @Override
