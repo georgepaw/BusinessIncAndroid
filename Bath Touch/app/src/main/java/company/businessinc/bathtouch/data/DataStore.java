@@ -101,7 +101,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllTeams(){
-        if(isTableEmpty(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI)) {
+        if(isTableEmpty(DBProviderContract.ALLTEAMS_TABLE_NAME)) {
             new TeamList(this).execute();
         }
     }
@@ -135,7 +135,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyLeagues(){
-        if(isTableEmpty(DBProviderContract.MYLEAGUES_TABLE_CONTENTURI)) {
+        if(isTableEmpty(DBProviderContract.MYLEAGUES_TABLE_NAME)) {
             new TeamLeagues(this, user.getTeamID()).execute();
         }
     }
@@ -152,7 +152,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllLeagues(){
-        if(isTableEmpty(DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI)) {
+        if(isTableEmpty(DBProviderContract.ALLLEAGUES_TABLE_NAME)) {
             new LeagueList(this).execute();
         }
     }
@@ -169,7 +169,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueScores(int leagueID){
-        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI)) {
+        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_NAME)) {
             new LeagueScores(this, leagueID).execute();
         }
     }
@@ -189,7 +189,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueFutureFixtures(int leagueID){
-        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI)) {
+        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_NAME)) {
             new LeagueSchedule(this, leagueID).execute();
         }
     }
@@ -209,7 +209,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueStandings(int leagueID){
-        if(isTableEmpty(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI)) {
+        if(isTableEmpty(DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME)) {
             new LeagueView(this, leagueID).execute();
         }
     }
@@ -228,7 +228,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadTeamsFutureFixtures(int teamID, int leagueID){
-        if(isTableEmpty(DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI)){
+        if(isTableEmpty(DBProviderContract.TEAMSFIXTURES_TABLE_NAME)){
             new TeamSchedule(this,leagueID,teamID).execute();
         }
     }
@@ -253,7 +253,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadTeamsLeagueScore(int teamID, int leagueID){
-        if(isTableEmpty(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI)){
+        if(isTableEmpty(DBProviderContract.TEAMSSCORES_TABLE_NAME)){
             new TeamScores(this,leagueID,teamID).execute();
         }
     }
@@ -278,7 +278,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyUpcomingRefGames(){
-        if(isTableEmpty(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI)){
+        if(isTableEmpty(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME)){
             new RefGames(this).execute();
         }
     }
@@ -305,9 +305,9 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    private boolean isTableEmpty(Uri tableName){
-        Cursor cursor = context.getContentResolver().query(tableName, null, null, null, null);
-        return cursor.getCount() > 0 ? true : false;
+    private boolean isTableEmpty(String tableName){
+        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
+        return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
     }
 
     public void clearUserData() {

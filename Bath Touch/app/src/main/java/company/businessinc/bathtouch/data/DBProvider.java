@@ -116,26 +116,36 @@ public class DBProvider extends ContentProvider {
                 case DBProviderContract.LEAGUESSCORE_URL_QUERY:
                     if(selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
                         DataStore.getInstance(getContext()).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
                     if(selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
                         DataStore.getInstance(getContext()).loadLeagueFutureFixtures(Integer.valueOf(selectionArgs[0]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "LeagueSchedule" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                     if(selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
                         DataStore.getInstance(getContext()).loadLeagueStandings(Integer.valueOf(selectionArgs[0]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "LeagueView" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                     if(selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
                         DataStore.getInstance(getContext()).loadTeamsFutureFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "TeamFixtures" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.TEAMSSCORES_URL_QUERY:
                     if(selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
                         DataStore.getInstance(getContext()).loadTeamsLeagueScore(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "TeamScores" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:

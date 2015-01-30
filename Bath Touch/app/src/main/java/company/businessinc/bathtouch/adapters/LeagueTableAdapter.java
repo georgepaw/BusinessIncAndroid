@@ -62,7 +62,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Callback for getting league data
     */
     @Override
-    public void leagueViewCallback(List<LeagueTeam> data) {
+    public void leagueViewCallback(List<LeagueTeam> data, int league) {
         if(data != null){
 
             Collections.sort(data, new Comparator<LeagueTeam>() {
