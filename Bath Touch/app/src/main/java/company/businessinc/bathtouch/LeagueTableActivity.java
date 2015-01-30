@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 
@@ -20,7 +21,7 @@ import company.businessinc.dataModels.League;
  */
 
 
-public class LeagueTableActivity extends FragmentActivity implements LeagueTableFragment.LeagueTableCallbacks {
+public class LeagueTableActivity extends ActionBarActivity implements LeagueTableFragment.LeagueTableCallbacks {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing

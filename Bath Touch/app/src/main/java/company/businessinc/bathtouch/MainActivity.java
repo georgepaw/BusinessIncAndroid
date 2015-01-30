@@ -311,6 +311,8 @@ public class MainActivity extends ActionBarActivity
                 //TODO Add a check to make sure nextMatch exists
                 Match nextMatch = null;//DataStore.getInstance(this).getNextRefMatch();
                 if(nextMatch == null){
+                    Intent intent = new Intent(this, TeamRosterActivity.class);
+                    startActivity(intent);
                     Log.d("ERROR", "match is null, not opening fragment");
                     break; //TODO fix this happeneing
 

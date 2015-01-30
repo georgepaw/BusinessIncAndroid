@@ -55,9 +55,19 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".SignInActivity"
-            android:label="@string/title_activity_sign_in" >
+            android:name=".TeamRosterActivity"
+            android:label="collection test"
+            android:parentActivityName=".MainActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
+        <activity
+        android:name=".SignInActivity"
+            android:label="@string/title_activity_sign_in" >
+
+            </activity>
         <activity
             android:name=".ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" >
