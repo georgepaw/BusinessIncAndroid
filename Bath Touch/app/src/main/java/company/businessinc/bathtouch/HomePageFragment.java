@@ -34,6 +34,7 @@ import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
@@ -46,6 +47,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private League league = null;
 
 
     public static HomePageFragment newInstance() {
@@ -71,6 +73,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                 getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
             }
             getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
+        } else {
+            getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
         }
     }
 
