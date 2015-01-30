@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 import android.graphics.Point;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,12 +19,18 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
+
 
 /**
  * Created by user on 29/01/15.
  * http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
  */
-public class TeamRosterActivity extends FragmentActivity implements ActionBar.TabListener {
+public class TeamRosterActivity extends FragmentActivity implements ActionBar.TabListener,
+        AvailablePlayersAdapter.AvailablePlayerCallbacks {
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -36,6 +43,11 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
      */
     private ViewPager mViewPager;
     private FragmentPagerAdapter mPagerAdapter;
+
+    private ArrayList<Integer> playerListAvail = new ArrayList<Integer>();
+    private ArrayList<Integer> playerListUnavail = new ArrayList<Integer>();
+    private int NUM_PEOPLE = 10;
+
 
 
     @Override
@@ -53,9 +65,13 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         setContentView(R.layout.activity_team_roster);
 
+        playerListAvail = populatePeople();
+        playerListUnavail = populatePeople();
+
+
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         mViewPager = (ViewPager) findViewById(R.id.team_roster_pager);
-        mPagerAdapter = new SamplePagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new SamplePagerAdapter(getSupportFragmentManager(), playerListAvail, playerListUnavail);
         mViewPager.setAdapter(mPagerAdapter);
 
         // Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
@@ -66,8 +82,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         Display disp = getWindowManager().getDefaultDisplay();
         Point size = new Point();
-        Log.d("ROSTER", Integer.toString(size.x));
-        Log.d("ROSTER", Integer.toString(size.y));
 
 
     }
@@ -90,11 +104,43 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
     }
 
+    @Override
+    public void onPlayerAvailableChecked(boolean available, int playerID) {
+
+//        Log.d("CALLBACK", "fired");
+//        //Move from available to unavailable
+//        if(available){
+//            playerListAvail.remove(playerID);
+//            playerListUnavail.add(playerID);
+//        }else{
+//            playerListAvail.add(playerID);
+//            playerListUnavail.remove(playerID);
+//        }
+//        mPagerAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<Integer> populatePeople(){
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for(int i = 0; i < NUM_PEOPLE; i++){
+            list.add(i);
+        }
+        return list;
+    }
+
 
     class SamplePagerAdapter extends FragmentPagerAdapter {
 
-        public SamplePagerAdapter(FragmentManager fm) {
+        private ArrayList<Integer> playerListAvail = new ArrayList<Integer>();
+        private ArrayList<Integer> playerListUnavail = new ArrayList<Integer>();
+        private ArrayList<ArrayList<Integer>> playerList = new ArrayList<ArrayList<Integer>>();
+
+        public SamplePagerAdapter(FragmentManager fm, ArrayList<Integer> availP, ArrayList<Integer> unavailP) {
             super(fm);
+            playerListAvail = availP;
+            playerListUnavail = unavailP;
+            playerList.add(playerListAvail);
+            playerList.add(playerListUnavail);
+
         }
 
         /**
@@ -126,8 +172,12 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public Fragment getItem(int position) {
-            return AvailablePlayersFragment.newInstance();
+
+            return AvailablePlayersFragment.newInstance(position, playerList.get(position));
         }
+
+
+
 
 
     }
