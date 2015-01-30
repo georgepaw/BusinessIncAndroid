@@ -5,9 +5,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
 
 /**
  * Created by user on 30/01/15.
@@ -18,10 +26,23 @@ public class AvailablePlayersFragment extends Fragment {
     private View mLayout;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
+    private boolean available_toggle;
+    private ArrayList<Integer> playerList = new ArrayList<Integer>();
 
-    public static AvailablePlayersFragment newInstance() {
+
+    public static AvailablePlayersFragment newInstance(int position, ArrayList<Integer> list) {
         AvailablePlayersFragment fragment = new AvailablePlayersFragment();
         Bundle args = new Bundle();
+
+        if(position == 0){
+            args.putBoolean("AVAIL", true);
+
+        }
+        else{
+            args.putBoolean("AVAIL", false);
+        }
+
+        args.putIntegerArrayList("PLAYERS", list);
         fragment.setArguments(args);
         return fragment;
     }
@@ -30,7 +51,11 @@ public class AvailablePlayersFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            Bundle bundle  = getArguments();
+            available_toggle = bundle.getBoolean("AVAIL");
+            playerList = bundle.getIntegerArrayList("PLAYERS");
         }
+
     }
 
     @Override
@@ -52,9 +77,8 @@ public class AvailablePlayersFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
 
-
         //Adapter loads the data fror the leagues
-        mAdapter = new AvailablePlayersAdapter();
+        mAdapter = new AvailablePlayersAdapter(available_toggle, playerList, getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         return mLayout;
@@ -63,34 +87,6 @@ public class AvailablePlayersFragment extends Fragment {
     /*
     Adapter to dipslay the available players in the recycler view
      */
-    public class AvailablePlayersAdapter extends RecyclerView.Adapter {
-
-        public class ViewHolderPlayer extends RecyclerView.ViewHolder{
-
-            public ViewHolderPlayer(View itemView) {
-                super(itemView);
-            }
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.team_roster_available_player_item, parent, false);
-            return new ViewHolderPlayer(v);
-
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return 10;
-        }
-    }
 
 
 }
