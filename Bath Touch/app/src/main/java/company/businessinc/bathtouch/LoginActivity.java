@@ -65,7 +65,6 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     public void create_account(View view) {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
-        DataStore.getInstance(this).loadAllTeams();
         finish();
     }
 

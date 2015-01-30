@@ -7,54 +7,41 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.Team;
-import company.businessinc.dataModels.Team;
 import company.businessinc.networking.APICall;
 import company.businessinc.networking.APICallType;
 
 /**
  * Created by gp on 18/11/14.
  */
-public class TeamList extends AsyncTask<Void, Void, List<Team>> {
-    String TAG = "TeamList";
-    private TeamListInterface callback;
+public class LeagueSchedule extends AsyncTask<Void, Void, List<Match>> {
+    String TAG = "LeagueSchedule";
+    private LeagueScheduleInterface callback;
     private List<NameValuePair> parameters;
-    public enum CallType{GETALLLTEAMS, GETLEAGUETEAMS}
-    private CallType callType;
 
-    public TeamList(TeamListInterface callback) {
-        this.callback = callback;
-        parameters = new LinkedList<NameValuePair>();
-        callType = CallType.GETALLLTEAMS;
-    }
-
-    public TeamList(TeamListInterface callback, int leagueID) {
+    public LeagueSchedule(LeagueScheduleInterface callback, int leagueID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("leagueID", Integer.toString(leagueID)));
-        callType = CallType.GETLEAGUETEAMS;
     }
 
     @Override
-    protected List<Team> doInBackground(Void... a) {
+    protected List<Match> doInBackground(Void... a) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(APICall.call(APICallType.TeamList, parameters));
+            jsonArray = new JSONArray(APICall.call(APICallType.LeagueSchedule, parameters));
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }
-
-        List<Team> list = new LinkedList<Team>();
+        List<Match> list = new LinkedList<Match>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
-                list.add(new Team(jsonArray.getJSONObject(i)));
+                list.add(new Match(jsonArray.getJSONObject(i)));
             } catch (JSONException e){
                 Log.d(TAG, "Couldn't parse JSON into Match object");
                 return null;
@@ -65,7 +52,7 @@ public class TeamList extends AsyncTask<Void, Void, List<Team>> {
 
     // onPostExecute displays the results of the AsyncTask.
     @Override
-    protected void onPostExecute(List<Team> result) {
-        callback.teamListCallback(result, callType);
+    protected void onPostExecute(List<Match> result) {
+        callback.leagueScheduleCallback(result);
     }
 }

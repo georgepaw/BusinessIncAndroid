@@ -12,11 +12,6 @@ import company.businessinc.dataModels.Team;
  */
 public class SQLiteHelper extends SQLiteOpenHelper{
 
-    /**
-     * Create tables strings
-     */
-    private static final String CREATE_ALLTEAMS_TABLE = "CREATE TABLE " + DBProviderContract.ALLTEAMS_TABLE_NAME + "( " + Team.CREATE_TABLE + " )";
-
     SQLiteHelper(Context context) {
         super(context, DBProviderContract.DATABASE_NAME, null, DBProviderContract.DATABASE_VERSION);
         this.getWritableDatabase();
@@ -24,8 +19,10 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // SQL statement to create table
-        db.execSQL(CREATE_ALLTEAMS_TABLE);
+        // SQL statements to create tables
+        for(String createTable : DBProviderContract.CREATE_TABLES){
+            db.execSQL(createTable);
+        }
     }
 
     @Override
@@ -46,5 +43,13 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         }
         // create fresh tables
         this.onCreate(db);
+    }
+
+    public void dropTable(String tableName){
+        getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
+    }
+
+    public void createTable(String createTable){
+        getWritableDatabase().execSQL(createTable);
     }
 }

@@ -1,6 +1,10 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -17,14 +21,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.HomeCardData;
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 
 
-public class HomePageFragment extends Fragment{
+public class HomePageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private HomePageCallbacks mCallbacks;
     private View mLayout;
@@ -50,6 +65,12 @@ public class HomePageFragment extends Fragment{
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+            if(DataStore.getInstance(getActivity()).isReferee()) {
+                getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
+            }
+            getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
         }
     }
 
@@ -138,6 +159,46 @@ public class HomePageFragment extends Fragment{
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    //Invoked when the cursor loader is created
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
+        switch (loaderID) {
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, null, null, null);
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    //query has finished
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        List<Match> matches = new ArrayList<>();
+        if (data.moveToFirst()){
+            while(!data.isAfterLast()){
+                matches.add(new Match(data));
+                data.moveToNext();
+            }
+        }
+        //sort into assccending order
+        Collections.sort(matches, new Comparator<Match>() {
+            public int compare(Match m1, Match m2) {
+                return m1.getDateTime().compareTo(m2.getDateTime());
+            }
+        });
+        //
+    }
+
+    //when data gets updated, first reset everything
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
 

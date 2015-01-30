@@ -6,6 +6,7 @@ package company.businessinc.networking;
  */
 public enum APICallType {
     LeagueList("/league/list/"),
+    LeagueSchedule("/league/schedule/"),
     LeagueScores("/league/scores/"),
     LeagueView("/league/view/"),
     RefGames("/ref/games/"),
@@ -17,7 +18,7 @@ public enum APICallType {
     UserEdit("/user/edit/"),
     UserLogin("/user/login/"),
     UserReset("/user/reset/"),
-    UserResetPassword("/user/reset/password");
+    UserResetPassword("/user/reset/password/");
 
     public String getEndPoint(){
         return text.toString();

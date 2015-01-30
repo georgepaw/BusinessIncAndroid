@@ -32,7 +32,62 @@ public class DBProvider extends ContentProvider {
         sUriMatcher.addURI(
                 DBProviderContract.AUTHORITY,
                 DBProviderContract.ALLTEAMS_TABLE_NAME,
-                DBProviderContract.GETALLTEAMS_URL_QUERY);
+                DBProviderContract.ALLTEAMS_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.ALLLEAGUES_TABLE_NAME,
+                DBProviderContract.ALLLEAGUES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.MYLEAGUES_TABLE_NAME,
+                DBProviderContract.MYLEAGUES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.LEAGUESSCORE_TABLE_NAME,
+                DBProviderContract.LEAGUESSCORE_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.LEAGUESTEAMS_TABLE_NAME,
+                DBProviderContract.LEAGUESTEAMS_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.LEAGUESFIXTURES_TABLE_NAME,
+                DBProviderContract.LEAGUESFIXTURES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME,
+                DBProviderContract.LEAGUESSTANDINGS_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.TEAMSFIXTURES_TABLE_NAME,
+                DBProviderContract.TEAMSFIXTURES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.TEAMSSCORES_TABLE_NAME,
+                DBProviderContract.TEAMSSCORES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.TEAMSFIXTURES_TABLE_NAME,
+                DBProviderContract.TEAMSFIXTURES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME,
+                DBProviderContract.MYUPCOMINGGAMES_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
+                DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY);
 
     }
 
@@ -50,15 +105,45 @@ public class DBProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
-        String tableName = "";
-        switch (sUriMatcher.match(uri)) {
-            case DBProviderContract.GETALLTEAMS_URL_QUERY:
-                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
-            default:
-                Log.d(TAG, "Failed query");
-                //throw new IllegalArgumentException("Invalid URI:" + uri);
-        }
+        String tableName = getTableName(uri);
         Cursor returnCursor = db.query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
+        if(returnCursor.getCount() < 1){ //the cursor is empty, tell the data store to load the data
+            switch (sUriMatcher.match(uri)) {
+                case DBProviderContract.ALLTEAMS_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllLeagues();
+                    break;
+                case DBProviderContract.MYLEAGUES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadMyLeagues();
+                    break;
+                case DBProviderContract.LEAGUESSCORE_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.LEAGUESTEAMS_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.TEAMSSCORES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadAllTeams();
+                    break;
+                case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadMyUpcomingGames();
+                    break;
+                case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+                    DataStore.getInstance(getContext()).loadMyUpcomingRefGames();
+                    break;
+            }
+        }
         returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return returnCursor;
     }
@@ -70,18 +155,7 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        String tableName = "";
-        switch (sUriMatcher.match(uri)) {
-            // For the modification
-            case DBProviderContract.GETALLTEAMS_URL_QUERY:
-                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
-                break;
-                default:
-                Log.d(TAG, "Failed insert");
-                return null;
-                //throw new IllegalArgumentException("Invalid URI:" + uri);
-
-        }
+        String tableName = getTableName(uri);
         // Get the database
         SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
         long id = localSQLiteDatabase.insert(tableName, null, values);
@@ -96,15 +170,17 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] insertValuesArray) {
-        switch (sUriMatcher.match(uri)) {
-            case DBProviderContract.GETALLTEAMS_URL_QUERY:
-                return super.bulkInsert(uri, insertValuesArray);
-            default:
-                //throw new IllegalArgumentException("Invalid URI:" + uri);
-                Log.d(TAG, "Failed bulk insert");
-
+        String tableName = getTableName(uri);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.beginTransaction();
+        for(ContentValues cv : insertValuesArray) {
+            db.insertOrThrow(tableName, null, cv);
         }
-        return 0;
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        getContext().getApplicationContext().getContentResolver().notifyChange(uri, null);
+        return insertValuesArray.length;
     }
 
     @Override
@@ -116,14 +192,7 @@ public class DBProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        String tableName = "";
-        switch (sUriMatcher.match(uri)) {
-            case DBProviderContract.GETALLTEAMS_URL_QUERY:
-                tableName = DBProviderContract.ALLTEAMS_TABLE_NAME;
-            default:
-                Log.d(TAG, "Failed updates");
-                //throw new IllegalArgumentException("Update: Invalid URI: " + uri);
-        }
+        String tableName = getTableName(uri);
         SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
         int rows = localSQLiteDatabase.update(tableName, values, selection, selectionArgs);
         if (0 != rows) {
@@ -145,5 +214,44 @@ public class DBProvider extends ContentProvider {
             cursor.close();
         }
         return true;
+    }
+
+    public void dropUserData(){
+        //first drop the tables that always exist
+        SQLiteHelper db = (SQLiteHelper)mHelper;
+        db.dropTable(DBProviderContract.MYLEAGUES_TABLE_NAME);
+
+        //Recreate them
+        db.createTable(DBProviderContract.CREATE_MYLEAGUES_TABLE);
+    }
+
+    private String getTableName(Uri uri){
+        switch (sUriMatcher.match(uri)) {
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+                return DBProviderContract.ALLTEAMS_TABLE_NAME;
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                return DBProviderContract.ALLLEAGUES_TABLE_NAME;
+            case DBProviderContract.MYLEAGUES_URL_QUERY:
+                return DBProviderContract.MYLEAGUES_TABLE_NAME;
+            case DBProviderContract.LEAGUESSCORE_URL_QUERY:
+                return DBProviderContract.LEAGUESSCORE_TABLE_NAME;
+            case DBProviderContract.LEAGUESTEAMS_URL_QUERY:
+                return DBProviderContract.LEAGUESTEAMS_TABLE_NAME;
+            case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
+                return DBProviderContract.LEAGUESFIXTURES_TABLE_NAME;
+            case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
+                return DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME;
+            case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
+                return DBProviderContract.TEAMSFIXTURES_TABLE_NAME;
+            case DBProviderContract.TEAMSSCORES_URL_QUERY:
+                return DBProviderContract.TEAMSSCORES_TABLE_NAME;
+            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+                return DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME;
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+                return DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME;
+            default:
+                Log.d(TAG, "Could not recognize URI");
+                throw new IllegalArgumentException("Invalid URI: " + uri);
+        }
     }
 }
