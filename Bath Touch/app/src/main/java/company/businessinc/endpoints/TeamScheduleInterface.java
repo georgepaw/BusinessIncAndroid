@@ -6,5 +6,5 @@ import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
 
 public interface TeamScheduleInterface {
-    public void teamScheduleCallback(List<Match> data);
+    public void teamScheduleCallback(List<Match> data, int leagueID, int teamID);
 }

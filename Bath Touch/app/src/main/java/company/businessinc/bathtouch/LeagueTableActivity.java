@@ -1,18 +1,24 @@
 package company.businessinc.bathtouch;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 
 
