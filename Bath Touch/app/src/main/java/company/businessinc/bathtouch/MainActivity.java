@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
-import com.heinrichreimersoftware.materialdrawer.DrawerView;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
@@ -31,7 +29,6 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
-import company.businessinc.endpoints.UserReset;
 import company.businessinc.networking.APICall;
 
 
@@ -39,7 +36,8 @@ public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
-        HomePageAdapter.homePageAdapterCallbacks{
+        HomePageAdapter.homePageAdapterCallbacks,
+        ResultsListFragment.ResultsListCallbacks {
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -408,5 +406,10 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onLeagueCardSelected() {
         onHomePageCardSelected(HomePageAdapter.TABLE);
+    }
+
+    @Override
+    public void onResultsItemSelected(int position) {
+
     }
 }
