@@ -53,6 +53,7 @@ public class MainActivity extends ActionBarActivity
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
+        ResultsListFragment.ResultsListCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>{
 
     private SharedPreferences mSharedPreferences;
@@ -501,5 +502,10 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onLeagueCardSelected() {
         onHomePageCardSelected(HomePageAdapter.TABLE);
+    }
+
+    @Override
+    public void onResultsItemSelected(int position) {
+
     }
 }
