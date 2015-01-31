@@ -122,7 +122,7 @@ public class DBProvider extends ContentProvider {
                     break;
                 case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
                     if(selection != null && selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadLeagueFutureFixtures(Integer.valueOf(selectionArgs[0]));
+                        DataStore.getInstance(getContext()).loadLeagueFixtures(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "LeagueSchedule" + " callback, selection/selection args not valid");
                     }
@@ -136,7 +136,7 @@ public class DBProvider extends ContentProvider {
                     break;
                 case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                     if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
-                        DataStore.getInstance(getContext()).loadTeamsFutureFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+                        DataStore.getInstance(getContext()).loadTeamsFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
                     } else{
                         Log.d(TAG, "Can't call " + "TeamFixtures" + " callback, selection/selection args not valid");
                     }
@@ -176,7 +176,8 @@ public class DBProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
             return Uri.withAppendedPath(uri, Long.toString(id));
         } else {
-            throw new SQLiteException("Insert error:" + uri);
+            Log.d(TAG, "Couldn't insert " + values.toString() + " to " + tableName);
+            return null;
         }
     }
 
@@ -186,7 +187,11 @@ public class DBProvider extends ContentProvider {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.beginTransaction();
         for(ContentValues cv : insertValuesArray) {
-            db.insertOrThrow(tableName, null, cv);
+            try {
+                db.insertOrThrow(tableName, null, cv);
+            } catch (Exception e){
+                Log.d(TAG, "Couldn't insert " + cv.toString() + " to " + tableName);
+            }
         }
         db.setTransactionSuccessful();
         db.endTransaction();

@@ -9,13 +9,19 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by gp on 18/11/14.
  */
 public class Match {
+
+    public static enum SortType{ASCENDING, DESCENDING}
+
     private Integer matchID;
     private Integer teamOneID;
     private Integer teamTwoID;
@@ -131,7 +137,7 @@ public class Match {
         try {
             this.isForfeit = (cursor.getInt(cursor.getColumnIndex(KEY_ISFORFEIT)) == 1); //Convert int to boolean
         } catch(Exception e) {
-            this.isForfeit = null;
+            this.isForfeit = false;
         }
     }
 
@@ -198,7 +204,7 @@ public class Match {
         try {
             this.isForfeit = jsonObject.getBoolean("isForfeit");
         } catch(JSONException e) {
-            this.isForfeit = null;
+            this.isForfeit = false;
         }
     }
 
@@ -314,5 +320,28 @@ public class Match {
         values.put(KEY_TEAMTWOPOINTS, teamTwoPoints);
         values.put(KEY_ISFORFEIT, isForfeit ? 1 : 0); //convert boolean to int
         return values;
+    }
+
+    public static List<Match> sortList(List<Match> data, final SortType sortType){
+        Collections.sort(data, new Comparator<Match>() {
+            public int compare(Match m1, Match m2) {
+                if (m1 == null && m2 == null) {
+                    return 0;
+                } else if (m1 == null) {
+                    return 1;
+                } else if (m2 == null) {
+                    return -1;
+                } else if (m1.getDateTime() == null && m2.getDateTime() == null) {
+                    return 0;
+                } else if (m1.getDateTime() == null) {
+                    return 1;
+                } else if (m2.getDateTime() == null) {
+                    return -1;
+                }
+                int result = m1.getDateTime().compareTo(m2.getDateTime());
+                return sortType == SortType.ASCENDING ? result : result*-1 ;
+            }
+        });
+        return data;
     }
 }
