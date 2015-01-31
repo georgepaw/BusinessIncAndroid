@@ -33,7 +33,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/MainTheme">
+            android:theme="@style/MainTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,24 +58,34 @@
             android:name=".TeamRosterActivity"
             android:label="collection test"
             android:parentActivityName=".MainActivity" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-        android:name=".SignInActivity"
+            android:name=".SignInActivity"
             android:label="@string/title_activity_sign_in" >
-
-            </activity>
+        </activity>
         <activity
             android:name=".ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" >
         </activity>
+
         <provider
             android:name=".data.DBProvider"
             android:authorities="company.businessinc.bathtouch" >
         </provider>
+
+        <activity
+            android:name=".MatchActivity"
+            android:label="@string/title_activity_match"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="company.businessinc.bathtouch.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

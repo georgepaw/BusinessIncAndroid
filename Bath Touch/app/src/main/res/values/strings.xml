@@ -58,5 +58,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_sign_in">SignInActivity</string>
     <string name="title_activity_forgot_password">Forgot Password</string>
+    <string name="title_activity_match">MatchActivity</string>
 
 </resources>
