@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity
     private static final String USERLOGGEDIN = "login";
     private static final String COOKIE = "cookie";
     private static final String USER = "user";
+    private static final String CURRENT_FRAGMENT = "cur_frag";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -95,7 +96,7 @@ public class MainActivity extends ActionBarActivity
         if(!DataStore.getInstance(this).isUserLoggedIn()) {
             mNavigationDrawerLayout.setProfile(
                     new DrawerProfile()
-                            .setAvatar(getResources().getDrawable(R.color.accent_material_light))
+                            .setAvatar(getResources().getDrawable(R.drawable.ic_account_circle_grey600_48dp))
                             .setBackground(getResources().getDrawable(R.color.primary))
                             .setName("Anonymous User")
                             .setDescription("Not signed in")
@@ -149,48 +150,53 @@ public class MainActivity extends ActionBarActivity
                             })
             );
         }
+
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
-                        .setImage(getResources().getDrawable(R.drawable.ic_thumb_up))
+                        .setImage(getResources().getDrawable(R.drawable.ic_home_grey600_48dp))
                         .setTextPrimary("Home")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
                                 changeFragments("HOMEPAGETAG");
+                                mNavigationDrawerLayout.closeDrawer();
                             }
                         })
         );
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
-                        .setImage(getResources().getDrawable(R.drawable.ic_thumbs_up_down))
+                        .setImage(getResources().getDrawable(R.drawable.ic_assessment_grey600_48dp))
                         .setTextPrimary("League Tables")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
                                 Toast.makeText(MainActivity.this, "No league tables fragment yet", Toast.LENGTH_SHORT).show();
+                                mNavigationDrawerLayout.closeDrawer();
                             }
                         })
         );
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
-                        .setImage(getResources().getDrawable(R.drawable.ic_thumb_up))
-                        .setTextPrimary("Previous Results")
+                        .setImage(getResources().getDrawable(R.drawable.ic_event_grey600_48dp))
+                        .setTextPrimary("Past Results")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
                                 changeFragments("TEAMRESULTSTAG");
+                                mNavigationDrawerLayout.closeDrawer();
                             }
                         })
         );
         if(DataStore.getInstance(this).isUserCaptain()) { //TODO This call is hardcoded, should work later
             mNavigationDrawerLayout.addItem(
                     new DrawerItem()
-                            .setImage(getResources().getDrawable(R.drawable.ic_thumbs_up_down))
+                            .setImage(getResources().getDrawable(R.drawable.ic_supervisor_account_grey600_48dp))
                             .setTextPrimary("Organise Team")
                             .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                                 @Override
                                 public void onClick(DrawerItem drawerItem, int id, int position) {
                                     Toast.makeText(MainActivity.this, "No team organise fragment yet", Toast.LENGTH_SHORT).show();
+                                    mNavigationDrawerLayout.closeDrawer();
                                 }
                             })
             );
@@ -198,12 +204,13 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.addDivider();
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
-                        .setImage(getResources().getDrawable(R.drawable.ic_thumb_down))
+                        .setImage(getResources().getDrawable(R.drawable.ic_settings_grey600_48dp))
                         .setTextPrimary("Settings")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
                                 Toast.makeText(MainActivity.this, "No settings activity yet", Toast.LENGTH_SHORT).show();
+                                mNavigationDrawerLayout.closeDrawer();
                             }
                         })
         );
@@ -221,6 +228,7 @@ public class MainActivity extends ActionBarActivity
             }
 
             public void onDrawerOpened(View drawerView) {
+//                mNavigationDrawerLayout.selectItem(mFragmentManager.get);
                 invalidateOptionsMenu();
             }
         };
@@ -239,32 +247,6 @@ public class MainActivity extends ActionBarActivity
         mDrawerToggle.syncState();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-//            // Only show items in the action bar relevant to this screen
-//            // if the drawer is not showing. Otherwise, let the drawer
-//            // decide what to show in the action bar.
-//            getMenuInflater().inflate(R.menu.menu_main, menu);
-//            return true;
-//        }
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_log_out) {
-//            logOut();
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
 //    @Override
 //    public void onNavigationDrawerItemSelected(int position, String name) {
