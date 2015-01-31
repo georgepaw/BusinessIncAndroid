@@ -137,7 +137,7 @@ public class Match {
         try {
             this.isForfeit = (cursor.getInt(cursor.getColumnIndex(KEY_ISFORFEIT)) == 1); //Convert int to boolean
         } catch(Exception e) {
-            this.isForfeit = null;
+            this.isForfeit = false;
         }
     }
 
@@ -204,7 +204,7 @@ public class Match {
         try {
             this.isForfeit = jsonObject.getBoolean("isForfeit");
         } catch(JSONException e) {
-            this.isForfeit = null;
+            this.isForfeit = false;
         }
     }
 
@@ -330,6 +330,12 @@ public class Match {
                 } else if (m1 == null) {
                     return 1;
                 } else if (m2 == null) {
+                    return -1;
+                } else if (m1.getDateTime() == null && m2.getDateTime() == null) {
+                    return 0;
+                } else if (m1.getDateTime() == null) {
+                    return 1;
+                } else if (m2.getDateTime() == null) {
                     return -1;
                 }
                 int result = m1.getDateTime().compareTo(m2.getDateTime());

@@ -16,9 +16,11 @@ public class DBProviderContract {
     //Keywords
     public static final String CREATE_TABLE = "CREATE TABLE";
     public static final String INTEGER = "INTEGER";
+    public static final String TEXT = "TEXT";
     public static final String PRIMARY_KEY = "PRIMARY_KEY";
     public static final String SELECTION_LEAGUEID = League.KEY_LEAGUEID + " = ?";
     public static final String SELECTION_LEAGUEIDANDTEAMID = League.KEY_LEAGUEID + " = ? AND " + Team.KEY_TEAMID + " = ?";
+    public static final String SELECTION_MATCHID = Match.KEY_MATCHID + " = ?";
 
     // The URI scheme used for content URIs
     public static final String SCHEME = "content";
@@ -107,10 +109,12 @@ public class DBProviderContract {
                                                                 Team.KEY_TEAMID + "\t" + INTEGER + "," +
                                                                 Match.CREATE_TABLE + " )";
 
-    public static final String CREATE_MYUPCOMINGGAMES_TABLE = CREATE_TABLE + " " + MYUPCOMINGGAMES_TABLE_NAME + "( " + Match.CREATE_TABLE + " )";
+    public static final String CREATE_MYUPCOMINGGAMES_TABLE = CREATE_TABLE + " " + MYUPCOMINGGAMES_TABLE_NAME + "( " +
+                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
+                                                                Match.CREATE_TABLE + " )";
 
-    public static final String CREATE_MYUPCOMINGREFEREEGAMES_TABLE = CREATE_TABLE + " " + MYUPCOMINGREFEREEGAMES_TABLE_NAME + "( " + Match.CREATE_TABLE + " )";
-
+    public static final String CREATE_MYUPCOMINGREFEREEGAMES_TABLE = CREATE_TABLE + " " + MYUPCOMINGREFEREEGAMES_TABLE_NAME + "( " +
+                                                                Match.CREATE_TABLE + " )";
 
     public static final String[] CREATE_TABLES = {CREATE_ALLTEAMS_TABLE, CREATE_MYLEAGUES_TABLE, CREATE_ALLLEAGUES_TABLE, CREATE_LEAGUESSCORE_TABLE,
             CREATE_LEAGUESFIXTURES_TABLE ,CREATE_LEAGUESSTANDINGS_TABLE, CREATE_TEAMSFIXTURES_TABLE,

@@ -3,13 +3,10 @@ package company.businessinc.bathtouch.data;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,6 +45,17 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     private static final String TAG = "DataStore";
     private User user;
+
+    //Flags that store which API calls have already been called
+    private boolean loadedAllTeams = false;
+    private boolean loadedMyLeagues = false;
+    private boolean loadedAllLeagues = false;
+    private ArrayList<Integer> loadedLeagueScores = new ArrayList<>();
+    private ArrayList<Integer> loadedLeagueFixtures = new ArrayList<>();
+    private ArrayList<Integer> loadedLeagueStandings = new ArrayList<>();
+    private HashMap<Integer, ArrayList<Integer>> loadedTeamsFixtures = new HashMap<>();
+    private HashMap<Integer, ArrayList<Integer>> loadedTeamsScore = new HashMap<>();
+    private boolean loadedRefGames = false;
 
     public static DataStore getInstance(Context context) {
 
@@ -101,7 +109,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllTeams(){
-        new TeamList(this).execute();
+        if(!loadedAllTeams) {
+            new TeamList(this).execute();
+            loadedAllTeams = true;
+        }
     }
 
     public void loadLeaguesTeams(int leagueID){
@@ -133,7 +144,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyLeagues(){
-        new TeamLeagues(this, user.getTeamID()).execute();
+        if(!loadedMyLeagues){
+            new TeamLeagues(this, user.getTeamID()).execute();
+            loadedMyLeagues = true;
+        }
     }
 
     public void teamLeaguesCallback(List<League> data){
@@ -141,6 +155,9 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             LinkedList<ContentValues> cV = new LinkedList<>();
             for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
                 cV.add(data.get(i).toContentValues());
+                //for every league, get my scores and fixtures
+                context.getContentResolver().query(DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI,null, DBProviderContract.SELECTION_LEAGUEIDANDTEAMID, new String[]{Integer.toString(data.get(i).getLeagueID()),Integer.toString(user.getTeamID())},null).close();
+                context.getContentResolver().query(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_LEAGUEIDANDTEAMID, new String[]{Integer.toString(data.get(i).getLeagueID()), Integer.toString(user.getTeamID())}, null).close();
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
             context.getContentResolver().bulkInsert(DBProviderContract.MYLEAGUES_TABLE_CONTENTURI,contentValues);
@@ -148,7 +165,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadAllLeagues(){
-        new LeagueList(this).execute();
+        if(!loadedAllLeagues){
+            new LeagueList(this).execute();
+            loadedAllLeagues = false;
+        }
     }
 
     public void leagueListCallback(List<League> data){
@@ -163,7 +183,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueScores(int leagueID){
-        new LeagueScores(this, leagueID).execute();
+        if(!loadedLeagueScores.contains(leagueID)) {
+            new LeagueScores(this, leagueID).execute();
+            loadedLeagueScores.add(leagueID);
+        }
     }
 
     @Override
@@ -180,9 +203,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    public void loadLeagueFutureFixtures(int leagueID){
-        if(isTableEmpty(DBProviderContract.LEAGUESSCORE_TABLE_NAME)) {
+    public void loadLeagueFixtures(int leagueID){
+        if(!loadedLeagueFixtures.contains(leagueID)) {
             new LeagueSchedule(this, leagueID).execute();
+            loadedLeagueFixtures.add(leagueID);
         }
     }
 
@@ -201,7 +225,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadLeagueStandings(int leagueID){
-        new LeagueView(this, leagueID).execute();
+        if(!loadedLeagueStandings.contains(leagueID)) {
+            new LeagueView(this, leagueID).execute();
+            loadedLeagueStandings.add(leagueID);
+        }
     }
     @Override
     public void leagueViewCallback(List<LeagueTeam> data, int leagueID) {
@@ -217,8 +244,16 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    public void loadTeamsFutureFixtures(int teamID, int leagueID){
-        new TeamSchedule(this,leagueID,teamID).execute();
+    public void loadTeamsFixtures(int leagueID, int teamID){
+        ArrayList<Integer> integerArrayList = loadedTeamsFixtures.get(leagueID);
+        if(integerArrayList == null){
+            integerArrayList = new ArrayList<>();
+            loadedTeamsFixtures.put(leagueID, integerArrayList);
+        }
+        if(!loadedTeamsFixtures.get(leagueID).contains(teamID)){
+            new TeamSchedule(this,leagueID,teamID).execute();
+            loadedTeamsFixtures.get(leagueID).add(teamID);
+        }
     }
 
     @Override
@@ -227,11 +262,11 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             LinkedList<ContentValues> cV = new LinkedList<>();
             for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
                 ContentValues dis = data.get(i).toContentValues();
-                //check is this is a game that current user would play in, if yes add it to upcoming games
-                if(data.get(i).getTeamOneID() == user.getTeamID() || data.get(i).getTeamOneID() == user.getTeamID()){
-                    context.getContentResolver().insert(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, data.get(i).toContentValues());
-                }
                 dis.put(League.KEY_LEAGUEID, leagueID);
+                //check is this is a game that current user would play in, if yes add it to upcoming games
+                if(data.get(i).getTeamOneID() == user.getTeamID() || data.get(i).getTeamTwoID() == user.getTeamID()){
+                    context.getContentResolver().insert(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, dis);
+                }
                 dis.put(Team.KEY_TEAMID, teamID);
                 cV.add(dis);
             }
@@ -240,8 +275,16 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    public void loadTeamsLeagueScore(int teamID, int leagueID){
-        new TeamScores(this,leagueID,teamID).execute();
+    public void loadTeamsLeagueScore(int leagueID, int teamID){
+        ArrayList<Integer> integerArrayList = loadedTeamsScore.get(leagueID);
+        if(integerArrayList == null){
+            integerArrayList = new ArrayList<>();
+            loadedTeamsScore.put(leagueID, integerArrayList);
+        }
+        if(!loadedTeamsScore.get(leagueID).contains(teamID)){
+            new TeamScores(this,leagueID,teamID).execute();
+            loadedTeamsScore.get(leagueID).add(teamID);
+        }
     }
 
     @Override
@@ -264,7 +307,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyUpcomingRefGames(){
-        new RefGames(this).execute();
+        if(!loadedRefGames) {
+            new RefGames(this).execute();
+            loadedRefGames = true;
+        }
     }
 
     @Override

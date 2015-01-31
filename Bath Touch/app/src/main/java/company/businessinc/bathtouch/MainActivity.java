@@ -2,12 +2,17 @@ package company.businessinc.bathtouch;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.media.session.PlaybackState;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -27,8 +32,16 @@ import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.UserReset;
@@ -39,7 +52,8 @@ public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
-        HomePageAdapter.homePageAdapterCallbacks{
+        HomePageAdapter.homePageAdapterCallbacks,
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -52,6 +66,10 @@ public class MainActivity extends ActionBarActivity
     private DrawerFrameLayout mNavigationDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragmentManager;
+
+    private Match nextRefMatch;
+    private Match nextPlayingMatch;
+    private int nextPlayingMatchLeagueID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +250,13 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
         mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
 //        mNavigationDrawerLayout.closeDrawer(navigationDrawer);
+
+        if(DataStore.getInstance(this).isUserLoggedIn()) {
+            if(DataStore.getInstance(this).isReferee()) {
+                getSupportLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
+            }
+            getSupportLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
+        }
     }
 
     @Override
@@ -308,27 +333,36 @@ public class MainActivity extends ActionBarActivity
     public void onHomePageCardSelected(int position) {
         switch(position) {
             case HomePageAdapter.NEXTREFGAME:
-                //TODO Add a check to make sure nextMatch exists
-                Match nextMatch = null;//DataStore.getInstance(this).getNextRefMatch();
-                if(nextMatch == null){
-                    Intent intent = new Intent(this, TeamRosterActivity.class);
+                if(nextRefMatch != null){
+                    Intent intent = new Intent(this, SubmitScoreActivity.class);
+                    intent.putExtra(Match.KEY_MATCHID, nextRefMatch.getMatchID());
+                    intent.putExtra(Match.KEY_TEAMONE, nextRefMatch.getTeamOne());
+                    intent.putExtra(Match.KEY_TEAMTWO, nextRefMatch.getTeamTwo());
                     startActivity(intent);
-                    Log.d("ERROR", "match is null, not opening fragment");
-                    break; //TODO fix this happeneing
-
-                } 
-                Intent intent = new Intent(this, SubmitScoreActivity.class);
-                intent.putExtra("matchId", nextMatch.getMatchID());
-                intent.putExtra("teamOneName", nextMatch.getTeamOne());
-                intent.putExtra("teamTwoName", nextMatch.getTeamTwo());
-                startActivity(intent);
+                } else {
+                    //This card should be gone
+                }
                 break;
             case HomePageAdapter.NEXTGAME:
                 Log.d("CARDS", "Next game card selected");
+                //Only allow the card to open if there is a next game
+                if(nextPlayingMatch != null) {
+                    Intent intent = new Intent(this, TeamRosterActivity.class);
+                    intent.putExtra(Match.KEY_MATCHID, nextPlayingMatch.getMatchID());
+                    intent.putExtra(Match.KEY_TEAMONE, nextPlayingMatch.getTeamOne());
+                    intent.putExtra(Match.KEY_TEAMTWO, nextPlayingMatch.getTeamTwo());
+                    intent.putExtra(Match.KEY_PLACE, nextPlayingMatch.getPlace());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+                    intent.putExtra(Match.KEY_DATETIME, sdf.format(nextPlayingMatch.getDateTime()));
+                    intent.putExtra(League.KEY_LEAGUEID, nextPlayingMatchLeagueID);
+                    startActivity(intent);
+                } else {
+                    //This card should be gone
+                }
                 break;
             case HomePageAdapter.TABLE:
                 Log.d("MATCH", "starting leage table activity");
-                intent = new Intent(this, LeagueTableActivity.class);
+                Intent intent = new Intent(this, LeagueTableActivity.class);
                 startActivity(intent);
 //                changeFragments("LEAGUETABLETAG");
                 break;
@@ -388,6 +422,65 @@ public class MainActivity extends ActionBarActivity
         DataStore.getInstance(this).clearUserData();
         startActivity(intent);
         finish();
+    }
+
+    //Invoked when the cursor loader is created
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
+        switch (loaderID) {
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(this, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(this, DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, null, null, null);
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    //query has finished
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (!data.moveToFirst()){
+            return;
+        }
+        switch(loader.getId()) {
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+                nextRefMatch = getNextMatch(data);
+                break;
+            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+                nextPlayingMatch = getNextMatch(data);
+                getLeague();
+                break;
+        }
+    }
+
+    private Match getNextMatch(Cursor data){
+        List<Match> matchList = new ArrayList<>();
+        while(!data.isAfterLast()){
+            matchList.add(new Match(data));
+            data.moveToNext();
+        }
+        if(matchList.size() > 0){
+            matchList = Match.sortList(matchList, Match.SortType.ASCENDING);
+            return matchList.get(0);
+        }
+        return null;
+    }
+
+    private void getLeague(){
+        Cursor cursor = getContentResolver().query(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI,null, DBProviderContract.SELECTION_MATCHID, new String[] {Integer.toString(nextPlayingMatch.getMatchID())},null);
+        if(cursor.moveToFirst() && cursor.getCount() > 0){
+            nextPlayingMatchLeagueID = cursor.getInt(0);
+        }
+        cursor.close();
+    }
+
+    //when data gets updated, first reset everything
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     @Override

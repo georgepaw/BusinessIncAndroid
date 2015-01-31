@@ -23,13 +23,15 @@
         <RelativeLayout
             android:id="@+id/team_roster_header"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_below="@id/toolbar_team_roster"
+            android:layout_height="200dp"
             android:background="@color/primary"
             android:elevation="2dp"
             android:paddingBottom="16dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:paddingRight="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/toolbar_team_roster">
 
             <TextView
                 android:id="@+id/team_roster_next_match_text"
@@ -42,10 +44,9 @@
 
             <TextView
                 android:id="@+id/team_roster_league"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/team_roster_next_match_text"
-                android:text="Bath Touch Summer Hardcode"
                 android:textColor="@color/white"
                 android:textSize="14dp" />
 
@@ -67,18 +68,25 @@
                 android:textColor="@color/white"
                 android:textSize="14dp" />
 
+            <TextView
+                android:id="@+id/team_roster_match_place"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Place"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:layout_below="@+id/team_roster_match_time" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/team_roster_match_time"
-                >
+                android:layout_below="@+id/team_roster_match_place">
 
                 <TextView
                     android:id="@+id/team_roster_team1_name"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:text="Comski Vipers"
                     android:textColor="@color/white"
                     android:textSize="20dp" />
 
@@ -100,7 +108,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="HCI Smashers"
                     android:textColor="@color/white"
                     android:textSize="30sp" />
 

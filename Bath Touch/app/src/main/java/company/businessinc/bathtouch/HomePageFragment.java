@@ -35,6 +35,7 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
@@ -47,7 +48,8 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private League league = null;
+    private League league;
+    private List<LeagueTeam> leagueData ;
 
 
     public static HomePageFragment newInstance() {
@@ -68,14 +70,19 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        League league = null;
+        List<LeagueTeam> leagueData = null;
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
             if(DataStore.getInstance(getActivity()).isReferee()) {
                 getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
             }
             getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
             getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.TEAMSFIXTURES_URL_QUERY, null, this);
         } else {
-            getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
         }
         getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
     }
@@ -185,6 +192,15 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.LEAGUESSCORE_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.TEAMSSCORES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -204,9 +220,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                     nextRefMatch.add(new Match(data));
                     data.moveToNext();
                 }
-                if(nextRefMatch.size() > 0){
+                if(nextRefMatch.size() > 0 && mAdapter != null){
                     nextRefMatch = Match.sortList(nextRefMatch, Match.SortType.ASCENDING);
-                    ((HomePageAdapter)mAdapter).setNextRefMatch(nextRefMatch.get(0));
+                    ((HomePageAdapter)mAdapter).setNextMatch(nextRefMatch.get(0), true);
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
@@ -215,34 +231,60 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                     nextMatch.add(new Match(data));
                     data.moveToNext();
                 }
-                if(nextMatch.size() > 0){
+                if(nextMatch.size() > 0 && mAdapter != null){
                     nextMatch = Match.sortList(nextMatch, Match.SortType.ASCENDING);
-                    ((HomePageAdapter)mAdapter).setNextMatch(nextMatch.get(0));
+                    ((HomePageAdapter)mAdapter).setNextMatch(nextMatch.get(0), false);
                 }
                 break;
             case DBProviderContract.MYLEAGUES_URL_QUERY:
-                break;
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                if(league == null){
+                    while(!data.isAfterLast()){
+                        league = new League(data);
+                        data.moveToNext();
+                    }
+                    if(leagueData == null){
+                        Cursor rCursor = getActivity().getContentResolver().query(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI,null,DBProviderContract.SELECTION_LEAGUEID,new String[]{Integer.toString(league.getLeagueID())},null);
+                        if(rCursor.getCount() > 0 && mAdapter != null){
+                            leagueData = loadLeagueTeams(rCursor);
+                            ((HomePageAdapter)mAdapter).setLeague(leagueData,league);
+                        }
+                        rCursor.close();
+                    }
+                }
                 break;
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
+                if(league != null && leagueData == null){
+                    List<LeagueTeam> leagueTeams = new ArrayList<>();
+                    while(!data.isAfterLast()){
+                        if(data.getInt(0) == league.getLeagueID()) {
+                            leagueTeams.add(new LeagueTeam(data));
+                        }
+                        data.moveToNext();
+                    }
+                    if(leagueTeams.size() > 0 && mAdapter != null){
+                        leagueData = leagueTeams;
+                        ((HomePageAdapter)mAdapter).setLeague(leagueData,league);
+                    }
+                }
+                break;
+            case DBProviderContract.LEAGUESSCORE_URL_QUERY:
+                break;
+            case DBProviderContract.TEAMSSCORES_URL_QUERY:
+                break;
+            case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                 break;
         }
+    }
 
-
-        List<Match> matches = new ArrayList<>();
-        if (data.moveToFirst()){
-            while(!data.isAfterLast()){
-                matches.add(new Match(data));
-                data.moveToNext();
-            }
+    public List<LeagueTeam> loadLeagueTeams(Cursor data){
+        List<LeagueTeam> leagueTeams = new ArrayList<>();
+        data.moveToFirst();
+        while(!data.isAfterLast()){
+            leagueTeams.add(new LeagueTeam(data));
+            data.moveToNext();
         }
-        //sort into assccending order
-        Collections.sort(matches, new Comparator<Match>() {
-            public int compare(Match m1, Match m2) {
-                return m1.getDateTime().compareTo(m2.getDateTime());
-            }
-        });
-        //
+        return leagueTeams;
     }
 
     //when data gets updated, first reset everything
