@@ -12,16 +12,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import company.businessinc.bathtouch.R;
 import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
+import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 /**
  * Created by user on 21/11/14.
  */
 public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private TeamResultsData mDataset;
 
     public class ViewHolderResults extends RecyclerView.ViewHolder {
         public TextView mTeam1Name, mTeam2Name, mTeam1Score, mTeam2Score;
@@ -37,11 +39,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    private List<Match> leagueScores;
+    private String teamName;
 
-
-    public TeamResultsAdapter(TeamResultsData myDataset) {
-
-        mDataset = myDataset;
+    public TeamResultsAdapter(List<Match> leagueScores, String teamName) {
+        this.leagueScores = leagueScores;
+        this.teamName = teamName;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Match match = mDataset.getMatch(position);
+        Match match = leagueScores.get(position);
         ViewHolderResults v = (ViewHolderResults) holder;
         v.mTeam1Name.setText(match.getTeamOne());
         v.mTeam2Name.setText(match.getTeamTwo());
@@ -77,9 +80,11 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         //get the context of the adapater, to use resources later on
         Context context = v.mImageView.getContext();
 
-        if(match.getTeamOne().equals(mDataset.getTeamName())){
+        if(match.getTeamOne().equals(teamName)){
             v.mTeam1Name.setTypeface(null, Typeface.BOLD);
             v.mTeam1Score.setTypeface(null, Typeface.BOLD);
+            v.mTeam2Name.setTypeface(null, Typeface.NORMAL);
+            v.mTeam2Score.setTypeface(null, Typeface.NORMAL);
             if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
                 //won, set green
                 Log.d("TEAM", "1 wins");
@@ -90,11 +95,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumb_down));
             }
-        }
-        else{
+        } else{
+            v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
+            v.mTeam1Score.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Name.setTypeface(null, Typeface.BOLD);
             v.mTeam2Score.setTypeface(null, Typeface.BOLD);
-            if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
+            if(match.getTeamOnePoints() < match.getTeamTwoPoints()){
                 //won, set green
                 Log.d("TEAM", "2 wins");
                 v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumb_up));
@@ -114,7 +120,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return leagueScores.size();
     }
 
 }

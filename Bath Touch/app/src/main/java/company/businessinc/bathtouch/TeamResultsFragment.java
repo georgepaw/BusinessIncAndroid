@@ -2,6 +2,7 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,7 @@ import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 
+public class TeamResultsFragment extends Fragment implements ActionBar.TabListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private TeamResultsCallbacks mCallbacks;
@@ -157,7 +159,7 @@ import company.businessinc.dataModels.League;
                         data.moveToNext();
                     }
                     if(leagueNames.size()>0) {
-                        mSlidingTabLayout.setContentDescription(leagueNames.size() - 1, leagueNames.get(leagueNames.size() - 1).getLeagueName());
+                        mSlidingTabLayout.setViewPager(mViewPager);
                         mViewPagerAdapter.notifyDataSetChanged();
                     }
                 }

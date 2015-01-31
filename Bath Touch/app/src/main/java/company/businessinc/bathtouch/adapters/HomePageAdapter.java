@@ -256,8 +256,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 View vmt = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team, parent, false);
                 return new ViewHolderMyTeam(vmt);
             case TEAMOVERVIEW:
-                View vto = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_team_overview, parent, false);
-                return new ViewHolderTeamOverview(vto);
+                if(DataStore.getInstance(context).isUserLoggedIn()){
+                    View vto = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_team_overview, parent, false);
+                    return new ViewHolderTeamOverview(vto);
+                } else {
+                    return new ViewHolderEmpty(ve);
+                }
             default:
                 return new ViewHolderEmpty(ve);
         }
