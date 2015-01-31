@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.bathtouch.R;
@@ -42,9 +44,8 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Match> leagueScores;
     private String teamName;
 
-    public TeamResultsAdapter(List<Match> leagueScores, String teamName) {
-        this.leagueScores = leagueScores;
-        this.teamName = teamName;
+    public TeamResultsAdapter() {
+        leagueScores = new ArrayList<>();
     }
 
     @Override
@@ -64,6 +65,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return new ViewHolderResults(v);
 
 
+    }
+
+    public void setData(List<Match> leagueScores, String teamName){
+        this.leagueScores = leagueScores;
+        this.teamName = teamName;
+        notifyDataSetChanged();
     }
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {

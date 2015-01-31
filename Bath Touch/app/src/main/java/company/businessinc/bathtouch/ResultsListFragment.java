@@ -44,6 +44,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     private ResultsListCallbacks mCallbacks;
     private Integer mLeagueID;
     private List<Match> leagueScores;
+    private String teamName;
 
 
     public static ResultsListFragment newInstance(Integer leagueID) {
@@ -64,6 +65,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
         if (getArguments() != null) {
             mLeagueID = getArguments().getInt("leagueID");
         }
+
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             getLoaderManager().initLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
         } else {
@@ -104,13 +106,11 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
             case DBProviderContract.TEAMSSCORES_URL_QUERY:
                     leagueScores = loadLeagueMatches(data);
                     if(leagueScores.size() > 0){
-                        String teamName = "";
+                        teamName = "";
                         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
                             teamName = DataStore.getInstance(getActivity()).getUserTeam();
                         }
-                        mAdapter = new TeamResultsAdapter(leagueScores, teamName);
-                        mAdapter.notifyDataSetChanged();
-                        mRecyclerView.setAdapter(mAdapter);
+                        mAdapter.setData(leagueScores, teamName);
                     }
                 break;
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
@@ -153,6 +153,14 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                         selectItem(position);
                     }
                 }));
+
+        mAdapter = new TeamResultsAdapter();
+
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
+        } else {
+            getLoaderManager().restartLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
+        }
 
         mRecyclerView.setAdapter(mAdapter);
 
