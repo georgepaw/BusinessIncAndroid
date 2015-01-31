@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+
 import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 
@@ -67,6 +69,9 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
         actionBar.setTitle("Past Results");
         actionBar.setElevation(0f);
 
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(2);
+
         mViewPager = (ViewPager) mLayout.findViewById(R.id.fragment_team_results_view_pager);
 
         // it's PagerAdapter set.
@@ -77,7 +82,7 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
 
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
-        mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setDistributeEvenly(false);
         mViewPagerAdapter = new ViewPagerAdapter(getFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);

@@ -25,6 +25,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -83,6 +85,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Home");
         actionBar.setElevation(getResources().getDimension(R.dimen.headerbar_elevation));
+
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(0);
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.alt_home_page_cards_recycle);
 
