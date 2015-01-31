@@ -82,6 +82,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
 
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Home");
+        actionBar.setElevation(getResources().getDimension(R.dimen.headerbar_elevation));
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.alt_home_page_cards_recycle);
 
