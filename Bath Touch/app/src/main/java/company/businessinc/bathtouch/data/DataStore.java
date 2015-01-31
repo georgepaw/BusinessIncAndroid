@@ -339,6 +339,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public void clearUserData() {
         user = new User();
         dropUserTables();
+        loadedMyLeagues = false;
+        loadedRefGames = false;
     }
 
     private void dropUserTables(){

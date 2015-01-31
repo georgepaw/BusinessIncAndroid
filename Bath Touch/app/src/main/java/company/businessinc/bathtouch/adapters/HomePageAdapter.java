@@ -42,9 +42,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Match nextMatch;
     private Match nextRefMatch;
     private List<LeagueTeam> leagueTeam;
-    private League league;
+    private League leagueViewLeague;
     private List<Match> leagueStandings;
-    private String leagueStandingName;
+    private League leagueStandingLeague;
 
     //card positions
     public static final int GREETINGCARD = 0;
@@ -151,9 +151,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mGameTwoTeamOne = (TextView) v.findViewById(R.id.home_card_team_gameTwo_teamOne_name);
             mGameTwoTeamTwo = (TextView) v.findViewById(R.id.home_card_team_gameTwo_teamTwo_name);
             mGameOneTeamOneScore = (TextView) v.findViewById(R.id.home_card_team_gameOne_teamOne_score);
-            mGameOneTeamTwoScore = (TextView) v.findViewById(R.id.home_card_team_gameOne_teamOne_score);
-            mGameTwoTeamOneScore = (TextView) v.findViewById(R.id.home_card_team_gameOne_teamOne_score);
-            mGameTwoTeamTwoScore = (TextView) v.findViewById(R.id.home_card_team_gameOne_teamOne_score);
+            mGameOneTeamTwoScore = (TextView) v.findViewById(R.id.home_card_team_gameOne_teamTwo_score);
+            mGameTwoTeamOneScore = (TextView) v.findViewById(R.id.home_card_team_gameTwo_teamOne_score);
+            mGameTwoTeamTwoScore = (TextView) v.findViewById(R.id.home_card_team_gameTwo_teamTwo_score);
             mCardView = (CardView) v.findViewById(R.id.home_page_card_team_container);
             progressBar = (ProgressBar) v.findViewById(R.id.home_page_card_team_progressbar);
             mCardView.setOnClickListener(this);
@@ -349,8 +349,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     
     public void setLeague(List<LeagueTeam> data, League league){
         if(data!=null && league != null) {
+            this.leagueViewLeague = league;
             this.leagueTeam = data;
-            this.league = league;
             notifyDataSetChanged();
         }
     }
@@ -365,7 +365,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
             setVisibility("table", View.VISIBLE);
             mViewHolderTable.progressBar.setVisibility(View.GONE);
-            mViewHolderTable.mHeaderTextView.setText(league.getLeagueName());
+            mViewHolderTable.mHeaderTextView.setText(leagueViewLeague.getLeagueName());
             if(leagueTeam.size() > 0){
                 mViewHolderTable.mTeam1name.setText(leagueTeam.get(0).getTeamName());
                 mViewHolderTable.mTeam1Number.setText(leagueTeam.get(0).getPosition().toString());
@@ -442,29 +442,30 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void setLeagueStandings(List<Match> data, String name){
+    public void setLeagueStandings(List<Match> data, League league){
         leagueStandings = data;
-        this.leagueStandingName = name;
+        this.leagueStandingLeague = league;
         notifyDataSetChanged();
     }
 
     private void loadLeagueStandings(){
         if(leagueStandings != null){
+            leagueStandings = Match.sortList(leagueStandings, Match.SortType.DESCENDING);
             mViewHolderMyTeam.progressBar.setVisibility(View.GONE);
-            mViewHolderMyTeam.mHeader.setText(leagueStandingName);
+            mViewHolderMyTeam.mHeader.setText(leagueStandingLeague.getLeagueName());
             int offset = 0;
-            if(leagueStandings.size() > 2){
+            if(leagueStandings.size() > 1){
                 offset++;
                 mViewHolderMyTeam.mGameTwoTeamOne.setText(leagueStandings.get(0).getTeamOne());
                 mViewHolderMyTeam.mGameTwoTeamTwo.setText(leagueStandings.get(0).getTeamTwo());
-                mViewHolderMyTeam.mGameTwoTeamOneScore.setText(leagueStandings.get(0).getTeamOnePoints());
-                mViewHolderMyTeam.mGameTwoTeamTwoScore.setText(leagueStandings.get(0).getTeamTwoPoints());
+                mViewHolderMyTeam.mGameTwoTeamOneScore.setText(leagueStandings.get(0).getTeamOnePoints() + "");
+                mViewHolderMyTeam.mGameTwoTeamTwoScore.setText(leagueStandings.get(0).getTeamTwoPoints() + "");
             }
-            if(leagueStandings.size() > 1){
+            if(leagueStandings.size() > 0){
                 mViewHolderMyTeam.mGameOneTeamOne.setText(leagueStandings.get(0+offset).getTeamOne());
                 mViewHolderMyTeam.mGameOneTeamTwo.setText(leagueStandings.get(0+offset).getTeamTwo());
-                mViewHolderMyTeam.mGameOneTeamOneScore.setText(leagueStandings.get(0+offset).getTeamOnePoints());
-                mViewHolderMyTeam.mGameOneTeamTwoScore.setText(leagueStandings.get(0+offset).getTeamTwoPoints());
+                mViewHolderMyTeam.mGameOneTeamOneScore.setText(leagueStandings.get(0+offset).getTeamOnePoints() + "");
+                mViewHolderMyTeam.mGameOneTeamTwoScore.setText(leagueStandings.get(0+offset).getTeamTwoPoints() + "");
             }
         }
     }
