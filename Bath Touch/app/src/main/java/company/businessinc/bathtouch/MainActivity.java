@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerLayout = (DrawerFrameLayout) findViewById(R.id.drawer_layout);
 //        DrawerView navigationDrawer = (DrawerView) findViewById(R.id.drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if(!DataStore.getInstance(this).isUserLoggedIn()) {
             mNavigationDrawerLayout.setProfile(
