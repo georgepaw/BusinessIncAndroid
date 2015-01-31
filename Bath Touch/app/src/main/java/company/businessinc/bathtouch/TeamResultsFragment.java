@@ -2,7 +2,7 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +14,9 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,11 +28,14 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+
+import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
+import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 
-public class TeamResultsFragment extends Fragment implements ActionBar.TabListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private TeamResultsCallbacks mCallbacks;
@@ -74,15 +80,20 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
         actionBar.setTitle("Past Results");
         actionBar.setElevation(0f);
 
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(2);
+
         mViewPager = (ViewPager) mLayout.findViewById(R.id.fragment_team_results_view_pager);
 
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.fragment_team_results_sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
 
+        setSlidingTabLayoutContentDescriptions();
+
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
-        mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setDistributeEvenly(false);
         mViewPagerAdapter = new ViewPagerAdapter(getFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
@@ -105,6 +116,10 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
         }
 
         return mLayout;
+    }
+
+    private void setSlidingTabLayoutContentDescriptions() {
+        mSlidingTabLayout.setContentDescription(0,"Winter 2015");
     }
 
     @Override
