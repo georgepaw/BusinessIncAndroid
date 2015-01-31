@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Status;
 import company.businessinc.endpoints.ScoreSubmit;
 import company.businessinc.endpoints.ScoreSubmitInterface;
@@ -35,9 +36,9 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
-            mMatchId = extras.getInt("matchId");
-            teamOneNameText = extras.getString("teamOneName");
-            teamTwoNameText = extras.getString("teamTwoName");
+            mMatchId = extras.getInt(Match.KEY_MATCHID);
+            teamOneNameText = extras.getString(Match.KEY_TEAMONE);
+            teamTwoNameText = extras.getString(Match.KEY_TEAMTWO);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_submit_score);

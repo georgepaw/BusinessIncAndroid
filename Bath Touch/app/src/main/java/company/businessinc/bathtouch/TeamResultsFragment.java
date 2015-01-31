@@ -2,12 +2,16 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -22,12 +26,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 
-public class TeamResultsFragment extends Fragment implements ActionBar.TabListener {
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.dataModels.League;
+
+public class TeamResultsFragment extends Fragment implements ActionBar.TabListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private TeamResultsCallbacks mCallbacks;
@@ -35,6 +45,7 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
+    private List<League> leagueNames = new LinkedList<League>();
 
 
     public static TeamResultsFragment newInstance() {
@@ -52,6 +63,8 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
+
+        getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
     }
 
     @Override
@@ -123,6 +136,43 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
     }
 
     @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
+        switch (loaderID) {
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    //query has finished
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch(loader.getId()){
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                if (data.moveToFirst()){
+                    leagueNames = new ArrayList<>();
+                    while(!data.isAfterLast()){
+                        League league = new League(data);
+                        leagueNames.add(league);
+                        data.moveToNext();
+                    }
+                    if(leagueNames.size()>0) {
+                        mSlidingTabLayout.setViewPager(mViewPager);
+                        mViewPagerAdapter.notifyDataSetChanged();
+                    }
+                }
+                break;
+        }
+    }
+
+    //when data gets updated, first reset everything
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
@@ -143,25 +193,12 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
 
         @Override
         public int getCount() {
-            //TODO Get real data for this
-            return 4;
+            return leagueNames.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            //TODO Get real data for this
-            switch (position) {
-                case 0:
-                    return "Winter League 2015";
-                case 1:
-                    return "Summer League 2014";
-                case 2:
-                    return "Winter League 2014";
-                case 3:
-                    return "Summer League 2013";
-                default:
-                    return "";
-            }
+            return leagueNames.get(position).getLeagueName();
         }
     }
 
