@@ -1,10 +1,20 @@
 package company.businessinc.bathtouch;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -12,22 +22,51 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
-public class MatchActivity extends ActionBarActivity {
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.Match;
 
+
+public class MatchActivity extends ActionBarActivity implements ResultsListFragment.ResultsListCallbacks {
+
+    private static final String TAG = "MatchActivty";
     private String mTeamOneName,mTeamTwoName;
-    private Integer mTeamOneScore, mTeamTwoScore;
+    private Integer mLeagueID, mMatchID, mTeamOneScore, mTeamTwoScore;
+    private ViewPager mViewPager;
+    private SlidingTabLayout mSlidingTabLayout;
+    private ViewPagerAdapter mViewPagerAdapter;
+    private String mPlace;
+    private Date mDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-
-        Bundle args = getIntent().getExtras();
-        mTeamOneName = args.getString("teamOneName");
-        mTeamTwoName = args.getString("teamTwoName");
-        mTeamOneScore = args.getInt("teamOneScore");
-        mTeamTwoScore = args.getInt("teamTwoScore");
+;
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            try {
+                mTeamOneName = extras.getString(Match.KEY_TEAMONE);
+                mTeamOneScore = extras.getInt(Match.KEY_TEAMONEPOINTS);
+                mTeamTwoName = extras.getString(Match.KEY_TEAMTWO);
+                mTeamTwoScore = extras.getInt(Match.KEY_TEAMTWOPOINTS);
+                mMatchID = extras.getInt(Match.KEY_MATCHID);
+                mPlace = extras.getString(Match.KEY_PLACE);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+                mDate = sdf.parse(extras.getString(Match.KEY_DATETIME));
+                mLeagueID = extras.getInt(League.KEY_LEAGUEID);
+            } catch (Exception e){
+                Log.d(TAG, "Couldn't parse the bundle");
+            }
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Match");
@@ -52,6 +91,40 @@ public class MatchActivity extends ActionBarActivity {
         teamTwoText.setText(mTeamTwoName);
         TextView scoreText = (TextView) findViewById(R.id.activity_match_header_score);
         scoreText.setText(mTeamOneScore + " - " + mTeamTwoScore);
+        TextView dateText = (TextView) findViewById(R.id.activity_match_header_date);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, HH:mm", Locale.UK);
+        dateText.setText(sdf.format(mDate));
+
+        mViewPager = (ViewPager) findViewById(R.id.activity_match_view_pager);
+
+        // it's PagerAdapter set.
+        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.activity_match_sliding_tabs);
+        mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator_inverse, android.R.id.text1);
+
+        Resources res = getResources();
+        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
+        mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setEnablePadding(false);
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mViewPagerAdapter);
+        mSlidingTabLayout.setViewPager(mViewPager);
+
+        if (mSlidingTabLayout != null) {
+            mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset,
+                                           int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                }
+            });
+        }
     }
 
 
@@ -75,5 +148,43 @@ public class MatchActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResultsItemSelected(int position) {
+
+    }
+
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.d("Team Results", "Creating fragment");
+            ResultsListFragment frag = ResultsListFragment.newInstance(1);
+            return frag;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position){
+                case 0:
+                    return "Match facts";
+                case 1:
+                    return "Table";
+                case 2:
+                    return "Head-to-head";
+                default:
+                    return "null";
+            }
+        }
     }
 }
