@@ -180,7 +180,7 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
         @Override
         public Fragment getItem(int position) {
             Log.d("Team Results", "Creating fragment");
-            ResultsListFragment frag = ResultsListFragment.newInstance(position);
+            ResultsListFragment frag = ResultsListFragment.newInstance(leagueNames.get(position).getLeagueID());
             return frag;
         }
 
