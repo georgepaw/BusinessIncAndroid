@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private List<LeagueTeam> mLeagueTeams;
     private Integer mLeagueID;
 
     public static LeagueFragment newInstance(int leagueID) {
@@ -119,8 +121,8 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         mRecyclerView.setAdapter(mAdapter);
 
         Cursor rCursor = getActivity().getContentResolver()
-                .query(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI,null,DBProviderContract
-                        .SELECTION_LEAGUEID,new String[]{Integer.toString(mLeagueID)},null);
+                .query(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, DBProviderContract
+                        .SELECTION_LEAGUEID, new String[]{Integer.toString(mLeagueID)}, null);
         if(rCursor.getCount() > 0){
             loadStandings(rCursor);
         }
@@ -133,6 +135,10 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         if (mCallbacks != null) {
             mCallbacks.onLeagueItemSelected(position);
         }
+//        Intent intent = new Intent(getActivity(), MatchActivity.class);
+//        Bundle args = new Bundle();
+//        args.putString("teamOneName", mLeagueTeams.get(position).);
+
     }
 
     @Override
@@ -195,21 +201,21 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
 
     private void loadStandings(Cursor data){
         if (data.moveToFirst()){
-            List<LeagueTeam> leagueTeams = new ArrayList<>();
+            mLeagueTeams = new ArrayList<>();
             while(!data.isAfterLast()){
                 if(data.getInt(0) == mLeagueID){
-                    leagueTeams.add(new LeagueTeam(data));
+                    mLeagueTeams.add(new LeagueTeam(data));
                 }
                 data.moveToNext();
             }
-            if(leagueTeams.size() >0) {
-                Collections.sort(leagueTeams, new Comparator<LeagueTeam>() {
+            if(mLeagueTeams.size() >0) {
+                Collections.sort(mLeagueTeams, new Comparator<LeagueTeam>() {
                     @Override
                     public int compare(LeagueTeam T1, LeagueTeam T2) {
                         return T1.getPosition() - T2.getPosition();
                     }
                 });
-                ((LeagueTableAdapter) mAdapter).setLeagueTeams(leagueTeams);
+                ((LeagueTableAdapter) mAdapter).setLeagueTeams(mLeagueTeams);
             }
         }
     }

@@ -1,11 +1,16 @@
 package company.businessinc.bathtouch;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.amulyakhare.textdrawable.TextDrawable;
 
 
 public class MatchActivity extends ActionBarActivity {
@@ -21,11 +26,32 @@ public class MatchActivity extends ActionBarActivity {
         Bundle args = getIntent().getExtras();
         mTeamOneName = args.getString("teamOneName");
         mTeamTwoName = args.getString("teamTwoName");
+        mTeamOneScore = args.getInt("teamOneScore");
+        mTeamTwoScore = args.getInt("teamTwoScore");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(mTeamOneName + " vs " + mTeamTwoName);
+        toolbar.setTitle("Match");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        TextDrawable teamOneDrawable = TextDrawable.builder()
+                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), Color.RED);
+
+        TextDrawable teamTwoDrawable = TextDrawable.builder()
+                .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), Color.BLUE);
+
+        ImageView teamOneImage = (ImageView) findViewById(R.id.activity_match_header_team_one_image);
+        teamOneImage.setImageDrawable(teamOneDrawable);
+
+        ImageView teamTwoImage = (ImageView) findViewById(R.id.activity_match_header_team_two_image);
+        teamTwoImage.setImageDrawable(teamTwoDrawable);
+
+        TextView teamOneText = (TextView) findViewById(R.id.activity_match_header_team_one_text);
+        teamOneText.setText(mTeamOneName);
+        TextView teamTwoText = (TextView) findViewById(R.id.activity_match_header_team_two_text);
+        teamTwoText.setText(mTeamTwoName);
+        TextView scoreText = (TextView) findViewById(R.id.activity_match_header_score);
+        scoreText.setText(mTeamOneScore + " - " + mTeamTwoScore);
     }
 
 

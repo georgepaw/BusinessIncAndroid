@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -28,7 +29,7 @@ import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 
-public class LeagueTableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LeagueTableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
 
     private LeagueTableCallbacks mCallbacks;
