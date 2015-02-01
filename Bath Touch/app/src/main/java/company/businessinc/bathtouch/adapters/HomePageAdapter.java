@@ -18,11 +18,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 
 /**
  * Created by user on 20/11/14.
@@ -35,6 +36,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ViewHolderNextMatch mViewHolderNextRefMatch;
     private ViewHolderNextMatch mViewHolderNextMatch;
     private ViewHolderMyTeam mViewHolderMyTeam;
+    private ViewHolderTeamOverview mViewHolderTeamOverview;
     private int items = 6;
     private homePageAdapterCallbacks mCallbacks;
 
@@ -45,6 +47,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private League leagueViewLeague;
     private List<Match> leagueStandings;
     private League leagueStandingLeague;
+
+    private List<Match> teamOverviewLeagueFixtures;
+    private Team teamOverviewTeam;
+    private LeagueTeam teamOverviewLeagueTeam;
+    private League teamOverviewLeague;
 
     //card positions
     public static final int GREETINGCARD = 0;
@@ -78,8 +85,31 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class ViewHolderTeamOverview extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView mHeaderTeamName, mHeaderTeamCaptain, mHeaderLeagueName, mHeaderLeaguePosition;
+        public TextView mGameOneTeamOne, mGameOneTeamTwo, mGameOneDate;
+        public TextView mGameTwoTeamOne, mGameTwoTeamTwo, mGameTwoDate;
+        public TextView mGameThreeTeamOne, mGameThreeTeamTwo, mGameThreeDate;
+        public ProgressBar progressBar;
+        public CardView mCardView;
+
         public ViewHolderTeamOverview(View v){
             super(v);
+            mCardView = (CardView) v.findViewById(R.id.home_page_card_teamOverviewcontainer);
+            mHeaderTeamName = (TextView) v.findViewById(R.id.home_card_teamOverview_name);
+            mHeaderTeamCaptain = (TextView) v.findViewById(R.id.home_card_teamOverview_captainName);
+            mHeaderLeagueName = (TextView) v.findViewById(R.id.home_card_teamOverview_leagueName);
+            mHeaderLeaguePosition = (TextView) v.findViewById(R.id.home_card_teamOverview_position);
+            mGameOneTeamOne = (TextView) v.findViewById(R.id.home_card_teamOverview_gameOne_teamOne);
+            mGameOneTeamTwo = (TextView) v.findViewById(R.id.home_card_teamOverview_gameOne_teamTwo);
+            mGameOneDate = (TextView) v.findViewById(R.id.home_card_teamOverview_gameOne_date);
+            mGameTwoTeamOne = (TextView) v.findViewById(R.id.home_card_teamOverview_gameTwo_teamOne);
+            mGameTwoTeamTwo = (TextView) v.findViewById(R.id.home_card_teamOverview_gameTwo_teamTwo);
+            mGameTwoDate = (TextView) v.findViewById(R.id.home_card_teamOverview_gameTwo_date);
+            mGameThreeTeamOne = (TextView) v.findViewById(R.id.home_card_teamOverview_gameThree_teamOne);
+            mGameThreeTeamTwo = (TextView) v.findViewById(R.id.home_card_teamOverview_gameThree_teamTwo);
+            mGameThreeDate = (TextView) v.findViewById(R.id.home_card_teamOverview_gameThree_date);
+            progressBar = (ProgressBar) v.findViewById(R.id.home_card_teamOverview_progressbar);
             v.setOnClickListener(this);
         }
 
@@ -257,7 +287,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return new ViewHolderMyTeam(vmt);
             case TEAMOVERVIEW:
                 if(DataStore.getInstance(context).isUserLoggedIn()){
-                    View vto = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_team_overview, parent, false);
+                    View vto = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_team_overview, parent, false);
                     return new ViewHolderTeamOverview(vto);
                 } else {
                     return new ViewHolderEmpty(ve);
@@ -317,7 +347,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ViewHolderEmpty ve = (ViewHolderEmpty) holder;
         }
         else if(holder instanceof ViewHolderTeamOverview){
-            ViewHolderTeamOverview vto = (ViewHolderTeamOverview) holder;
+            mViewHolderTeamOverview = (ViewHolderTeamOverview) holder;
+            mViewHolderTeamOverview.progressBar.setVisibility(View.VISIBLE);
+            loadLeagueOverview();
         }
         else{
             ViewHolderHome vho = (ViewHolderHome) holder;
@@ -470,6 +502,57 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderMyTeam.mGameOneTeamTwo.setText(leagueStandings.get(0+offset).getTeamTwo());
                 mViewHolderMyTeam.mGameOneTeamOneScore.setText(leagueStandings.get(0+offset).getTeamOnePoints() + "");
                 mViewHolderMyTeam.mGameOneTeamTwoScore.setText(leagueStandings.get(0+offset).getTeamTwoPoints() + "");
+            }
+        }
+    }
+
+    public void setLeagueOverview(List<Match> teamOverviewLeagueFixtures, Team teamOverviewTeam, LeagueTeam teamOverviewLeagueTeam, League teamOverviewLeague){
+        this.teamOverviewLeagueFixtures = teamOverviewLeagueFixtures;
+        this.teamOverviewTeam = teamOverviewTeam;
+        this.teamOverviewLeagueTeam = teamOverviewLeagueTeam;
+        this.teamOverviewLeague = teamOverviewLeague;
+        notifyDataSetChanged();
+    }
+
+    private void loadLeagueOverview(){
+        if(teamOverviewLeagueFixtures !=null){
+            mViewHolderTeamOverview.progressBar.setVisibility(View.GONE);
+            teamOverviewLeagueFixtures = Match.sortList(teamOverviewLeagueFixtures, Match.SortType.ASCENDING);
+            mViewHolderTeamOverview.mHeaderTeamName.setText(teamOverviewTeam.getTeamName());
+            mViewHolderTeamOverview.mHeaderTeamCaptain.setText(teamOverviewTeam.getCaptainName());
+            mViewHolderTeamOverview.mHeaderLeagueName.setText(teamOverviewLeague.getLeagueName());
+            String whichPosition = teamOverviewLeagueTeam.getPosition() + "";
+            int position = teamOverviewLeagueTeam.getPosition();
+            switch(position){
+                case 1:
+                    whichPosition += "st";
+                    break;
+                case 2:
+                    whichPosition += "nd";
+                    break;
+                case 3:
+                    whichPosition += "rd";
+                    break;
+                default:
+                    whichPosition += "th";
+                    break;
+            }
+            mViewHolderTeamOverview.mHeaderLeaguePosition.setText(whichPosition);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+            if(teamOverviewLeagueFixtures.size() > 0){
+                mViewHolderTeamOverview.mGameOneTeamOne.setText(teamOverviewLeagueFixtures.get(0).getTeamOne());
+                mViewHolderTeamOverview.mGameOneTeamTwo.setText(teamOverviewLeagueFixtures.get(0).getTeamTwo());
+                mViewHolderTeamOverview.mGameOneDate.setText(sdf.format(teamOverviewLeagueFixtures.get(0).getDateTime()));
+            }
+            if(teamOverviewLeagueFixtures.size() > 1){
+                mViewHolderTeamOverview.mGameTwoTeamOne.setText(teamOverviewLeagueFixtures.get(1).getTeamOne());
+                mViewHolderTeamOverview.mGameTwoTeamTwo.setText(teamOverviewLeagueFixtures.get(1).getTeamTwo());
+                mViewHolderTeamOverview.mGameTwoDate.setText(sdf.format(teamOverviewLeagueFixtures.get(1).getDateTime()));
+            }
+            if(teamOverviewLeagueFixtures.size() > 2){
+                mViewHolderTeamOverview.mGameThreeTeamOne.setText(teamOverviewLeagueFixtures.get(2).getTeamOne());
+                mViewHolderTeamOverview.mGameThreeTeamTwo.setText(teamOverviewLeagueFixtures.get(2).getTeamTwo());
+                mViewHolderTeamOverview.mGameThreeDate.setText(sdf.format(teamOverviewLeagueFixtures.get(2).getDateTime()));
             }
         }
     }

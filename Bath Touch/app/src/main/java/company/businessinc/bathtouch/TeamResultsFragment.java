@@ -3,7 +3,6 @@ package company.businessinc.bathtouch;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,24 +14,18 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
-
-import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
-import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;

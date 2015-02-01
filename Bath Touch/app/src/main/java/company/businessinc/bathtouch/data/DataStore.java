@@ -115,29 +115,42 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+
+    private ArrayList<Integer> loadedLeagueTeams = new ArrayList<>();
+
     public void loadLeaguesTeams(int leagueID){
+        if(!loadedLeagueTeams.contains(leagueID)){
+            new TeamList(this, leagueID).execute();
+            loadedLeagueTeams.add(leagueID);
+        }
 
     }
 
-    public void teamListCallback(List<Team> data, TeamList.CallType callType){
+    public void teamListCallback(List<Team> data, TeamList.CallType callType, int leagueID){
         if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            List<Integer> teamIdsAlreadyAdded = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                if(!teamIdsAlreadyAdded.contains(data.get(i).getTeamID())) {
+                    //TODO will web team fix this
+                    //only add unique teams
+                    //this is due to TeamList returning duplicates of teams that are in mote than one league
+                    //when getting all the teams from the endpoitns
+                    ContentValues dis = data.get(i).toContentValues();
+                    if(TeamList.CallType.GETLEAGUETEAMS == callType){
+                        dis.put(League.KEY_LEAGUEID, leagueID);
+                    }
+                    cV.add(dis);
+                    teamIdsAlreadyAdded.add(data.get(i).getTeamID());
+                }
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
             switch(callType){
                 case GETALLLTEAMS:
-                    LinkedList<ContentValues> cV = new LinkedList<>();
-                    List<Integer> teamIdsAlreadyAdded = new LinkedList<>();
-                    for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
-                        if(!teamIdsAlreadyAdded.contains(data.get(i).getTeamID())) {
-                            //only add unique teams
-                            //this is due to TeamList returning duplicates of teams that are in mote than one league
-                            //when getting all the teams from the endpoitns
-                            cV.add(data.get(i).toContentValues());
-                            teamIdsAlreadyAdded.add(data.get(i).getTeamID());
-                        }
-                    }
-                    ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
                     context.getContentResolver().bulkInsert(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI,contentValues);
                     break;
                 case GETLEAGUETEAMS:
+                    context.getContentResolver().bulkInsert(DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI,contentValues);
                     break;
             }
         }

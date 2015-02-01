@@ -2,7 +2,6 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -17,13 +16,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
-import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 
 

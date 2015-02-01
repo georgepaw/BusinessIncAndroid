@@ -1,18 +1,5 @@
 package company.businessinc.bathtouch;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.LinearLayout;
-
-/**
- * Created by user on 29/01/15.
- */
 import android.R;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,6 +9,10 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
+
+/**
+ * Created by user on 29/01/15.
+ */
 
 class SlidingTabStrip extends LinearLayout {
 
