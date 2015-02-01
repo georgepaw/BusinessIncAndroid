@@ -72,12 +72,6 @@
             android:name=".ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" >
         </activity>
-
-        <provider
-            android:name=".data.DBProvider"
-            android:authorities="company.businessinc.bathtouch" >
-        </provider>
-
         <activity
             android:name=".MatchActivity"
             android:label="@string/title_activity_match"
@@ -86,6 +80,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="company.businessinc.bathtouch.MainActivity" />
         </activity>
-    </application>
+        
+        <provider
+            android:name=".data.DBProvider"
+            android:authorities="company.businessinc.bathtouch" >
+        </provider>
+
+           </application>
 
 </manifest>
