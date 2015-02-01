@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

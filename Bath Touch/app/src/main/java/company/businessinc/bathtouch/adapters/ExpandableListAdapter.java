@@ -1,28 +1,19 @@
 package company.businessinc.bathtouch.adapters;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
 import android.graphics.Typeface;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import company.businessinc.bathtouch.R;
-import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.League;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter{
 

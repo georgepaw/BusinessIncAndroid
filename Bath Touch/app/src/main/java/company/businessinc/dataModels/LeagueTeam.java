@@ -2,6 +2,7 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
  */
 public class LeagueTeam {
     private String teamName;
+    private Integer teamID;
     private Integer leaguePoints;
     private Integer win;
     private Integer draw;
@@ -21,6 +23,7 @@ public class LeagueTeam {
     private Integer pointsAgainst;
 
     public static final String KEY_TEAMNAME = "teamName";
+    public static final String KEY_TEAMID = "teamID";
     public static final String KEY_LEAGUEPOINTS = "leaguePoints";
     public static final String KEY_WIN = "win";
     public static final String KEY_DRAW = "draw";
@@ -29,8 +32,9 @@ public class LeagueTeam {
     public static final String KEY_POSITION = "position";
     public static final String KEY_POINTSFOR = "pointsFor";
     public static final String KEY_POINTSAGAINST = "pointsAgainst";
-    public static final String[] COLUMNS = {KEY_TEAMNAME,KEY_LEAGUEPOINTS, KEY_WIN, KEY_DRAW, KEY_LOSE, KEY_FORFEIT, KEY_POSITION, KEY_POINTSFOR, KEY_POINTSAGAINST};
+    public static final String[] COLUMNS = {KEY_TEAMNAME, KEY_TEAMID,KEY_LEAGUEPOINTS, KEY_WIN, KEY_DRAW, KEY_LOSE, KEY_FORFEIT, KEY_POSITION, KEY_POINTSFOR, KEY_POINTSAGAINST};
     public static final String CREATE_TABLE =   KEY_TEAMNAME + "\tTEXT,\n" +
+                                                KEY_TEAMID   + "\tINTEGER,\n" +
                                                 KEY_LEAGUEPOINTS + "\tINTEGER,\n" +
                                                 KEY_WIN + "\tINTEGER,\n" +
                                                 KEY_DRAW + "\tINTEGER,\n" +
@@ -40,8 +44,9 @@ public class LeagueTeam {
                                                 KEY_POINTSFOR + "\tINTEGER,\n" +
                                                 KEY_POINTSAGAINST + "\tINTEGER";
 
-    public LeagueTeam(String teamName, Integer leaguePoints, Integer win, Integer draw, Integer lose, Integer forfeit, Integer position, Integer pointsFor, Integer pointsAgainst) {
+    public LeagueTeam(String teamName, Integer teamID, Integer leaguePoints, Integer win, Integer draw, Integer lose, Integer forfeit, Integer position, Integer pointsFor, Integer pointsAgainst) {
         this.teamName = teamName;
+        this.teamID = teamID;
         this.leaguePoints = leaguePoints;
         this.win = win;
         this.draw = draw;
@@ -57,6 +62,11 @@ public class LeagueTeam {
             this.teamName = cursor.getString(cursor.getColumnIndex(KEY_TEAMNAME));
         } catch(Exception e) {
             this.teamName = null;
+        }
+        try {
+            this.teamID = cursor.getInt(cursor.getColumnIndex(KEY_TEAMID));
+        } catch(Exception e) {
+            this.teamID = null;
         }
         try {
             this.leaguePoints = cursor.getInt(cursor.getColumnIndex(KEY_LEAGUEPOINTS));
@@ -107,6 +117,11 @@ public class LeagueTeam {
             this.teamName = null;
         }
         try {
+            this.teamID = jsonObject.getInt(KEY_TEAMID);
+        } catch(JSONException e) {
+            this.teamID = null;
+        }
+        try {
             this.leaguePoints = jsonObject.getInt(KEY_LEAGUEPOINTS);
         } catch(JSONException e) {
             this.leaguePoints = null;
@@ -154,6 +169,14 @@ public class LeagueTeam {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public Integer getTeamID() {
+        return teamID;
+    }
+
+    public void setTeamID(Integer teamID) {
+        this.teamID = teamID;
     }
 
     public Integer getLeaguePoints() {
@@ -223,6 +246,7 @@ public class LeagueTeam {
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_TEAMNAME, teamName);
+        values.put(KEY_TEAMID, teamID);
         values.put(KEY_LEAGUEPOINTS, leaguePoints);
         values.put(KEY_WIN, win);
         values.put(KEY_DRAW, draw);
