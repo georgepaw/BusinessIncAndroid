@@ -30,7 +30,7 @@ import java.util.List;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 
-public class TeamResultsFragment extends Fragment implements ActionBar.TabListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class TeamResultsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private TeamResultsCallbacks mCallbacks;
@@ -89,7 +89,7 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
         mSlidingTabLayout.setDistributeEvenly(false);
-        mViewPagerAdapter = new ViewPagerAdapter(getFragmentManager());
+        mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
 
@@ -193,21 +193,6 @@ public class TeamResultsFragment extends Fragment implements ActionBar.TabListen
         public CharSequence getPageTitle(int position) {
             return leagueNames.get(position).getLeagueName();
         }
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
     }
 
     public interface TeamResultsCallbacks {

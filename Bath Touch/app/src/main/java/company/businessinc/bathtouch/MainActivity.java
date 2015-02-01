@@ -47,6 +47,7 @@ public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
+        LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -107,7 +108,7 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerLayout = (DrawerFrameLayout) findViewById(R.id.drawer_layout);
 //        DrawerView navigationDrawer = (DrawerView) findViewById(R.id.drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if(!DataStore.getInstance(this).isUserLoggedIn()) {
             mNavigationDrawerLayout.setProfile(
@@ -186,7 +187,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                Toast.makeText(MainActivity.this, "No league tables fragment yet", Toast.LENGTH_SHORT).show();
+                                changeFragments("LEAGUETABLETAG");
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -253,7 +254,6 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
         mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
-//        mNavigationDrawerLayout.closeDrawer(navigationDrawer);
 
         if(DataStore.getInstance(this).isUserLoggedIn()) {
             if(DataStore.getInstance(this).isReferee()) {
@@ -269,29 +269,6 @@ public class MainActivity extends ActionBarActivity
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
-
-
-//    @Override
-//    public void onNavigationDrawerItemSelected(int position, String name) {
-////        update the main content by replacing fragments
-//        switch (position) {
-//            case 0:
-//                changeFragments("HOMEPAGETAG");
-//                break;
-//            case 1:
-//                changeFragments("LEAGUETABLETAG");
-//                break;
-//            case 2:
-//                Log.d("CALLLBK", "in callback on main acitivy");
-//
-//                changeFragments("TEAMRESULTSTAG");
-//                break;
-//            case 3:
-//                logOut();
-//            default:
-//                break;
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -340,9 +317,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case HomePageAdapter.TABLE:
                 Log.d("MATCH", "starting leage table activity");
-                Intent intent = new Intent(this, LeagueTableActivity.class);
-                startActivity(intent);
-//                changeFragments("LEAGUETABLETAG");
+//                Intent intent = new Intent(this, LeagueTableActivity.class);
+//                startActivity(intent);
+                changeFragments("LEAGUETABLETAG");
                 break;
             case HomePageAdapter.TEAMRESULTS:
                 Log.d("MATCH", "starting team results fragment");
@@ -483,6 +460,11 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onResultsItemSelected(int position) {
+
+    }
+
+    @Override
+    public void onLeagueItemSelected(int position) {
 
     }
 }

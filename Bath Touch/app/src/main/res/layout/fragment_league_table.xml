@@ -1,114 +1,26 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="company.businessinc.bathtouch.LeagueTableFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="company.businessinc.bathtouch.LeagueTableActivity">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <company.businessinc.bathtouch.SlidingTabLayout
+            android:id="@+id/fragment_league_table_sliding_tabs"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:background="?attr/colorPrimary"
-            android:id="@+id/league_display_header_box"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"
-            android:elevation="2dp">
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:elevation="@dimen/headerbar_elevation" />
 
-            <TextView
-                android:id="@+id/league_table_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bath Touch Winter League 2015"
-                android:layout_alignParentTop="true"
-                android:textSize="24dp"
-                android:textColor="@color/white"/>
-
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/home_page_card_table_table_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="4dp"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:id="@+id/team_number"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:text="#"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"
-                    />
-
-                <TextView
-                    android:id="@+id/team_name"
-                    android:layout_width="fill_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_toRightOf="@id/team_number"
-                    android:text="Team"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:id="@+id/team_points"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:text="PTS"
-                    android:textSize="14sp"
-                    android:paddingRight="16dp"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:id="@+id/team_lose"
-                    android:layout_width="24dp"
-                    android:layout_height="20dp"
-                    android:layout_toLeftOf="@id/team_points"
-                    android:text="L"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:id="@+id/team_draw"
-                    android:layout_width="24dp"
-                    android:layout_height="20dp"
-                    android:layout_toLeftOf="@id/team_lose"
-                    android:text="D"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:id="@+id/team_won"
-                    android:layout_width="24dp"
-                    android:layout_height="20dp"
-                    android:layout_toLeftOf="@id/team_draw"
-                    android:text="W"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"/>
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/league_table_recycle"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/fragment_league_table_view_pager"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_below="@id/league_display_header_box"
-            android:clickable="false"
-            android:scrollbars="vertical"
-            />
+            android:layout_below="@id/fragment_league_table_sliding_tabs" />
 
     </RelativeLayout>
-
 
 </FrameLayout>

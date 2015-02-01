@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -166,6 +167,15 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
         if (mCallbacks != null) {
             mCallbacks.onResultsItemSelected(position);
         }
+
+        Intent intent = new Intent(getActivity(), MatchActivity.class);
+        Bundle args = new Bundle();
+        args.putString("teamOneName", leagueScores.get(position).getTeamOne());
+        args.putString("teamTwoName", leagueScores.get(position).getTeamTwo());
+        args.putInt("teamOneScore",leagueScores.get(position).getTeamOnePoints());
+        args.putInt("teamTwoScore",leagueScores.get(position).getTeamTwoPoints());
+        intent.putExtras(args);
+        startActivity(intent);
     }
 
     @Override
