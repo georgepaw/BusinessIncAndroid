@@ -4,7 +4,7 @@
 
     android:id="@+id/home_page_card_teamOverviewcontainer"
     android:layout_width="fill_parent"
-    android:layout_height="470dp"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
@@ -117,7 +117,7 @@
         <LinearLayout
             android:id="@+id/card_teamOverview_next_match_box"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/card_teamOverview_score_box"
             android:orientation="vertical"
             android:paddingBottom="8dp"
@@ -128,13 +128,13 @@
 
 
             <RelativeLayout
-                android:layout_width="fill_parent"
+                android:id="@+id/home_card_teamOverview_row1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="8dp">
 
                 <TextView
-                    android:id="@+id/home_card_teamOverviewscore1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -182,6 +182,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/home_card_teamOverview_row2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -235,6 +236,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/home_card_teamOverview_row3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -291,13 +293,12 @@
         </LinearLayout>
 
 
-
-
         <RelativeLayout
             android:id="@+id/home_card_teamOverview_res2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_below="@id/card_teamOverview_next_match_box"
             android:orientation="vertical"
             android:paddingTop="16dp"
             android:paddingBottom="8dp"
@@ -329,5 +330,4 @@
 
 
 </android.support.v7.widget.CardView>
-
 
