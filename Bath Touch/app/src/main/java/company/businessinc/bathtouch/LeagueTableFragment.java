@@ -2,40 +2,27 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
-import company.businessinc.bathtouch.ApdaterData.HomeCardData;
-import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
-import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
-import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
 
 
 /**

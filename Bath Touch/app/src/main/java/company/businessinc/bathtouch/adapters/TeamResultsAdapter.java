@@ -1,8 +1,6 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,13 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import company.businessinc.bathtouch.R;
-import company.businessinc.bathtouch.ApdaterData.TeamResultsData;
-import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 /**

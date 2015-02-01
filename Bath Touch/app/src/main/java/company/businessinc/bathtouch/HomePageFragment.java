@@ -2,12 +2,11 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.provider.ContactsContract;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +26,7 @@ import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 
 
 public class HomePageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -37,9 +37,11 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private League league;
+    private Team myTeam;
+    private LeagueTeam thisLeagueTeam;
+    private List<Match> leagueFixtures;
     private List<LeagueTeam> leagueStandings;
     private List<Match> leagueScores;
-    private List<Match> leagueFixtures;
 
 
     public static HomePageFragment newInstance() {
@@ -68,6 +70,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
             getLoaderManager().initLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
             getLoaderManager().initLoader(DBProviderContract.TEAMSFIXTURES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.LEAGUETEAMS_URL_QUERY, null, this);
         } else {
             getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
             getLoaderManager().initLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
@@ -158,6 +161,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.LEAGUETEAMS_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -207,6 +213,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                             ((HomePageAdapter)mAdapter).setLeague(leagueStandings, league);
                         }
                         rCursor.close();
+                        //try loading the scores
                         if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
                             rCursor = getActivity().getContentResolver().query(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI,
                                     null,
@@ -225,6 +232,10 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                             ((HomePageAdapter)mAdapter).setLeagueStandings(leagueScores, league);
                         }
                         rCursor.close();
+                        //Load the fixtures
+                        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+                            loadTeamOverview();
+                        }
                     }
                 }
                 break;
@@ -246,32 +257,94 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                 }
                 break;
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
+                if(league != null){
+                    leagueFixtures = loadLeagueMatches(data);
+                    if(leagueFixtures.size() > 0){
+                        loadTeamOverview();
+                    }
+                }
                 break;
+            case DBProviderContract.LEAGUETEAMS_URL_QUERY:
+                if(league != null && myTeam == null){
+                    myTeam = loadTeam(data);
+                    if(myTeam!=null){
+                        loadTeamOverview();
+                    }
+                }
+                break;
+        }
+    }
+
+    private void loadTeamOverview(){
+        Cursor rCursor;
+        if(leagueFixtures == null){
+            rCursor = getActivity().getContentResolver().query(DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI,
+                    null,
+                    DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
+                    new String[]{Integer.toString(league.getLeagueID()), Integer.toString(DataStore.getInstance(getActivity()).getUserTeamID())},
+                    null);
+            leagueFixtures = loadLeagueMatches(rCursor);
+            rCursor.close();
+        }
+        if(myTeam == null){
+            rCursor = getActivity().getContentResolver().query(DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI,
+                    null,
+                    DBProviderContract.SELECTION_LEAGUEID,
+                    new String[]{Integer.toString(league.getLeagueID())},
+                    null);
+            myTeam = loadTeam(rCursor);
+            rCursor.close();
+        }
+        if(leagueFixtures != null && myTeam != null && thisLeagueTeam != null && league != null){
+            ((HomePageAdapter)mAdapter).setLeagueOverview(leagueFixtures, myTeam,thisLeagueTeam,league);
         }
     }
 
     public List<LeagueTeam> loadLeagueTeams(Cursor data){
         List<LeagueTeam> leagueTeams = new ArrayList<>();
-        data.moveToFirst();
-        while(!data.isAfterLast()){
-            if(data.getInt(0) == league.getLeagueID()) {
-                leagueTeams.add(new LeagueTeam(data));
+        if(data.moveToFirst()) {
+            while (!data.isAfterLast()) {
+                if (data.getInt(0) == league.getLeagueID()) {
+                    LeagueTeam leagueTeam = new LeagueTeam(data);
+                    if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+                        if (DataStore.getInstance(getActivity()).getUserTeamID() == leagueTeam.getTeamID()) {
+                            thisLeagueTeam = leagueTeam;
+                            loadTeamOverview();
+                        }
+                    }
+                    leagueTeams.add(leagueTeam);
+                }
+                data.moveToNext();
             }
-            data.moveToNext();
         }
         return leagueTeams;
     }
 
     public List<Match> loadLeagueMatches(Cursor data){
         List<Match> matchList = new ArrayList<>();
-        data.moveToFirst();
-        while(!data.isAfterLast()){
-            if(data.getInt(0) == league.getLeagueID()) {
-                matchList.add(new Match(data));
+        if(data.moveToFirst()) {
+            while (!data.isAfterLast()) {
+                if (data.getInt(0) == league.getLeagueID()) {
+                    matchList.add(new Match(data));
+                }
+                data.moveToNext();
             }
-            data.moveToNext();
         }
         return matchList;
+    }
+
+    public Team loadTeam(Cursor data){
+        Team team = null;
+        if(data.moveToFirst()) {
+            while (!data.isAfterLast()) {
+                team = new Team(data);
+                if (data.getInt(0) == league.getLeagueID() && team.getTeamID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
+                    return team;
+                }
+                data.moveToNext();
+            }
+        }
+        return null;
     }
 
     //when data gets updated, first reset everything

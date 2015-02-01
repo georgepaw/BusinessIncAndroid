@@ -1,7 +1,6 @@
 package company.businessinc.bathtouch.ApdaterData;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import company.businessinc.dataModels.Match;

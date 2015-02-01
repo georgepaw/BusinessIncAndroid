@@ -84,6 +84,11 @@ public class DBProvider extends ContentProvider {
                 DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
                 DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY);
 
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.LEAGUETEAMS_TABLE_NAME,
+                DBProviderContract.LEAGUETEAMS_URL_QUERY);
+
     }
 
     // Closes the SQLite database helper class, to avoid memory leaks
@@ -118,6 +123,13 @@ public class DBProvider extends ContentProvider {
                         DataStore.getInstance(getContext()).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
+                    }
+                    break;
+                case DBProviderContract.LEAGUETEAMS_URL_QUERY:
+                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                        DataStore.getInstance(getContext()).loadLeaguesTeams(Integer.valueOf(selectionArgs[0]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "TeamList" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
@@ -264,6 +276,8 @@ public class DBProvider extends ContentProvider {
                 return DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME;
             case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
                 return DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME;
+            case DBProviderContract.LEAGUETEAMS_URL_QUERY:
+                return DBProviderContract.LEAGUETEAMS_TABLE_NAME;
             default:
                 Log.d(TAG, "Could not recognize URI");
                 throw new IllegalArgumentException("Invalid URI: " + uri);

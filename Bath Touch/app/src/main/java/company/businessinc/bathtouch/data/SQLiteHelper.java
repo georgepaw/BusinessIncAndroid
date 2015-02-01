@@ -4,9 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import company.businessinc.bathtouch.data.DBProviderContract;
-import company.businessinc.dataModels.Team;
-
 /**
  * Created by Grzegorz on 27/01/2015.
  */
