@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -143,11 +144,11 @@ public class MainActivity extends ActionBarActivity
         } else {
             TextDrawable avatar = TextDrawable.builder()
                     .buildRound(DataStore.getInstance(MainActivity.this).getUserTeam().substring(0,1)
-                            .toUpperCase(), R.color.accent_material_light);
+                            .toUpperCase(), DataStore.getInstance(MainActivity.this).getUserTeamColorPrimary());
             mNavigationDrawerLayout.setProfile(
                     new DrawerProfile()
                             .setAvatar(avatar)
-                            .setBackground(getResources().getDrawable(R.color.primary))
+                            .setBackground(new ColorDrawable(DataStore.getInstance(MainActivity.this).getUserTeamColorSecondary()))
                             .setName(DataStore.getInstance(MainActivity.this).getUserName())
                             .setDescription(DataStore.getInstance(MainActivity.this).getUserTeam())
                             .setOnProfileClickListener(new DrawerProfile.OnProfileClickListener() {
@@ -209,7 +210,7 @@ public class MainActivity extends ActionBarActivity
                             }
                         })
         );
-        if(DataStore.getInstance(this).isUserCaptain()) { //TODO This call is hardcoded, should work later
+        if(DataStore.getInstance(this).isUserCaptain()) {
             mNavigationDrawerLayout.addItem(
                     new DrawerItem()
                             .setImage(getResources().getDrawable(R.drawable.ic_supervisor_account_grey600_48dp))
