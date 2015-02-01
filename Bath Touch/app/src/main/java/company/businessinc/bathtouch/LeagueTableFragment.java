@@ -1,62 +1,43 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
-import company.businessinc.bathtouch.ApdaterData.HomeCardData;
-import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
-import company.businessinc.bathtouch.adapters.HomePageAdapter;
-import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
 
+public class LeagueTableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link company.businessinc.bathtouch.LeagueTableFragment.LeagueTableCallbacks} interface
- * to handle interaction events.
- * Use the {@link LeagueTableFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class LeagueTableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-
-    private static final String TAG = "LeagueTableFragment";
-    public static final String ARG_OBJECT = "object";
 
     private LeagueTableCallbacks mCallbacks;
     private View mLayout;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private int leagueID;
+    private ViewPager mViewPager;
+    private SlidingTabLayout mSlidingTabLayout;
+    private ViewPagerAdapter mViewPagerAdapter;
+    private List<League> leagueNames = new LinkedList<League>();
+
 
     public static LeagueTableFragment newInstance() {
         LeagueTableFragment fragment = new LeagueTableFragment();
@@ -73,69 +54,58 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
-        getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
 
+        getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-        //get the data from the league activity on what league to display
-        Bundle bundle = this.getArguments();
-        leagueID = 0;
-        String leagueName = "";
-        if(bundle == null){
-            Log.d("League fragment", "no bundle");
-        }
-        else{
-            leagueID = bundle.getInt("LEAGUEID");
-            leagueName = bundle.getString("LEAGUENAME");
-        }
-
-
-        // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
 
-        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.league_table_recycle );
+        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle("League Tables");
+        actionBar.setElevation(0f);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(1);
 
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mViewPager = (ViewPager) mLayout.findViewById(R.id.fragment_league_table_view_pager);
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        selectItem(position);
-                    }
-                }));
+        // it's PagerAdapter set.
+        mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.fragment_league_table_sliding_tabs);
+        mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
 
-        //Adapter loads the data fror the leagues
-        mAdapter = new LeagueTableAdapter();
-        mRecyclerView.setAdapter(mAdapter);
+        Resources res = getResources();
+        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
+        mSlidingTabLayout.setDistributeEvenly(false);
+        mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(mViewPagerAdapter);
 
-        Cursor rCursor = getActivity().getContentResolver().query(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI,null,DBProviderContract.SELECTION_LEAGUEID,new String[]{Integer.toString(leagueID)},null);
-        if(rCursor.getCount() > 0){
-            loadStandings(rCursor);
+        mSlidingTabLayout.setViewPager(mViewPager);
+
+        if (mSlidingTabLayout != null) {
+            mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset,
+                                           int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                }
+            });
         }
-        rCursor.close();
-
-        TextView mLeagueName = (TextView) mLayout.findViewById(R.id.league_table_name);
-        mLeagueName.setText(leagueName);
-
         return mLayout;
-    }
-
-    public void selectItem(int position) {
-        if (mCallbacks != null) {
-            mCallbacks.onLeagueTableItemSelected(position);
-        }
     }
 
     @Override
@@ -150,31 +120,10 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface LeagueTableCallbacks {
-
-        public void onLeagueTableItemSelected(int position);
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
         switch (loaderID) {
-            case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
-                return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -185,8 +134,19 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch(loader.getId()){
-            case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
-                loadStandings(data);
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                if (data.moveToFirst()){
+                    leagueNames = new ArrayList<>();
+                    while(!data.isAfterLast()){
+                        League league = new League(data);
+                        leagueNames.add(league);
+                        data.moveToNext();
+                    }
+                    if(leagueNames.size()>0) {
+                        mSlidingTabLayout.setViewPager(mViewPager);
+                        mViewPagerAdapter.notifyDataSetChanged();
+                    }
+                }
                 break;
         }
     }
@@ -196,25 +156,39 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    private void loadStandings(Cursor data){
-        if (data.moveToFirst()){
-            List<LeagueTeam> leagueTeams = new ArrayList<>();
-            while(!data.isAfterLast()){
-                if(data.getInt(0) == leagueID){
-                        leagueTeams.add(new LeagueTeam(data));
-                }
-                data.moveToNext();
-            }
-            if(leagueTeams.size() >0) {
-                Collections.sort(leagueTeams, new Comparator<LeagueTeam>() {
-                    @Override
-                    public int compare(LeagueTeam T1, LeagueTeam T2) {
-                        return T1.getPosition() - T2.getPosition();
-                    }
-                });
-                ((LeagueTableAdapter) mAdapter).setLeagueTeams(leagueTeams);
-            }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.d("Team Results", "Creating fragment");
+            LeagueFragment frag = LeagueFragment.newInstance(position);
+            return frag;
+        }
+
+        @Override
+        public int getCount() {
+            return leagueNames.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return leagueNames.get(position).getLeagueName();
+        }
+    }
+
+    public interface LeagueTableCallbacks {
+
+        public void onLeagueTableItemSelected(int position);
     }
 
 }

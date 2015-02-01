@@ -3,7 +3,6 @@ package company.businessinc.bathtouch;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.media.session.PlaybackState;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,7 +12,6 @@ import android.content.SharedPreferences;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +23,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
-import com.heinrichreimersoftware.materialdrawer.DrawerView;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
@@ -41,10 +38,8 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
-import company.businessinc.endpoints.UserReset;
 import company.businessinc.networking.APICall;
 
 
@@ -52,6 +47,7 @@ public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
+        LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -191,7 +187,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                Toast.makeText(MainActivity.this, "No league tables fragment yet", Toast.LENGTH_SHORT).show();
+                                changeFragments("LEAGUETABLETAG");
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -258,7 +254,6 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
         mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
-//        mNavigationDrawerLayout.closeDrawer(navigationDrawer);
 
         if(DataStore.getInstance(this).isUserLoggedIn()) {
             if(DataStore.getInstance(this).isReferee()) {
@@ -274,29 +269,6 @@ public class MainActivity extends ActionBarActivity
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
-
-
-//    @Override
-//    public void onNavigationDrawerItemSelected(int position, String name) {
-////        update the main content by replacing fragments
-//        switch (position) {
-//            case 0:
-//                changeFragments("HOMEPAGETAG");
-//                break;
-//            case 1:
-//                changeFragments("LEAGUETABLETAG");
-//                break;
-//            case 2:
-//                Log.d("CALLLBK", "in callback on main acitivy");
-//
-//                changeFragments("TEAMRESULTSTAG");
-//                break;
-//            case 3:
-//                logOut();
-//            default:
-//                break;
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -345,9 +317,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case HomePageAdapter.TABLE:
                 Log.d("MATCH", "starting leage table activity");
-                Intent intent = new Intent(this, LeagueTableActivity.class);
-                startActivity(intent);
-//                changeFragments("LEAGUETABLETAG");
+//                Intent intent = new Intent(this, LeagueTableActivity.class);
+//                startActivity(intent);
+                changeFragments("LEAGUETABLETAG");
                 break;
             case HomePageAdapter.TEAMRESULTS:
                 Log.d("MATCH", "starting team results fragment");
@@ -488,6 +460,11 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onResultsItemSelected(int position) {
+
+    }
+
+    @Override
+    public void onLeagueItemSelected(int position) {
 
     }
 }
