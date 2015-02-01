@@ -84,6 +84,7 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
         mSlidingTabLayout.setDistributeEvenly(false);
+        mSlidingTabLayout.setEnablePadding(true);
         mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
 

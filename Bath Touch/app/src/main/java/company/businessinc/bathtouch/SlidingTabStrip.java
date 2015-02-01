@@ -123,16 +123,17 @@ class SlidingTabStrip extends LinearLayout {
                     height, mSelectedIndicatorPaint);
         }
 
-        int separatorTop = (height - dividerHeightPx) / 2;
-        Paint mDividerPaint = new Paint();
-
-        for (int i = 0; i < childCount - 1; i++) {
-            View child = getChildAt(i);
-            mDividerPaint.setColor(getResources().getColor(company.businessinc.bathtouch.R.color.grey));
-
-            canvas.drawLine(child.getRight(), separatorTop, child.getRight(),
-                    separatorTop + dividerHeightPx, mDividerPaint);
-        }
+        //Uncomment for separator
+//        int separatorTop = (height - dividerHeightPx) / 2;
+//        Paint mDividerPaint = new Paint();
+//
+//        for (int i = 0; i < childCount - 1; i++) {
+//            View child = getChildAt(i);
+//            mDividerPaint.setColor(getResources().getColor(company.businessinc.bathtouch.R.color.grey));
+//
+//            canvas.drawLine(child.getRight(), separatorTop, child.getRight(),
+//                    separatorTop + dividerHeightPx, mDividerPaint);
+//        }
 
         // Thin underline along the entire bottom edge
         canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);

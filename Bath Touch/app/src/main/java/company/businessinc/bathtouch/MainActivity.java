@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
@@ -139,9 +141,12 @@ public class MainActivity extends ActionBarActivity
                             })
             );
         } else {
+            TextDrawable avatar = TextDrawable.builder()
+                    .buildRound(DataStore.getInstance(MainActivity.this).getUserTeam().substring(0,1)
+                            .toUpperCase(), R.color.accent_material_light);
             mNavigationDrawerLayout.setProfile(
                     new DrawerProfile()
-                            .setAvatar(getResources().getDrawable(R.color.accent_material_light))
+                            .setAvatar(avatar)
                             .setBackground(getResources().getDrawable(R.color.primary))
                             .setName(DataStore.getInstance(MainActivity.this).getUserName())
                             .setDescription(DataStore.getInstance(MainActivity.this).getUserTeam())
