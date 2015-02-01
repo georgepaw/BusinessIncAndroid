@@ -171,7 +171,7 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
         @Override
         public Fragment getItem(int position) {
             Log.d("Team Results", "Creating fragment");
-            LeagueFragment frag = LeagueFragment.newInstance(position);
+            LeagueFragment frag = LeagueFragment.newInstance(leagueNames.get(position).getLeagueID());
             return frag;
         }
 

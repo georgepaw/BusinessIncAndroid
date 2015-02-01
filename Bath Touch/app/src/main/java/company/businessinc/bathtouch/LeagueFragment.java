@@ -86,9 +86,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
 
 
         //get the data from the league activity on what league to display
-        Bundle bundle = this.getArguments();
         mLeagueID = 0;
-        String leagueName = "";
         if (getArguments() != null) {
             mLeagueID = getArguments().getInt("leagueID");
         }
