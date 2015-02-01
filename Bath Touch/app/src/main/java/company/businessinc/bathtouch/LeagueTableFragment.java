@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
@@ -144,6 +145,7 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
                         data.moveToNext();
                     }
                     if(leagueNames.size()>0) {
+                        Collections.reverse(leagueNames);
                         mSlidingTabLayout.setViewPager(mViewPager);
                         mViewPagerAdapter.notifyDataSetChanged();
                     }

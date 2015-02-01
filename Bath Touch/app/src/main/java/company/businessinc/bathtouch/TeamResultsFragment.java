@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -153,6 +154,7 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
                         data.moveToNext();
                     }
                     if(leagueNames.size()>0) {
+                        Collections.reverse(leagueNames);
                         mSlidingTabLayout.setViewPager(mViewPager);
                         mViewPagerAdapter.notifyDataSetChanged();
                     }

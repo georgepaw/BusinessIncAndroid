@@ -79,13 +79,13 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI, null,
                                         DBProviderContract.SELECTION_LEAGUEID,
-                                        new String[]{Integer.toString(mLeagueID + 1)}
+                                        new String[]{Integer.toString(mLeagueID)}
                                         , null);
             case DBProviderContract.TEAMSSCORES_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, null,
                                         DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
-                                        new String[]{Integer.toString(mLeagueID + 1), Integer.toString(DataStore.getInstance(getActivity()).getUserTeamID())}
+                                        new String[]{Integer.toString(mLeagueID), Integer.toString(DataStore.getInstance(getActivity()).getUserTeamID())}
                                         , null);
             default:
                 // An invalid id was passed in

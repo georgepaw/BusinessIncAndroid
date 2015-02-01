@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,6 +92,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView mGameOneTeamOne, mGameOneTeamTwo, mGameOneDate;
         public TextView mGameTwoTeamOne, mGameTwoTeamTwo, mGameTwoDate;
         public TextView mGameThreeTeamOne, mGameThreeTeamTwo, mGameThreeDate;
+        public RelativeLayout mRow1, mRow2, mRow3;
         public ProgressBar progressBar;
         public CardView mCardView;
 
@@ -109,6 +112,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mGameThreeTeamOne = (TextView) v.findViewById(R.id.home_card_teamOverview_gameThree_teamOne);
             mGameThreeTeamTwo = (TextView) v.findViewById(R.id.home_card_teamOverview_gameThree_teamTwo);
             mGameThreeDate = (TextView) v.findViewById(R.id.home_card_teamOverview_gameThree_date);
+            mRow1 = (RelativeLayout) v.findViewById(R.id.home_card_teamOverview_row1);
+            mRow2 = (RelativeLayout) v.findViewById(R.id.home_card_teamOverview_row2);
+            mRow3 = (RelativeLayout) v.findViewById(R.id.home_card_teamOverview_row3);
             progressBar = (ProgressBar) v.findViewById(R.id.home_card_teamOverview_progressbar);
             v.setOnClickListener(this);
         }
@@ -170,6 +176,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView mHeader, mGameOneTeamOne, mGameOneTeamTwo, mGameTwoTeamOne, mGameTwoTeamTwo;
         public TextView mGameOneTeamOneScore, mGameOneTeamTwoScore, mGameTwoTeamOneScore, mGameTwoTeamTwoScore;
         public ProgressBar progressBar;
+        public LinearLayout mRow1, mRow2;
         public CardView mCardView;
 
         public ViewHolderMyTeam(View v) {
@@ -185,6 +192,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mGameTwoTeamOneScore = (TextView) v.findViewById(R.id.home_card_team_gameTwo_teamOne_score);
             mGameTwoTeamTwoScore = (TextView) v.findViewById(R.id.home_card_team_gameTwo_teamTwo_score);
             mCardView = (CardView) v.findViewById(R.id.home_page_card_team_container);
+            mRow1 = (LinearLayout) v.findViewById(R.id.home_card_team_row1);
+            mRow2 = (LinearLayout) v.findViewById(R.id.home_card_team_row2);
             progressBar = (ProgressBar) v.findViewById(R.id.home_page_card_team_progressbar);
             mCardView.setOnClickListener(this);
 
@@ -208,6 +217,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView mTeam1Draw, mTeam2Draw, mTeam3Draw;
         public TextView mTeam1Lost, mTeam2Lost, mTeam3Lost;
         public TextView mTeam1Pts, mTeam2Pts, mTeam3Pts;
+        public RelativeLayout mRow1, mRow2, mRow3;
 
         public ViewHolderTable(View v) {
             super(v);
@@ -233,6 +243,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mTeam1Pts = (TextView) v.findViewById(R.id.team_points1);
             mTeam2Pts = (TextView) v.findViewById(R.id.team_points2);
             mTeam3Pts = (TextView) v.findViewById(R.id.team_points3);
+            mRow1 = (RelativeLayout) v.findViewById(R.id.home_page_card_table_row1);
+            mRow2 = (RelativeLayout) v.findViewById(R.id.home_page_card_table_row2);
+            mRow3 = (RelativeLayout) v.findViewById(R.id.home_page_card_table_row3);
             mCardView.setOnClickListener(this);
 
         }
@@ -409,6 +422,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderTable.mTeam1Draw.setText(leagueTeam.get(0).getDraw().toString());
                 mViewHolderTable.mTeam1Lost.setText(leagueTeam.get(0).getLose().toString());
                 mViewHolderTable.mTeam1Pts.setText(leagueTeam.get(0).getLeaguePoints().toString());
+            } else {
+                mViewHolderTable.mRow1.setVisibility(View.GONE);
             }
             if(leagueTeam.size() > 1){
                 mViewHolderTable.mTeam2name.setText(leagueTeam.get(1).getTeamName());
@@ -417,6 +432,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderTable.mTeam2Draw.setText(leagueTeam.get(1).getDraw().toString());
                 mViewHolderTable.mTeam2Lost.setText(leagueTeam.get(1).getLose().toString());
                 mViewHolderTable.mTeam2Pts.setText(leagueTeam.get(1).getLeaguePoints().toString());
+            } else {
+                mViewHolderTable.mRow2.setVisibility(View.GONE);
             }
             if(leagueTeam.size() > 2) {
                 mViewHolderTable.mTeam3name.setText(leagueTeam.get(2).getTeamName());
@@ -425,6 +442,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderTable.mTeam3Draw.setText(leagueTeam.get(2).getDraw().toString());
                 mViewHolderTable.mTeam3Lost.setText(leagueTeam.get(2).getLose().toString());
                 mViewHolderTable.mTeam3Pts.setText(leagueTeam.get(2).getLeaguePoints().toString());
+            } else {
+                mViewHolderTable.mRow3.setVisibility(View.GONE);
             }
         }
 
@@ -496,12 +515,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderMyTeam.mGameTwoTeamTwo.setText(leagueStandings.get(0).getTeamTwo());
                 mViewHolderMyTeam.mGameTwoTeamOneScore.setText(leagueStandings.get(0).getTeamOnePoints() + "");
                 mViewHolderMyTeam.mGameTwoTeamTwoScore.setText(leagueStandings.get(0).getTeamTwoPoints() + "");
+            } else {
+                mViewHolderMyTeam.mRow2.setVisibility(View.GONE);
             }
             if(leagueStandings.size() > 0){
                 mViewHolderMyTeam.mGameOneTeamOne.setText(leagueStandings.get(0+offset).getTeamOne());
                 mViewHolderMyTeam.mGameOneTeamTwo.setText(leagueStandings.get(0+offset).getTeamTwo());
                 mViewHolderMyTeam.mGameOneTeamOneScore.setText(leagueStandings.get(0+offset).getTeamOnePoints() + "");
                 mViewHolderMyTeam.mGameOneTeamTwoScore.setText(leagueStandings.get(0+offset).getTeamTwoPoints() + "");
+            } else {
+                mViewHolderMyTeam.mRow1.setVisibility(View.GONE);
             }
         }
     }
@@ -543,16 +566,22 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderTeamOverview.mGameOneTeamOne.setText(teamOverviewLeagueFixtures.get(0).getTeamOne());
                 mViewHolderTeamOverview.mGameOneTeamTwo.setText(teamOverviewLeagueFixtures.get(0).getTeamTwo());
                 mViewHolderTeamOverview.mGameOneDate.setText(sdf.format(teamOverviewLeagueFixtures.get(0).getDateTime()));
+            } else {
+                mViewHolderTeamOverview.mRow1.setVisibility(View.GONE);
             }
             if(teamOverviewLeagueFixtures.size() > 1){
                 mViewHolderTeamOverview.mGameTwoTeamOne.setText(teamOverviewLeagueFixtures.get(1).getTeamOne());
                 mViewHolderTeamOverview.mGameTwoTeamTwo.setText(teamOverviewLeagueFixtures.get(1).getTeamTwo());
                 mViewHolderTeamOverview.mGameTwoDate.setText(sdf.format(teamOverviewLeagueFixtures.get(1).getDateTime()));
+            } else {
+                mViewHolderTeamOverview.mRow2.setVisibility(View.GONE);
             }
             if(teamOverviewLeagueFixtures.size() > 2){
                 mViewHolderTeamOverview.mGameThreeTeamOne.setText(teamOverviewLeagueFixtures.get(2).getTeamOne());
                 mViewHolderTeamOverview.mGameThreeTeamTwo.setText(teamOverviewLeagueFixtures.get(2).getTeamTwo());
                 mViewHolderTeamOverview.mGameThreeDate.setText(sdf.format(teamOverviewLeagueFixtures.get(2).getDateTime()));
+            } else {
+                mViewHolderTeamOverview.mRow3.setVisibility(View.GONE);
             }
         }
     }
