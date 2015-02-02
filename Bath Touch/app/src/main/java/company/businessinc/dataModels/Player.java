@@ -25,6 +25,12 @@ public class Player {
     public static final String KEY_USERID = "userID";
     public static final String KEY_ISPLAYING = "isPlaying";
     public static final String KEY_ISGHOSTPLAYER = "isGhostPlayer";
+    public static final String[] COLUMNS = {KEY_NAME, KEY_USERID, KEY_ISPLAYING, KEY_ISGHOSTPLAYER};
+
+    public static final String CREATE_TABLE =   KEY_USERID + "\tINTEGER,\n"+
+                                                KEY_NAME + "\tTEXT,\n"+
+                                                KEY_ISPLAYING + "\tINTEGER,\n"+
+                                                KEY_ISGHOSTPLAYER + "\tINTEGER";
 
     public Player(String name, Integer userID, Boolean isPlaying, Boolean isGhostPlayer) {
         this.name = name;

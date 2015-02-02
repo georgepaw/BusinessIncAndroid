@@ -5,6 +5,7 @@ import android.net.Uri;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Player;
 import company.businessinc.dataModels.Team;
 
 /**
@@ -129,11 +130,12 @@ public class DBProviderContract {
 
 
     public static final String CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE = CREATE_TABLE + " " + MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME + "( " +
-                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
-                                                                Team.CREATE_TABLE + " )";
+                                                                Match.KEY_MATCHID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
+                                                                Player.KEY_ISPLAYING + "\t" + INTEGER + " )";
 
     public static final String CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE = CREATE_TABLE + " " + MYTEAMPLAYERSAVAILABILITY_TABLE_NAME + "( " +
-            Match.CREATE_TABLE + " )";
+                                                                Match.KEY_MATCHID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
+                                                                Player.CREATE_TABLE + " )";
 
 
     public static final String CREATE_LEAGUETEAMS_TABLE = CREATE_TABLE + " " + LEAGUETEAMS_TABLE_NAME + "( " +

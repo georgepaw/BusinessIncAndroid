@@ -36,6 +36,14 @@ public class UserNew extends AsyncTask<Void, Void, Status> {
         parameters.add(new BasicNameValuePair("isGhostPlayer", Boolean.toString(isGhostPlayer)));
     }
 
+    public UserNew(UserNewInterface callback, String name, int teamID, boolean isGhostPlayer) {
+        this.callback = callback;
+        parameters = new LinkedList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
+        parameters.add(new BasicNameValuePair("isGhostPlayer", Boolean.toString(isGhostPlayer)));
+    }
+
     public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID) {
         this(callback, username, password, email, name, teamID, false);
     }
