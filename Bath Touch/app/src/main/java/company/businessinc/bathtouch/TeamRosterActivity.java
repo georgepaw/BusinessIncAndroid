@@ -106,6 +106,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setEnablePadding(false);
         mSlidingTabLayout.setViewPager(mViewPager);
 
         Display disp = getWindowManager().getDefaultDisplay();

@@ -61,7 +61,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private int mTabViewLayoutId;
     private int mTabViewTextViewId;
     private boolean mDistributeEvenly;
+    private boolean mPadding;
 
+    private LinearLayout mFrame;
     private ViewPager mViewPager;
     private SparseArray<String> mContentDescriptions = new SparseArray<String>();
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
@@ -86,8 +88,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         mTitleOffset = (int) (TITLE_OFFSET_DIPS * getResources().getDisplayMetrics().density);
 
+        mFrame = new LinearLayout(context);
+        mFrame.setOrientation(LinearLayout.HORIZONTAL);
+
         mTabStrip = new SlidingTabStrip(context);
-        addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+        addView(mFrame, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mFrame.addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
     /**
@@ -103,6 +110,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     public void setDistributeEvenly(boolean distributeEvenly) {
         mDistributeEvenly = distributeEvenly;
+    }
+
+    public void setEnablePadding(boolean padding) {
+        mPadding = padding;
+        if(mPadding)
+            mFrame.setPadding(60 * (int) getResources().getDisplayMetrics().density, 0, 0, 0);
     }
 
     /**
