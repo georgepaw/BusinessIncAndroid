@@ -25,6 +25,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
     public static interface AvailablePlayerCallbacks{
         void onPlayerAvailableChecked(boolean available, int playerID);
+        void onPlayerSelected(int playerID);
     }
 
     public AvailablePlayersAdapter(boolean available, ArrayList<Integer> list, Activity activity){
@@ -51,12 +52,16 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             mCheckBox = (CheckBox) itemView.findViewById(R.id.team_roster_player_checkbox);
             mPlayerNumber = (TextView) itemView.findViewById(R.id.team_roster_player_number);
             mCheckBox.setOnClickListener(this);
+            mPlayerName.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if(v.getId() == mCheckBox.getId()){
                 removeAt(getPosition());
+            }
+            else if(v.getId() == mPlayerName.getId()){
+                mCallbacks.onPlayerSelected(getPosition());
             }
         }
     }
