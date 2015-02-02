@@ -8,9 +8,11 @@
 
     <RelativeLayout
         android:id="@+id/activity_match_header"
+        android:background="@color/background_material_light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/toolbar"
+        android:elevation="2dp">
 
         <LinearLayout
             android:id="@+id/activity_match_header_team_one"
@@ -80,10 +82,11 @@
 
     <company.businessinc.bathtouch.SlidingTabLayout
         android:id="@+id/activity_match_sliding_tabs"
+        android:background="@color/background_material_light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/activity_match_header"
-        android:elevation="@dimen/headerbar_elevation" />
+        android:elevation="2dp" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/activity_match_view_pager"

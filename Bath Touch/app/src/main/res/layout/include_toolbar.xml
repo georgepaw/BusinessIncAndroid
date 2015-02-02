@@ -9,4 +9,5 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:elevation="@dimen/headerbar_elevation"
+        app:titleMarginStart="16dp"
         android:minHeight="?attr/actionBarSize" />
