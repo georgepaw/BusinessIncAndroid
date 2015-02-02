@@ -3,6 +3,7 @@ package company.businessinc.bathtouch.data;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -96,12 +97,28 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return user.getTeamID();
     }
 
+    public int getUserTeamCaptainID() {
+        return user.getCaptainID();
+    }
+
+    public String getUserTeamCaptainName() {
+        return user.getCaptainName();
+    }
+
+    public int getUserTeamColorPrimary() {
+        return Color.parseColor(user.getTeamColorPrimary());
+    }
+
+    public int getUserTeamColorSecondary() {
+        return Color.parseColor(user.getTeamColorSecondary());
+    }
+
     public boolean isUserCaptain(){
-        return true;//TODO hardcoded, need to get WEB team to pass us this when user logs in
+        return user.isCaptain();
     }
 
     public boolean isReferee(){
-        return true;//TODO hardcoded, need to get WEB team to pass us this when user logs in
+        return user.isReferee();
     }
 
     public String userToJSON(){

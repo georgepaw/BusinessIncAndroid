@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
@@ -170,10 +172,15 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
         Intent intent = new Intent(getActivity(), MatchActivity.class);
         Bundle args = new Bundle();
-        args.putString("teamOneName", leagueScores.get(position).getTeamOne());
-        args.putString("teamTwoName", leagueScores.get(position).getTeamTwo());
-        args.putInt("teamOneScore",leagueScores.get(position).getTeamOnePoints());
-        args.putInt("teamTwoScore",leagueScores.get(position).getTeamTwoPoints());
+        args.putString(Match.KEY_TEAMONE, leagueScores.get(position).getTeamOne());
+        args.putString(Match.KEY_TEAMTWO, leagueScores.get(position).getTeamTwo());
+        args.putInt(Match.KEY_TEAMONEPOINTS, leagueScores.get(position).getTeamOnePoints());
+        args.putInt(Match.KEY_TEAMTWOPOINTS, leagueScores.get(position).getTeamTwoPoints());
+        args.putInt("leagueID", mLeagueID);
+        args.putInt(Match.KEY_MATCHID, leagueScores.get(position).getMatchID());
+        args.putString(Match.KEY_PLACE, leagueScores.get(position).getPlace());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+        args.putString(Match.KEY_DATETIME, sdf.format(leagueScores.get(position).getDateTime()));
         intent.putExtras(args);
         startActivity(intent);
     }
