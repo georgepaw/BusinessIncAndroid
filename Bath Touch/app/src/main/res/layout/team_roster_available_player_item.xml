@@ -7,9 +7,13 @@
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:orientation="vertical"
-    card_view:cardCornerRadius="2dp">
+    card_view:cardCornerRadius="2dp"
+
+    >
 
     <RelativeLayout
+        android:id="@+id/team_roster_card"
+        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
