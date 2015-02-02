@@ -135,12 +135,12 @@ public class User {
             this.captainName = null;
         }
         try {
-            this.isCaptain = (jsonObject.getInt(KEY_ISCAPTAIN) == 1);
+            this.isCaptain = jsonObject.getBoolean(KEY_ISCAPTAIN);
         } catch (JSONException e){
             this.isCaptain = false;
         }
         try {
-            this.isReferee = (jsonObject.getInt(KEY_ISREFEREE) == 1);
+            this.isReferee = jsonObject.getBoolean(KEY_ISREFEREE);
         } catch (JSONException e){
             this.isReferee = false;
         }
@@ -208,6 +208,8 @@ public class User {
             if (isLoggedIn){
                 jsonObject.put(KEY_TEAMNAME, teamName);
                 jsonObject.put(KEY_TEAMID, teamID);
+                jsonObject.put(KEY_ISCAPTAIN, isCaptain);
+                jsonObject.put(KEY_ISREFEREE, isReferee);
                 jsonObject.put(KEY_TEAMCOLORPRIMARY, teamColorPrimary);
                 jsonObject.put(KEY_TEAMCOLORSECONDARY, teamColorSecondary);
             }
@@ -223,6 +225,8 @@ public class User {
         values.put(KEY_NAME, name);
         values.put(KEY_TEAMNAME, teamName);
         values.put(KEY_TEAMID,teamID);
+        values.put(KEY_ISCAPTAIN, isCaptain ? 1 : 0);
+        values.put(KEY_ISREFEREE, isReferee ? 1 : 0);
         values.put(KEY_TEAMCOLORPRIMARY,teamColorPrimary);
         values.put(KEY_TEAMCOLORSECONDARY,teamColorSecondary);
         return values;
