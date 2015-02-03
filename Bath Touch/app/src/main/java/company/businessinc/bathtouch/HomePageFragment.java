@@ -370,8 +370,8 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                 DataStore.getInstance(getActivity()).refreshData();
                 mAdapter.notifyDataSetChanged();
                 ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
-                pager.getAdapter().notifyDataSetChanged();
                 mSwipeRefresh.setRefreshing(false);
+                pager.getAdapter().notifyDataSetChanged();
             }
 
         },3000);

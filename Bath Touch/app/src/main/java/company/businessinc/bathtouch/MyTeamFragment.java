@@ -202,6 +202,12 @@ public class MyTeamFragment extends Fragment {
         }
     }
 
+    public void setLeagueID(int leagueID) {
+        mLeagueID = leagueID;
+        if(mViewPager != null)
+            mViewPager.getAdapter().notifyDataSetChanged();
+    }
+
     public interface MyTeamFragmentCallbacks {
         public void onFragmentInteraction(Uri uri);
     }
