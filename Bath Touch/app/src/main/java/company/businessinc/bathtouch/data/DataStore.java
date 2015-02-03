@@ -34,6 +34,7 @@ import company.businessinc.endpoints.TeamSchedule;
 import company.businessinc.endpoints.TeamScheduleInterface;
 import company.businessinc.endpoints.TeamScores;
 import company.businessinc.endpoints.TeamScoresInterface;
+import company.businessinc.endpoints.UpAvailability;
 
 /**
  * Created by Louis on 29/11/2014.
@@ -57,6 +58,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private HashMap<Integer, ArrayList<Integer>> loadedTeamsFixtures = new HashMap<>();
     private HashMap<Integer, ArrayList<Integer>> loadedTeamsScore = new HashMap<>();
     private boolean loadedRefGames = false;
+    private ArrayList<Integer> myMatchesAvailability = new ArrayList<>();
+    private ArrayList<Integer> matchesAvailability = new ArrayList<>();
 
     public static DataStore getInstance(Context context) {
 
@@ -361,6 +364,12 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+//    public void loadMyAvailability(int matchID){
+//        if(!myMatchesAvailability.contains(matchID)){
+//            UpAvailability.
+//        }
+//    }
+
     private boolean isTableEmpty(String tableName){
         ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
         return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
@@ -369,8 +378,17 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public void clearUserData() {
         user = new User();
         dropUserTables();
+        loadedAllTeams = false;
         loadedMyLeagues = false;
+        loadedAllLeagues = false;
+        loadedLeagueScores = new ArrayList<>();
+        loadedLeagueFixtures = new ArrayList<>();
+        loadedLeagueStandings = new ArrayList<>();
+        loadedTeamsFixtures = new HashMap<>();
+        loadedTeamsScore = new HashMap<>();
         loadedRefGames = false;
+        myMatchesAvailability = new ArrayList<>();
+        matchesAvailability = new ArrayList<>();
     }
 
     private void dropUserTables(){

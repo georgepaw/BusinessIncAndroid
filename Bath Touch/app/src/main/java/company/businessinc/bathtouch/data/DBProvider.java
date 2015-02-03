@@ -89,6 +89,16 @@ public class DBProvider extends ContentProvider {
                 DBProviderContract.LEAGUETEAMS_TABLE_NAME,
                 DBProviderContract.LEAGUETEAMS_URL_QUERY);
 
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME,
+                DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY);
+
+        sUriMatcher.addURI(
+                DBProviderContract.AUTHORITY,
+                DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME,
+                DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY);
+
     }
 
     // Closes the SQLite database helper class, to avoid memory leaks
@@ -248,10 +258,14 @@ public class DBProvider extends ContentProvider {
     public void dropUserData(){
         //first drop the tables that always exist
         SQLiteHelper db = (SQLiteHelper)mHelper;
-        db.dropTable(DBProviderContract.MYLEAGUES_TABLE_NAME);
+        for(String t : DBProviderContract.TABLES){
+            db.dropTable(t);
+        }
 
         //Recreate them
-        db.createTable(DBProviderContract.CREATE_MYLEAGUES_TABLE);
+        for(String t : DBProviderContract.CREATE_TABLES){
+            db.createTable(t);
+        }
     }
 
     private String getTableName(Uri uri){
