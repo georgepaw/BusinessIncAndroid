@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,8 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.Player;
 
 /**
  * Created by user on 30/01/15.
@@ -23,18 +27,21 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
     private boolean is_available;
     private AvailablePlayerCallbacks mCallbacks;
-    private ArrayList<Integer> playerList = new ArrayList<Integer>();
+    private List<Player> playerList = new ArrayList<Player>();
+    private Context context;
+    private int matchID;
 
 
     public static interface AvailablePlayerCallbacks{
         void onPlayerAvailableChecked(boolean available, int playerID);
-        void onPlayerSelected(int playerID);
+        void onPlayerSelected(Player player);
     }
 
-    public AvailablePlayersAdapter(boolean available, ArrayList<Integer> list, Activity activity){
+    public AvailablePlayersAdapter(boolean available, Context context, int matchID){
         is_available = available;
-        playerList = list;
-        mCallbacks = (AvailablePlayerCallbacks) activity;
+        mCallbacks = (AvailablePlayerCallbacks) context;
+        this.context = context;
+        this.matchID = matchID;
     }
 
 
@@ -66,7 +73,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
                 removeAt(getPosition());
             }
             else if(v.getId() == mCard.getId()){
-                mCallbacks.onPlayerSelected(getPosition());
+                mCallbacks.onPlayerSelected(playerList.get(getPosition()));
             }
         }
     }
@@ -84,16 +91,23 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         ViewHolderPlayer v = (ViewHolderPlayer) holder;
-        int id = playerList.get(position);
+        Player player = playerList.get(position);
+        int id = player.getUserID();
 
         v.mPlayerNumber.setText(Integer.toString(position));
+        v.mPlayerName.setText(player.getName());
+        v.mPlayerAvail.setVisibility(View.INVISIBLE);
+        if(!player.getIsGhostPlayer()){
+            v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_full_green);
+        } else {
+                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
+        }
         if(is_available){
             v.mCheckBox.setChecked(true);
-            v.mPlayerAvail.setVisibility(View.INVISIBLE);
+
 //                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_full_green);
         }
         else{
-            v.mPlayerAvail.setVisibility(View.INVISIBLE);
             v.mCheckBox.setChecked(false);
 //                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
         }
@@ -102,17 +116,33 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     }
 
     public void removeAt(int position){
+        Player player = playerList.get(position);
         playerList.remove(position);
         notifyItemRemoved(position);
+        DataStore.getInstance(context).setPlayersAvailability(!player.getIsPlaying(), player.getUserID(), matchID);
         notifyItemRangeChanged(position, playerList.size());
-
         //fire call back to add the card to the other page
-        mCallbacks.onPlayerAvailableChecked(is_available, position);
+        //mCallbacks.onPlayerAvailableChecked(is_available, position);
     }
 
     @Override
     public int getItemCount() {
         return playerList.size();
+    }
+
+    public void addToPlayerList(Player player){
+        boolean found = false;
+        for(int i = 0; i < playerList.size(); i++){
+            if(playerList.get(i).getUserID() == player.getUserID()){
+                playerList.set(i, player);
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            playerList.add(player);
+        }
+        notifyDataSetChanged();
     }
 }
 

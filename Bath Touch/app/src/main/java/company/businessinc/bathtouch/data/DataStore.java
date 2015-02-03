@@ -14,6 +14,8 @@ import java.util.List;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Player;
+import company.businessinc.dataModels.Status;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueList;
@@ -26,6 +28,8 @@ import company.businessinc.endpoints.LeagueView;
 import company.businessinc.endpoints.LeagueViewInterface;
 import company.businessinc.endpoints.RefGames;
 import company.businessinc.endpoints.RefGamesInterface;
+import company.businessinc.endpoints.TeamAvailability;
+import company.businessinc.endpoints.TeamAvailabilityInterface;
 import company.businessinc.endpoints.TeamLeagues;
 import company.businessinc.endpoints.TeamLeaguesInterface;
 import company.businessinc.endpoints.TeamList;
@@ -35,12 +39,13 @@ import company.businessinc.endpoints.TeamScheduleInterface;
 import company.businessinc.endpoints.TeamScores;
 import company.businessinc.endpoints.TeamScoresInterface;
 import company.businessinc.endpoints.UpAvailability;
+import company.businessinc.endpoints.UpAvailabilityInterface;
 
 /**
  * Created by Louis on 29/11/2014.
  */
 public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface, LeagueViewInterface, LeagueScheduleInterface,
-        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface{
+        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface, UpAvailabilityInterface, TeamAvailabilityInterface {
 
     private static DataStore sInstance;
     private Context context;
@@ -364,11 +369,67 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-//    public void loadMyAvailability(int matchID){
-//        if(!myMatchesAvailability.contains(matchID)){
-//            UpAvailability.
-//        }
-//    }
+    public void loadMyAvailability(int matchID){
+        if(!myMatchesAvailability.contains(matchID)){
+            new UpAvailability(this, matchID).execute();
+            myMatchesAvailability.add(matchID);
+        }
+    }
+
+    public void setMyAvailability(boolean isPlaying, int matchID){
+        if(!myMatchesAvailability.contains(matchID)){
+            myMatchesAvailability.add(matchID);
+        }
+        new UpAvailability(this, isPlaying ? 1 : 0, matchID).execute();
+    }
+
+    public void setPlayersAvailability(boolean isPlaying, int userID, int matchID){
+        new UpAvailability(this, isPlaying ? 1 : 0, matchID, userID).execute();
+    }
+
+    public void upAvailabilityCallback(boolean isPlaying, UpAvailability.CallType callType, int matchID, int userID){
+        ContentValues cv;
+        switch(callType){
+            case GETMYAVAILABILITY:
+                cv = new ContentValues();
+                cv.put(Match.KEY_MATCHID, matchID);
+                cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
+                context.getContentResolver().insert(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, cv);
+                break;
+            case SETMYAVAILABILITY:
+                cv = new ContentValues();
+                cv.put(Match.KEY_MATCHID, matchID);
+                cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
+                context.getContentResolver().update(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)});
+                break;
+            case SETPLAYERSAVAILABILITY:
+                cv = new ContentValues();
+                cv.put(Match.KEY_MATCHID, matchID);
+                cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
+                context.getContentResolver().update(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHIDANDUSERID, new String[]{Integer.toString(matchID), Integer.toString(userID)});
+                break;
+        }
+    }
+
+    public void loadMatchPlayersAvailability(int matchID){
+        if(!matchesAvailability.contains(matchID)){
+            new TeamAvailability(this, matchID).execute();
+            matchesAvailability.add(matchID);
+        }
+    }
+
+    public void teamAvailabilityCallback(List<Player> data, int matchID){
+        if(data != null){
+            LinkedList<ContentValues> cV = new LinkedList<>();
+            for (int i = 0; i < data.size() ; i++){ //insert all of them into the table
+                ContentValues dis = data.get(i).toContentValues();
+                dis.put(Match.KEY_MATCHID, matchID);
+                cV.add(dis);
+            }
+            ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+            context.getContentResolver().bulkInsert(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, contentValues);
+        }
+    }
 
     private boolean isTableEmpty(String tableName){
         ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);

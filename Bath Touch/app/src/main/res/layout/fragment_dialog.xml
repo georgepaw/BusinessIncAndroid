@@ -11,21 +11,20 @@
         android:background="@color/primary"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/user_dialog_user_team"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:text="Comsci Vipers"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
+        <!--<TextView-->
+            <!--android:id="@+id/user_dialog_user_team"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:text="Comsci Vipers"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="16dp" />-->
 
         <TextView
             android:id="@+id/user_dialog_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/user_dialog_user_team"
             android:layout_alignParentLeft="true"
             android:text="James Hughes"
             android:textColor="@color/white"
@@ -56,66 +55,94 @@
                 />
 
             <TextView
+                android:id="@+id/user_dialog_user_emailtext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="example@aol.com"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14dp" />
 
         </RelativeLayout>
 
-
         <RelativeLayout
-            android:id="@+id/user_dialog_user_numberbox"
+            android:id="@+id/user_dialog_ghost_player"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_below="@id/user_dialog_user_emailbox"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="Mob: "
-                android:textSize="14dp" />
+                android:text="Is this a ghost account? "
+                android:textSize="14dp"
+
+                />
 
             <TextView
+                android:id="@+id/user_dialog_isGhost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="1234567890"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14dp" />
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/user_dialog_contact_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_gravity="end"
-            android:text="Contact"
-            android:textAllCaps="true"
-            android:textSize="14sp"
-            android:textColor="@color/primary"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
 
-        <TextView
-            android:id="@+id/user_dialog_select_avail_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_gravity="end"
-            android:text="Add to match team"
-            android:textAllCaps="true"
-            android:textSize="14sp"
-            android:textColor="@color/primary"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"/>
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/user_dialog_user_numberbox"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/user_dialog_user_emailbox"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:text="Mob: "-->
+                <!--android:textSize="14dp" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:text="1234567890"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="14dp" />-->
+
+        <!--</RelativeLayout>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/user_dialog_contact_button"-->
+            <!--style="?android:attr/borderlessButtonStyle"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_gravity="end"-->
+            <!--android:text="Contact"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textSize="14sp"-->
+            <!--android:textColor="@color/primary"-->
+            <!--android:layout_height="48dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentRight="true"/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/user_dialog_select_avail_button"-->
+            <!--style="?android:attr/borderlessButtonStyle"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_gravity="end"-->
+            <!--android:text="Add to match team"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textSize="14sp"-->
+            <!--android:textColor="@color/primary"-->
+            <!--android:layout_height="48dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentLeft="true"/>-->
 
     </RelativeLayout>
 

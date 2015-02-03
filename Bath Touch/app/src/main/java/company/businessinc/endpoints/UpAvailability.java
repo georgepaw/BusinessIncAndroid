@@ -24,24 +24,31 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
     private UpAvailabilityInterface callback;
     private List<NameValuePair> parameters;
     private int matchID;
+    private int userID = -1;
+    private boolean isPlaying = false;
     public enum CallType{GETMYAVAILABILITY, SETMYAVAILABILITY, SETPLAYERSAVAILABILITY}
     private CallType callType;
 
-    public UpAvailability(UpAvailabilityInterface callback, boolean isPlaying, int matchID, int userID) {
+    public UpAvailability(UpAvailabilityInterface callback, int isPlaying, int matchID, int userID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("isPlaying", Boolean.toString(isPlaying)));
+        parameters.add(new BasicNameValuePair("isPlaying", Integer.toString(isPlaying)));
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         parameters.add(new BasicNameValuePair("userID", Integer.toString(userID)));
         callType = CallType.SETPLAYERSAVAILABILITY;
+        this.matchID = matchID;
+        this.userID = userID;
+        this.isPlaying = isPlaying == 1;
     }
 
-    public UpAvailability(UpAvailabilityInterface callback, boolean isPlaying, int matchID) {
+    public UpAvailability(UpAvailabilityInterface callback, int isPlaying, int matchID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("isPlaying", Boolean.toString(isPlaying)));
+        parameters.add(new BasicNameValuePair("isPlaying", Integer.toString(isPlaying)));
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         callType = CallType.SETMYAVAILABILITY;
+        this.matchID = matchID;
+        this.isPlaying = isPlaying == 1;
     }
 
     public UpAvailability(UpAvailabilityInterface callback, int matchID) {
@@ -49,6 +56,7 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         callType = CallType.GETMYAVAILABILITY;
+        this.matchID = matchID;
     }
 
     @Override
@@ -56,13 +64,17 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(APICall.call(APICallType.UpAvailability, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }
         company.businessinc.dataModels.Status status = null;
         try {
-            status = new company.businessinc.dataModels.Status(jsonObject);
+            if(callType == CallType.GETMYAVAILABILITY){
+                this.isPlaying = jsonObject.getBoolean("isPlaying");
+            }else {
+                status = new company.businessinc.dataModels.Status(jsonObject);
+            }
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse parameters");
         }
@@ -72,6 +84,6 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(company.businessinc.dataModels.Status result) {
-        callback.upAvailabilityCallback(result, callType);
+        callback.upAvailabilityCallback(isPlaying, callType, matchID, userID);
     }
 }
