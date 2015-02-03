@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +47,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     //adapters data
     private Match nextMatch;
+    private boolean isPlaying;
     private Match nextRefMatch;
     private List<LeagueTeam> leagueTeam;
     private League leagueViewLeague;
@@ -476,11 +478,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewHolderNextMatch.refIcon.setVisibility(View.GONE);
             if(!DataStore.getInstance(context).isUserCaptain()) {
                 mViewHolderNextMatch.playerAvailable.setVisibility(View.VISIBLE);
-//                mViewHolderNextMatch.playerAvailable.setChecked();
+                mViewHolderNextMatch.playerAvailable.setChecked(isPlaying);
                 mViewHolderNextMatch.playerAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        //TODO GEORGE DO SOMETHING WITH THE CHECK BOX
+                        DataStore.getInstance(context).setMyAvailability(isChecked, nextMatch.getMatchID());
                     }
                 });
             }
@@ -500,12 +502,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setNextMatch(Match nextMatch, boolean isRefMatch){
+    public void setNextMatch(Match nextMatch, boolean isRefMatch, boolean isPlaying){
         if(isRefMatch) {
             this.nextRefMatch = nextMatch;
         } else {
             this.nextMatch = nextMatch;
         }
+        this.isPlaying  = isPlaying;
         notifyDataSetChanged();
     }
 

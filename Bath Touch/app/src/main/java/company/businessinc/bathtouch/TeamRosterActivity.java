@@ -33,6 +33,7 @@ import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Player;
 
 
 /**
@@ -54,9 +55,9 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     private ViewPager mViewPager;
     private FragmentPagerAdapter mPagerAdapter;
 
-    private ArrayList<Integer> playerListAvail = new ArrayList<Integer>();
-    private ArrayList<Integer> playerListUnavail = new ArrayList<Integer>();
-    private int NUM_PEOPLE = 10;
+    private ArrayList<Player> playerListAvail = new ArrayList<Player>();
+    private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
+//    private int NUM_PEOPLE = 10;
 
     TextView mLeagueName, mMatchDate, mMatchTime, mMatchPlace, mTeamOneName, mTeamTwoName;
 
@@ -79,9 +80,9 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         setContentView(R.layout.activity_team_roster);
 
-        //TODO add real players here
-        playerListAvail = populatePeople(0);
-        playerListUnavail = populatePeople(playerListAvail.size());
+//        //TODO add real players here
+//        playerListAvail = populatePeople(0);
+//        playerListUnavail = populatePeople(playerListAvail.size());
 
         String teamOne = "NULL";
         String teamTwo = "NULL";
@@ -134,7 +135,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 //        mTeamOneName.setText(teamOne);
         mTeamTwoName.setText(teamTwo);
 
-        getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
+//        getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
 
     }
 
@@ -166,14 +167,14 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     Shows the player info
      */
     @Override
-    public void onPlayerSelected(int playerID) {
-        showPlayerInfo(playerID);
+    public void onPlayerSelected(Player player) {
+        showPlayerInfo(player);
     }
 
     /*
     Creates a new dialog Fragment showing the details of the player selected
      */
-    public void showPlayerInfo(int playerID) {
+    public void showPlayerInfo(Player player) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
@@ -183,31 +184,33 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = MyDialogFragment.newInstance(1);
+        DialogFragment newFragment = MyDialogFragment.newInstance(player);
         newFragment.show(ft, "dialog");
     }
 
-    private ArrayList<Integer> populatePeople(int start) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        for (int i = start; i < NUM_PEOPLE + start; i++) {
-            list.add(i);
-        }
-        return list;
-    }
+//    private ArrayList<Integer> populatePeople(int start) {
+//        ArrayList<Integer> list = new ArrayList<Integer>();
+//        for (int i = start; i < NUM_PEOPLE + start; i++) {
+//            list.add(i);
+//        }
+//        return list;
+//    }
 
     public static class MyDialogFragment extends DialogFragment {
-        int mNum;
+        TextView mName, mEmail, mIsGhost;
 
         /**
          * Create a new instance of MyDialogFragment, providing "num"
          * as an argument.
          */
-        static MyDialogFragment newInstance(int num) {
+        static MyDialogFragment newInstance(Player player) {
             MyDialogFragment f = new MyDialogFragment();
 
             // Supply num input as an argument.
             Bundle args = new Bundle();
-            args.putInt("num", num);
+            args.putString("name", player.getName());
+            args.putString("email", player.getEmail());
+            args.putBoolean("ghost", player.getIsGhostPlayer());
             f.setArguments(args);
 
             return f;
@@ -216,7 +219,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mNum = getArguments().getInt("num");
 
             int style = DialogFragment.STYLE_NO_TITLE;
             int theme = android.R.style.Theme_Holo_Light_Dialog;
@@ -227,23 +229,35 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.fragment_dialog, container, false);
-
+            mName = (TextView) v.findViewById(R.id.user_dialog_username);
+            mEmail = (TextView) v.findViewById(R.id.user_dialog_user_emailtext);
+            mIsGhost = (TextView) v.findViewById(R.id.user_dialog_isGhost);
+            Bundle b = getArguments();
+            if(b!=null){
+                mName.setText(b.getString("name"));
+                mEmail.setText(b.getString("email"));
+                if(b.getBoolean("ghost")){
+                    mIsGhost.setText("Yes");
+                } else {
+                    mIsGhost.setText("No");
+                }
+            }
             return v;
         }
     }
 
     class SamplePagerAdapter extends FragmentPagerAdapter {
 
-        private ArrayList<Integer> playerListAvail = new ArrayList<Integer>();
-        private ArrayList<Integer> playerListUnavail = new ArrayList<Integer>();
-        private ArrayList<ArrayList<Integer>> playerList = new ArrayList<ArrayList<Integer>>();
+//        private ArrayList<Player> playerListAvail = new ArrayList<Player>();
+//        private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
+//        private ArrayList<ArrayList<Player>> playerList = new ArrayList<ArrayList<Player>>();
 
-        public SamplePagerAdapter(FragmentManager fm, ArrayList<Integer> availP, ArrayList<Integer> unavailP) {
+        public SamplePagerAdapter(FragmentManager fm, ArrayList<Player> availP, ArrayList<Player> unavailP) {
             super(fm);
-            playerListAvail = availP;
-            playerListUnavail = unavailP;
-            playerList.add(playerListAvail);
-            playerList.add(playerListUnavail);
+//            playerListAvail = availP;
+//            playerListUnavail = unavailP;
+//            playerList.add(playerListAvail);
+//            playerList.add(playerListUnavail);
 
         }
 
@@ -275,8 +289,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public Fragment getItem(int position) {
-
-            return AvailablePlayersFragment.newInstance(position, playerList.get(position));
+            return AvailablePlayersFragment.newInstance(position, matchID);
         }
     }
 
@@ -285,6 +298,8 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         switch (loaderID) {
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 return new CursorLoader(this, DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_LEAGUEID, new String[]{Integer.toString(leagueID)}, null);
+//            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+//                return new CursorLoader(this, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)}, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -303,6 +318,19 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
                     }
                 }
                 break;
+//            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+//                if (data.moveToFirst()) {
+//                    while (!data.isAfterLast()) {
+//                        Player player = new Player(data);
+//                        if(player.getIsPlaying()){
+//                            playerListAvail.add(player);
+//                        } else {
+//                            playerListUnavail.add(player);
+//                        }
+//                        data.moveToNext();
+//                    }
+//                }
+//                break;
         }
     }
 

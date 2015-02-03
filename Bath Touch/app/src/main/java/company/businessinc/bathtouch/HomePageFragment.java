@@ -43,6 +43,8 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     private List<LeagueTeam> leagueStandings;
     private List<Match> leagueScores;
     private SwipeRefreshLayout mSwipeRefresh;
+    private Boolean isPlaying = null;
+    private Match nextPlayingMatch;
 
 
     public static HomePageFragment newInstance() {
@@ -73,6 +75,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
             if(DataStore.getInstance(getActivity()).isReferee()) {
                 getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
+            }
+            if(!DataStore.getInstance(getActivity()).isUserCaptain()){
+                getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY, null, this);
             }
             getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
             getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
@@ -167,6 +172,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
+                // Returns a new CursorLoader
+                return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, null, null, null, null);
             case DBProviderContract.LEAGUETEAMS_URL_QUERY:
                 // Returns a new CursorLoader
                 return new CursorLoader(getActivity(), DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI, null, null, null, null);
@@ -191,7 +199,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                 }
                 if(nextRefMatch.size() > 0 && mAdapter != null){
                     nextRefMatch = Match.sortList(nextRefMatch, Match.SortType.ASCENDING);
-                    ((HomePageAdapter)mAdapter).setNextMatch(nextRefMatch.get(0), true);
+                    ((HomePageAdapter)mAdapter).setNextMatch(nextRefMatch.get(0), true, false);
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
@@ -202,7 +210,14 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                 }
                 if(nextMatch.size() > 0 && mAdapter != null){
                     nextMatch = Match.sortList(nextMatch, Match.SortType.ASCENDING);
-                    ((HomePageAdapter)mAdapter).setNextMatch(nextMatch.get(0), false);
+                    nextPlayingMatch = nextMatch.get(0);
+                }
+                if(nextPlayingMatch!=null){
+                    if(DataStore.getInstance(getActivity()).isUserCaptain()){
+                        ((HomePageAdapter)mAdapter).setNextMatch(nextPlayingMatch, false, false);
+                    } else {
+                        loadNextMatchCard();
+                    }
                 }
                 break;
             case DBProviderContract.MYLEAGUES_URL_QUERY:
@@ -278,6 +293,12 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                     }
                 }
                 break;
+            case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
+                if(isPlaying!=null && nextPlayingMatch != null){
+                    isPlaying = isPlaying(nextPlayingMatch.getMatchID(), data);
+                    loadNextMatchCard();
+                }
+                break;
         }
     }
 
@@ -339,6 +360,34 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             }
         }
         return matchList;
+    }
+
+    private void loadNextMatchCard() {
+        if (isPlaying == null){
+            Cursor rCursor = getActivity().getContentResolver().query(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI,
+                    null,
+                    DBProviderContract.SELECTION_MATCHID,
+                    new String[]{Integer.toString(nextPlayingMatch.getMatchID())},
+                    null);
+            if (rCursor.getCount() > 0) {
+                isPlaying = isPlaying(nextPlayingMatch.getMatchID(), rCursor);
+            }
+            rCursor.close();
+        }
+        if(nextPlayingMatch != null && isPlaying != null){
+            ((HomePageAdapter)mAdapter).setNextMatch(nextPlayingMatch, false, isPlaying);
+        }
+    }
+
+    private Boolean isPlaying(int matchID, Cursor cursor){
+        if(cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                if (matchID == cursor.getInt(0)) {
+                    return cursor.getInt(1) == 1;
+                }
+            }
+        }
+        return null;
     }
 
     public Team loadTeam(Cursor data){
