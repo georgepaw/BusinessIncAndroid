@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -152,7 +153,7 @@ public class MyTeamFragment extends Fragment {
         mListener = null;
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -168,11 +169,9 @@ public class MyTeamFragment extends Fragment {
 //                        .getInstance(getActivity()).getUserTeamID());
 //                    return teamOverviewFragment;
                 case 1:
+                default:
                     LeagueFragment leagueFragment = LeagueFragment.newInstance(mLeagueID);
                     return leagueFragment;
-                default:
-                    MatchFactsFragment matchFactsFragment = MatchFactsFragment.newInstance("a", "b");
-                    return matchFactsFragment;
             }
 
         }
