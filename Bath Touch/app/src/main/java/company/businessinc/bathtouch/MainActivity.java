@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -41,13 +42,16 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
 
 
 public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
+        MyTeamFragment.MyTeamFragmentCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
         LeagueFragment.LeagueCallbacks,
@@ -104,9 +108,14 @@ public class MainActivity extends ActionBarActivity
 
         if(savedInstanceState == null) {
             mFragmentManager = getSupportFragmentManager();
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.container, HomePageFragment.newInstance(), "fragmentTag")
-                    .commit();
+            if(DataStore.getInstance(this).isUserLoggedIn())
+                mFragmentManager.beginTransaction()
+                        .replace(R.id.container, MyTeamFragment.newInstance(), "fragmentTag")
+                        .commit();
+            else
+                mFragmentManager.beginTransaction()
+                        .replace(R.id.container, HomePageFragment.newInstance(), "fragmentTag")
+                        .commit();
         }
 
         mNavigationDrawerLayout = (DrawerFrameLayout) findViewById(R.id.drawer_layout);
@@ -177,7 +186,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_home_grey600_48dp))
-                        .setTextPrimary("Home")
+                        .setTextPrimary("My Team")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
@@ -189,7 +198,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_assessment_grey600_48dp))
-                        .setTextPrimary("League Tables")
+                        .setTextPrimary("Leagues")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
@@ -201,7 +210,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_event_grey600_48dp))
-                        .setTextPrimary("Past Results")
+                        .setTextPrimary("Results")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
@@ -354,7 +363,7 @@ public class MainActivity extends ActionBarActivity
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
         if(fragment == null) {
             if(tag.equals("HOMEPAGETAG"))
-                ft.replace(R.id.container, HomePageFragment.newInstance(), tag);
+                ft.replace(R.id.container, MyTeamFragment.newInstance(), tag);
             if(tag.equals("LEAGUETABLETAG"))
                 ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
             if(tag.equals("TEAMRESULTSTAG"))
@@ -471,6 +480,11 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onLeagueItemSelected(int position) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }
