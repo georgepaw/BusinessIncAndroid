@@ -1,12 +1,16 @@
 package company.businessinc.bathtouch;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,7 +18,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +40,7 @@ import company.businessinc.dataModels.Match;
  * http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
  */
 public class TeamRosterActivity extends FragmentActivity implements ActionBar.TabListener,
-        AvailablePlayersAdapter.AvailablePlayerCallbacks,  LoaderManager.LoaderCallbacks<Cursor> {
+        AvailablePlayersAdapter.AvailablePlayerCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -67,14 +74,14 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     }
 
 
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_team_roster);
 
-        playerListAvail = populatePeople();
-        playerListUnavail = populatePeople();
+        //TODO add real players here
+        playerListAvail = populatePeople(0);
+        playerListUnavail = populatePeople(playerListAvail.size());
 
         String teamOne = "NULL";
         String teamTwo = "NULL";
@@ -82,7 +89,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         Date date = null;
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null){
+        if (extras != null) {
             try {
                 teamOne = extras.getString(Match.KEY_TEAMONE);
                 teamTwo = extras.getString(Match.KEY_TEAMTWO);
@@ -91,7 +98,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                 date = sdf.parse(extras.getString(Match.KEY_DATETIME));
                 leagueID = extras.getInt(League.KEY_LEAGUEID);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.d(TAG, "Couldn't parse the bundle");
             }
         }
@@ -116,8 +123,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         mMatchDate = (TextView) findViewById(R.id.team_roster_match_date);
         mMatchTime = (TextView) findViewById(R.id.team_roster_match_time);
         mMatchPlace = (TextView) findViewById(R.id.team_roster_match_place);
-        mTeamOneName = (TextView) findViewById(R.id.team_roster_team1_name);
-        mTeamTwoName = (TextView) findViewById(R.id.team_roster_team2_name);
+        mTeamTwoName = (TextView) findViewById(R.id.team_roster_team_1_name);
 
         mLeagueName.setText("");
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM");
@@ -125,13 +131,12 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         sdf = new SimpleDateFormat("HH:mm");
         mMatchTime.setText(sdf.format(date));
         mMatchPlace.setText(place);
-        mTeamOneName.setText(teamOne);
+//        mTeamOneName.setText(teamOne);
         mTeamTwoName.setText(teamTwo);
 
         getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
 
     }
-
 
 
     @Override
@@ -153,26 +158,79 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     @Override
     public void onPlayerAvailableChecked(boolean available, int playerID) {
 
-//        Log.d("CALLBACK", "fired");
-//        //Move from available to unavailable
-//        if(available){
-//            playerListAvail.remove(playerID);
-//            playerListUnavail.add(playerID);
-//        }else{
-//            playerListAvail.add(playerID);
-//            playerListUnavail.remove(playerID);
-//        }
-//        mPagerAdapter.notifyDataSetChanged();
+
     }
 
-    private ArrayList<Integer> populatePeople(){
+    /*
+    Fired when a player icon is selected in the recyclerview
+    Shows the player info
+     */
+    @Override
+    public void onPlayerSelected(int playerID) {
+        showPlayerInfo(playerID);
+    }
+
+    /*
+    Creates a new dialog Fragment showing the details of the player selected
+     */
+    public void showPlayerInfo(int playerID) {
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = MyDialogFragment.newInstance(1);
+        newFragment.show(ft, "dialog");
+    }
+
+    private ArrayList<Integer> populatePeople(int start) {
         ArrayList<Integer> list = new ArrayList<Integer>();
-        for(int i = 0; i < NUM_PEOPLE; i++){
+        for (int i = start; i < NUM_PEOPLE + start; i++) {
             list.add(i);
         }
         return list;
     }
 
+    public static class MyDialogFragment extends DialogFragment {
+        int mNum;
+
+        /**
+         * Create a new instance of MyDialogFragment, providing "num"
+         * as an argument.
+         */
+        static MyDialogFragment newInstance(int num) {
+            MyDialogFragment f = new MyDialogFragment();
+
+            // Supply num input as an argument.
+            Bundle args = new Bundle();
+            args.putInt("num", num);
+            f.setArguments(args);
+
+            return f;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            mNum = getArguments().getInt("num");
+
+            int style = DialogFragment.STYLE_NO_TITLE;
+            int theme = android.R.style.Theme_Holo_Light_Dialog;
+            setStyle(style, theme);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View v = inflater.inflate(R.layout.fragment_dialog, container, false);
+
+            return v;
+        }
+    }
 
     class SamplePagerAdapter extends FragmentPagerAdapter {
 
@@ -201,17 +259,16 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         /**
          * Return the title of the item at {@code position}. This is important as what this method
          * returns is what is displayed in the {@link SlidingTabLayout}.
-         * <p>
+         * <p/>
          * Here we construct one using the position value, but for real application the title should
          * refer to the item's contents.
          */
         @Override
         public CharSequence getPageTitle(int position) {
-            if(position == 0){
-                return "Available Players";
-            }
-            else if(position == 1){
-                return "Unavailable Players";
+            if (position == 0) {
+                return "Match Team";
+            } else if (position == 1) {
+                return "Player List";
             }
             return "Item " + (position + 1);
         }
@@ -237,10 +294,10 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     //query has finished
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()){
+        switch (loader.getId()) {
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                if (data.moveToFirst()){
-                    while(!data.isAfterLast()){
+                if (data.moveToFirst()) {
+                    while (!data.isAfterLast()) {
                         mLeagueName.setText(data.getString(1));
                         data.moveToNext();
                     }
