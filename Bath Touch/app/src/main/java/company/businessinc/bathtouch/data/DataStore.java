@@ -380,11 +380,11 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         if(!myMatchesAvailability.contains(matchID)){
             myMatchesAvailability.add(matchID);
         }
-        new UpAvailability(this, isPlaying, matchID).execute();
+        new UpAvailability(this, isPlaying ? 1 : 0, matchID).execute();
     }
 
-    public void setPlayersAvailability(boolean isPlaying, int matchID, int userID){
-        new UpAvailability(this, isPlaying, matchID, userID).execute();
+    public void setPlayersAvailability(boolean isPlaying, int userID, int matchID){
+        new UpAvailability(this, isPlaying ? 1 : 0, matchID, userID).execute();
     }
 
     public void upAvailabilityCallback(boolean isPlaying, UpAvailability.CallType callType, int matchID, int userID){
@@ -400,13 +400,13 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cv = new ContentValues();
                 cv.put(Match.KEY_MATCHID, matchID);
                 cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
-                context.getContentResolver().update(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHID, new String[]{isPlaying ? "1" : "0"});
+                context.getContentResolver().update(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)});
                 break;
             case SETPLAYERSAVAILABILITY:
                 cv = new ContentValues();
                 cv.put(Match.KEY_MATCHID, matchID);
                 cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
-                context.getContentResolver().update(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHIDANDUSERID, new String[]{isPlaying ? "1" : "0", Integer.toString(userID)});
+                context.getContentResolver().update(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHIDANDUSERID, new String[]{Integer.toString(matchID), Integer.toString(userID)});
                 break;
         }
     }

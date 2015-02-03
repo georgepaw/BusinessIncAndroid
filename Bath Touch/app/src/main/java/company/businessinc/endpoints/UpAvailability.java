@@ -29,26 +29,26 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
     public enum CallType{GETMYAVAILABILITY, SETMYAVAILABILITY, SETPLAYERSAVAILABILITY}
     private CallType callType;
 
-    public UpAvailability(UpAvailabilityInterface callback, boolean isPlaying, int matchID, int userID) {
+    public UpAvailability(UpAvailabilityInterface callback, int isPlaying, int matchID, int userID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("isPlaying", Boolean.toString(isPlaying)));
+        parameters.add(new BasicNameValuePair("isPlaying", Integer.toString(isPlaying)));
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         parameters.add(new BasicNameValuePair("userID", Integer.toString(userID)));
         callType = CallType.SETPLAYERSAVAILABILITY;
         this.matchID = matchID;
         this.userID = userID;
-        this.isPlaying = isPlaying;
+        this.isPlaying = isPlaying == 1;
     }
 
-    public UpAvailability(UpAvailabilityInterface callback, boolean isPlaying, int matchID) {
+    public UpAvailability(UpAvailabilityInterface callback, int isPlaying, int matchID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("isPlaying", Boolean.toString(isPlaying)));
+        parameters.add(new BasicNameValuePair("isPlaying", Integer.toString(isPlaying)));
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         callType = CallType.SETMYAVAILABILITY;
         this.matchID = matchID;
-        this.isPlaying = isPlaying;
+        this.isPlaying = isPlaying == 1;
     }
 
     public UpAvailability(UpAvailabilityInterface callback, int matchID) {

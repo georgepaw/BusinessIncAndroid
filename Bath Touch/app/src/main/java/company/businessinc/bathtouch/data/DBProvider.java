@@ -250,7 +250,9 @@ public class DBProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
             return rows;
         } else {
-            throw new SQLiteException("Update error:" + uri);
+            Log.d(TAG, "Couldn't update with " + values.toString());
+            return -1;
+            //throw new SQLiteException("Update error:" + uri);
         }
     }
 

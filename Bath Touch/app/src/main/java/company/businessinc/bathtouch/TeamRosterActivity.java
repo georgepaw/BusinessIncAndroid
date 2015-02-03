@@ -167,14 +167,14 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     Shows the player info
      */
     @Override
-    public void onPlayerSelected(int playerID) {
-        showPlayerInfo(playerID);
+    public void onPlayerSelected(Player player) {
+        showPlayerInfo(player);
     }
 
     /*
     Creates a new dialog Fragment showing the details of the player selected
      */
-    public void showPlayerInfo(int playerID) {
+    public void showPlayerInfo(Player player) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
@@ -184,7 +184,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = MyDialogFragment.newInstance(1);
+        DialogFragment newFragment = MyDialogFragment.newInstance(player);
         newFragment.show(ft, "dialog");
     }
 
@@ -197,18 +197,19 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 //    }
 
     public static class MyDialogFragment extends DialogFragment {
-        int mNum;
+        TextView mName, mEmail;
 
         /**
          * Create a new instance of MyDialogFragment, providing "num"
          * as an argument.
          */
-        static MyDialogFragment newInstance(int num) {
+        static MyDialogFragment newInstance(Player player) {
             MyDialogFragment f = new MyDialogFragment();
 
             // Supply num input as an argument.
             Bundle args = new Bundle();
-            args.putInt("num", num);
+            args.putString("name", player.getName());
+            args.putString("email", player.getEmail());
             f.setArguments(args);
 
             return f;
@@ -217,7 +218,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mNum = getArguments().getInt("num");
 
             int style = DialogFragment.STYLE_NO_TITLE;
             int theme = android.R.style.Theme_Holo_Light_Dialog;
@@ -228,7 +228,13 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.fragment_dialog, container, false);
-
+            mName = (TextView) v.findViewById(R.id.user_dialog_username);
+            mEmail = (TextView) v.findViewById(R.id.user_dialog_user_emailtext);
+            Bundle b = getArguments();
+            if(b!=null){
+                mName.setText(b.getString("name"));
+                mEmail.setText(b.getString("email"));
+            }
             return v;
         }
     }

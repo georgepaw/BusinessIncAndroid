@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Player;
 
 /**
@@ -26,16 +28,20 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     private boolean is_available;
     private AvailablePlayerCallbacks mCallbacks;
     private List<Player> playerList = new ArrayList<Player>();
+    private Context context;
+    private int matchID;
 
 
     public static interface AvailablePlayerCallbacks{
         void onPlayerAvailableChecked(boolean available, int playerID);
-        void onPlayerSelected(int playerID);
+        void onPlayerSelected(Player player);
     }
 
-    public AvailablePlayersAdapter(boolean available, Activity activity){
+    public AvailablePlayersAdapter(boolean available, Context context, int matchID){
         is_available = available;
-        mCallbacks = (AvailablePlayerCallbacks) activity;
+        mCallbacks = (AvailablePlayerCallbacks) context;
+        this.context = context;
+        this.matchID = matchID;
     }
 
 
@@ -67,7 +73,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
                 removeAt(getPosition());
             }
             else if(v.getId() == mCard.getId()){
-                mCallbacks.onPlayerSelected(getPosition());
+                mCallbacks.onPlayerSelected(playerList.get(getPosition()));
             }
         }
     }
@@ -110,12 +116,13 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     }
 
     public void removeAt(int position){
+        Player player = playerList.get(position);
         playerList.remove(position);
         notifyItemRemoved(position);
+        DataStore.getInstance(context).setPlayersAvailability(!player.getIsPlaying(), player.getUserID(), matchID);
         notifyItemRangeChanged(position, playerList.size());
-
         //fire call back to add the card to the other page
-        mCallbacks.onPlayerAvailableChecked(is_available, position);
+        //mCallbacks.onPlayerAvailableChecked(is_available, position);
     }
 
     @Override

@@ -79,7 +79,7 @@ public class AvailablePlayersFragment extends Fragment implements  LoaderManager
 
 
         //Adapter loads the data fror the leagues
-        mAdapter = new AvailablePlayersAdapter(available_toggle, getActivity());
+        mAdapter = new AvailablePlayersAdapter(available_toggle, getActivity(),matchID);
         mRecyclerView.setAdapter(mAdapter);
 
         return mLayout;
