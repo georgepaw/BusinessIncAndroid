@@ -169,6 +169,8 @@ public class MyTeamFragment extends Fragment {
 //                        .getInstance(getActivity()).getUserTeamID());
 //                    return teamOverviewFragment;
                 case 1:
+                    ResultsListFragment resultsListFragment = ResultsListFragment.newInstance(mLeagueID);
+                    return resultsListFragment;
                 default:
                     LeagueFragment leagueFragment = LeagueFragment.newInstance(mLeagueID);
                     return leagueFragment;
