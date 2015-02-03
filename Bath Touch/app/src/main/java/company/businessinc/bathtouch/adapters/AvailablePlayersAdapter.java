@@ -33,9 +33,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         void onPlayerSelected(int playerID);
     }
 
-    public AvailablePlayersAdapter(boolean available, ArrayList<Player> list, Activity activity){
+    public AvailablePlayersAdapter(boolean available, Activity activity){
         is_available = available;
-        playerList = list;
         mCallbacks = (AvailablePlayerCallbacks) activity;
     }
 
@@ -86,16 +85,23 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         ViewHolderPlayer v = (ViewHolderPlayer) holder;
-        int id = playerList.get(position).getUserID();
+        Player player = playerList.get(position);
+        int id = player.getUserID();
 
         v.mPlayerNumber.setText(Integer.toString(position));
+        v.mPlayerName.setText(player.getName());
+        v.mPlayerAvail.setVisibility(View.INVISIBLE);
+        if(!player.getIsGhostPlayer()){
+            v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_full_green);
+        } else {
+                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
+        }
         if(is_available){
             v.mCheckBox.setChecked(true);
-            v.mPlayerAvail.setVisibility(View.INVISIBLE);
+
 //                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_full_green);
         }
         else{
-            v.mPlayerAvail.setVisibility(View.INVISIBLE);
             v.mCheckBox.setChecked(false);
 //                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
         }
@@ -117,8 +123,18 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         return playerList.size();
     }
 
-    public void setPlayerList(List<Player> playerList){
-        this.playerList = playerList;
+    public void addToPlayerList(Player player){
+        boolean found = false;
+        for(int i = 0; i < playerList.size(); i++){
+            if(playerList.get(i).getUserID() == player.getUserID()){
+                playerList.set(i, player);
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            playerList.add(player);
+        }
         notifyDataSetChanged();
     }
 }

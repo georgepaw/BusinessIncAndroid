@@ -135,7 +135,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 //        mTeamOneName.setText(teamOne);
         mTeamTwoName.setText(teamTwo);
 
-        getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
+//        getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
 
     }
 
@@ -235,16 +235,16 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
     class SamplePagerAdapter extends FragmentPagerAdapter {
 
-        private ArrayList<Player> playerListAvail = new ArrayList<Player>();
-        private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
-        private ArrayList<ArrayList<Player>> playerList = new ArrayList<ArrayList<Player>>();
+//        private ArrayList<Player> playerListAvail = new ArrayList<Player>();
+//        private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
+//        private ArrayList<ArrayList<Player>> playerList = new ArrayList<ArrayList<Player>>();
 
         public SamplePagerAdapter(FragmentManager fm, ArrayList<Player> availP, ArrayList<Player> unavailP) {
             super(fm);
-            playerListAvail = availP;
-            playerListUnavail = unavailP;
-            playerList.add(playerListAvail);
-            playerList.add(playerListUnavail);
+//            playerListAvail = availP;
+//            playerListUnavail = unavailP;
+//            playerList.add(playerListAvail);
+//            playerList.add(playerListUnavail);
 
         }
 
@@ -276,8 +276,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public Fragment getItem(int position) {
-
-            return AvailablePlayersFragment.newInstance(position, playerList.get(position));
+            return AvailablePlayersFragment.newInstance(position, matchID);
         }
     }
 
@@ -286,8 +285,8 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         switch (loaderID) {
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 return new CursorLoader(this, DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_LEAGUEID, new String[]{Integer.toString(leagueID)}, null);
-            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
-                return new CursorLoader(this, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)}, null);
+//            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+//                return new CursorLoader(this, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)}, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -306,19 +305,19 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
                     }
                 }
                 break;
-            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
-                if (data.moveToFirst()) {
-                    while (!data.isAfterLast()) {
-                        Player player = new Player(data);
-                        if(player.getIsPlaying()){
-                            playerListAvail.add(player);
-                        } else {
-                            playerListUnavail.add(player);
-                        }
-                        data.moveToNext();
-                    }
-                }
-                break;
+//            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+//                if (data.moveToFirst()) {
+//                    while (!data.isAfterLast()) {
+//                        Player player = new Player(data);
+//                        if(player.getIsPlaying()){
+//                            playerListAvail.add(player);
+//                        } else {
+//                            playerListUnavail.add(player);
+//                        }
+//                        data.moveToNext();
+//                    }
+//                }
+//                break;
         }
     }
 

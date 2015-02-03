@@ -32,7 +32,7 @@ public class Player {
     public static final String CREATE_TABLE =   KEY_USERID + "\tINTEGER,\n"+
                                                 KEY_NAME + "\tTEXT,\n"+
                                                 KEY_ISPLAYING + "\tINTEGER,\n"+
-                                                KEY_ISGHOSTPLAYER + "\tINTEGER\n"+
+                                                KEY_ISGHOSTPLAYER + "\tINTEGER,\n"+
                                                 KEY_EMAIL + "\tTEXT";
 
     public Player(String name, Integer userID, Boolean isPlaying, Boolean isGhostPlayer, String email) {
