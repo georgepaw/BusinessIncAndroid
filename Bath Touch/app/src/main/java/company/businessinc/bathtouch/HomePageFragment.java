@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -363,11 +364,13 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onRefresh() {
         Log.d("HomePageFragment", "Refreshing data");
-        DataStore.getInstance(getActivity()).refreshData();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                DataStore.getInstance(getActivity()).refreshData();
                 mAdapter.notifyDataSetChanged();
+                ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
+                pager.getAdapter().notifyDataSetChanged();
                 mSwipeRefresh.setRefreshing(false);
             }
 
