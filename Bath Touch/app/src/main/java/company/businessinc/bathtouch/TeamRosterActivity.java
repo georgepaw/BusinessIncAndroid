@@ -33,6 +33,7 @@ import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Player;
 
 
 /**
@@ -54,9 +55,9 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
     private ViewPager mViewPager;
     private FragmentPagerAdapter mPagerAdapter;
 
-    private ArrayList<Integer> playerListAvail = new ArrayList<Integer>();
-    private ArrayList<Integer> playerListUnavail = new ArrayList<Integer>();
-    private int NUM_PEOPLE = 10;
+    private ArrayList<Player> playerListAvail = new ArrayList<Player>();
+    private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
+//    private int NUM_PEOPLE = 10;
 
     TextView mLeagueName, mMatchDate, mMatchTime, mMatchPlace, mTeamOneName, mTeamTwoName;
 
@@ -79,9 +80,9 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         setContentView(R.layout.activity_team_roster);
 
-        //TODO add real players here
-        playerListAvail = populatePeople(0);
-        playerListUnavail = populatePeople(playerListAvail.size());
+//        //TODO add real players here
+//        playerListAvail = populatePeople(0);
+//        playerListUnavail = populatePeople(playerListAvail.size());
 
         String teamOne = "NULL";
         String teamTwo = "NULL";
@@ -187,13 +188,13 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         newFragment.show(ft, "dialog");
     }
 
-    private ArrayList<Integer> populatePeople(int start) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        for (int i = start; i < NUM_PEOPLE + start; i++) {
-            list.add(i);
-        }
-        return list;
-    }
+//    private ArrayList<Integer> populatePeople(int start) {
+//        ArrayList<Integer> list = new ArrayList<Integer>();
+//        for (int i = start; i < NUM_PEOPLE + start; i++) {
+//            list.add(i);
+//        }
+//        return list;
+//    }
 
     public static class MyDialogFragment extends DialogFragment {
         int mNum;
@@ -234,11 +235,11 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
     class SamplePagerAdapter extends FragmentPagerAdapter {
 
-        private ArrayList<Integer> playerListAvail = new ArrayList<Integer>();
-        private ArrayList<Integer> playerListUnavail = new ArrayList<Integer>();
-        private ArrayList<ArrayList<Integer>> playerList = new ArrayList<ArrayList<Integer>>();
+        private ArrayList<Player> playerListAvail = new ArrayList<Player>();
+        private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
+        private ArrayList<ArrayList<Player>> playerList = new ArrayList<ArrayList<Player>>();
 
-        public SamplePagerAdapter(FragmentManager fm, ArrayList<Integer> availP, ArrayList<Integer> unavailP) {
+        public SamplePagerAdapter(FragmentManager fm, ArrayList<Player> availP, ArrayList<Player> unavailP) {
             super(fm);
             playerListAvail = availP;
             playerListUnavail = unavailP;
@@ -285,6 +286,8 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         switch (loaderID) {
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 return new CursorLoader(this, DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_LEAGUEID, new String[]{Integer.toString(leagueID)}, null);
+            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+                return new CursorLoader(this, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)}, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -299,6 +302,19 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
                 if (data.moveToFirst()) {
                     while (!data.isAfterLast()) {
                         mLeagueName.setText(data.getString(1));
+                        data.moveToNext();
+                    }
+                }
+                break;
+            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+                if (data.moveToFirst()) {
+                    while (!data.isAfterLast()) {
+                        Player player = new Player(data);
+                        if(player.getIsPlaying()){
+                            playerListAvail.add(player);
+                        } else {
+                            playerListUnavail.add(player);
+                        }
                         data.moveToNext();
                     }
                 }

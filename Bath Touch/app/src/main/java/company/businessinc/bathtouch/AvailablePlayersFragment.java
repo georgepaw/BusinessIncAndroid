@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.dataModels.Player;
 
 /**
  * Created by user on 30/01/15.
@@ -23,10 +25,10 @@ public class AvailablePlayersFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private boolean available_toggle;
-    private ArrayList<Integer> playerList = new ArrayList<Integer>();
+    private ArrayList<Player> playerList = new ArrayList<Player>();
 
 
-    public static AvailablePlayersFragment newInstance(int position, ArrayList<Integer> list) {
+    public static AvailablePlayersFragment newInstance(int position) {
         AvailablePlayersFragment fragment = new AvailablePlayersFragment();
         Bundle args = new Bundle();
 
@@ -37,8 +39,6 @@ public class AvailablePlayersFragment extends Fragment {
         else{
             args.putBoolean("AVAIL", false);
         }
-
-        args.putIntegerArrayList("PLAYERS", list);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,7 +49,7 @@ public class AvailablePlayersFragment extends Fragment {
         if (getArguments() != null) {
             Bundle bundle  = getArguments();
             available_toggle = bundle.getBoolean("AVAIL");
-            playerList = bundle.getIntegerArrayList("PLAYERS");
+            getLoaderManager().initLoader(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY, null, getActivity());
         }
 
     }

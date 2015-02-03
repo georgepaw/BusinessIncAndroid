@@ -24,6 +24,8 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
     private UpAvailabilityInterface callback;
     private List<NameValuePair> parameters;
     private int matchID;
+    private int userID = -1;
+    private boolean isPlaying = false;
     public enum CallType{GETMYAVAILABILITY, SETMYAVAILABILITY, SETPLAYERSAVAILABILITY}
     private CallType callType;
 
@@ -34,6 +36,9 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         parameters.add(new BasicNameValuePair("userID", Integer.toString(userID)));
         callType = CallType.SETPLAYERSAVAILABILITY;
+        this.matchID = matchID;
+        this.userID = userID;
+        this.isPlaying = isPlaying;
     }
 
     public UpAvailability(UpAvailabilityInterface callback, boolean isPlaying, int matchID) {
@@ -42,6 +47,8 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         parameters.add(new BasicNameValuePair("isPlaying", Boolean.toString(isPlaying)));
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         callType = CallType.SETMYAVAILABILITY;
+        this.matchID = matchID;
+        this.isPlaying = isPlaying;
     }
 
     public UpAvailability(UpAvailabilityInterface callback, int matchID) {
@@ -49,6 +56,7 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         callType = CallType.GETMYAVAILABILITY;
+        this.matchID = matchID;
     }
 
     @Override
@@ -63,6 +71,9 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         company.businessinc.dataModels.Status status = null;
         try {
             status = new company.businessinc.dataModels.Status(jsonObject);
+            if(callType == CallType.GETMYAVAILABILITY){
+                this.isPlaying = status.getStatus();
+            }
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse parameters");
         }
@@ -72,6 +83,6 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(company.businessinc.dataModels.Status result) {
-        callback.upAvailabilityCallback(result, callType);
+        callback.upAvailabilityCallback(isPlaying, callType, matchID, userID);
     }
 }

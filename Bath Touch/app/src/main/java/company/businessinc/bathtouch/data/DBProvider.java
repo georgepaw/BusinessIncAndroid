@@ -176,6 +176,18 @@ public class DBProvider extends ContentProvider {
                 case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
                     DataStore.getInstance(getContext()).loadMyUpcomingRefGames();
                     break;
+                case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
+                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
+                        DataStore.getInstance(getContext()).loadMyAvailability(Integer.valueOf(selectionArgs[0]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "MyUpcomingGamesAvailability" + " callback, selection/selection args not valid");
+                    }
+                case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
+                        DataStore.getInstance(getContext()).loadMatchPlayersAvailability(Integer.valueOf(selectionArgs[0]));
+                    } else{
+                        Log.d(TAG, "Can't call " + "MyTeamPlayersAvailability" + " callback, selection/selection args not valid");
+                    }
             }
         }
         returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -232,8 +244,8 @@ public class DBProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         String tableName = getTableName(uri);
-        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
-        int rows = localSQLiteDatabase.update(tableName, values, selection, selectionArgs);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        int rows = db.update(tableName, values, selection, selectionArgs);
         if (0 != rows) {
             getContext().getContentResolver().notifyChange(uri, null);
             return rows;
@@ -292,6 +304,10 @@ public class DBProvider extends ContentProvider {
                 return DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME;
             case DBProviderContract.LEAGUETEAMS_URL_QUERY:
                 return DBProviderContract.LEAGUETEAMS_TABLE_NAME;
+            case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
+                return DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME;
+            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+                return DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME;
             default:
                 Log.d(TAG, "Could not recognize URI");
                 throw new IllegalArgumentException("Invalid URI: " + uri);

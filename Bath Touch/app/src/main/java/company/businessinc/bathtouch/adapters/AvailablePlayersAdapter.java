@@ -13,8 +13,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.dataModels.Player;
 
 /**
  * Created by user on 30/01/15.
@@ -23,7 +25,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
     private boolean is_available;
     private AvailablePlayerCallbacks mCallbacks;
-    private ArrayList<Integer> playerList = new ArrayList<Integer>();
+    private List<Player> playerList = new ArrayList<Player>();
 
 
     public static interface AvailablePlayerCallbacks{
@@ -31,7 +33,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         void onPlayerSelected(int playerID);
     }
 
-    public AvailablePlayersAdapter(boolean available, ArrayList<Integer> list, Activity activity){
+    public AvailablePlayersAdapter(boolean available, ArrayList<Player> list, Activity activity){
         is_available = available;
         playerList = list;
         mCallbacks = (AvailablePlayerCallbacks) activity;
@@ -84,7 +86,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         ViewHolderPlayer v = (ViewHolderPlayer) holder;
-        int id = playerList.get(position);
+        int id = playerList.get(position).getUserID();
 
         v.mPlayerNumber.setText(Integer.toString(position));
         if(is_available){
@@ -113,6 +115,11 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return playerList.size();
+    }
+
+    public void setPlayerList(List<Player> playerList){
+        this.playerList = playerList;
+        notifyDataSetChanged();
     }
 }
 

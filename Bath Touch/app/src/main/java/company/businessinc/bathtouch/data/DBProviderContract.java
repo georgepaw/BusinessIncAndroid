@@ -22,6 +22,7 @@ public class DBProviderContract {
     public static final String SELECTION_LEAGUEID = League.KEY_LEAGUEID + " = ?";
     public static final String SELECTION_LEAGUEIDANDTEAMID = League.KEY_LEAGUEID + " = ? AND " + Team.KEY_TEAMID + " = ?";
     public static final String SELECTION_MATCHID = Match.KEY_MATCHID + " = ?";
+    public static final String SELECTION_MATCHIDANDUSERID = Match.KEY_MATCHID + " = ? AND " + Player.KEY_USERID + " = ?";
 
     // The URI scheme used for content URIs
     public static final String SCHEME = "content";
