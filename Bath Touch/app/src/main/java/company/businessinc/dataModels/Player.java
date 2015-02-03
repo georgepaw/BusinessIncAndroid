@@ -18,6 +18,7 @@ public class Player {
     private Integer userID;
     private Boolean isPlaying;
     private Boolean isGhostPlayer;
+    private String email;
 
 
 
@@ -25,18 +26,21 @@ public class Player {
     public static final String KEY_USERID = "userID";
     public static final String KEY_ISPLAYING = "isPlaying";
     public static final String KEY_ISGHOSTPLAYER = "isGhostPlayer";
+    public static final String KEY_EMAIL = "email";
     public static final String[] COLUMNS = {KEY_NAME, KEY_USERID, KEY_ISPLAYING, KEY_ISGHOSTPLAYER};
 
     public static final String CREATE_TABLE =   KEY_USERID + "\tINTEGER,\n"+
                                                 KEY_NAME + "\tTEXT,\n"+
                                                 KEY_ISPLAYING + "\tINTEGER,\n"+
-                                                KEY_ISGHOSTPLAYER + "\tINTEGER";
+                                                KEY_ISGHOSTPLAYER + "\tINTEGER\n"+
+                                                KEY_EMAIL + "\tTEXT";
 
-    public Player(String name, Integer userID, Boolean isPlaying, Boolean isGhostPlayer) {
+    public Player(String name, Integer userID, Boolean isPlaying, Boolean isGhostPlayer, String email) {
         this.name = name;
         this.userID = userID;
         this.isPlaying = isPlaying;
         this.isGhostPlayer = isGhostPlayer;
+        this.email = email;
     }
 
     public Player(Cursor cursor){
@@ -60,6 +64,11 @@ public class Player {
         } catch(Exception e) {
             this.isGhostPlayer = null;
         }
+        try {
+            this.email = cursor.getString(cursor.getColumnIndex(KEY_EMAIL));
+        } catch(Exception e) {
+            this.email = null;
+        }
     }
 
     public Player(JSONObject jsonObject) throws JSONException {
@@ -82,6 +91,11 @@ public class Player {
             this.isGhostPlayer = jsonObject.getBoolean(KEY_ISGHOSTPLAYER);
         } catch(JSONException e) {
             this.isGhostPlayer = null;
+        }
+        try {
+            this.email = jsonObject.getString(KEY_EMAIL);
+        } catch(JSONException e) {
+            this.email = null;
         }
     }
 
@@ -117,12 +131,21 @@ public class Player {
         this.isGhostPlayer = isGhostPlayer;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name);
         values.put(KEY_USERID, userID);
         values.put(KEY_ISPLAYING, isPlaying ? 1 : 0);
         values.put(KEY_ISGHOSTPLAYER, isGhostPlayer ? 1 : 0);
+        values.put(KEY_EMAIL, email);
         return values;
     }
 }

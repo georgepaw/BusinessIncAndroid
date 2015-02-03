@@ -258,18 +258,14 @@ public class DBProvider extends ContentProvider {
     public void dropUserData(){
         //first drop the tables that always exist
         SQLiteHelper db = (SQLiteHelper)mHelper;
-        db.dropTable(DBProviderContract.MYLEAGUES_TABLE_NAME);
-        db.dropTable(DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME);
-        db.dropTable(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME);
-        db.dropTable(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME);
-        db.dropTable(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME);
+        for(String t : DBProviderContract.TABLES){
+            db.dropTable(t);
+        }
 
         //Recreate them
-        db.createTable(DBProviderContract.CREATE_MYLEAGUES_TABLE);
-        db.createTable(DBProviderContract.CREATE_MYUPCOMINGGAMES_TABLE);
-        db.createTable(DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE);
-        db.createTable(DBProviderContract.CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE);
-        db.createTable(DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE);
+        for(String t : DBProviderContract.CREATE_TABLES){
+            db.createTable(t);
+        }
     }
 
     private String getTableName(Uri uri){
