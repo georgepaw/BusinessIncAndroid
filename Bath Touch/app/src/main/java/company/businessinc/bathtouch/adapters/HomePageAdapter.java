@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -135,7 +137,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class ViewHolderNextMatch extends RecyclerView.ViewHolder implements View.OnClickListener {
         public CardView mCardView;
         public TextView mTeam1Name, mTeam2Name, mDate, mParticipation, mVS;
-        public ImageView refIcon, playerIcon;
+        public ImageView refIcon;
+        public CheckBox playerAvailable;
         public ProgressBar progressBar;
         public Match match;
         public boolean isRef = false;
@@ -152,8 +155,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
              progressBar = (ProgressBar) v.findViewById(R.id.home_page_card_next_match_progressbar);
              refIcon = (ImageView) v.findViewById(R.id.home_card_next_match_participation_ref_icon);
              refIcon.setVisibility(View.GONE);
-             playerIcon = (ImageView) v.findViewById(R.id.home_card_next_match_participation_player_icon);
-             playerIcon.setVisibility(View.GONE);
+             playerAvailable = (CheckBox) v.findViewById(R.id.home_card_next_match_available_checkbox);
+             playerAvailable.setVisibility(View.GONE);
              mCardView.setOnClickListener(this);
          }
 
@@ -453,7 +456,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(mViewHolderNextRefMatch!=null && nextRefMatch != null) {
             mViewHolderNextRefMatch.mParticipation.setText("");
             mViewHolderNextRefMatch.refIcon.setVisibility(View.VISIBLE);
-            mViewHolderNextRefMatch.playerIcon.setVisibility(View.GONE);
+            mViewHolderNextRefMatch.playerAvailable.setVisibility(View.GONE);
             if (nextRefMatch.getTeamOne() != null) {
                 mViewHolderNextRefMatch.mTeam1Name.setText(nextRefMatch.getTeamOne());
             }
@@ -471,7 +474,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(mViewHolderNextMatch != null && nextMatch != null) {
             mViewHolderNextMatch.mParticipation.setText("");
             mViewHolderNextMatch.refIcon.setVisibility(View.GONE);
-            mViewHolderNextMatch.playerIcon.setVisibility(View.VISIBLE);
+            if(!DataStore.getInstance(context).isUserCaptain()) {
+                mViewHolderNextMatch.playerAvailable.setVisibility(View.VISIBLE);
+//                mViewHolderNextMatch.playerAvailable.setChecked();
+                mViewHolderNextMatch.playerAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        //TODO GEORGE DO SOMETHING WITH THE CHECK BOX
+                    }
+                });
+            }
             if (nextMatch.getTeamOne() != null) {
                 mViewHolderNextMatch.mTeam1Name.setText(nextMatch.getTeamOne());
             }
