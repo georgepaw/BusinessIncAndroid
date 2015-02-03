@@ -10,6 +10,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import company.businessinc.bathtouch.data.DataStore;
+
 /**
  * Created by user on 29/01/15.
  */
@@ -34,8 +36,6 @@ class SlidingTabStrip extends LinearLayout {
 
     private SlidingTabLayout.TabColorizer mCustomTabColorizer;
     private final SimpleTabColorizer mDefaultTabColorizer;
-    int myColor;
-
 
     SlidingTabStrip(Context context) {
         this(context, null);
@@ -57,11 +57,9 @@ class SlidingTabStrip extends LinearLayout {
         mDefaultTabColorizer = new SimpleTabColorizer();
         mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);
 
-        myColor = context.getResources().getColor(company.businessinc.bathtouch.R.color.primary_dark);
-
         mBottomBorderThickness = (int) (DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS * density);
         mBottomBorderPaint = new Paint();
-        mBottomBorderPaint.setColor(myColor);
+        mBottomBorderPaint.setColor(mDefaultBottomBorderColor);
 
         mSelectedIndicatorThickness = (int) (SELECTED_INDICATOR_THICKNESS_DIPS * density);
         mSelectedIndicatorPaint = new Paint();
@@ -87,7 +85,6 @@ class SlidingTabStrip extends LinearLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        final int dividerHeightPx = 70;
         final int height = getHeight();
         final int childCount = getChildCount();
         final SlidingTabLayout.TabColorizer tabColorizer = mCustomTabColorizer != null
@@ -115,25 +112,11 @@ class SlidingTabStrip extends LinearLayout {
                         (1.0f - mSelectionOffset) * right);
             }
 
-//            mSelectedIndicatorPaint.setColor(color);
-            mSelectedIndicatorPaint.setColor(myColor);
-
+            mSelectedIndicatorPaint.setColor(color);
 
             canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
                     height, mSelectedIndicatorPaint);
         }
-
-        //Uncomment for separator
-//        int separatorTop = (height - dividerHeightPx) / 2;
-//        Paint mDividerPaint = new Paint();
-//
-//        for (int i = 0; i < childCount - 1; i++) {
-//            View child = getChildAt(i);
-//            mDividerPaint.setColor(getResources().getColor(company.businessinc.bathtouch.R.color.grey));
-//
-//            canvas.drawLine(child.getRight(), separatorTop, child.getRight(),
-//                    separatorTop + dividerHeightPx, mDividerPaint);
-//        }
 
         // Thin underline along the entire bottom edge
         canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);
@@ -167,7 +150,6 @@ class SlidingTabStrip extends LinearLayout {
         public final int getIndicatorColor(int position) {
             return mIndicatorColors[position % mIndicatorColors.length];
         }
-
 
         void setIndicatorColors(int... colors) {
             mIndicatorColors = colors;
