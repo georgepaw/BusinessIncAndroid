@@ -1,12 +1,15 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.app.Activity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
     public static interface AvailablePlayerCallbacks{
         void onPlayerAvailableChecked(boolean available, int playerID);
+        void onPlayerSelected(int playerID);
     }
 
     public AvailablePlayersAdapter(boolean available, ArrayList<Integer> list, Activity activity){
@@ -41,6 +45,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         TextView mPlayerName;
         CheckBox mCheckBox;
         TextView mPlayerNumber;
+        RelativeLayout mCard;
 
         public ViewHolderPlayer(View itemView) {
             super(itemView);
@@ -50,13 +55,18 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             mPlayerName = (TextView) itemView.findViewById(R.id.team_roster_player_name);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.team_roster_player_checkbox);
             mPlayerNumber = (TextView) itemView.findViewById(R.id.team_roster_player_number);
+            mCard = (RelativeLayout) itemView.findViewById(R.id.team_roster_card);
             mCheckBox.setOnClickListener(this);
+            mCard.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if(v.getId() == mCheckBox.getId()){
                 removeAt(getPosition());
+            }
+            else if(v.getId() == mCard.getId()){
+                mCallbacks.onPlayerSelected(getPosition());
             }
         }
     }

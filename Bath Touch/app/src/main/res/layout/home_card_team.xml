@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="26dp"
+                android:textSize="22dp"
                 android:textColor="@color/white"/>
 
             <TextView
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/home_card_team_name"
                 android:text="Recent Results"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textColor="@color/white"/>
 
             <ImageView

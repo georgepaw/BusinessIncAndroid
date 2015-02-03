@@ -50,7 +50,7 @@
                     android:layout_alignParentLeft="true"
                     android:text="CompSci Vipers"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                     />
 
                 <TextView
                     android:id="@+id/league_item_team_points"
