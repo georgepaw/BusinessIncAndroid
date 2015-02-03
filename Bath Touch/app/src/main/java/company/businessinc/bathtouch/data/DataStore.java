@@ -63,6 +63,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private HashMap<Integer, ArrayList<Integer>> loadedTeamsFixtures = new HashMap<>();
     private HashMap<Integer, ArrayList<Integer>> loadedTeamsScore = new HashMap<>();
     private boolean loadedRefGames = false;
+    private ArrayList<Integer> loadedLeagueTeams = new ArrayList<>();
     private ArrayList<Integer> myMatchesAvailability = new ArrayList<>();
     private ArrayList<Integer> matchesAvailability = new ArrayList<>();
 
@@ -141,7 +142,6 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
 
-    private ArrayList<Integer> loadedLeagueTeams = new ArrayList<>();
 
     public void loadLeaguesTeams(int leagueID){
         if(!loadedLeagueTeams.contains(leagueID)){
@@ -450,6 +450,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedRefGames = false;
         myMatchesAvailability = new ArrayList<>();
         matchesAvailability = new ArrayList<>();
+        loadedLeagueTeams = new ArrayList<>();
+    }
+
+    public void refreshData() {
+        dropUserTables();
+        loadedAllTeams = false;
+        loadedMyLeagues = false;
+        loadedAllLeagues = false;
+        loadedLeagueScores = new ArrayList<>();
+        loadedLeagueFixtures = new ArrayList<>();
+        loadedLeagueStandings = new ArrayList<>();
+        loadedTeamsFixtures = new HashMap<>();
+        loadedTeamsScore = new HashMap<>();
+        loadedRefGames = false;
+        myMatchesAvailability = new ArrayList<>();
+        matchesAvailability = new ArrayList<>();
+        loadedLeagueTeams = new ArrayList<>();
     }
 
     private void dropUserTables(){

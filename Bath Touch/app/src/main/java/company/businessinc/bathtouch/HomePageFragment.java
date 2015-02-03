@@ -3,20 +3,18 @@ package company.businessinc.bathtouch;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,8 @@ import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
 
 
-public class HomePageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class HomePageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SwipeRefreshLayout.OnRefreshListener{
 
     private HomePageCallbacks mCallbacks;
     private View mLayout;
@@ -43,6 +42,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     private List<Match> leagueFixtures;
     private List<LeagueTeam> leagueStandings;
     private List<Match> leagueScores;
+    private SwipeRefreshLayout mSwipeRefresh;
 
 
     public static HomePageFragment newInstance() {
@@ -86,6 +86,9 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
         getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.alternative_home_page, container, false);
+
+        mSwipeRefresh = (SwipeRefreshLayout) (mLayout.findViewById(R.id.fragment_home_page_swiperefresh));
+        mSwipeRefresh.setOnRefreshListener(this);
 
 //        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
 //        actionBar.setTitle("Home");
@@ -298,6 +301,8 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
             myTeam = loadTeam(rCursor);
             rCursor.close();
         }
+        Log.d("HomePageFragment", "loadTeamOverview" + (leagueFixtures == null) + (myTeam == null)
+            + (thisLeagueTeam == null) + (league == null));
         if(leagueFixtures != null && myTeam != null && thisLeagueTeam != null && league != null){
             ((HomePageAdapter)mAdapter).setLeagueOverview(leagueFixtures, myTeam,thisLeagueTeam,league);
         }
@@ -355,8 +360,21 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
+    @Override
+    public void onRefresh() {
+        Log.d("HomePageFragment", "Refreshing data");
+        DataStore.getInstance(getActivity()).refreshData();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+                mSwipeRefresh.setRefreshing(false);
+            }
 
-    public static interface HomePageCallbacks {
+        },3000);
+    }
+
+        public static interface HomePageCallbacks {
 
         void onHomePageCardSelected(int position);
     }
