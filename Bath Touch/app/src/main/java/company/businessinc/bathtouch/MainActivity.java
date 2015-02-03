@@ -316,7 +316,7 @@ public class MainActivity extends ActionBarActivity
             case HomePageAdapter.NEXTGAME:
                 Log.d("CARDS", "Next game card selected");
                 //Only allow the card to open if there is a next game
-                if(nextPlayingMatch != null) {
+                if(nextPlayingMatch != null && DataStore.getInstance(this).isUserCaptain()) {
                     Intent intent = new Intent(this, TeamRosterActivity.class);
                     intent.putExtra(Match.KEY_MATCHID, nextPlayingMatch.getMatchID());
                     intent.putExtra(Match.KEY_TEAMONE, nextPlayingMatch.getTeamOne());
@@ -327,7 +327,7 @@ public class MainActivity extends ActionBarActivity
                     intent.putExtra(League.KEY_LEAGUEID, nextPlayingMatchLeagueID);
                     startActivity(intent);
                 } else {
-                    //This card should be gone
+                    Log.d("Main", "Players is not a captain, can't go here");
                 }
                 break;
             case HomePageAdapter.TABLE:

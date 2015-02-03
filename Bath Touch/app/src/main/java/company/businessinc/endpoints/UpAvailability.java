@@ -64,15 +64,16 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(APICall.call(APICallType.UpAvailability, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }
         company.businessinc.dataModels.Status status = null;
         try {
-            status = new company.businessinc.dataModels.Status(jsonObject);
             if(callType == CallType.GETMYAVAILABILITY){
-                this.isPlaying = status.getStatus();
+                this.isPlaying = jsonObject.getBoolean("isPlaying");
+            }else {
+                status = new company.businessinc.dataModels.Status(jsonObject);
             }
         } catch (JSONException e) {
             Log.d(TAG, "Couldn't parse parameters");
