@@ -59,7 +59,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="example@aol.com"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="14dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_dialog_ghost_player"
+            android:layout_width="match_parent"
+            android:layout_below="@id/user_dialog_user_emailbox"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Is this a ghost account? "
+                android:textSize="14dp"
+
+                />
+
+            <TextView
+                android:id="@+id/user_dialog_isGhost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14dp" />
 

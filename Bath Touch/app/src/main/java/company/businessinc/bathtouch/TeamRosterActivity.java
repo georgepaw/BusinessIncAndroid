@@ -197,7 +197,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 //    }
 
     public static class MyDialogFragment extends DialogFragment {
-        TextView mName, mEmail;
+        TextView mName, mEmail, mIsGhost;
 
         /**
          * Create a new instance of MyDialogFragment, providing "num"
@@ -210,6 +210,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
             Bundle args = new Bundle();
             args.putString("name", player.getName());
             args.putString("email", player.getEmail());
+            args.putBoolean("ghost", player.getIsGhostPlayer());
             f.setArguments(args);
 
             return f;
@@ -230,10 +231,16 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
             View v = inflater.inflate(R.layout.fragment_dialog, container, false);
             mName = (TextView) v.findViewById(R.id.user_dialog_username);
             mEmail = (TextView) v.findViewById(R.id.user_dialog_user_emailtext);
+            mIsGhost = (TextView) v.findViewById(R.id.user_dialog_isGhost);
             Bundle b = getArguments();
             if(b!=null){
                 mName.setText(b.getString("name"));
                 mEmail.setText(b.getString("email"));
+                if(b.getBoolean("ghost")){
+                    mIsGhost.setText("Yes");
+                } else {
+                    mIsGhost.setText("No");
+                }
             }
             return v;
         }
