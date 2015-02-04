@@ -182,12 +182,14 @@ public class DBProvider extends ContentProvider {
                     } else{
                         Log.d(TAG, "Can't call " + "MyUpcomingGamesAvailability" + " callback, selection/selection args not valid");
                     }
+                    break;
                 case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
                     if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
                         DataStore.getInstance(getContext()).loadMatchPlayersAvailability(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "MyTeamPlayersAvailability" + " callback, selection/selection args not valid");
                     }
+                    break;
             }
         }
         returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
