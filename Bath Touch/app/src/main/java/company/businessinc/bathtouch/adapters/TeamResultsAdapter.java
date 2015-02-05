@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.amulyakhare.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +83,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         //get the context of the adapater, to use resources later on
         Context context = v.mImageView.getContext();
+        TextDrawable win = TextDrawable.builder()
+                .buildRound("W", context.getResources().getColor(R.color.darkgreen));
+        TextDrawable draw = TextDrawable.builder()
+                .buildRound("D", context.getResources().getColor(R.color.darkorange));
+        TextDrawable lose = TextDrawable.builder()
+                .buildRound("L", context.getResources().getColor(R.color.darkred));
 
         if(match.getTeamOne().equals(teamName)){
             v.mTeam1Name.setTypeface(null, Typeface.BOLD);
@@ -88,13 +97,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mTeam2Score.setTypeface(null, Typeface.NORMAL);
             if(match.getTeamOnePoints() > match.getTeamTwoPoints()){
                 //won, set green
-                Log.d("TEAM", "1 wins");
-                v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumb_up));
+                v.mImageView.setImageDrawable(win);
             }
             else{
-                Log.d("TEAM", "1 looses");
-
-                v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumb_down));
+                v.mImageView.setImageDrawable(lose);
             }
         } else{
             v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
@@ -103,17 +109,15 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mTeam2Score.setTypeface(null, Typeface.BOLD);
             if(match.getTeamOnePoints() < match.getTeamTwoPoints()){
                 //won, set green
-                Log.d("TEAM", "2 wins");
-                v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumb_up));
+                v.mImageView.setImageDrawable(win);
             }
             else{
-                Log.d("TEAM", "2 looses");
-                v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumb_down));
+                v.mImageView.setImageDrawable(lose);
             }
         }
 
         if(match.getTeamOnePoints() == match.getTeamTwoPoints()){
-            v.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_thumbs_up_down));
+            v.mImageView.setImageDrawable(draw);
         }
 
     }

@@ -143,7 +143,6 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
