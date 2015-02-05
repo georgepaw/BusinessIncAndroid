@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +29,7 @@ import java.util.List;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 
 public class LeagueTableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -70,8 +73,14 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
         mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
 
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
         actionBar.setTitle("League Tables");
         actionBar.setElevation(0f);
+
+        DrawerFrameLayout drawerFrameLayout = (DrawerFrameLayout) (getActivity().findViewById(R.id.drawer_layout));
+        int color = getResources().getColor(R.color.primary);
+        color = darker(color, 0.7f);
+        drawerFrameLayout.setStatusBarBackgroundColor(color);
 
         DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
         navigationDrawerLayout.selectItem(1);
@@ -108,6 +117,18 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
             });
         }
         return mLayout;
+    }
+
+    public int darker (int color, float factor) {
+        int a = Color.alpha(color);
+        int r = Color.red( color );
+        int g = Color.green( color );
+        int b = Color.blue( color );
+
+        return Color.argb( a,
+                Math.max( (int)(r * factor), 0 ),
+                Math.max( (int)(g * factor), 0 ),
+                Math.max( (int)(b * factor), 0 ) );
     }
 
     @Override
