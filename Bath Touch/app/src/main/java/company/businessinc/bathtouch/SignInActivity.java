@@ -80,6 +80,9 @@ public class SignInActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mActivity, CreateAccountActivity.class);
+                    Bundle args = new Bundle();
+                    args.putBoolean("ghost", false);
+                    intent.putExtras(args);
                     startActivity(intent);
                 }
             });

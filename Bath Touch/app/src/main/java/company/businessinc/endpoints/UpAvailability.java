@@ -75,7 +75,7 @@ public class UpAvailability extends AsyncTask<Void, Void, Status> {
             }else {
                 status = new company.businessinc.dataModels.Status(jsonObject);
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse parameters");
         }
         return status;

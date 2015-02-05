@@ -36,7 +36,7 @@ public class LeagueSchedule extends AsyncTask<Void, Void, List<Match>> {
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(APICall.call(APICallType.LeagueSchedule, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }
@@ -44,7 +44,7 @@ public class LeagueSchedule extends AsyncTask<Void, Void, List<Match>> {
         for(int i = 0; i < jsonArray.length(); i++){
             try{
                 list.add(new Match(jsonArray.getJSONObject(i)));
-            } catch (JSONException e){
+            } catch (Exception e){
                 Log.d(TAG, "Couldn't parse JSON into Match object");
                 return null;
             }

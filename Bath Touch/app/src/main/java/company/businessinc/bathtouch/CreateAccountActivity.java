@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Status;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
@@ -48,13 +49,13 @@ public class CreateAccountActivity extends ActionBarActivity {
         mIsGhost = args.getBoolean("ghost");
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.activity_create_account_container, new CreateAccountStart())
+                    .add(R.id.activity_create_account_container, CreateAccountStart.newInstance(mIsGhost))
                     .commit();
         }
     }
 
 
-    public static class CreateAccountStart extends Fragment {
+    public static class CreateAccountStart extends Fragment implements UserNewInterface {
 
         private EditText mFirstNameEditText, mSecondnameEditText;
         private Button mNext;
@@ -90,16 +91,11 @@ public class CreateAccountActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     Bundle args = new Bundle();
-                    args.putString("name", mFirstNameEditText.getText().toString() + " "
-                    + mSecondnameEditText.getText().toString());
+                    String name =  mFirstNameEditText.getText().toString() + " "
+                            + mSecondnameEditText.getText().toString();
+                    args.putString("name",name);
                     if(mIsGhost) {
-                        args.putBoolean("ghost", mIsGhost);
-                        CreateAccountTeam cat = new CreateAccountTeam();
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        cat.setArguments(args);
-                        ft.replace(R.id.activity_create_account_container, cat);
-                        ft.addToBackStack(null);
-                        ft.commit();
+                        create_account(name);
                     } else {
                         CreateAccountEmail cau = new CreateAccountEmail();
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -111,6 +107,31 @@ public class CreateAccountActivity extends ActionBarActivity {
                 }
             });
             return rootView;
+        }
+
+        public void create_account(String name) {
+            if (CheckNetworkConnection.check(getActivity())) {
+                new UserNew(this, name, DataStore.getInstance(getActivity()).getUserTeamID(), true).execute();
+            } else {
+                Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
+                Log.d("Create User", "Network is not working");
+            }
+        }
+
+        @Override
+        public void userNewCallback(Status data) {
+            if (data != null) {
+                if(mIsGhost) {
+//                    Intent intent = new Intent(getActivity(), TeamRosterActivity.class);
+//                    startActivity(intent);
+                    DataStore.getInstance(getActivity()).refreshMatchAvailabilities();
+                    getActivity().finish();
+                }
+            } else {
+                Toast.makeText(getActivity(), "Could not create ghost player", Toast.LENGTH_SHORT).show();
+                Log.d("Create Ghost User", "Network is not working");
+                getActivity().finish();
+            }
         }
     }
 

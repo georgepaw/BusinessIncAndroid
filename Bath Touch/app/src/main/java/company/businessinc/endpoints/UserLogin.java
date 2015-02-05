@@ -35,14 +35,14 @@ public class UserLogin extends AsyncTask<Void, Void, User> {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(APICall.call(APICallType.UserLogin, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }
         User user = null;
         try {
             user = new User(jsonObject);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse parameters");
         }
         return user;

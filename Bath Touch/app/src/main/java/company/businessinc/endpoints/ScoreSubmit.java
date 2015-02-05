@@ -45,7 +45,7 @@ public class ScoreSubmit extends AsyncTask<Void, Void, Status> {
         company.businessinc.dataModels.Status bool = null;
         try{
             bool = new company.businessinc.dataModels.Status(jsonObject);
-        } catch (JSONException e){
+        } catch (Exception e){
             Log.d(TAG, "Couldn't parse JSON into Status");
         }
         return bool;
