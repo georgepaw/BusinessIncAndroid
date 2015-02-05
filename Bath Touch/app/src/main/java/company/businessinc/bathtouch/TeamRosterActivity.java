@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -33,6 +34,7 @@ import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Player;
@@ -83,11 +85,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         setContentView(R.layout.activity_team_roster);
 
-//        //TODO add real players here
-//        playerListAvail = populatePeople(0);
-//        playerListUnavail = populatePeople(playerListAvail.size());
-
-        String teamOne = "NULL";
         String teamTwo = "NULL";
         String place = "NULL";
         Date date = null;
@@ -95,8 +92,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             try {
-                teamOne = extras.getString(Match.KEY_TEAMONE);
-                teamTwo = extras.getString(Match.KEY_TEAMTWO);
+                teamTwo = DataStore.getInstance(this).getUserTeam().equals(extras.getString(Match.KEY_TEAMTWO)) ? extras.getString(Match.KEY_TEAMTWO) : extras.getString(Match.KEY_TEAMONE);
                 matchID = extras.getInt(Match.KEY_MATCHID);
                 place = extras.getString(Match.KEY_PLACE);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);

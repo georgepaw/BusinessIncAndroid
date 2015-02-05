@@ -40,7 +40,7 @@ public class UserReset extends AsyncTask<Void, Void, Status> {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(APICall.call(APICallType.UserReset, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }

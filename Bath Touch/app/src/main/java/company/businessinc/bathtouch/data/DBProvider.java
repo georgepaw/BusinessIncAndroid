@@ -271,6 +271,12 @@ public class DBProvider extends ContentProvider {
         return true;
     }
 
+    public void dropAvailability(){
+        SQLiteHelper db = (SQLiteHelper)mHelper;
+        db.dropTable(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME);
+        db.createTable(DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE);
+    }
+
     public void dropUserData(){
         //first drop the tables that always exist
         SQLiteHelper db = (SQLiteHelper)mHelper;

@@ -39,7 +39,7 @@ public class LeagueView extends AsyncTask<Void, Void, List<LeagueTeam>> {
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(APICall.call(APICallType.LeagueView, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Couldn't parse String into JSON");
             return null;
         }
@@ -47,7 +47,7 @@ public class LeagueView extends AsyncTask<Void, Void, List<LeagueTeam>> {
         for(int i = 0; i < jsonArray.length(); i++){
             try{
                 list.add(new LeagueTeam(jsonArray.getJSONObject(i)));
-            } catch (JSONException e){
+            } catch (Exception e){
                 Log.e(TAG, "Couldn't parse JSON into LeagueTeam object");
                 return null;
             }

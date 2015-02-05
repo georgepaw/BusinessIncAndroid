@@ -469,6 +469,12 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedLeagueTeams = new ArrayList<>();
     }
 
+    public void refreshMatchAvailabilities(){
+        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
+        ((DBProvider)client.getLocalContentProvider()).dropAvailability();
+        matchesAvailability = new ArrayList<>();
+    }
+
     private void dropUserTables(){
         ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
         ((DBProvider)client.getLocalContentProvider()).dropUserData();

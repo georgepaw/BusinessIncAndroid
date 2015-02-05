@@ -53,7 +53,7 @@ public class UserNew extends AsyncTask<Void, Void, Status> {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(APICall.call(APICallType.UserNew, parameters));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return null;
         }
@@ -61,7 +61,7 @@ public class UserNew extends AsyncTask<Void, Void, Status> {
         company.businessinc.dataModels.Status bool = null;
         try{
             bool = new company.businessinc.dataModels.Status(jsonObject);
-        } catch (JSONException e){
+        } catch (Exception e){
             Log.d(TAG, "Couldn't parse JSON into Status");
         }
         return bool;
