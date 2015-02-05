@@ -110,11 +110,11 @@ public class MainActivity extends ActionBarActivity
             mFragmentManager = getSupportFragmentManager();
             if(DataStore.getInstance(this).isUserLoggedIn())
                 mFragmentManager.beginTransaction()
-                        .replace(R.id.container, MyTeamFragment.newInstance(), "fragmentTag")
+                        .replace(R.id.container, MyTeamFragment.newInstance(), "HOMEPAGETAG")
                         .commit();
             else
                 mFragmentManager.beginTransaction()
-                        .replace(R.id.container, HomePageFragment.newInstance(), "fragmentTag")
+                        .replace(R.id.container, HomePageFragment.newInstance(), "HOMEPAGETAG")
                         .commit();
         }
 
@@ -444,6 +444,8 @@ public class MainActivity extends ActionBarActivity
         Cursor cursor = getContentResolver().query(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI,null, DBProviderContract.SELECTION_MATCHID, new String[] {Integer.toString(nextPlayingMatch.getMatchID())},null);
         if(cursor.moveToFirst() && cursor.getCount() > 0){
             nextPlayingMatchLeagueID = cursor.getInt(0);
+            MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
+            fragment.setLeagueID(nextPlayingMatchLeagueID);
         }
         cursor.close();
     }

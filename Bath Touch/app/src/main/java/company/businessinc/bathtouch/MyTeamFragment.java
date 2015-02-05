@@ -178,6 +178,10 @@ public class MyTeamFragment extends Fragment {
 
         }
 
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
         @Override
         public int getCount() {
             return 3;
@@ -196,6 +200,12 @@ public class MyTeamFragment extends Fragment {
                     return "null";
             }
         }
+    }
+
+    public void setLeagueID(int leagueID) {
+        mLeagueID = leagueID;
+        if(mViewPager != null)
+            mViewPager.getAdapter().notifyDataSetChanged();
     }
 
     public interface MyTeamFragmentCallbacks {
