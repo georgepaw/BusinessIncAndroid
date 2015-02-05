@@ -38,10 +38,14 @@ import company.businessinc.networking.CheckNetworkConnection;
 
 public class CreateAccountActivity extends ActionBarActivity {
 
+    private boolean mIsGhost = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+        Bundle args = getIntent().getExtras();
+        mIsGhost = args.getBoolean("ghost");
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.activity_create_account_container, new CreateAccountStart())
@@ -54,8 +58,25 @@ public class CreateAccountActivity extends ActionBarActivity {
 
         private EditText mFirstNameEditText, mSecondnameEditText;
         private Button mNext;
+        private boolean mIsGhost;
+
+        public static CreateAccountStart newInstance(boolean isGhost) {
+            CreateAccountStart fragment = new CreateAccountStart();
+            Bundle args = new Bundle();
+            args.putBoolean("ghost", isGhost);
+            fragment.setArguments(args);
+            return fragment;
+        }
 
         public CreateAccountStart() {
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            if (getArguments() != null) {
+                mIsGhost = getArguments().getBoolean("ghost");
+            }
         }
 
         @Override
@@ -71,12 +92,22 @@ public class CreateAccountActivity extends ActionBarActivity {
                     Bundle args = new Bundle();
                     args.putString("name", mFirstNameEditText.getText().toString() + " "
                     + mSecondnameEditText.getText().toString());
-                    CreateAccountEmail cau = new CreateAccountEmail();
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    cau.setArguments(args);
-                    ft.replace(R.id.activity_create_account_container, cau);
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    if(mIsGhost) {
+                        args.putBoolean("ghost", mIsGhost);
+                        CreateAccountTeam cat = new CreateAccountTeam();
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        cat.setArguments(args);
+                        ft.replace(R.id.activity_create_account_container, cat);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    } else {
+                        CreateAccountEmail cau = new CreateAccountEmail();
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        cau.setArguments(args);
+                        ft.replace(R.id.activity_create_account_container, cau);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
                 }
             });
             return rootView;
@@ -186,6 +217,7 @@ public class CreateAccountActivity extends ActionBarActivity {
         private Button mNext;
         private ArrayList<Team> mLeagueTeams;
         private String mSelectedTeam, mUsername, mPassword;
+        private boolean mIsGhost = false;
 
         public CreateAccountTeam() {
         }
@@ -207,18 +239,30 @@ public class CreateAccountActivity extends ActionBarActivity {
             if (CheckNetworkConnection.check(getActivity())) {
                 Bundle args = getArguments();
                 String name = args.getString("name");
-                String email = args.getString("email");
-                mUsername = args.getString("username");
-                mPassword = args.getString("password");
-                Log.d("Create User", name + email + mUsername + mPassword);
-                int teamID = -1;
-                for(Team t : mLeagueTeams){
-                    if(t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())){
-                        teamID = t.getTeamID();
+                mIsGhost = args.getBoolean("ghost");
+                if(mIsGhost) {
+                    int teamID = -1;
+                    for (Team t : mLeagueTeams) {
+                        if (t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())) {
+                            teamID = t.getTeamID();
+                        }
                     }
+                    Log.d("Create User", "Network is working, let's create a user");
+//                    new UserNew(this, mUsername, mPassword, email, name, teamID).execute();
+                } else {
+                    String email = args.getString("email");
+                    mUsername = args.getString("username");
+                    mPassword = args.getString("password");
+                    Log.d("Create User", name + email + mUsername + mPassword);
+                    int teamID = -1;
+                    for (Team t : mLeagueTeams) {
+                        if (t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())) {
+                            teamID = t.getTeamID();
+                        }
+                    }
+                    Log.d("Create User", "Network is working, let's create a user");
+                    new UserNew(this, mUsername, mPassword, email, name, teamID).execute();
                 }
-                Log.d("Create User", "Network is working, let's create a user");
-                new UserNew(this,mUsername,mPassword,email,name,teamID).execute();
             } else {
                 Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
                 Log.d("Create User", "Network is not working");
