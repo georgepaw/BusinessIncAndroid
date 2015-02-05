@@ -273,7 +273,9 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 if(league == null){
                     while(!data.isAfterLast()){
-                        league = new League(data);
+                        League l = new League(data);
+                        if(l.getLeagueID() == mLeagueID)
+                            league = l;
                         data.moveToNext();
                     }
                     if(league != null){
