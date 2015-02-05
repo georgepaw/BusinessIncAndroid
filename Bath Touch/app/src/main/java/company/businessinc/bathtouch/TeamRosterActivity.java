@@ -2,6 +2,7 @@ package company.businessinc.bathtouch;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -60,6 +62,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 //    private int NUM_PEOPLE = 10;
 
     TextView mLeagueName, mMatchDate, mMatchTime, mMatchPlace, mTeamOneName, mTeamTwoName;
+    Button mGhostPlayer;
 
     private static final String TAG = "TeamRosterActivity";
 
@@ -104,7 +107,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
             }
         }
 
-
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         mViewPager = (ViewPager) findViewById(R.id.team_roster_pager);
         mPagerAdapter = new SamplePagerAdapter(getSupportFragmentManager(), playerListAvail, playerListUnavail);
@@ -125,6 +127,19 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         mMatchTime = (TextView) findViewById(R.id.team_roster_match_time);
         mMatchPlace = (TextView) findViewById(R.id.team_roster_match_place);
         mTeamTwoName = (TextView) findViewById(R.id.team_roster_team_1_name);
+
+        mGhostPlayer = (Button) findViewById(R.id.team_roster_create_ghost);
+        mGhostPlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TeamRosterActivity.this, CreateAccountActivity.class);
+                Bundle args = new Bundle();
+                args.putBoolean("ghost", true);
+                intent.putExtras(args);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         mLeagueName.setText("");
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM");

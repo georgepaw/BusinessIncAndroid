@@ -32,6 +32,15 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
+            <Button
+                android:id="@+id/team_roster_create_ghost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create ghost player"
+                android:textAllCaps="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"/>
+
             <TextView
                 android:id="@+id/team_roster_next_match_text"
                 android:layout_width="wrap_content"

@@ -247,8 +247,8 @@ public class CreateAccountActivity extends ActionBarActivity {
                             teamID = t.getTeamID();
                         }
                     }
-                    Log.d("Create User", "Network is working, let's create a user");
-//                    new UserNew(this, mUsername, mPassword, email, name, teamID).execute();
+                    Log.d("Create User", "Network is working, let's create a ghost user");
+                    new UserNew(this, name, teamID, true).execute();
                 } else {
                     String email = args.getString("email");
                     mUsername = args.getString("username");
@@ -349,6 +349,11 @@ public class CreateAccountActivity extends ActionBarActivity {
         @Override
         public void userLoginCallback(User data) {
             if (data != null) {
+                if(mIsGhost) {
+                    Intent intent = new Intent(getActivity(), TeamRosterActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
                 if (data.isLoggedIn()) { //User has logged in
                     Log.d("Create User", "Logged in");
                     Intent intent = new Intent(getActivity(), MainActivity.class);
