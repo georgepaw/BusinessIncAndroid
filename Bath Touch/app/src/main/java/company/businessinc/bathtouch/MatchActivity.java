@@ -94,7 +94,7 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
         TextView scoreText = (TextView) findViewById(R.id.activity_match_header_score);
         scoreText.setText(mTeamOneScore + " - " + mTeamTwoScore);
         TextView dateText = (TextView) findViewById(R.id.activity_match_header_date);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, HH:mm", Locale.UK);
+        DateFormatter sdf = new DateFormatter();
         dateText.setText(sdf.format(mDate));
 
         mViewPager = (ViewPager) findViewById(R.id.activity_match_view_pager);
