@@ -51,6 +51,7 @@ import company.businessinc.networking.APICall;
 
 public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
+        TeamOverviewFragment.TeamOverviewCallbacks,
         MyTeamFragment.MyTeamFragmentCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
