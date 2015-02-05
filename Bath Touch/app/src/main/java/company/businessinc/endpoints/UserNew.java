@@ -25,7 +25,7 @@ public class UserNew extends AsyncTask<Void, Void, Status> {
     private UserNewInterface callback;
     private List<NameValuePair> parameters;
 
-    public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID, boolean isGhostPlayer) {
+    public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID, boolean isGhost) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("username", username));
@@ -33,15 +33,15 @@ public class UserNew extends AsyncTask<Void, Void, Status> {
         parameters.add(new BasicNameValuePair("email", email));
         parameters.add(new BasicNameValuePair("name", name));
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
-        parameters.add(new BasicNameValuePair("isGhostPlayer", Boolean.toString(isGhostPlayer)));
+        parameters.add(new BasicNameValuePair("isGhost", Boolean.toString(isGhost)));
     }
 
-    public UserNew(UserNewInterface callback, String name, int teamID, boolean isGhostPlayer) {
+    public UserNew(UserNewInterface callback, String name, int teamID, boolean isGhost) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("name", name));
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
-        parameters.add(new BasicNameValuePair("isGhostPlayer", Boolean.toString(isGhostPlayer)));
+        parameters.add(new BasicNameValuePair("isGhost", Boolean.toString(isGhost)));
     }
 
     public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID) {
