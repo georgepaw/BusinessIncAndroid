@@ -295,7 +295,7 @@ public class HomePageFragment extends Fragment implements LoaderManager.LoaderCa
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
-                if(isPlaying!=null && nextPlayingMatch != null){
+                if(nextPlayingMatch != null){
                     isPlaying = isPlaying(nextPlayingMatch.getMatchID(), data);
                     loadNextMatchCard();
                 }
