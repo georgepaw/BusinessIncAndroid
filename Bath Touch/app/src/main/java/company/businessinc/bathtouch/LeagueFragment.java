@@ -21,10 +21,6 @@ import java.util.List;
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.LeagueTeam;
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.view.CardView;
-import it.gmariotti.cardslib.library.view.CardViewNative;
 
 
 /**
