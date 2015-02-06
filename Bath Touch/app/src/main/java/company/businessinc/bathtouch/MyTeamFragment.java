@@ -193,7 +193,7 @@ public class MyTeamFragment extends Fragment {
                 case 0:
                     return "Overview";
                 case 1:
-                    return "Fixtures";
+                    return "Results";
                 case 2:
                     return "League";
                 default:

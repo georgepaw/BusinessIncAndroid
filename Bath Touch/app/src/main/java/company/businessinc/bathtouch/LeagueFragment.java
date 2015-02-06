@@ -1,42 +1,30 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
-import company.businessinc.bathtouch.ApdaterData.HomeCardData;
-import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
-import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
-import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardView;
+import it.gmariotti.cardslib.library.view.CardViewNative;
 
 
 /**
@@ -47,7 +35,7 @@ import company.businessinc.endpoints.LeagueListInterface;
  * Use the {@link LeagueTableFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LeagueFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class LeagueFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "LeagueTableFragment";
     public static final String ARG_OBJECT = "object";
@@ -95,10 +83,10 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_league, container, false);
 
-        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.fragment_league_recycle );
+        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.fragment_league_recycle);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+//        // use this setting to improve performance if you know that changes
+//        // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
@@ -115,16 +103,17 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
                 }));
 
         //Adapter loads the data fror the leagues
-        mAdapter = new LeagueTableAdapter();
+        mAdapter = new LeagueTableAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         Cursor rCursor = getActivity().getContentResolver()
                 .query(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, DBProviderContract
                         .SELECTION_LEAGUEID, new String[]{Integer.toString(mLeagueID)}, null);
-        if(rCursor.getCount() > 0){
+        if (rCursor.getCount() > 0) {
             loadStandings(rCursor);
         }
         rCursor.close();
+
 
         return mLayout;
     }
@@ -185,7 +174,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
     //query has finished
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()){
+        switch (loader.getId()) {
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                 loadStandings(data);
                 break;
@@ -197,16 +186,16 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    private void loadStandings(Cursor data){
-        if (data.moveToFirst()){
+    private void loadStandings(Cursor data) {
+        if (data.moveToFirst()) {
             mLeagueTeams = new ArrayList<>();
-            while(!data.isAfterLast()){
-                if(data.getInt(0) == mLeagueID){
+            while (!data.isAfterLast()) {
+                if (data.getInt(0) == mLeagueID) {
                     mLeagueTeams.add(new LeagueTeam(data));
                 }
                 data.moveToNext();
             }
-            if(mLeagueTeams.size() >0) {
+            if (mLeagueTeams.size() > 0) {
                 Collections.sort(mLeagueTeams, new Comparator<LeagueTeam>() {
                     @Override
                     public int compare(LeagueTeam T1, LeagueTeam T2) {
