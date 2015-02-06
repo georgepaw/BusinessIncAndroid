@@ -71,6 +71,40 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        mLayout = inflater.inflate(R.layout.fragment_results_list, container, false);
+
+        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.team_results_recycle);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        selectItem(position);
+                    }
+                }));
+
+        mAdapter = new TeamResultsAdapter();
+
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
+        } else {
+            getLoaderManager().restartLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
+        }
+
+        mRecyclerView.setAdapter(mAdapter);
+
+        return mLayout;
+    }
+
     //Invoked when the cursor loader is created
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
@@ -131,39 +165,10 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        mLayout = inflater.inflate(R.layout.fragment_results_list, container, false);
-
-        mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.team_results_recycle);
-
-        mRecyclerView.setHasFixedSize(true);
-
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        selectItem(position);
-                    }
-                }));
-
-        mAdapter = new TeamResultsAdapter();
-
-        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
-            getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
-        } else {
-            getLoaderManager().restartLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
-        }
-
-        mRecyclerView.setAdapter(mAdapter);
-
-        return mLayout;
-    }
-
+    /*
+    On a Result item selected in the recycler view, this is called
+    Starts a new activity that shows the overview of a match
+     */
     public void selectItem(int position) {
         if (mCallbacks != null) {
             mCallbacks.onResultsItemSelected(position);
