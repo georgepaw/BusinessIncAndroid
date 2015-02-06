@@ -68,10 +68,9 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
     private List<Match> leagueScores;
     private SwipeRefreshLayout mSwipeRefresh;
     private Boolean isPlaying = null;
-    private Match nextPlayingMatch;
+    private Match nextPlayingMatch, nextRefMatch;
 
     private Match nextMatch;
-    private Match nextRefMatch;
     private List<Match> pastMatches;
     private List<LeagueTeam> leagueTeam;
     private League leagueViewLeague;
@@ -241,25 +240,32 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         }
         switch(loader.getId()) {
             case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
-                List<Match> nextRefMatch = new ArrayList<>();
+                List<Match> nextRefMatchList = new ArrayList<>();
                 while(!data.isAfterLast()){
-                    nextRefMatch.add(new Match(data));
+                    nextRefMatchList.add(new Match(data));
                     data.moveToNext();
                 }
-                if(nextRefMatch.size() > 0){
-                    nextRefMatch = Match.sortList(nextRefMatch, Match.SortType.ASCENDING);
-                    setNextMatch(nextRefMatch.get(0), true, false);
+                if(nextRefMatchList.size() > 0){
+                    nextRefMatchList = Match.sortList(nextRefMatchList, Match.SortType.ASCENDING);
+                    if(nextRefMatch == null || nextRefMatch.getDateTime().after(nextRefMatchList.get(0).getDateTime())){
+                        nextRefMatch = nextRefMatchList.get(0);
+                    }
+                    setNextMatch(nextRefMatch, true, false);
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
                 List<Match> nextMatch = new ArrayList<>();
                 while(!data.isAfterLast()){
-                    nextMatch.add(new Match(data));
+                    if(data.getInt(0) == mLeagueID) {
+                        nextMatch.add(new Match(data));
+                    }
                     data.moveToNext();
                 }
                 if(nextMatch.size() > 0){
                     nextMatch = Match.sortList(nextMatch, Match.SortType.ASCENDING);
-                    nextPlayingMatch = nextMatch.get(0);
+                    if(nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(nextMatch.get(0).getDateTime())){
+                        nextPlayingMatch = nextMatch.get(0);
+                    }
                 }
                 if(nextPlayingMatch!=null){
                     if(DataStore.getInstance(getActivity()).isUserCaptain()){
