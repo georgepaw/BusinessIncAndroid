@@ -28,5 +28,5 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:1.8.2'
     compile 'com.heinrichreimersoftware.materialdrawer:library:1.4.2'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    
+
 }

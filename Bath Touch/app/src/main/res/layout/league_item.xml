@@ -4,10 +4,12 @@
     android:id="@+id/home_page_card_table"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:clickable="true"
         >
 
     <RelativeLayout
-        android:id="@+id/league_display__item_container"
+        android:id="@+id/league_display_item_container"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@drawable/bkg"
@@ -106,6 +108,30 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@id/league_display_item_container"
+        android:id="@+id/llExpandArea"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="90dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/primary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="Item One" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="Item Two" />
+
+    </LinearLayout>
 
 
     <!--<View-->

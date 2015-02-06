@@ -5,11 +5,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
@@ -29,11 +33,33 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private LeagueTableData mDataset;
     private List<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
     private Context mContext;
+    private int expandedPosition = -1;
 
 
-    public class ViewHolderLeague extends RecyclerView.ViewHolder {
+    public void changeVis(int loc) {
+        Log.d("LEAGUEFRAGMENT", "clicked");
+
+//        ViewHolderLeague holder = (ViewHolderLeague) v.getTag();
+//        String theString = Integer.toString(holder.getPosition());
+
+        // Check for an expanded view, collapse if you find one
+        if (expandedPosition >= 0) {
+            int prev = expandedPosition;
+            notifyItemChanged(prev);
+        }
+        // Set the current position to "expanded"
+        expandedPosition = loc;
+        notifyItemChanged(expandedPosition);
+
+        Toast.makeText(mContext, "Clicked: " + Integer.toString(loc), Toast.LENGTH_SHORT).show();
+    }
+
+
+    public class ViewHolderLeague extends RecyclerView.ViewHolder  implements  View.OnClickListener{
         public TextView mTeamName, mTeamPos, mTeamWin, mTeamLose, mTeamDraw, mTeamPts;
         public ImageView mImagePosition;
+        public LinearLayout mExpandArea;
+        public RelativeLayout mItem;
 
         public ViewHolderLeague(View v) {
             super(v);
@@ -44,7 +70,15 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTeamDraw = (TextView) v.findViewById(R.id.league_item_team_draw);
             mTeamPts = (TextView) v.findViewById(R.id.league_item_team_points);
             mImagePosition = (ImageView) v.findViewById(R.id.image_view);
+            mExpandArea = (LinearLayout) v.findViewById(R.id.llExpandArea);
+            mItem = (RelativeLayout) v.findViewById(R.id.league_display_item_container);
+            mItem.setOnClickListener(this);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            changeVis(getPosition());
         }
     }
 
@@ -97,7 +131,16 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .endConfig()
                 .buildRound(leaguePosition, mContext.getResources().getColor(R.color.primary));
 
+        Log.d("LEAGUEFRAGMENT", "binded");
+
+
         v.mImagePosition.setImageDrawable(drawable);
+
+        if (position == expandedPosition) {
+            v.mExpandArea.setVisibility(View.VISIBLE);
+        } else {
+            v.mExpandArea.setVisibility(View.GONE);
+        }
 
 
     }

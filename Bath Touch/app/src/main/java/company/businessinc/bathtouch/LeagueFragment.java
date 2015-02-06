@@ -21,11 +21,6 @@ import java.util.List;
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.LeagueTeam;
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.view.CardView;
-import it.gmariotti.cardslib.library.view.CardViewNative;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,14 +88,14 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()
-                .getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        selectItem(position);
-                    }
-                }));
+//        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()
+//                .getBaseContext(),
+//                new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View view, int position) {
+//                        selectItem(position);
+//                    }
+//                }));
 
         //Adapter loads the data fror the leagues
         mAdapter = new LeagueTableAdapter(getActivity());
