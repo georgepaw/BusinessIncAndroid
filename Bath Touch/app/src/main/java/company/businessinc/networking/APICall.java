@@ -36,11 +36,10 @@ public class APICall {
 
     private static final String url = "http://www.watchanysport.com";
     private static final String TAG = "APICall";
-    private static HttpClient httpclient;
     private static CookieStore cookieStore = new BasicCookieStore();
+    private static HttpClient httpclient = AndroidHttpClient.newInstance("Android");
 
     public static String call(APICallType apiCallType, List<NameValuePair> parameters) {
-        httpclient = AndroidHttpClient.newInstance("Android");
         HttpContext localContext = new BasicHttpContext();
         localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 
@@ -56,12 +55,12 @@ public class APICall {
         try {
             httpResponse = httpclient.execute(httpGet, localContext);
             if (httpResponse.getStatusLine().getStatusCode() != 200) {
-                Log.d(TAG, "Request wasn't successful, returning null");
-                return null;
+                Log.d(TAG, "Request wasn't successful");
             }
             HttpEntity entity = httpResponse.getEntity();
             if (entity != null) {
                 output = EntityUtils.toString(entity);
+                entity.consumeContent();
             }
         } catch (IOException e) {
             Log.d(TAG, "Couldn't execute the httpGet");
@@ -76,7 +75,7 @@ public class APICall {
     {
         if(client != null && client.getConnectionManager() != null)
         {
-            client.getConnectionManager().shutdown();
+            client.getConnectionManager().closeExpiredConnections();
         }
     }
 
