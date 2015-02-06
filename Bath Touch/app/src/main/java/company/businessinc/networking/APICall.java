@@ -36,11 +36,11 @@ public class APICall {
 
     private static final String url = "http://www.watchanysport.com";
     private static final String TAG = "APICall";
-    private static HttpClient httpclient = AndroidHttpClient.newInstance("Android");
+    private static HttpClient httpclient;
     private static CookieStore cookieStore = new BasicCookieStore();
 
     public static String call(APICallType apiCallType, List<NameValuePair> parameters) {
-
+        httpclient = AndroidHttpClient.newInstance("Android");
         HttpContext localContext = new BasicHttpContext();
         localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 
@@ -65,8 +65,19 @@ public class APICall {
             }
         } catch (IOException e) {
             Log.d(TAG, "Couldn't execute the httpGet");
+        } finally {
+            safeClose(httpclient);
         }
+
         return output;
+    }
+
+    public static void safeClose(HttpClient client)
+    {
+        if(client != null && client.getConnectionManager() != null)
+        {
+            client.getConnectionManager().shutdown();
+        }
     }
 
     public static void clearCookies() {
