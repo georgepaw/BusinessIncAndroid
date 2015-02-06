@@ -34,14 +34,6 @@
     <item name="primary" type="color">#FF4444</item>
     <item name="primary_dark" type="color">#CF000F</item>
     <item name="primary_hovered" type="color">#96281B</item>
-
-
-
-
-
-
-
-
     <item name="transparent_grey" type="color">#33000000</item>
 
     <integer-array name="androidcolors">
@@ -57,4 +49,28 @@
         <item>@color/darkred</item>
     </integer-array>
 
+    <color name="transparent">#00000000</color>
+
+    <color name="body_text_1">#de000000</color>
+    <color name="body_text_2">#8a000000</color>
+    <color name="body_text_3">#60000000</color>
+    <color name="body_text_disabled">#44000000</color>
+
+    <color name="body_text_1_inverse">#deffffff</color>
+    <color name="body_text_2_inverse">#8affffff</color>
+
+    <color name="all_track_color">#ff222222</color>
+    <color name="home_pane_header">#99000000</color>
+
+    <color name="gray_background">#e5e5e5</color>
+    <color name="dark_divider">#32000000</color>
+
+    <color name="data_item_background_light">#ffffff</color>
+    <color name="data_item_lightbg_title">#404040</color>
+    <color name="data_item_lightbg_body_text">#707070</color>
+    <color name="data_item_lightbg_dim_text">#e0e0e0</color>
+
+    <color name="list_dropdown_foreground_normal">#ff333333</color>
+    <color name="list_dropdown_divider_color">#92a3a3a3</color>
+    <color name="butter_bar_light">#eee0e0e0</color>
 </resources>

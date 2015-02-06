@@ -1,124 +1,371 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:id="@+id/fragment_team_overview_swiperefresh"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     tools:context="company.businessinc.bathtouch.TeamOverviewFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/fragment_team_overview_nextmatch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/fragment_team_overview_nextmatch_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Next match"/>
-
-            <ImageView
-                android:id="@+id/fragment_team_overview_nextmatch_image"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_below="@id/fragment_team_overview_nextmatch_header"/>
-
-            <TextView
-                android:id="@+id/fragment_team_overview_nextmatch_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/fragment_team_overview_nextmatch_image"
-                android:layout_toRightOf="@+id/fragment_team_overview_nextmatch_image"
-                android:textStyle="bold"
-                android:text="HP All Stars"/>
-
-            <TextView
-                android:id="@+id/fragment_team_overview_nextmatch_place"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/fragment_team_overview_nextmatch_name"
-                android:layout_toRightOf="@+id/fragment_team_overview_nextmatch_image"
-                android:text="Wills Memorial Building"/>
-
-            <TextView
-                android:id="@+id/fragment_team_overview_nextmatch_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/fragment_team_overview_nextmatch_place"
-                android:layout_toRightOf="@+id/fragment_team_overview_nextmatch_image"
-                android:text="Tomorrow, 14:30"/>
-            </RelativeLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/button_material_light"/>
-
-        <RelativeLayout
-            android:id="@+id/fragment_team_overview_pastmatches"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/fragment_team_overview_pastmatches_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Last 5 matches"/>
-
-            <LinearLayout
-                android:id="@+id/fragment_team_overview_pastmatches_images"
+            <RelativeLayout
+                android:id="@+id/fragment_team_overview_nextmatch"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextmatch_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Next match playing"/>
 
                 <ImageView
-                    android:id="@+id/fragment_team_overview_pastmatches_image_1"
+                    android:id="@+id/fragment_team_overview_nextmatch_image"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_marginRight="16dp"/>
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_below="@id/fragment_team_overview_nextmatch_header"/>
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextmatch_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/fragment_team_overview_nextmatch_image"
+                    android:layout_toRightOf="@+id/fragment_team_overview_nextmatch_image"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextmatch_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fragment_team_overview_nextmatch_name"
+                    android:layout_toRightOf="@+id/fragment_team_overview_nextmatch_image"/>
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextmatch_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fragment_team_overview_nextmatch_place"
+                    android:layout_toRightOf="@+id/fragment_team_overview_nextmatch_image"/>
+
+                <Button
+                    android:id="@+id/fragment_team_overview_nextmatch_manage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:visibility="gone"
+                    android:textAllCaps="true"
+                    android:text="Manage team"
+                    android:textSize="14sp"
+                    android:layout_below="@+id/fragment_team_overview_nextmatch_date"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"/>
+
+                <LinearLayout
+                    android:id="@+id/fragment_team_overview_nextmatch_checkbox_container"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/fragment_team_overview_nextmatch_date"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="8dp"
+                        android:text="Available to play"/>
+                    <CheckBox
+                        android:id="@+id/fragment_team_overview_nextmatch_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/fragment_team_overview_divider1"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/button_material_light"/>
+
+            <RelativeLayout
+                android:id="@+id/fragment_team_overview_nextrefmatch"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextrefmatch_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Next match refereeing"/>
 
                 <ImageView
-                    android:id="@+id/fragment_team_overview_pastmatches_image_2"
+                    android:id="@+id/fragment_team_overview_nextrefmatch_image"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_marginRight="16dp" />
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_below="@id/fragment_team_overview_nextrefmatch_header"/>
 
-                <ImageView
-                    android:id="@+id/fragment_team_overview_pastmatches_image_3"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginRight="16dp" />
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextrefmatch_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/fragment_team_overview_nextrefmatch_image"
+                    android:layout_toRightOf="@+id/fragment_team_overview_nextrefmatch_image"
+                    android:textStyle="bold"
+                    android:text="HP All Stars vs EE Tigers"/>
 
-                <ImageView
-                    android:id="@+id/fragment_team_overview_pastmatches_image_4"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginRight="16dp" />
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextrefmatch_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fragment_team_overview_nextrefmatch_name"
+                    android:layout_toRightOf="@+id/fragment_team_overview_nextrefmatch_image"
+                    android:text="Wills Memorial Building"/>
 
-                <ImageView
-                    android:id="@+id/fragment_team_overview_pastmatches_image_5"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/fragment_team_overview_nextrefmatch_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fragment_team_overview_nextrefmatch_place"
+                    android:layout_toRightOf="@+id/fragment_team_overview_nextrefmatch_image"
+                    android:text="Tomorrow, 14:30"/>
+
+                <Button
+                    android:id="@+id/fragment_team_overview_nextrefmatch_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:visibility="gone"
+                    android:textAllCaps="true"
+                    android:text="Submit Score"
+                    android:textSize="14sp"
+                    android:layout_below="@+id/fragment_team_overview_nextrefmatch_date"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"/>
             </RelativeLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/button_material_light"/>
+            <FrameLayout
+                android:id="@+id/fragment_team_overview_divider2"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/button_material_light"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Placeholder league data"/>
-        </LinearLayout>
 
-</ScrollView>
+            <RelativeLayout
+                android:id="@+id/fragment_team_overview_pastmatches"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_pastmatches_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+
+                <LinearLayout
+                    android:id="@+id/fragment_team_overview_pastmatches_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/fragment_team_overview_pastmatches_header"
+                    android:layout_marginTop="16dp">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:id="@+id/fragment_team_overview_pastmatches_image_1"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"/>
+                        </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:id="@+id/fragment_team_overview_pastmatches_image_2"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:id="@+id/fragment_team_overview_pastmatches_image_3"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:id="@+id/fragment_team_overview_pastmatches_image_4"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:id="@+id/fragment_team_overview_pastmatches_image_5"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/fragment_team_overview_divider3"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/button_material_light"/>
+
+            <RelativeLayout
+                android:id="@+id/fragment_team_overview_league"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/fragment_team_overview_league_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp"
+                    android:text="League"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/fragment_team_overview_league_header">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/fragment_team_overview_league_points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="points"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        
+                        <TextView
+                            android:id="@+id/fragment_team_overview_league_wins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"/>
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="wins"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"/>
+                        </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/fragment_team_overview_league_draws"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="draws"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/fragment_team_overview_league_losses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="losses"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"/>
+                    </LinearLayout>
+
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+
+             </LinearLayout>
+
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

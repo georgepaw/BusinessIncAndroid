@@ -163,11 +163,11 @@ public class MyTeamFragment extends Fragment {
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    HomePageFragment homePageFragment = HomePageFragment.newInstance();
-                    return homePageFragment;
-//                    TeamOverviewFragment teamOverviewFragment = TeamOverviewFragment.newInstance(DataStore
-//                        .getInstance(getActivity()).getUserTeamID());
-//                    return teamOverviewFragment;
+//                    HomePageFragment homePageFragment = HomePageFragment.newInstance();
+//                    return homePageFragment;
+                    TeamOverviewFragment teamOverviewFragment = TeamOverviewFragment
+                            .newInstance(DataStore.getInstance(getActivity()).getUserTeamID(), mLeagueID);
+                    return teamOverviewFragment;
                 case 1:
                     ResultsListFragment resultsListFragment = ResultsListFragment.newInstance(mLeagueID);
                     return resultsListFragment;
@@ -193,9 +193,9 @@ public class MyTeamFragment extends Fragment {
                 case 0:
                     return "Overview";
                 case 1:
-                    return "Matches";
+                    return "Fixtures";
                 case 2:
-                    return "Team";
+                    return "League";
                 default:
                     return "null";
             }

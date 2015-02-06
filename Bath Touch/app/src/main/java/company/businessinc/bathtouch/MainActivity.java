@@ -51,6 +51,7 @@ import company.businessinc.networking.APICall;
 
 public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
+        TeamOverviewFragment.TeamOverviewCallbacks,
         MyTeamFragment.MyTeamFragmentCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
@@ -416,12 +417,19 @@ public class MainActivity extends ActionBarActivity
         if (!data.moveToFirst()){
             return;
         }
+        Match match;
         switch(loader.getId()) {
             case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
-                nextRefMatch = getNextMatch(data);
+                match = getNextMatch(data);
+                if(nextRefMatch == null || nextRefMatch.getDateTime().after(match.getDateTime())){
+                    nextRefMatch = match;
+                }
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
-                nextPlayingMatch = getNextMatch(data);
+                match = getNextMatch(data);
+                if(nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(match.getDateTime())){
+                    nextPlayingMatch = match;
+                }
                 getLeague();
                 break;
         }

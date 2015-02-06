@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import company.businessinc.bathtouch.DateFormatter;
 import company.businessinc.bathtouch.R;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
@@ -466,7 +467,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderNextRefMatch.mTeam2Name.setText(nextRefMatch.getTeamTwo());
             }
             if (nextRefMatch.getDateTime() != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
+//                SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
+                DateFormatter sdf = new DateFormatter();
                 mViewHolderNextRefMatch.mDate.setText(sdf.format(nextRefMatch.getDateTime()));
             }
             mViewHolderNextRefMatch.mVS.setText("VS");
@@ -493,7 +495,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderNextMatch.mTeam2Name.setText(nextMatch.getTeamTwo());
             }
             if (nextMatch.getDateTime() != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
+//                SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM, HH:mm");
+                DateFormatter sdf = new DateFormatter();
                 mViewHolderNextMatch.mDate.setText(sdf.format(nextMatch.getDateTime()));
             }
             mViewHolderNextMatch.mVS.setText("VS");
@@ -576,7 +579,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     break;
             }
             mViewHolderTeamOverview.mHeaderLeaguePosition.setText(whichPosition);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+//            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+            DateFormatter sdf = new DateFormatter();
             if(teamOverviewLeagueFixtures.size() > 0){
                 mViewHolderTeamOverview.mGameOneTeamOne.setText(teamOverviewLeagueFixtures.get(0).getTeamOne());
                 mViewHolderTeamOverview.mGameOneTeamTwo.setText(teamOverviewLeagueFixtures.get(0).getTeamTwo());
