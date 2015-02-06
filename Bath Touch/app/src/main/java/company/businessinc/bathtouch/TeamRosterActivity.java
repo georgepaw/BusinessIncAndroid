@@ -92,7 +92,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             try {
-                teamTwo = DataStore.getInstance(this).getUserTeam().equals(extras.getString(Match.KEY_TEAMTWO)) ? extras.getString(Match.KEY_TEAMTWO) : extras.getString(Match.KEY_TEAMONE);
+                teamTwo = DataStore.getInstance(this).getUserTeam().equals(extras.getString(Match.KEY_TEAMTWO)) ? extras.getString(Match.KEY_TEAMONE) : extras.getString(Match.KEY_TEAMTWO);
                 matchID = extras.getInt(Match.KEY_MATCHID);
                 place = extras.getString(Match.KEY_PLACE);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
