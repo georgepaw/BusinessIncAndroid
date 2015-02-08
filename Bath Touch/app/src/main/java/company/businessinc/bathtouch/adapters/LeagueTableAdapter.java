@@ -9,10 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +23,7 @@ import java.util.List;
 import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.dataModels.Team;
 
 /**
  * Created by user on 22/11/14.
@@ -34,6 +33,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private LeagueTableData mDataset;
     private List<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
+    private List<Team> allTeams = new ArrayList<Team>();
     private Context mContext;
     private int expandedPosition = -1;
 
@@ -45,7 +45,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             expandedPosition = -1;
             notifyItemChanged(loc);
         } else {
-            if(expandedPosition > -1){
+            if (expandedPosition > -1) {
                 int prev = expandedPosition;
                 expandedPosition = -1;
                 notifyItemChanged(prev);
@@ -57,7 +57,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public class ViewHolderLeague extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTeamName, mTeamPos, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn;
+        public TextView mTeamName, mTeamPos, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName;
         public ImageView mImagePosition, mImageFor, mImageAgn, mCloseButton;
         public RelativeLayout mExpandArea;
         public RelativeLayout mItem, mTeamOverviewButton;
@@ -72,6 +72,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTeamPts = (TextView) v.findViewById(R.id.league_item_team_points);
             mPtsFor = (TextView) v.findViewById(R.id.league_item_ptsfor);
             mPtsAgn = (TextView) v.findViewById(R.id.league_item_ptsagn);
+            mCaptainName = (TextView) v.findViewById(R.id.league_item_captain_name);
             mImagePosition = (ImageView) v.findViewById(R.id.image_view);
             mImageFor = (ImageView) v.findViewById(R.id.league_display_pointsfor_image);
             mImageAgn = (ImageView) v.findViewById(R.id.league_display_pointsagn_image);
@@ -106,6 +107,11 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
+    public void setAllTeams(List<Team> teams) {
+        this.allTeams = teams;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -128,7 +134,16 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         LeagueTeam team = leagueTeams.get(position);
+        Team fullTeam = null;
+        for (Team e : allTeams) {
+            if (e.getTeamID() == team.getTeamID()) {
+                fullTeam = e;
+                break;
+            }
+        }
+
         ViewHolderLeague v = (ViewHolderLeague) holder;
+
 
         v.mTeamName.setText(team.getTeamName());
 //        v.mTeamPos.setText(team.getPosition().toString());
@@ -139,6 +154,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeamPts.setTypeface(null, Typeface.BOLD);
         v.mPtsFor.setText(team.getPointsFor().toString());
         v.mPtsAgn.setText(team.getPointsAgainst().toString());
+        try{
+            v.mCaptainName.setText(fullTeam.getCaptainName());
+        }
+        catch (Exception e){
+            Log.d("LEAGUETABLEDAPATER", "No team found in db for leagueTeam");
+        }
 
         //Set circle icons for positions, points for and against
         String leaguePosition = team.getPosition().toString();
@@ -171,10 +192,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         int duration = 400;
 
 //        check whether to open close or leave a card alone
-        if(position == expandedPosition){
+        if (position == expandedPosition) {
             v.mExpandArea.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             v.mExpandArea.setVisibility(View.GONE);
         }
 

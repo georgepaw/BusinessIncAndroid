@@ -21,6 +21,7 @@ import java.util.List;
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.LeagueTeam;
+import company.businessinc.dataModels.Team;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +42,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<LeagueTeam> mLeagueTeams;
+    private List<Team> mAllTeams;
     private Integer mLeagueID;
 
     public static LeagueFragment newInstance(int leagueID) {
@@ -60,6 +62,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         if (getArguments() != null) {
         }
         getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
+        getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
 
     }
 
@@ -160,6 +163,8 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         switch (loaderID) {
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                 return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLTEAMS_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -173,6 +178,18 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                 loadStandings(data);
                 break;
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+                if (data.moveToFirst()) {
+                    mAllTeams = new ArrayList<>();
+                    while (!data.isAfterLast()) {
+
+                        mAllTeams.add(new Team(data));
+
+                        data.moveToNext();
+                    }
+                    ((LeagueTableAdapter) mAdapter).setAllTeams(mAllTeams);
+
+                }
         }
     }
 
