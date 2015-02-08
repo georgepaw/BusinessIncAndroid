@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
+import company.businessinc.bathtouch.data.DBProvider;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 
@@ -41,6 +43,8 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     private TeamResultsAdapter mAdapter;
     private ResultsListCallbacks mCallbacks;
     private Integer mLeagueID;
+    private String mLeagueName;
+    private League mLeague;
     private List<Match> leagueScores;
     private String teamName;
 
@@ -96,6 +100,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
+            getLoaderManager().restartLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
         } else {
             getLoaderManager().restartLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
         }
@@ -121,6 +126,9 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                                         DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
                                         new String[]{Integer.toString(mLeagueID), Integer.toString(DataStore.getInstance(getActivity()).getUserTeamID())}
                                         , null);
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null,
+                        DBProviderContract.SELECTION_LEAGUEID, new String[]{Integer.toString(mLeagueID)}, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -145,6 +153,18 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                         }
                         mAdapter.setData(leagueScores, teamName);
                     }
+                break;
+            case DBProviderContract.ALLLEAGUES_URL_QUERY: //TODO talk about formatting this to show all past results
+                if(mLeague == null) {
+                    while (!data.isAfterLast()) {
+                        League l = new League(data);
+                        if (l.getLeagueID() == mLeagueID)
+                            mLeague = l;
+                        data.moveToNext();
+                        mAdapter.setLeagueName(mLeague.getLeagueName());
+                        break;
+                    }
+                }
                 break;
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                 break;

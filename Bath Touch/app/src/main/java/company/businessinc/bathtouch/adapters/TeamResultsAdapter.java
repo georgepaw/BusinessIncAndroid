@@ -30,6 +30,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int expandedPosition = -1;
     private OnResultSelectedCallbacks mCallbacks;
     private Context mContext;
+    private String mLeagueName = "";
 
     public interface OnResultSelectedCallbacks {
         public void showMatchOverview(int position);
@@ -38,7 +39,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public class ViewHolderResults extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTeam1Name, mTeam2Name, mTeam1Score, mTeam2Score, mLocation, mDate, mLeague;
-        public ImageView mImageView;
+        public ImageView mImageView, mCloseButton;
         public RelativeLayout mCard, mMatchCardButton;
         public LinearLayout mExpandable;
 
@@ -53,12 +54,14 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mDate = (TextView) v.findViewById(R.id.match_result_date);
             mLocation = (TextView) v.findViewById(R.id.match_result_location);
             mImageView = (ImageView) v.findViewById(R.id.match_result_item_result_image);
+            mCloseButton = (ImageView) v.findViewById(R.id.match_result_close_button);
             mCard = (RelativeLayout) v.findViewById(R.id.match_result_item_container);
             mMatchCardButton = (RelativeLayout) v.findViewById(R.id.match_result_match_overview_button);
             mExpandable = (LinearLayout) v.findViewById(R.id.match_result_expandable);
 
 
             mCard.setOnClickListener(this);
+            mCloseButton.setOnClickListener(this);
 
             //If clicked, callback to main fragment to start the match over view fragment
             mMatchCardButton.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +113,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
+    public void setLeagueName(String name){
+        mLeagueName = name;
+    }
+
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
@@ -121,7 +128,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeam2Score.setText(match.getTeamTwoPoints().toString());
         v.mLocation.setText(match.getPlace().toString());
 
-        v.mLeague.setText(leagueScores.get);
+        v.mLeague.setText(mLeagueName);
 
         DateFormatter df = new DateFormatter();
         v.mDate.setText(df.format(match.getDateTime()));
