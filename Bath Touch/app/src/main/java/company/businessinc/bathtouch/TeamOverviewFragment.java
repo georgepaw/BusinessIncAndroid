@@ -353,7 +353,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
-                if(isPlaying!=null && nextPlayingMatch != null){
+                if(nextPlayingMatch != null){
                     isPlaying = isPlaying(nextPlayingMatch.getMatchID(), data);
                     loadNextMatchCard();
                 }
@@ -442,6 +442,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 if (matchID == cursor.getInt(0)) {
                     return cursor.getInt(1) == 1;
                 }
+                cursor.moveToNext();
             }
         }
         return null;
