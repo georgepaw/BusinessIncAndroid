@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="end"
-        android:background="@color/grey"
+        android:background="@color/gray_background"
         android:elevation="2dp">
 
         <Button
