@@ -39,17 +39,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public void changeVis(int loc) {
-        Log.d("LEAGUEFRAGMENT", "clicked");
-
-//        ViewHolderLeague holder = (ViewHolderLeague) v.getTag();
-//        String theString = Integer.toString(holder.getPosition());
-
-        // Check for an expanded view, collapse if you find one
-//        if (expandedPosition >= 0) {
-//            int prev = expandedPosition;//
-//
-//            notifyItemChanged(prev);
-//        }
+//        Log.d("LEAGUEFRAGMENT", "clicked");
 
         if (expandedPosition == loc) { //if clicking an open view, close it
             expandedPosition = -1;
@@ -63,9 +53,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             expandedPosition = loc;
             notifyItemChanged(expandedPosition);
         }
-
-
-
     }
 
 
@@ -185,7 +172,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 //        check whether to open close or leave a card alone
         if(position == expandedPosition){
-            Log.d("EXPAND", Integer.toString(expandedPosition));//
             v.mExpandArea.setVisibility(View.VISIBLE);
         }
         else{

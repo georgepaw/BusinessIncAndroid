@@ -33,7 +33,7 @@ import company.businessinc.dataModels.Match;
  * Use the {@link ResultsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResultsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ResultsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, TeamResultsAdapter.OnResultSelectedCallbacks{
 
     private View mLayout;
     private RecyclerView mRecyclerView;
@@ -84,15 +84,15 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        selectItem(position);
-                    }
-                }));
+//        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+//                new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View view, int position) {
+//                        selectItem(position);
+//                    }
+//                }));
 
-        mAdapter = new TeamResultsAdapter();
+        mAdapter = new TeamResultsAdapter(this);
 
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
@@ -137,6 +137,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
             case DBProviderContract.LEAGUESSCORE_URL_QUERY:
             case DBProviderContract.TEAMSSCORES_URL_QUERY:
                     leagueScores = loadLeagueMatches(data);
+
                     if(leagueScores.size() > 0){
                         teamName = "";
                         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
@@ -204,6 +205,11 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    @Override
+    public void showMatchOverview(int position) {
+        selectItem(position);
     }
 
     /**
