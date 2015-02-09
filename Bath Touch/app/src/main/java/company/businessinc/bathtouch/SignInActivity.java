@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class SignInActivity extends ActionBarActivity {
                     .commit();
 
         }
+
     }
 
     public static class SignInStart extends Fragment{
@@ -99,11 +101,18 @@ public class SignInActivity extends ActionBarActivity {
             FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
             SignInPassword pw = new SignInPassword();
             Bundle args = new Bundle();
-            args.putString("username", mUsernameEditText.getText().toString());
-            pw.setArguments(args);
-            ft.replace(R.id.activity_sign_in_container, pw);
-            ft.addToBackStack(null);
-            ft.commit();
+            if(mUsernameEditText.getText().length() == 0) {
+                mUsernameEditText.setError("Please enter your username");
+            } else {
+                args.putString("username", mUsernameEditText.getText().toString());
+                InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                pw.setArguments(args);
+                ft.replace(R.id.activity_sign_in_container, pw);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
         }
 
         public void login_as_anonymous(View view) {
@@ -158,13 +167,20 @@ public class SignInActivity extends ActionBarActivity {
         }
 
         public void next(View view) {
-            if (CheckNetworkConnection.check(mActivity)) {
-                String password = mPasswordEditText.getText().toString();
-                Log.d("Login", "Network is working, let's log in");
-                new UserLogin(this,mUsername,password).execute();
+            if(mPasswordEditText.getText().length() == 0) {
+                mPasswordEditText.setError("Please enter your password");
             } else {
-                Toast.makeText(mActivity, "No connection", Toast.LENGTH_SHORT).show();
-                Log.d("Login", "Network is not working");
+                if (CheckNetworkConnection.check(mActivity)) {
+                    String password = mPasswordEditText.getText().toString();
+                    Log.d("Login", "Network is working, let's log in");
+                    new UserLogin(this, mUsername, password).execute();
+                } else {
+                    Toast.makeText(mActivity, "No connection", Toast.LENGTH_SHORT).show();
+                    Log.d("Login", "Network is not working");
+                }
+                InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }
 

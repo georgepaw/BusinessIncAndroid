@@ -139,16 +139,16 @@ public class Team {
         this.captainName = captainName;
     }
 
-    public Integer getTeamColorPrimary() {
-        return teamColorPrimary;
+    public String getTeamColorPrimary() {
+        return "#" + teamColorPrimary;
     }
 
     public void setTeamColorPrimary(Integer teamColorPrimary) {
         this.teamColorPrimary = teamColorPrimary;
     }
 
-    public Integer getTeamColorSecondary() {
-        return teamColorSecondary;
+    public String getTeamColorSecondary() {
+        return "#" + teamColorSecondary;
     }
 
     public void setTeamColorSecondary(Integer teamColorSecondary) {

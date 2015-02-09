@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -90,19 +91,28 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle args = new Bundle();
-                    String name =  mFirstNameEditText.getText().toString() + " "
-                            + mSecondnameEditText.getText().toString();
-                    args.putString("name",name);
-                    if(mIsGhost) {
-                        create_account(name);
+                    if(mFirstNameEditText.getText().length() == 0 &&
+                            mSecondnameEditText.getText().length() == 0) {
+                        mFirstNameEditText.setError("Please enter a first name");
+                        mSecondnameEditText.setError("Please enter a second name");
                     } else {
-                        CreateAccountEmail cau = new CreateAccountEmail();
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        cau.setArguments(args);
-                        ft.replace(R.id.activity_create_account_container, cau);
-                        ft.addToBackStack(null);
-                        ft.commit();
+                        Bundle args = new Bundle();
+                        String name = mFirstNameEditText.getText().toString() + " "
+                                + mSecondnameEditText.getText().toString();
+                        args.putString("name", name);
+                        InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                        if (mIsGhost) {
+                            create_account(name);
+                        } else {
+                            CreateAccountEmail cau = new CreateAccountEmail();
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            cau.setArguments(args);
+                            ft.replace(R.id.activity_create_account_container, cau);
+                            ft.addToBackStack(null);
+                            ft.commit();
+                        }
                     }
                 }
             });
@@ -152,14 +162,21 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle args = getArguments();
-                    args.putString("email", mEmailEditText.getText().toString());
-                    CreateAccountUsername cau = new CreateAccountUsername();
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    cau.setArguments(args);
-                    ft.replace(R.id.activity_create_account_container, cau);
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    if(mEmailEditText.getText().length() == 0) {
+                        mEmailEditText.setError("Please enter an email address");
+                    } else {
+                        Bundle args = getArguments();
+                        args.putString("email", mEmailEditText.getText().toString());
+                        InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                        CreateAccountUsername cau = new CreateAccountUsername();
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        cau.setArguments(args);
+                        ft.replace(R.id.activity_create_account_container, cau);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
                 }
             });
             return rootView;
@@ -183,14 +200,21 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle args = getArguments();
-                    args.putString("username", mUsernameEditText.getText().toString());
-                    CreateAccountPassword cap = new CreateAccountPassword();
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    cap.setArguments(args);
-                    ft.replace(R.id.activity_create_account_container, cap);
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    if(mUsernameEditText.getText().length() == 0) {
+                        mUsernameEditText.setError("Please enter a username");
+                    } else {
+                        Bundle args = getArguments();
+                        args.putString("username", mUsernameEditText.getText().toString());
+                        InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                        CreateAccountPassword cap = new CreateAccountPassword();
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        cap.setArguments(args);
+                        ft.replace(R.id.activity_create_account_container, cap);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
                 }
             });
             return rootView;
@@ -215,14 +239,26 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle args = getArguments();
-                    args.putString("password", mPasswordEditText.getText().toString());
-                    CreateAccountTeam cat = new CreateAccountTeam();
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    cat.setArguments(args);
-                    ft.replace(R.id.activity_create_account_container, cat);
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    if(mPasswordEditText.getText().length() == 0) {
+                        mPasswordEditText.setError("Please enter a password");
+                    } else if (mPasswordEditText.getText().length() < 6) {
+                        mPasswordEditText.setError("Passwords must be at least 6 characters long");
+                    } else if (!mPasswordEditText.getText().toString()
+                            .equals(mRePasswordEditText.getText().toString())) {
+                        mRePasswordEditText.setError("Passwords do not match");
+                    } else {
+                        Bundle args = getArguments();
+                        args.putString("password", mPasswordEditText.getText().toString());
+                        InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                        CreateAccountTeam cat = new CreateAccountTeam();
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        cat.setArguments(args);
+                        ft.replace(R.id.activity_create_account_container, cat);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
                 }
             });
             return rootView;
