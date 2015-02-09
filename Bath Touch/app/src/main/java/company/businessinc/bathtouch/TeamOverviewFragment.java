@@ -548,10 +548,12 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 mNextMatchCheckBoxContainer.setVisibility(View.VISIBLE);
 //                mNextMatchCheckBox.setButtonTintList(ColorStateList.valueOf(DataStore.getInstance(getActivity()).getUserTeamColorPrimary()));
                 mNextMatchCheckBox.setChecked(isPlaying);
+                mNextMatchCheckBox.setEnabled(true);
                 mNextMatchCheckBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         DataStore.getInstance(getActivity()).setMyAvailability(isChecked, nxtmtchID);
+                        mNextMatchCheckBox.setEnabled(false);
                     }
                 });
             } else {
