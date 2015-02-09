@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -98,6 +97,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+
+
+
     public LeagueTableAdapter(Activity context) {
         mContext = context.getApplicationContext();
     }
@@ -108,6 +110,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void setAllTeams(List<Team> teams) {
+        Log.d("LEAGUETABLEADAPTER", "loaded all teams into adapter");
         this.allTeams = teams;
         notifyDataSetChanged();
     }
@@ -133,17 +136,24 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+
+        bindLeagueItem((ViewHolderLeague) holder, position);
+    }
+
+
+
+    public void bindLeagueItem(ViewHolderLeague v, int position) {
+
         LeagueTeam team = leagueTeams.get(position);
         Team fullTeam = null;
+        int teamColor = Color.RED;
         for (Team e : allTeams) {
             if (e.getTeamID() == team.getTeamID()) {
                 fullTeam = e;
                 break;
             }
         }
-
-        ViewHolderLeague v = (ViewHolderLeague) holder;
-
+        teamColor = Color.RED;
 
         v.mTeamName.setText(team.getTeamName());
 //        v.mTeamPos.setText(team.getPosition().toString());
@@ -154,10 +164,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeamPts.setTypeface(null, Typeface.BOLD);
         v.mPtsFor.setText(team.getPointsFor().toString());
         v.mPtsAgn.setText(team.getPointsAgainst().toString());
-        try{
+
+        try {
             v.mCaptainName.setText(fullTeam.getCaptainName());
-        }
-        catch (Exception e){
+            teamColor = fullTeam.getTeamColorPrimary();
+        } catch (Exception e) {
+            v.mCaptainName.setText("No Captain found");
             Log.d("LEAGUETABLEDAPATER", "No team found in db for leagueTeam");
         }
 
@@ -168,7 +180,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .textColor(Color.WHITE)
                 .toUpperCase()
                 .endConfig()
-                .buildRound(leaguePosition, mContext.getResources().getColor(R.color.primary));
+                .buildRound(leaguePosition, teamColor);
 
         v.mImagePosition.setImageDrawable(drawable);
 
@@ -189,16 +201,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .buildRound(downArrow, mContext.getResources().getColor(R.color.red_monza)); //unicode uparrow
         v.mImageAgn.setImageDrawable(drawable);
 
-        int duration = 400;
-
 //        check whether to open close or leave a card alone
         if (position == expandedPosition) {
             v.mExpandArea.setVisibility(View.VISIBLE);
         } else {
             v.mExpandArea.setVisibility(View.GONE);
         }
-
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
