@@ -9,6 +9,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,9 @@ import java.util.List;
 
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.LeagueTeam;
-
+import company.businessinc.dataModels.Team;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +44,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<LeagueTeam> mLeagueTeams;
+    private List<Team> mAllTeams = new ArrayList<Team>();
     private Integer mLeagueID;
 
     public static LeagueFragment newInstance(int leagueID) {
@@ -61,6 +64,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         if (getArguments() != null) {
         }
         getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
+//        getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
 
     }
 
@@ -89,17 +93,20 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()
-                .getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        selectItem(position);
-                    }
-                }));
+        int userTeamId = DataStore.getInstance(getActivity().getApplicationContext()).getUserTeamID();
+
+
+//        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()
+//                .getBaseContext(),
+//                new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View view, int position) {
+//                        selectItem(position);
+//                    }
+//                }));
 
         //Adapter loads the data fror the leagues
-        mAdapter = new LeagueTableAdapter(getActivity());
+        mAdapter = new LeagueTableAdapter(getActivity(), userTeamId);
         mRecyclerView.setAdapter(mAdapter);
 
         Cursor rCursor = getActivity().getContentResolver()
@@ -109,6 +116,9 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
             loadStandings(rCursor);
         }
         rCursor.close();
+
+        getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
+
 
 
         return mLayout;
@@ -161,6 +171,8 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         switch (loaderID) {
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                 return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, null, null, null);
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLTEAMS_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -174,7 +186,27 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
                 loadStandings(data);
                 break;
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+
+                loadAllTeams(data);
+
         }
+    }
+
+    private void loadAllTeams(Cursor data) {
+        Log.d("LEAGUEFRAG", "load finished for all teams");
+        if (data.moveToFirst()){
+            while(!data.isAfterLast()){
+                mAllTeams.add(new Team(data));
+                data.moveToNext();
+            }
+            ((LeagueTableAdapter) mAdapter).setAllTeams(mAllTeams);
+        }
+        else{
+            Log.d("LEAGUEFRAG", "table was empty of teams");
+
+        }
+
     }
 
     //when data gets updated, first reset everything

@@ -3,6 +3,8 @@ package company.businessinc.bathtouch;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -13,6 +15,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,8 +26,10 @@ import java.util.List;
 import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
+import company.businessinc.bathtouch.data.DBProvider;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 
@@ -33,7 +41,7 @@ import company.businessinc.dataModels.Match;
  * Use the {@link ResultsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResultsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ResultsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, TeamResultsAdapter.OnResultSelectedCallbacks{
 
     private View mLayout;
     private RecyclerView mRecyclerView;
@@ -41,6 +49,8 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     private TeamResultsAdapter mAdapter;
     private ResultsListCallbacks mCallbacks;
     private Integer mLeagueID;
+    private String mLeagueName;
+    private League mLeague;
     private List<Match> leagueScores;
     private String teamName;
 
@@ -84,18 +94,19 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        selectItem(position);
-                    }
-                }));
+//        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
+//                new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View view, int position) {
+//                        selectItem(position);
+//                    }
+//                }));
 
-        mAdapter = new TeamResultsAdapter();
+        mAdapter = new TeamResultsAdapter(this);
 
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
+            getLoaderManager().restartLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
         } else {
             getLoaderManager().restartLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
         }
@@ -121,6 +132,9 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                                         DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
                                         new String[]{Integer.toString(mLeagueID), Integer.toString(DataStore.getInstance(getActivity()).getUserTeamID())}
                                         , null);
+            case DBProviderContract.ALLLEAGUES_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null,
+                        DBProviderContract.SELECTION_LEAGUEID, new String[]{Integer.toString(mLeagueID)}, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -137,6 +151,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
             case DBProviderContract.LEAGUESSCORE_URL_QUERY:
             case DBProviderContract.TEAMSSCORES_URL_QUERY:
                     leagueScores = loadLeagueMatches(data);
+
                     if(leagueScores.size() > 0){
                         teamName = "";
                         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
@@ -144,6 +159,18 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                         }
                         mAdapter.setData(leagueScores, teamName);
                     }
+                break;
+            case DBProviderContract.ALLLEAGUES_URL_QUERY: //TODO talk about formatting this to show all past results
+                if(mLeague == null) {
+                    while (!data.isAfterLast()) {
+                        League l = new League(data);
+                        if (l.getLeagueID() == mLeagueID)
+                            mLeague = l;
+                        data.moveToNext();
+                        mAdapter.setLeagueName(mLeague.getLeagueName());
+                        break;
+                    }
+                }
                 break;
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                 break;
@@ -204,6 +231,11 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    @Override
+    public void showMatchOverview(int position) {
+        selectItem(position);
     }
 
     /**
