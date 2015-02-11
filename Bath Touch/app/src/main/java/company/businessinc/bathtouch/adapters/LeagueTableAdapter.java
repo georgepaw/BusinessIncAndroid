@@ -167,7 +167,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         try {
             v.mCaptainName.setText(fullTeam.getCaptainName());
-            teamColor = fullTeam.getTeamColorPrimary();
+            teamColor = Color.parseColor(fullTeam.getTeamColorPrimary());
         } catch (Exception e) {
             v.mCaptainName.setText("No Captain found");
             Log.d("LEAGUETABLEDAPATER", "No team found in db for leagueTeam");
