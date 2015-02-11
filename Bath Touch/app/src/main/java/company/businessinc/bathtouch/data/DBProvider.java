@@ -108,7 +108,7 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mHelper = new SQLiteHelper(getContext());
+        mHelper = SQLiteHelper.getInstance(getContext());
         return true;
     }
 

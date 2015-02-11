@@ -24,6 +24,8 @@ public class DBProviderContract {
     public static final String SELECTION_MATCHID = Match.KEY_MATCHID + " = ?";
     public static final String SELECTION_MATCHIDANDUSERID = Match.KEY_MATCHID + " = ? AND " + Player.KEY_USERID + " = ?";
 
+    public static final String SQL_DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS";
+
     // The URI scheme used for content URIs
     public static final String SCHEME = "content";
 

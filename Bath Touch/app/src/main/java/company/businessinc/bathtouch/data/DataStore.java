@@ -3,7 +3,10 @@ package company.businessinc.bathtouch.data;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -15,7 +18,6 @@ import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Player;
-import company.businessinc.dataModels.Status;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.LeagueList;
@@ -79,12 +81,14 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     private DataStore(Context context) {
         this.context = context;
-        this.user = new User();
+        clearUserData();
     }
 
     public static void newInstance(Context context) {
         sInstance = new DataStore(context);
     }
+
+
 
     public void setUser(User user){
         this.user = user;
@@ -134,6 +138,14 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return user.toString();
     }
 
+    /**
+     * Data calls
+     */
+
+    /**
+     * API Calls and thier callbacks
+     */
+
     public void loadAllTeams(){
         if(!loadedAllTeams) {
             new TeamList(this).execute();
@@ -172,10 +184,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
             switch(callType){
                 case GETALLLTEAMS:
-                    context.getContentResolver().bulkInsert(DBProviderContract.ALLTEAMS_TABLE_CONTENTURI,contentValues);
+                    bulkInsert(DBProviderContract.ALLTEAMS_TABLE_NAME, contentValues);
                     break;
                 case GETLEAGUETEAMS:
-                    context.getContentResolver().bulkInsert(DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI,contentValues);
+                    bulkInsert(DBProviderContract.LEAGUETEAMS_TABLE_NAME,contentValues);
                     break;
             }
         }
@@ -198,7 +210,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 context.getContentResolver().query(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_LEAGUEIDANDTEAMID, new String[]{Integer.toString(data.get(i).getLeagueID()), Integer.toString(user.getTeamID())}, null).close();
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.MYLEAGUES_TABLE_CONTENTURI,contentValues);
+            bulkInsert(DBProviderContract.MYLEAGUES_TABLE_NAME, contentValues);
         }
     }
 
@@ -216,7 +228,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cV.add(data.get(i).toContentValues());
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI,contentValues);
+            bulkInsert(DBProviderContract.ALLLEAGUES_TABLE_NAME,contentValues);
         }
     }
 
@@ -237,7 +249,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cV.add(dis);
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI, contentValues);
+            bulkInsert(DBProviderContract.LEAGUESSCORE_TABLE_NAME, contentValues);
         }
     }
 
@@ -258,7 +270,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cV.add(dis);
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.LEAGUESFIXTURES_TABLE_CONTENTURI, contentValues);
+            bulkInsert(DBProviderContract.LEAGUESFIXTURES_TABLE_NAME, contentValues);
         }
     }
 
@@ -278,7 +290,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cV.add(dis);
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, contentValues);
+            bulkInsert(DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME, contentValues);
         }
     }
 
@@ -303,13 +315,13 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 dis.put(League.KEY_LEAGUEID, leagueID);
                 //check is this is a game that current user would play in, if yes add it to upcoming games
                 if(data.get(i).getTeamOneID() == user.getTeamID() || data.get(i).getTeamTwoID() == user.getTeamID()){
-                    context.getContentResolver().insert(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, dis);
+                    insert(DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, dis);
                 }
                 dis.put(Team.KEY_TEAMID, teamID);
                 cV.add(dis);
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI, contentValues);
+            bulkInsert(DBProviderContract.TEAMSFIXTURES_TABLE_NAME, contentValues);
         }
     }
 
@@ -336,7 +348,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cV.add(dis);
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, contentValues);
+            bulkInsert(DBProviderContract.TEAMSSCORES_TABLE_NAME, contentValues);
         }
     }
 
@@ -363,7 +375,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             gc.add(GregorianCalendar.HOUR,-4); //minus 4 hours so that he can see the next game during and after it's being played
             for(Match m : data){
                 if(m.getDateTime().compareTo(gc.getTime()) > 0){
-                    context.getContentResolver().insert(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI, m.toContentValues());
+                    insert(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, m.toContentValues());
                 }
             }
         }
@@ -394,19 +406,19 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cv = new ContentValues();
                 cv.put(Match.KEY_MATCHID, matchID);
                 cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
-                context.getContentResolver().insert(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, cv);
+                insert(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, cv);
                 break;
             case SETMYAVAILABILITY:
                 cv = new ContentValues();
                 cv.put(Match.KEY_MATCHID, matchID);
                 cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
-                context.getContentResolver().update(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)});
+                update(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, cv, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)});
                 break;
             case SETPLAYERSAVAILABILITY:
                 cv = new ContentValues();
                 cv.put(Match.KEY_MATCHID, matchID);
                 cv.put(Player.KEY_ISPLAYING, isPlaying ? 1 : 0);
-                context.getContentResolver().update(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, cv, DBProviderContract.SELECTION_MATCHIDANDUSERID, new String[]{Integer.toString(matchID), Integer.toString(userID)});
+                update(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, cv, DBProviderContract.SELECTION_MATCHIDANDUSERID, new String[]{Integer.toString(matchID), Integer.toString(userID)});
                 break;
         }
     }
@@ -427,18 +439,47 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 cV.add(dis);
             }
             ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-            context.getContentResolver().bulkInsert(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, contentValues);
+            bulkInsert(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, contentValues);
         }
     }
 
-    private boolean isTableEmpty(String tableName){
-        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
-        return ((DBProvider)client.getLocalContentProvider()).isTableEmpty(tableName);
+    /**
+     * Database calls
+     */
+
+    private long insert(String tableName, ContentValues contentValues){
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        long val = db.insert(tableName, null, contentValues);
+        SQLiteManager.getInstance(context).closeDatabase();
+        return val;
+    }
+
+    private long bulkInsert(String tableName, ContentValues[] contentValues){
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        db.beginTransaction();
+        long val = 0;
+        try{
+            for(ContentValues cv : contentValues){
+                val += db.insert(tableName, null, cv);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        SQLiteManager.getInstance(context).closeDatabase();
+        return val;
+    }
+
+    private int update(String tableName, ContentValues contentValues, String selection, String[] selectionArgs){
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        int val = db.update(tableName, contentValues, selection, selectionArgs);
+        SQLiteManager.getInstance(context).closeDatabase();
+        return val;
     }
 
     public void clearUserData() {
         user = new User();
-        dropUserTables();
+        dropAllTables();
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
@@ -454,7 +495,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void refreshData() {
-        dropUserTables();
+        dropAllTables();
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
@@ -470,14 +511,26 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void refreshMatchAvailabilities(){
-        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
-        ((DBProvider)client.getLocalContentProvider()).dropAvailability();
-        matchesAvailability = new ArrayList<>();
+        dropAvailability();
     }
 
-    private void dropUserTables(){
-        ContentProviderClient client =  context.getContentResolver().acquireContentProviderClient(DBProviderContract.AUTHORITY);
-        ((DBProvider)client.getLocalContentProvider()).dropUserData();
+    private void dropAllTables(){
+        //first drop the tables that always exist
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        for(String t : DBProviderContract.TABLES){
+            db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + t);
+        }
+        //Recreate them
+        for(String t : DBProviderContract.CREATE_TABLES){
+            db.execSQL(t);
+        }
+        SQLiteManager.getInstance(context).closeDatabase();
+    }
+
+    private void dropAvailability(){
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME);
+        db.execSQL(DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE);
     }
 
 }
