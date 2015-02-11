@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,11 @@ public class AvailablePlayersFragment extends Fragment implements  LoaderManager
     private RecyclerView.Adapter mAdapter;
     private boolean available_toggle;
     private int matchID;
+    private AvailablePlayersListener mCallbacks;
+
+    public interface AvailablePlayersListener{
+        public void createGhostPlayerEvent();
+    }
 
 
     public static AvailablePlayersFragment newInstance(int position, int matchID) {
@@ -57,6 +65,8 @@ public class AvailablePlayersFragment extends Fragment implements  LoaderManager
             getLoaderManager().initLoader(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY, null, this);
         }
 
+        mCallbacks = (AvailablePlayersListener) getActivity();
+
     }
 
     @Override
@@ -81,6 +91,15 @@ public class AvailablePlayersFragment extends Fragment implements  LoaderManager
         //Adapter loads the data fror the leagues
         mAdapter = new AvailablePlayersAdapter(available_toggle, getActivity(),matchID);
         mRecyclerView.setAdapter(mAdapter);
+
+        FloatingActionButton fab = (FloatingActionButton) mLayout.findViewById(R.id.team_roster_fab);
+        fab.attachToRecyclerView(mRecyclerView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallbacks.createGhostPlayerEvent();
+            }
+        });
 
         return mLayout;
     }

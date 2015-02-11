@@ -30,4 +30,6 @@ dependencies {
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.getbase:floatingactionbutton:1.7.0'
 
+    compile 'com.melnykov:floatingactionbutton:1.2.0'
+
 }
