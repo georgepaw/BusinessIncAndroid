@@ -21,6 +21,7 @@ import java.util.List;
 
 import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Team;
 
@@ -35,6 +36,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Team> allTeams = new ArrayList<Team>();
     private Context mContext;
     private int expandedPosition = -1;
+    private int mTeamId;
+    private int mTeamColor;
 
 
     public void changeVis(int loc) {
@@ -85,7 +88,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTeamOverviewButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mContext, "No Team Pverview Fragment", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "No Team Overview Fragment", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -100,8 +103,10 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
 
-    public LeagueTableAdapter(Activity context) {
+    public LeagueTableAdapter(Activity context, int id) {
         mContext = context.getApplicationContext();
+        mTeamId = id;
+        mTeamColor = DataStore.getInstance(mContext).getUserTeamColorPrimary();
     }
 
     public void setLeagueTeams(List<LeagueTeam> leagueTeams) {
@@ -165,13 +170,26 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mPtsFor.setText(team.getPointsFor().toString());
         v.mPtsAgn.setText(team.getPointsAgainst().toString());
 
+        //try and get other team details, may have not been loaded from db yet
         try {
             v.mCaptainName.setText(fullTeam.getCaptainName());
-            teamColor = Color.parseColor(fullTeam.getTeamColorPrimary());
         } catch (Exception e) {
             v.mCaptainName.setText("No Captain found");
             Log.d("LEAGUETABLEDAPATER", "No team found in db for leagueTeam");
         }
+        try{
+            if(mTeamId == team.getTeamID()){
+                teamColor = mTeamColor;
+            }
+            else{
+                teamColor = Color.parseColor(fullTeam.getTeamColorPrimary());
+            }
+        }
+        catch (Exception e){
+            teamColor = Color.LTGRAY;
+            Log.d("LEAGUEADAPTER", "Team colors still null in db");
+        }
+
 
         //Set circle icons for positions, points for and against
         String leaguePosition = team.getPosition().toString();

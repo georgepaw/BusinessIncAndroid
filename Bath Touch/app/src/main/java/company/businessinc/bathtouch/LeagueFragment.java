@@ -21,6 +21,7 @@ import java.util.List;
 
 import company.businessinc.bathtouch.adapters.LeagueTableAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Team;
 
@@ -92,6 +93,9 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        int userTeamId = DataStore.getInstance(getActivity().getApplicationContext()).getUserTeamID();
+
+
 //        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()
 //                .getBaseContext(),
 //                new RecyclerItemClickListener.OnItemClickListener() {
@@ -102,7 +106,7 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
 //                }));
 
         //Adapter loads the data fror the leagues
-        mAdapter = new LeagueTableAdapter(getActivity());
+        mAdapter = new LeagueTableAdapter(getActivity(), userTeamId);
         mRecyclerView.setAdapter(mAdapter);
 
         Cursor rCursor = getActivity().getContentResolver()

@@ -79,24 +79,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public class ViewHolderHeader extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public RelativeLayout mExpandArea, mMainArea;
-
-        public ViewHolderHeader(View v) {
-            super(v);
-            mExpandArea = (RelativeLayout) v.findViewById(R.id.league_header_expand);
-            mMainArea = (RelativeLayout) v.findViewById(R.id.league_header_main);
-
-            mMainArea.setOnClickListener(this);
-        }
-
-
-        @Override
-        public void onClick(View v) {
-            changeVis(getPosition());
-        }
-    }
-
     private List<Match> leagueScores;
     private String teamName;
 
@@ -121,9 +103,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .inflate(R.layout.match_result_item, parent, false);
 
         switch(viewType){
-            case 0:
-                View vh = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_league_header, parent, false);
-                return new ViewHolderHeader(vh);
             default:
                 return new ViewHolderResults(v);
         }
@@ -144,13 +123,14 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+        bindResultItem((ViewHolderResults)holder, position );
 
-        if(position == 0){
-            bindHeaderItem((ViewHolderHeader) holder, position);
-        }
-        else{
-            bindResultItem((ViewHolderResults)holder, position );
-        }
+//        if(position == 0){
+//            bindHeaderItem((ViewHolderHeader) holder, position);
+//        }
+//        else{
+//            bindResultItem((ViewHolderResults)holder, position );
+//        }
 
 
     }
@@ -159,7 +139,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Match match = leagueScores.get(position - 1);
+        Match match = leagueScores.get(position);
         v.mTeam1Name.setText(match.getTeamOne());
         v.mTeam2Name.setText(match.getTeamTwo());
         v.mTeam1Score.setText(match.getTeamOnePoints().toString());
@@ -219,15 +199,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public void bindHeaderItem(ViewHolderHeader v, int position) {
-
-        if (position == expandedPosition) {
-            v.mExpandArea.setVisibility(View.VISIBLE);
-        } else {
-            v.mExpandArea.setVisibility(View.GONE);
-        }
-    }
-
     public void changeVis(int loc) {
 
         if (expandedPosition == loc) { //if clicking an open view, close it
@@ -248,7 +219,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         //plus one because of header fragment
-        return leagueScores.size() + 1;
+        return leagueScores.size();
     }
 
 }
