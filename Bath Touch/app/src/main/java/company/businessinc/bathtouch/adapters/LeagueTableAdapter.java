@@ -152,24 +152,16 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         LeagueTeam team = leagueTeams.get(position);
         Team fullTeam = null;
-        int teamColor = Color.RED;
+        int circleColor = Color.BLACK;
+        int textColor = Color.GRAY;
+        int circleTextColor = Color.WHITE;
+
         for (Team e : allTeams) {
             if (e.getTeamID() == team.getTeamID()) {
                 fullTeam = e;
                 break;
             }
         }
-        teamColor = Color.RED;
-
-        v.mTeamName.setText(team.getTeamName());
-//        v.mTeamPos.setText(team.getPosition().toString());
-        v.mTeamDraw.setText(team.getDraw().toString());
-        v.mTeamLose.setText(team.getLose().toString());
-        v.mTeamWin.setText(team.getWin().toString());
-        v.mTeamPts.setText(team.getLeaguePoints().toString());
-        v.mTeamPts.setTypeface(null, Typeface.BOLD);
-        v.mPtsFor.setText(team.getPointsFor().toString());
-        v.mPtsAgn.setText(team.getPointsAgainst().toString());
 
         //try and get other team details, may have not been loaded from db yet
         try {
@@ -180,27 +172,48 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         try{
             if(mTeamId == team.getTeamID()){
-                teamColor = mTeamColor;
-                v.mDisplayItem.setBackground(mContext.getResources().getDrawable(R.color.grey_300));
+//                v.mDisplayItem.setBackground(mContext.getResources().getDrawable(R.color.grey_300));
+                v.mDisplayItem.setBackgroundColor(mTeamColor);
+                textColor = Color.WHITE;
+                circleTextColor = mTeamColor;
+                circleColor = Color.WHITE;
             }
             else{
-                teamColor = Color.parseColor(fullTeam.getTeamColorPrimary());
+                circleColor = Color.parseColor(fullTeam.getTeamColorPrimary());
             }
         }
         catch (Exception e){
-            teamColor = Color.LTGRAY;
+            circleColor = Color.LTGRAY;
             Log.d("LEAGUEADAPTER", "Team colors still null in db");
         }
 
+
+        //set text for teams league standings
+        v.mTeamName.setText(team.getTeamName());
+        v.mTeamName.setTextColor(textColor);
+//        v.mTeamPos.setText(team.getPosition().toString());
+        v.mTeamDraw.setText(team.getDraw().toString());
+        v.mTeamDraw.setTextColor(textColor);
+        v.mTeamLose.setText(team.getLose().toString());
+        v.mTeamLose.setTextColor(textColor);
+        v.mTeamWin.setText(team.getWin().toString());
+        v.mTeamWin.setTextColor(textColor);
+        v.mTeamPts.setText(team.getLeaguePoints().toString());
+        v.mTeamPts.setTypeface(null, Typeface.BOLD);
+        v.mTeamPts.setTextColor(textColor);
+        v.mPtsFor.setText(team.getPointsFor().toString());
+        v.mPtsFor.setTextColor(textColor);
+        v.mPtsAgn.setText(team.getPointsAgainst().toString());
+        v.mPtsAgn.setTextColor(textColor);
 
         //Set circle icons for positions, points for and against
         String leaguePosition = team.getPosition().toString();
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
-                .textColor(Color.WHITE)
+                .textColor(circleTextColor)
                 .toUpperCase()
                 .endConfig()
-                .buildRound(leaguePosition, teamColor);
+                .buildRound(leaguePosition, circleColor);
 
         v.mImagePosition.setImageDrawable(drawable);
 
@@ -213,6 +226,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .endConfig()
                 .buildRound(upArrow, mContext.getResources().getColor(R.color.green));
         v.mImageFor.setImageDrawable(drawable);
+
         drawable = TextDrawable.builder()
                 .beginConfig()
                 .textColor(Color.WHITE)
