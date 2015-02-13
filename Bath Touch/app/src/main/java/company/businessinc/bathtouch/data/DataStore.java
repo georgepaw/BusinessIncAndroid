@@ -69,7 +69,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private ArrayList<Integer> myMatchesAvailability = new ArrayList<>();
     private ArrayList<Integer> matchesAvailability = new ArrayList<>();
 
-    public static DataStore getInstance(Context context) {
+    public static synchronized DataStore getInstance(Context context) {
 
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
@@ -79,7 +79,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return sInstance;
     }
 
-    private DataStore(Context context) {
+    protected DataStore(Context context) {
         this.context = context;
         clearUserData();
     }
