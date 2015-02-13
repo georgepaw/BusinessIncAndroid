@@ -45,7 +45,7 @@ import company.businessinc.dataModels.Player;
  * http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
  */
 public class TeamRosterActivity extends FragmentActivity implements ActionBar.TabListener,
-        AvailablePlayersAdapter.AvailablePlayerCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
+        AvailablePlayersAdapter.AvailablePlayerCallbacks, LoaderManager.LoaderCallbacks<Cursor>, AvailablePlayersFragment.AvailablePlayersListener {
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -128,12 +128,7 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         mGhostPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TeamRosterActivity.this, CreateAccountActivity.class);
-                Bundle args = new Bundle();
-                args.putBoolean("ghost", true);
-                intent.putExtras(args);
-                startActivity(intent);
-                finish();
+                startCreateGhostPlayerIntent();
             }
         });
 
@@ -199,6 +194,25 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         newFragment.show(ft, "dialog");
     }
 
+    /*
+    Called when the create new ghost player is selected
+    Starts a new create player flow intent
+     */
+    public void startCreateGhostPlayerIntent(){
+        Intent intent = new Intent(TeamRosterActivity.this, CreateAccountActivity.class);
+        Bundle args = new Bundle();
+        args.putBoolean("ghost", true);
+        intent.putExtras(args);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void createGhostPlayerEvent() {
+        Log.d("TEAMROSTERACTIVITY", "creating new intent");
+        startCreateGhostPlayerIntent();
+    }
+
 //    private ArrayList<Integer> populatePeople(int start) {
 //        ArrayList<Integer> list = new ArrayList<Integer>();
 //        for (int i = start; i < NUM_PEOPLE + start; i++) {
@@ -259,16 +273,8 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
     class SamplePagerAdapter extends FragmentPagerAdapter {
 
-//        private ArrayList<Player> playerListAvail = new ArrayList<Player>();
-//        private ArrayList<Player> playerListUnavail = new ArrayList<Player>();
-//        private ArrayList<ArrayList<Player>> playerList = new ArrayList<ArrayList<Player>>();
-
         public SamplePagerAdapter(FragmentManager fm, ArrayList<Player> availP, ArrayList<Player> unavailP) {
             super(fm);
-//            playerListAvail = availP;
-//            playerListUnavail = unavailP;
-//            playerList.add(playerListAvail);
-//            playerList.add(playerListUnavail);
 
         }
 

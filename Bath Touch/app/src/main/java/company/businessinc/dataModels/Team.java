@@ -14,8 +14,8 @@ public class Team {
     private String teamName;
     private Integer captainID;
     private String captainName;
-    private Integer teamColorPrimary;
-    private Integer teamColorSecondary;
+    private String teamColorPrimary;
+    private String teamColorSecondary;
 
     public static final String KEY_TEAMID = "teamID";
     public static final String KEY_TEAMNAME = "teamName";
@@ -28,11 +28,11 @@ public class Team {
                                                 KEY_TEAMNAME + "\tTEXT,\n" +
                                                 KEY_CAPTAINID + "\tINTEGER,\n" +
                                                 KEY_CAPTAINNAME + "\tTEXT,\n" +
-                                                KEY_TEAMCOLORPRIMARY + "\tINTEGER,\n" +
-                                                KEY_TEAMCOLORSECONDARY + "\tINTEGER";
+                                                KEY_TEAMCOLORPRIMARY + "\tTEXT,\n" +
+                                                KEY_TEAMCOLORSECONDARY + "\tTEXT";
 
 
-    public Team(Integer teamID, String teamName, Integer captainID, String captainName, Integer teamColorPrimary, Integer teamColorSecondary) {
+    public Team(Integer teamID, String teamName, Integer captainID, String captainName, String teamColorPrimary, String teamColorSecondary) {
         this.teamID = teamID;
         this.teamName = teamName;
         this.captainID = captainID;
@@ -63,12 +63,12 @@ public class Team {
             this.captainName = null;
         }
         try {
-            this.teamColorPrimary = cursor.getInt(cursor.getColumnIndex(KEY_TEAMCOLORPRIMARY));
+            this.teamColorPrimary = cursor.getString(cursor.getColumnIndex(KEY_TEAMCOLORPRIMARY));
         } catch(Exception e) {
             this.teamColorPrimary = null;
         }
         try {
-            this.teamColorSecondary = cursor.getInt(cursor.getColumnIndex(KEY_TEAMCOLORSECONDARY));
+            this.teamColorSecondary = cursor.getString(cursor.getColumnIndex(KEY_TEAMCOLORSECONDARY));
         } catch(Exception e) {
             this.teamColorSecondary = null;
         }
@@ -96,12 +96,12 @@ public class Team {
             this.captainName = null;
         }
         try {
-            this.teamColorPrimary = jsonObject.getInt(KEY_TEAMCOLORPRIMARY);
+            this.teamColorPrimary = jsonObject.getString(KEY_TEAMCOLORPRIMARY);
         } catch(JSONException e) {
             this.teamColorPrimary = null;
         }
         try {
-            this.teamColorSecondary = jsonObject.getInt(KEY_TEAMCOLORSECONDARY);
+            this.teamColorSecondary = jsonObject.getString(KEY_TEAMCOLORSECONDARY);
         } catch(JSONException e) {
             this.teamColorSecondary = null;
         }
@@ -143,7 +143,7 @@ public class Team {
         return "#" + teamColorPrimary;
     }
 
-    public void setTeamColorPrimary(Integer teamColorPrimary) {
+    public void setTeamColorPrimary(String teamColorPrimary) {
         this.teamColorPrimary = teamColorPrimary;
     }
 
@@ -151,7 +151,7 @@ public class Team {
         return "#" + teamColorSecondary;
     }
 
-    public void setTeamColorSecondary(Integer teamColorSecondary) {
+    public void setTeamColorSecondary(String teamColorSecondary) {
         this.teamColorSecondary = teamColorSecondary;
     }
 
