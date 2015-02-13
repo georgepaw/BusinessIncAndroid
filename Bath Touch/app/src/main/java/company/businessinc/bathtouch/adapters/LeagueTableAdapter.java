@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,7 +63,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public TextView mTeamName, mTeamPos, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName;
         public ImageView mImagePosition, mImageFor, mImageAgn, mCloseButton;
         public RelativeLayout mExpandArea;
-        public RelativeLayout mItem, mTeamOverviewButton;
+        public RelativeLayout mDisplayItem, mTeamOverviewButton;
 
         public ViewHolderLeague(View v) {
             super(v);
@@ -80,10 +81,10 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mImageAgn = (ImageView) v.findViewById(R.id.league_display_pointsagn_image);
             mCloseButton = (ImageView) v.findViewById(R.id.league_item_close_button);
             mExpandArea = (RelativeLayout) v.findViewById(R.id.llExpandArea);
-            mItem = (RelativeLayout) v.findViewById(R.id.league_display_item_container);
+            mDisplayItem = (RelativeLayout) v.findViewById(R.id.league_display_item_container);
             mTeamOverviewButton = (RelativeLayout) v.findViewById(R.id.league_item_team_overview_button);
 
-            mItem.setOnClickListener(this);
+            mDisplayItem.setOnClickListener(this);
             mCloseButton.setOnClickListener(this);
             mTeamOverviewButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -180,6 +181,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         try{
             if(mTeamId == team.getTeamID()){
                 teamColor = mTeamColor;
+                v.mDisplayItem.setBackground(mContext.getResources().getDrawable(R.color.grey_300));
             }
             else{
                 teamColor = Color.parseColor(fullTeam.getTeamColorPrimary());

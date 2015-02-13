@@ -12,7 +12,7 @@
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/fragment_league_table_header"
-            android:background="@color/primary_dark"
+            android:background="@color/grey_100"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -27,7 +27,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:text="#"
-                android:textColor="@color/white"
+                android:textColor="@color/grey_700"
                 android:textSize="14sp"
                 android:layout_marginLeft="16dp"/>
 
@@ -37,7 +37,7 @@
                 android:layout_height="20dp"
                 android:layout_toRightOf="@id/team_number"
                 android:text="Team"
-                android:textColor="@color/white"
+                android:textColor="@color/grey_700"
                 android:textSize="14sp"
                 android:layout_marginLeft="16dp"/>
 
@@ -46,8 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_alignParentRight="true"
-                android:text="PTS"
-                android:textColor="@color/white"
+                android:text="Pts"
+                android:textColor="@color/grey_700"
                 android:textSize="14sp"
                 android:layout_marginRight="8dp"/>
 
@@ -57,7 +57,7 @@
                 android:layout_height="20dp"
                 android:layout_toLeftOf="@id/team_points"
                 android:text="L"
-                android:textColor="@color/white"
+                android:textColor="@color/grey_700"
                 android:textSize="14sp" />
 
             <TextView
@@ -66,7 +66,7 @@
                 android:layout_height="20dp"
                 android:layout_toLeftOf="@id/team_lose"
                 android:text="D"
-                android:textColor="@color/white"
+                android:textColor="@color/grey_700"
                 android:textSize="14sp" />
 
             <TextView
@@ -76,10 +76,19 @@
                 android:layout_height="20dp"
                 android:layout_toLeftOf="@id/team_draw"
                 android:text="W"
-                android:textColor="@color/white"
+                android:textColor="@color/grey_700"
                 android:textSize="14sp" />
 
+
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/grey_300"
+            android:layout_alignBottom="@id/fragment_league_table_header">
+
+        </View>
 
 
         <android.support.v7.widget.RecyclerView
