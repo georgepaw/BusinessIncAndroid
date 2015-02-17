@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.Status;
+import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.UserLogin;
 import company.businessinc.endpoints.UserLoginInterface;
@@ -228,7 +228,7 @@ public class SignInActivity extends ActionBarActivity {
         }
 
         @Override
-        public void userResetCallback(Status data) {
+        public void userResetCallback(ResponseStatus data) {
             if(data != null) {
                 if(data.getStatus()) {
                     Log.d("Reset", "Reset email sent");

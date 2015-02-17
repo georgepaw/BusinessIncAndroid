@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.Status;
+import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.endpoints.UserLogin;
@@ -129,7 +129,7 @@ public class CreateAccountActivity extends ActionBarActivity {
         }
 
         @Override
-        public void userNewCallback(Status data) {
+        public void userNewCallback(ResponseStatus data) {
             if (data != null) {
                 if(mIsGhost) {
 //                    Intent intent = new Intent(getActivity(), TeamRosterActivity.class);
@@ -381,9 +381,9 @@ public class CreateAccountActivity extends ActionBarActivity {
         }
 
         @Override
-        public void userNewCallback(Status data) {
+        public void userNewCallback(ResponseStatus data) {
             if(data != null){
-                if(data.getStatus().equals(true)) {
+                if(data.getStatus()) {
                     Log.d("Create User", "User successfully created");
 
                     if (CheckNetworkConnection.check(getActivity())) {

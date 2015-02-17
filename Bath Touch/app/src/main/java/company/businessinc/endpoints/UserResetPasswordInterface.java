@@ -1,8 +1,8 @@
 package company.businessinc.endpoints;
 
 
-import company.businessinc.dataModels.Status;
+import company.businessinc.dataModels.ResponseStatus;
 
 public interface UserResetPasswordInterface {
-    public void userResetPasswordCallback(Status data);
+    public void userResetPasswordCallback(ResponseStatus data);
 }
