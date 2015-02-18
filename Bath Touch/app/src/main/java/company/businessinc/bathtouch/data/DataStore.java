@@ -1,44 +1,16 @@
 package company.businessinc.bathtouch.data;
 
-import android.content.ContentProviderClient;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.SQLException;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.util.Log;
+import company.businessinc.dataModels.*;
+import company.businessinc.endpoints.*;
 
-import java.util.*;
-
-import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.Player;
-import company.businessinc.dataModels.ResponseStatus;
-import company.businessinc.dataModels.Team;
-import company.businessinc.dataModels.User;
-import company.businessinc.endpoints.LeagueList;
-import company.businessinc.endpoints.LeagueListInterface;
-import company.businessinc.endpoints.LeagueSchedule;
-import company.businessinc.endpoints.LeagueScheduleInterface;
-import company.businessinc.endpoints.LeagueScores;
-import company.businessinc.endpoints.LeagueScoresInterface;
-import company.businessinc.endpoints.LeagueView;
-import company.businessinc.endpoints.LeagueViewInterface;
-import company.businessinc.endpoints.RefGames;
-import company.businessinc.endpoints.RefGamesInterface;
-import company.businessinc.endpoints.TeamAvailability;
-import company.businessinc.endpoints.TeamAvailabilityInterface;
-import company.businessinc.endpoints.TeamLeagues;
-import company.businessinc.endpoints.TeamLeaguesInterface;
-import company.businessinc.endpoints.TeamList;
-import company.businessinc.endpoints.TeamListInterface;
-import company.businessinc.endpoints.TeamSchedule;
-import company.businessinc.endpoints.TeamScheduleInterface;
-import company.businessinc.endpoints.TeamScores;
-import company.businessinc.endpoints.TeamScoresInterface;
-import company.businessinc.endpoints.UpAvailability;
-import company.businessinc.endpoints.UpAvailabilityInterface;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Louis on 29/11/2014.
@@ -67,19 +39,19 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private ArrayList<Integer> matchesAvailability = new ArrayList<>();
 
     //Data observers for every league
-    private List<Observer> AllTeamsObservers = new ArrayList<>();
-    private List<Observer> MyLeaguesObservers = new ArrayList<>();
-    private List<Observer> AllLeagueObservers = new ArrayList<>();
-    private List<Observer> LeagueScoreObservers = new ArrayList<>();
-    private List<Observer> LeaguesFixturesObservers = new ArrayList<>();
-    private List<Observer> LeaguesStandingsObservers = new ArrayList<>();
-    private List<Observer> TeamsFixturesObservers = new ArrayList<>();
-    private List<Observer> TeamsScoresObservers = new ArrayList<>();
-    private List<Observer> MyUpcomingGamesObservers = new ArrayList<>();
-    private List<Observer> MyUpcomingRefereeObservers = new ArrayList<>();
-    private List<Observer> LeagueTeamsObservers = new ArrayList<>();
-    private List<Observer> MyUpcomingGameAvailabilitysObservers = new ArrayList<>();
-    private List<Observer> MyTeamsPlayerAvailabilitysObservers = new ArrayList<>();
+    private List<DBObserver> AllTeamsDBObservers = new ArrayList<>();
+    private List<DBObserver> MyLeaguesDBObservers = new ArrayList<>();
+    private List<DBObserver> AllLeagueDBObservers = new ArrayList<>();
+    private List<DBObserver> LeagueScoreDBObservers = new ArrayList<>();
+    private List<DBObserver> LeaguesFixturesDBObservers = new ArrayList<>();
+    private List<DBObserver> LeaguesStandingsDBObservers = new ArrayList<>();
+    private List<DBObserver> TeamsFixturesDBObservers = new ArrayList<>();
+    private List<DBObserver> TeamsScoresDBObservers = new ArrayList<>();
+    private List<DBObserver> MyUpcomingGamesDBObservers = new ArrayList<>();
+    private List<DBObserver> MyUpcomingRefereeDBObservers = new ArrayList<>();
+    private List<DBObserver> LeagueTeamsDBObservers = new ArrayList<>();
+    private List<DBObserver> MyUpcomingGameAvailabilityDBObservers = new ArrayList<>();
+    private List<DBObserver> MyTeamsPlayerAvailabilityDBObservers = new ArrayList<>();
 
     public static synchronized DataStore getInstance(Context context) {
 
@@ -93,23 +65,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     protected DataStore(Context context) {
         this.context = context;
-        AllTeamsObservers = new ArrayList<>();
-        MyLeaguesObservers = new ArrayList<>();
-        AllLeagueObservers = new ArrayList<>();
-        LeagueScoreObservers = new ArrayList<>();
-        LeaguesFixturesObservers = new ArrayList<>();
-        LeaguesStandingsObservers = new ArrayList<>();
-        TeamsFixturesObservers = new ArrayList<>();
-        TeamsScoresObservers = new ArrayList<>();
-        MyUpcomingGamesObservers = new ArrayList<>();
-        MyUpcomingRefereeObservers = new ArrayList<>();
-        LeagueTeamsObservers = new ArrayList<>();
-        MyUpcomingGameAvailabilitysObservers = new ArrayList<>();
-        MyTeamsPlayerAvailabilitysObservers = new ArrayList<>();
+        AllTeamsDBObservers = new ArrayList<>();
+        MyLeaguesDBObservers = new ArrayList<>();
+        AllLeagueDBObservers = new ArrayList<>();
+        LeagueScoreDBObservers = new ArrayList<>();
+        LeaguesFixturesDBObservers = new ArrayList<>();
+        LeaguesStandingsDBObservers = new ArrayList<>();
+        TeamsFixturesDBObservers = new ArrayList<>();
+        TeamsScoresDBObservers = new ArrayList<>();
+        MyUpcomingGamesDBObservers = new ArrayList<>();
+        MyUpcomingRefereeDBObservers = new ArrayList<>();
+        LeagueTeamsDBObservers = new ArrayList<>();
+        MyUpcomingGameAvailabilityDBObservers = new ArrayList<>();
+        MyTeamsPlayerAvailabilityDBObservers = new ArrayList<>();
         clearUserData();
     }
 
-    public static void newInstance(Context context) {
+    public synchronized static void newInstance(Context context) {
         sInstance = new DataStore(context);
     }
 
@@ -119,59 +91,267 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         this.user = user;
     }
 
-    public synchronized boolean isUserLoggedIn(){
+    public boolean isUserLoggedIn(){
         return user.isLoggedIn();
     }
 
-    public synchronized String getUserName(){
+    public String getUserName(){
         return user.getName();
     }
 
-    public synchronized String getUserTeam(){
+    public String getUserTeam(){
         return user.getTeamName();
     }
 
-    public synchronized int getUserTeamID(){
+    public int getUserTeamID(){
         return user.getTeamID();
     }
 
-    public synchronized int getUserTeamCaptainID() {
+    public int getUserTeamCaptainID() {
         return user.getCaptainID();
     }
 
-    public synchronized String getUserTeamCaptainName() {
+    public String getUserTeamCaptainName() {
         return user.getCaptainName();
     }
 
-    public synchronized int getUserTeamColorPrimary() {
+    public int getUserTeamColorPrimary() {
         return Color.parseColor(user.getTeamColorPrimary());
     }
 
-    public synchronized int getUserTeamColorSecondary() {
+    public int getUserTeamColorSecondary() {
         return Color.parseColor(user.getTeamColorSecondary());
     }
 
-    public synchronized boolean isUserCaptain(){
+    public boolean isUserCaptain(){
         return user.isCaptain();
     }
 
-    public synchronized boolean isReferee(){
+    public boolean isReferee(){
         return user.isReferee();
     }
 
-    public synchronized String userToJSON(){
+    public String userToJSON(){
         return user.toString();
     }
 
-    /**
-     * Data calls
-     */
+    public List<Team> getAllTeams(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.ALLTEAMS_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Team> output = Team.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Team> getLeagueTeams(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUETEAMS_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Team> output = Team.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<League> getMyLeagues(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYLEAGUES_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<League> output = League.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<League> getAllLeagues(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.ALLLEAGUES_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<League> output = League.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Match> getLeagueScores(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUESSCORE_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Match> getLeagueFixtures(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUESFIXTURES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<LeagueTeam> getLeagueStandings(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<LeagueTeam> output = LeagueTeam.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Match> getTeamFixtures(int leagueID, int teamID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.TEAMSFIXTURES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
+                new String[]{Integer.toString(leagueID), Integer.toString(teamID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Match> getTeamScores(int leagueID, int teamID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.TEAMSSCORES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
+                new String[]{Integer.toString(leagueID), Integer.toString(teamID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Match> getMyUpcomingGames(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public List<Match> getMyUpcomingRefereeGames(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
+
+    public boolean amIPlaying(int matchID){
+        boolean output = false;
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_MATCHID,
+                new String[]{Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output = cursor.getInt(1) == 1;
+            }
+        }
+        cursor.close();
+        return output;
+    }
+
+    public List<Player> getPlayersAvailability(int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_MATCHID,
+                new String[]{Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Player> output = Player.cursorToList(cursor);
+        cursor.close();
+        return output;
+    }
 
     /**
      * API Calls and thier callbacks
      */
 
-    public synchronized void loadAllTeams(){
+    public void loadAllTeams(){
         if(!loadedAllTeams) {
             new TeamList(this, context).execute();
             loadedAllTeams = true;
@@ -179,8 +359,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
 
-
-    public synchronized void loadLeaguesTeams(int leagueID){
+    public void loadLeaguesTeams(int leagueID){
         if(!loadedLeagueTeams.contains(leagueID)){
             new TeamList(this, leagueID, context).execute();
             loadedLeagueTeams.add(leagueID);
@@ -188,92 +367,104 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     }
 
-    public synchronized void teamListCallback(ResponseStatus successful, TeamList.CallType callType){
+    public void teamListCallback(ResponseStatus successful, TeamList.CallType callType, int leagueID){
         if(successful.getStatus()){
             Log.d(TAG, "The call TeamList was successful");
+            switch (callType){
+                case GETLEAGUETEAMS:
+                    notifyLeagueTeamsDBObservers(leagueID);
+                    break;
+                case GETALLTEAMS:
+                    notifyAllTeamsDBObservers(null);
+                    break;
+            }
         } else {
             Log.d(TAG, "The call TeamList was not successful");
         }
     }
 
-    public synchronized void loadMyLeagues(){
+    public void loadMyLeagues(){
         if(!loadedMyLeagues){
             new TeamLeagues(this, user.getTeamID(), context).execute();
             loadedMyLeagues = true;
         }
     }
 
-    public synchronized void teamLeaguesCallback(ResponseStatus responseStatus){
+    public void teamLeaguesCallback(ResponseStatus responseStatus){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call TeamLeagues was successful, notify my observers");
+            Log.d(TAG, "The call TeamLeagues was successful, notify my DBObservers");
+            notifyMyLeaguesDBObservers(null);
         } else{
             Log.d(TAG, "The call TeamLeagues was not successful");
         }
     }
 
-    public synchronized void loadAllLeagues(){
+    public void loadAllLeagues(){
         if(!loadedAllLeagues){
             new LeagueList(this, context).execute();
             loadedAllLeagues = false;
         }
     }
 
-    public synchronized void leagueListCallback(ResponseStatus responseStatus){
+    public void leagueListCallback(ResponseStatus responseStatus){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call LeagueList was successful, notify my observers");
+            Log.d(TAG, "The call LeagueList was successful, notify my DBObservers");
+            notifyAllLeagueDBObservers(null);
         } else{
             Log.d(TAG, "The call LeagueList was not successful");
         }
     }
 
-    public synchronized void loadLeagueScores(int leagueID){
+    public void loadLeagueScores(int leagueID){
         if(!loadedLeagueScores.contains(leagueID)) {
             new LeagueScores(this, context, leagueID).execute();
             loadedLeagueScores.add(leagueID);
         }
     }
 
-    @Override
-    public synchronized void leagueScoresCallback(ResponseStatus responseStatus, int leagueID){
+    public void leagueScoresCallback(ResponseStatus responseStatus, int leagueID){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was successful, notify my observers");
+            Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was successful, notify my DBObservers");
+            notifyLeagueScoreDBObservers(leagueID);
         } else{
             Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was not successful");
         }
     }
 
-    public synchronized void loadLeagueFixtures(int leagueID){
+    public void loadLeagueFixtures(int leagueID){
         if(!loadedLeagueFixtures.contains(leagueID)) {
             new LeagueSchedule(this, context, leagueID).execute();
             loadedLeagueFixtures.add(leagueID);
         }
     }
 
-    @Override
-    public synchronized void leagueScheduleCallback(ResponseStatus responseStatus, int leagueID){
+    public void leagueScheduleCallback(ResponseStatus responseStatus, int leagueID){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was successful, notify my observers");
+            Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was successful, notify my DBObservers");
+            notifyLeaguesFixturesDBObservers(leagueID);
+            notifyMyUpcomingGamesDBObservers(null);
         } else{
             Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was not successful");
         }
     }
 
-    public synchronized void loadLeagueStandings(int leagueID){
+    public void loadLeagueStandings(int leagueID){
         if(!loadedLeagueStandings.contains(leagueID)) {
             new LeagueView(this, context, leagueID).execute();
             loadedLeagueStandings.add(leagueID);
         }
     }
-    @Override
-    public synchronized void leagueViewCallback(ResponseStatus responseStatus, int leagueID) {
+
+    public void leagueViewCallback(ResponseStatus responseStatus, int leagueID) {
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call LeagueStandings for leagueID " + leagueID + " was successful, notify my observers");
+            Log.d(TAG, "The call LeagueStandings for leagueID " + leagueID + " was successful, notify my DBObservers");
+            notifyLeaguesStandingsDBObservers(leagueID);
         } else{
             Log.d(TAG, "The call LeagueStandings for leagueID " + leagueID + " was not successful");
         }
     }
 
-    public synchronized void loadTeamsFixtures(int leagueID, int teamID){
+    public void loadTeamsFixtures(int leagueID, int teamID){
         ArrayList<Integer> integerArrayList = loadedTeamsFixtures.get(leagueID);
         if(integerArrayList == null){
             integerArrayList = new ArrayList<>();
@@ -285,16 +476,16 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    @Override
-    public synchronized void teamScheduleCallback(ResponseStatus responseStatus, int leagueID, int teamID){
+    public void teamScheduleCallback(ResponseStatus responseStatus, int leagueID, int teamID){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call TeamSchedule for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my observers");
+            Log.d(TAG, "The call TeamSchedule for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my DBObservers");
+            notifyTeamsFixturesDBObservers(new Tuple<>(leagueID,teamID));
         } else{
             Log.d(TAG, "The call TeamSchedule for leagueID " + leagueID + " for teamID "+ teamID+" was not successful");
         }
     }
 
-    public synchronized void loadTeamsLeagueScore(int leagueID, int teamID){
+    public void loadTeamsLeagueScore(int leagueID, int teamID){
         ArrayList<Integer> integerArrayList = loadedTeamsScore.get(leagueID);
         if(integerArrayList == null){
             integerArrayList = new ArrayList<>();
@@ -306,71 +497,83 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    @Override
-    public synchronized void teamScoresCallback(ResponseStatus responseStatus, int leagueID, int teamID){
+    public void teamScoresCallback(ResponseStatus responseStatus, int leagueID, int teamID){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call TeamScores for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my observers");
+            Log.d(TAG, "The call TeamScores for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my DBObservers");
+            notifyTeamsScoresDBObservers(new Tuple<>(leagueID,teamID));
         } else{
             Log.d(TAG, "The call TeamScores for leagueID " + leagueID + " for teamID "+ teamID+" was not successful");
         }
     }
 
-    public synchronized void loadMyUpcomingGames(){
+    public void loadMyUpcomingGames(){
 
     }
 
-    public synchronized void loadMyUpcomingRefGames(){
+    public void loadMyUpcomingRefGames(){
         if(!loadedRefGames) {
             new RefGames(this, context).execute();
             loadedRefGames = true;
         }
     }
 
-    @Override
-    public synchronized void refGamesCallback(ResponseStatus responseStatus){
+    public void refGamesCallback(ResponseStatus responseStatus){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call RefGames was successful, notify my observers");
+            Log.d(TAG, "The call RefGames was successful, notify my DBObservers");
+            notifyMyUpcomingRefereeDBObservers(null);
         } else{
             Log.d(TAG, "The call RefGames was not successful");
         }
     }
 
-    public synchronized void loadMyAvailability(int matchID){
+    public void loadMyAvailability(int matchID){
         if(!myMatchesAvailability.contains(matchID)){
             new UpAvailability(this,context, matchID).execute();
             myMatchesAvailability.add(matchID);
         }
     }
 
-    public synchronized void setMyAvailability(boolean isPlaying, int matchID){
+    public void setMyAvailability(boolean isPlaying, int matchID){
         if(!myMatchesAvailability.contains(matchID)){
             myMatchesAvailability.add(matchID);
         }
         new UpAvailability(this, context, isPlaying ? 1 : 0, matchID).execute();
     }
 
-    public synchronized void setPlayersAvailability(boolean isPlaying, int userID, int matchID){
+    public void setPlayersAvailability(boolean isPlaying, int userID, int matchID){
         new UpAvailability(this, context, isPlaying ? 1 : 0, matchID, userID).execute();
     }
 
-    public synchronized void upAvailabilityCallback(ResponseStatus responseStatus, boolean isPlaying, UpAvailability.CallType callType, int matchID, int userID){
+    public void upAvailabilityCallback(ResponseStatus responseStatus, boolean isPlaying, UpAvailability.CallType callType, int matchID, int userID){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call UpAvailability was successful, notify my observers");
+            Log.d(TAG, "The call UpAvailability was successful, notify my DBObservers");
+            switch(callType){
+                case GETMYAVAILABILITY:
+                    notifyMyUpcomingGameAvailabilitysDBObservers(matchID);
+                    break;
+                case SETMYAVAILABILITY:
+                    notifyMyUpcomingGameAvailabilitysDBObservers(matchID);
+                    break;
+                case SETPLAYERSAVAILABILITY:
+                    notifyMyUpcomingGameAvailabilitysDBObservers(new Tuple<>(matchID,userID));
+                    break;
+            }
         } else{
             Log.d(TAG, "The call UpAvailability was not successful");
         }
     }
 
-    public synchronized void loadMatchPlayersAvailability(int matchID){
+    public void loadMatchPlayersAvailability(int matchID){
         if(!matchesAvailability.contains(matchID)){
             new TeamAvailability(this, context, matchID).execute();
             matchesAvailability.add(matchID);
         }
     }
 
-    public synchronized void teamAvailabilityCallback(ResponseStatus responseStatus, int matchID){
+    public void teamAvailabilityCallback(ResponseStatus responseStatus, int matchID){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call teamAvailability for matchID " + matchID + " was successful, notify my observers");
+            Log.d(TAG, "The call teamAvailability for matchID " + matchID + " was successful, notify my DBObservers");
+            notifyMyTeamsPlayerAvailabilitysDBObservers(matchID);
         } else{
             Log.d(TAG, "The call teamAvailability for matchID " + matchID + " was not successful");
         }
@@ -433,261 +636,181 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     /**
-     * Observers registration
+     * DBObservers registration
      */
 
-    public void registerAllTeamsObservers(Observer observer) {
-        AllTeamsObservers.add(observer);
+    public synchronized void registerAllTeamsDBObservers(DBObserver dbObserver) {
+        AllTeamsDBObservers.add(dbObserver);
     }
 
-    public void registerMyLeaguesObserver(Observer observer) {
-        MyLeaguesObservers.add(observer);
+    public synchronized void registerMyLeaguesDBObserver(DBObserver dbObserver) {
+        MyLeaguesDBObservers.add(dbObserver);
     }
 
-    public void registerAllLeagueObserver(Observer observer) {
-        AllLeagueObservers.add(observer);
+    public synchronized void registerAllLeagueDBObserver(DBObserver dbObserver) {
+        AllLeagueDBObservers.add(dbObserver);
     }
 
-    public void registerLeagueScoreObserver(Observer observer) {
-        LeagueScoreObservers.add(observer);
+    public synchronized void registerLeagueScoreDBObserver(DBObserver dbObserver) {
+        LeagueScoreDBObservers.add(dbObserver);
     }
 
-    public void registerLeaguesFixturesObserver(Observer observer) {
-        LeaguesFixturesObservers.add(observer);
+    public synchronized void registerLeaguesFixturesDBObserver(DBObserver dbObserver) {
+        LeaguesFixturesDBObservers.add(dbObserver);
     }
 
-    public void registerLeaguesStandingsObserver(Observer observer) {
-        LeaguesStandingsObservers.add(observer);
+    public synchronized void registerLeaguesStandingsDBObserver(DBObserver dbObserver) {
+        LeaguesStandingsDBObservers.add(dbObserver);
     }
 
-    public void registerTeamsFixturesObserver(Observer observer) {
-        TeamsFixturesObservers.add(observer);
+    public synchronized void registerTeamsFixturesDBObserver(DBObserver dbObserver) {
+        TeamsFixturesDBObservers.add(dbObserver);
     }
 
-    public void registerTeamsScoresObserver(Observer observer) {
-        TeamsScoresObservers.add(observer);
+    public synchronized void registerTeamsScoresDBObserver(DBObserver dbObserver) {
+        TeamsScoresDBObservers.add(dbObserver);
     }
 
-    public void registerMyUpcomingGamesObserver(Observer observer) {
-        MyUpcomingGamesObservers.add(observer);
+    public synchronized void registerMyUpcomingGamesDBObserver(DBObserver dbObserver) {
+        MyUpcomingGamesDBObservers.add(dbObserver);
     }
 
-    public void registerMyUpcomingRefereeObserver(Observer observer) {
-        MyUpcomingRefereeObservers.add(observer);
+    public synchronized void registerMyUpcomingRefereeDBObserver(DBObserver dbObserver) {
+        MyUpcomingRefereeDBObservers.add(dbObserver);
     }
 
-    public void registerLeagueTeamsObserver(Observer observer) {
-        LeagueTeamsObservers.add(observer);
+    public synchronized void registerLeagueTeamsDBObserver(DBObserver dbObserver) {
+        LeagueTeamsDBObservers.add(dbObserver);
     }
 
-    public void registerMyUpcomingGameAvailabilitysObserver(Observer observer) {
-        MyUpcomingGameAvailabilitysObservers.add(observer);
+    public synchronized void registerMyUpcomingGameAvailabilitysDBObserver(DBObserver dbObserver) {
+        MyUpcomingGameAvailabilityDBObservers.add(dbObserver);
     }
 
-    public void registerMyTeamsPlayerAvailabilitysObserver(Observer observer) {
-        MyTeamsPlayerAvailabilitysObservers.add(observer);
+    public synchronized void registerMyTeamsPlayerAvailabilitysDBObserver(DBObserver dbObserver) {
+        MyTeamsPlayerAvailabilityDBObservers.add(dbObserver);
     }
 
     /**
-     * Observers unregistration
+     * DBObservers unregistration
      */
 
-    public void unregisterAllTeamsObservers(Observer observer) {
-        AllTeamsObservers.remove(observer);
+    public synchronized void unregisterAllTeamsDBObservers(DBObserver dbObserver) {
+        AllTeamsDBObservers.remove(dbObserver);
     }
 
-    public void unregisterMyLeaguesObserver(Observer observer) {
-        MyLeaguesObservers.remove(observer);
+    public synchronized void unregisterMyLeaguesDBObserver(DBObserver dbObserver) {
+        MyLeaguesDBObservers.remove(dbObserver);
     }
 
-    public void unregisterAllLeagueObserver(Observer observer) {
-        AllLeagueObservers.remove(observer);
+    public synchronized void unregisterAllLeagueDBObserver(DBObserver dbObserver) {
+        AllLeagueDBObservers.remove(dbObserver);
     }
 
-    public void unregisterLeagueScoreObserver(Observer observer) {
-        LeagueScoreObservers.remove(observer);
+    public synchronized void unregisterLeagueScoreDBObserver(DBObserver dbObserver) {
+        LeagueScoreDBObservers.remove(dbObserver);
     }
 
-    public void unregisterLeaguesFixturesObserver(Observer observer) {
-        LeaguesFixturesObservers.remove(observer);
+    public synchronized void unregisterLeaguesFixturesDBObserver(DBObserver dbObserver) {
+        LeaguesFixturesDBObservers.remove(dbObserver);
     }
 
-    public void unregisterLeaguesStandingsObserver(Observer observer) {
-        LeaguesStandingsObservers.remove(observer);
+    public synchronized void unregisterLeaguesStandingsDBObserver(DBObserver dbObserver) {
+        LeaguesStandingsDBObservers.remove(dbObserver);
     }
 
-    public void unregisterTeamsFixturesObserver(Observer observer) {
-        TeamsFixturesObservers.remove(observer);
+    public synchronized void unregisterTeamsFixturesDBObserver(DBObserver dbObserver) {
+        TeamsFixturesDBObservers.remove(dbObserver);
     }
 
-    public void unregisterTeamsScoresObserver(Observer observer) {
-        TeamsScoresObservers.remove(observer);
+    public synchronized void unregisterTeamsScoresDBObserver(DBObserver dbObserver) {
+        TeamsScoresDBObservers.remove(dbObserver);
     }
 
-    public void unregisterMyUpcomingGamesObserver(Observer observer) {
-        MyUpcomingGamesObservers.remove(observer);
+    public synchronized void unregisterMyUpcomingGamesDBObserver(DBObserver dbObserver) {
+        MyUpcomingGamesDBObservers.remove(dbObserver);
     }
 
-    public void unregisterMyUpcomingRefereeObserver(Observer observer) {
-        MyUpcomingRefereeObservers.remove(observer);
+    public synchronized void unregisterMyUpcomingRefereeDBObserver(DBObserver dbObserver) {
+        MyUpcomingRefereeDBObservers.remove(dbObserver);
     }
 
-    public void unregisterLeagueTeamsObserver(Observer observer) {
-        LeagueTeamsObservers.remove(observer);
+    public synchronized void unregisterLeagueTeamsDBObserver(DBObserver dbObserver) {
+        LeagueTeamsDBObservers.remove(dbObserver);
     }
 
-    public void unregisterMyUpcomingGameAvailabilitysObserver(Observer observer) {
-        MyUpcomingGameAvailabilitysObservers.remove(observer);
+    public synchronized void unregisterMyUpcomingGameAvailabilitysDBObserver(DBObserver dbObserver) {
+        MyUpcomingGameAvailabilityDBObservers.remove(dbObserver);
     }
 
-    public void unregisterMyTeamsPlayerAvailabilitysObserver(Observer observer) {
-        MyTeamsPlayerAvailabilitysObservers.remove(observer);
+    public synchronized void unregisterMyTeamsPlayerAvailabilitysDBObserver(DBObserver dbObserver) {
+        MyTeamsPlayerAvailabilityDBObservers.remove(dbObserver);
     }
 
     /**
-     * Observer notification
+     * DBObserver notification
      */
-
-    private void notifyAllTeamsObservers(final Object data) {
-        for (final Observer observer : AllTeamsObservers) {
+    
+    private void notifyDBObservers(List<DBObserver> dbObservers, final String tableName, final Object data){
+        for (final DBObserver dbObserver : dbObservers) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    observer.update(null, data);
+                    dbObserver.notify(tableName, data);
                 }
             }).start();
         }
     }
 
-    private void notifyMyLeaguesObservers(final Object data) {
-        for (final Observer observer : MyLeaguesObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyAllTeamsDBObservers(final Object data) {
+        notifyDBObservers(AllTeamsDBObservers, DBProviderContract.ALLTEAMS_TABLE_NAME, data);
     }
 
-    private void notifyAllLeagueObservers(final Object data) {
-        for (final Observer observer : AllLeagueObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyMyLeaguesDBObservers(final Object data) {
+        notifyDBObservers(MyLeaguesDBObservers, DBProviderContract.MYLEAGUES_TABLE_NAME, data);
     }
 
-    private void notifyLeagueScoreObservers(final Object data) {
-        for (final Observer observer : LeagueScoreObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyAllLeagueDBObservers(final Object data) {
+        notifyDBObservers(AllLeagueDBObservers, DBProviderContract.ALLLEAGUES_TABLE_NAME, data);
     }
 
-    private void notifyLeaguesFixturesObservers(final Object data) {
-        for (final Observer observer : LeaguesFixturesObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyLeagueScoreDBObservers(final Object data) {
+        notifyDBObservers(LeagueScoreDBObservers, DBProviderContract.LEAGUESSCORE_TABLE_NAME, data);
     }
 
-    private void notifyLeaguesStandingsObservers(final Object data) {
-        for (final Observer observer : LeaguesStandingsObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyLeaguesFixturesDBObservers(final Object data) {
+        notifyDBObservers(LeaguesFixturesDBObservers, DBProviderContract.LEAGUESFIXTURES_TABLE_NAME, data);
     }
 
-    private void notifyTeamsFixturesObservers(final Object data) {
-        for (final Observer observer : TeamsFixturesObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyLeaguesStandingsDBObservers(final Object data) {
+        notifyDBObservers(LeaguesStandingsDBObservers, DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME, data);
     }
 
-    private void notifyTeamsScoresObservers(final Object data) {
-        for (final Observer observer : TeamsScoresObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyTeamsFixturesDBObservers(final Object data) {
+        notifyDBObservers(TeamsFixturesDBObservers, DBProviderContract.TEAMSFIXTURES_TABLE_NAME, data);
     }
 
-    private void notifyMyUpcomingGamesObservers(final Object data) {
-        for (final Observer observer : MyUpcomingGamesObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyTeamsScoresDBObservers(final Object data) {
+        notifyDBObservers(TeamsScoresDBObservers, DBProviderContract.TEAMSSCORES_TABLE_NAME, data);
     }
 
-    private void notifyMyUpcomingRefereeObservers(final Object data) {
-        for (final Observer observer : MyUpcomingRefereeObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyMyUpcomingGamesDBObservers(final Object data) {
+        notifyDBObservers(MyUpcomingGamesDBObservers, DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, data);
     }
 
-    private void notifyLeagueTeamsObservers(final Object data) {
-        for (final Observer observer : LeagueTeamsObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyMyUpcomingRefereeDBObservers(final Object data) {
+        notifyDBObservers(MyUpcomingRefereeDBObservers, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, data);
     }
 
-    private void notifyMyUpcomingGameAvailabilitysObservers(final Object data) {
-        for (final Observer observer : MyUpcomingGameAvailabilitysObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyLeagueTeamsDBObservers(final Object data) {
+        notifyDBObservers(LeagueTeamsDBObservers, DBProviderContract.LEAGUETEAMS_TABLE_NAME, data);
     }
 
-    private void notifyMyTeamsPlayerAvailabilitysObservers(final Object data) {
-        for (final Observer observer : MyTeamsPlayerAvailabilitysObservers) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    observer.update(null, data);
-                }
-            }).start();
-        }
+    private void notifyMyUpcomingGameAvailabilitysDBObservers(final Object data) {
+        notifyDBObservers(MyUpcomingGameAvailabilityDBObservers, DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, data);
+    }
+
+    private void notifyMyTeamsPlayerAvailabilitysDBObservers(final Object data) {
+        notifyDBObservers(MyTeamsPlayerAvailabilityDBObservers, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, data);
     }
 }

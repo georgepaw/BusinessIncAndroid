@@ -1,12 +1,7 @@
 package company.businessinc.bathtouch.data;
 
 import android.net.Uri;
-
-import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.Player;
-import company.businessinc.dataModels.Team;
+import company.businessinc.dataModels.*;
 
 /**
  * Created by Grzegorz on 27/01/2015.

@@ -2,18 +2,12 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.text.format.DateFormat;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by gp on 18/11/14.
@@ -343,5 +337,16 @@ public class Match {
             }
         });
         return data;
+    }
+
+    public static List<Match> cursorToList(Cursor cursor){
+        List<Match> output = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output.add(new Match(cursor));
+                cursor.moveToNext();
+            }
+        }
+        return output;
     }
 }

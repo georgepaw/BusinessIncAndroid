@@ -2,7 +2,9 @@ package company.businessinc.endpoints;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
+import company.businessinc.dataModels.ResponseStatus;
+import company.businessinc.networking.APICall;
+import company.businessinc.networking.APICallType;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -10,10 +12,6 @@ import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import company.businessinc.dataModels.ResponseStatus;
-import company.businessinc.networking.APICall;
-import company.businessinc.networking.APICallType;
 
 /**
  * Created by gp on 18/11/14.

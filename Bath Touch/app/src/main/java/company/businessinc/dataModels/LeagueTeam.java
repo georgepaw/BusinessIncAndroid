@@ -2,10 +2,11 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gp on 18/11/14.
@@ -241,6 +242,17 @@ public class LeagueTeam {
 
     public void setPointsAgainst(Integer pointsAgainst) {
         this.pointsAgainst = pointsAgainst;
+    }
+
+    public static List<LeagueTeam> cursorToList(Cursor cursor){
+        List<LeagueTeam> output = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output.add(new LeagueTeam(cursor));
+                cursor.moveToNext();
+            }
+        }
+        return output;
     }
 
     public ContentValues toContentValues() {

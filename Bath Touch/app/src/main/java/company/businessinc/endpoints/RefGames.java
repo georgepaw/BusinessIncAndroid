@@ -3,23 +3,19 @@ package company.businessinc.endpoints;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.SQLiteManager;
+import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.ResponseStatus;
+import company.businessinc.networking.APICall;
+import company.businessinc.networking.APICallType;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
-
-import company.businessinc.dataModels.Match;
-import company.businessinc.networking.APICall;
-import company.businessinc.networking.APICallType;
 
 /**
  * Created by gp on 18/11/14.
