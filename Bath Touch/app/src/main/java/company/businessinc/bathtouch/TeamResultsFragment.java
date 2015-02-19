@@ -30,8 +30,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import company.businessinc.bathtouch.data.DBProvider;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.Team;
 
 public class TeamResultsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 

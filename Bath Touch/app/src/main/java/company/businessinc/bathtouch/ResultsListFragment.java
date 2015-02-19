@@ -31,6 +31,7 @@ import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 
 
 /**
@@ -52,6 +53,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
     private String mLeagueName;
     private League mLeague;
     private List<Match> leagueScores;
+    private ArrayList<Team> allTeams = new ArrayList<Team>();
     private String teamName;
 
 
@@ -76,6 +78,8 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             getLoaderManager().initLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
+
         } else {
             getLoaderManager().initLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
         }
@@ -107,6 +111,8 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             getLoaderManager().restartLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
             getLoaderManager().restartLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
+            getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
+
         } else {
             getLoaderManager().restartLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
         }
@@ -135,6 +141,8 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
                 return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null,
                         DBProviderContract.SELECTION_LEAGUEID, new String[]{Integer.toString(mLeagueID)}, null);
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+                return new CursorLoader(getActivity(), DBProviderContract.ALLTEAMS_TABLE_CONTENTURI, null, null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -154,6 +162,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
 
                     if(leagueScores.size() > 0){
                         teamName = "";
+                        //TODO change this to teamID
                         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
                             teamName = DataStore.getInstance(getActivity()).getUserTeam();
                         }
@@ -174,6 +183,18 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
                 break;
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
                 break;
+            case DBProviderContract.ALLTEAMS_URL_QUERY:
+                loadAllTeams(data);
+                mAdapter.addAllTeams(allTeams);
+        }
+    }
+
+    public void loadAllTeams(Cursor data){
+        if(data.moveToFirst()){
+            while(!data.isAfterLast()){
+                allTeams.add(new Team(data));
+                data.moveToNext();
+            }
         }
     }
 
