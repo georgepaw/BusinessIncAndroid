@@ -2,14 +2,10 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,22 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.amulyakhare.textdrawable.TextDrawable;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
@@ -40,9 +23,13 @@ import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class TeamOverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        SwipeRefreshLayout.OnRefreshListener{
+
+public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeRefreshLayout.OnRefreshListener{
 
     private TeamOverviewCallbacks mCallbacks;
     private View mLayout;
@@ -111,21 +98,21 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         Log.d("TeamOverviewFragment", "onCreateView called");
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
             if(DataStore.getInstance(getActivity()).isReferee()) {
-                getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
+                DataStore.getInstance(getActivity()).registerMyUpcomingRefereeDBObserver(this);
             }
             if(!DataStore.getInstance(getActivity()).isUserCaptain()){
-                getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY, null, this);
+                DataStore.getInstance(getActivity()).registerMyUpcomingGameAvailabilitysDBObserver(this);
             }
-            getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
-            getLoaderManager().initLoader(DBProviderContract.MYLEAGUES_URL_QUERY, null, this);
-            getLoaderManager().initLoader(DBProviderContract.TEAMSSCORES_URL_QUERY, null, this);
-            getLoaderManager().initLoader(DBProviderContract.TEAMSFIXTURES_URL_QUERY, null, this);
-            getLoaderManager().initLoader(DBProviderContract.LEAGUETEAMS_URL_QUERY, null, this);
+            DataStore.getInstance(getActivity()).registerMyUpcomingGamesDBObserver(this);
+            DataStore.getInstance(getActivity()).registerMyLeaguesDBObserver(this);
+            DataStore.getInstance(getActivity()).registerTeamsScoresDBObserver(this);
+            DataStore.getInstance(getActivity()).registerTeamsFixturesDBObserver(this);
+            DataStore.getInstance(getActivity()).registerLeagueTeamsDBObserver(this);
         } else {
-            getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
-            getLoaderManager().initLoader(DBProviderContract.LEAGUESSCORE_URL_QUERY, null, this);
+            DataStore.getInstance(getActivity()).registerAllLeagueDBObserver(this);
+            DataStore.getInstance(getActivity()).registerLeagueScoreDBObserver(this);
         }
-        getLoaderManager().initLoader(DBProviderContract.LEAGUESSTANDINGS_URL_QUERY, null, this);
+        DataStore.getInstance(getActivity()).registerLeaguesStandingsDBObserver(this);
         mLayout = inflater.inflate(R.layout.fragment_team_overview, container, false);
 
         mSwipeRefresh = (SwipeRefreshLayout) (mLayout.findViewById(R.id.fragment_team_overview_swiperefresh));
@@ -192,44 +179,32 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         mCallbacks = null;
     }
 
-    //Invoked when the cursor loader is created
     @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        switch (loaderID) {
-            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.MYLEAGUES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.MYLEAGUES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSTANDINGS_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.LEAGUESSCORE_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.LEAGUESSCORE_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.TEAMSSCORES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.LEAGUETEAMS_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(getActivity(), DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI, null, null, null, null);
-            default:
-                // An invalid id was passed in
-                return null;
+    public void onDestroy(){
+        //prevent mem leaks, unregister
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+            if(DataStore.getInstance(getActivity()).isReferee()) {
+                DataStore.getInstance(getActivity()).unregisterMyUpcomingRefereeDBObserver(this);
+            }
+            if(!DataStore.getInstance(getActivity()).isUserCaptain()){
+                DataStore.getInstance(getActivity()).unregisterMyUpcomingGameAvailabilitysDBObserver(this);
+            }
+            DataStore.getInstance(getActivity()).unregisterMyUpcomingGamesDBObserver(this);
+            DataStore.getInstance(getActivity()).unregisterMyLeaguesDBObserver(this);
+            DataStore.getInstance(getActivity()).unregisterTeamsScoresDBObserver(this);
+            DataStore.getInstance(getActivity()).unregisterTeamsFixturesDBObserver(this);
+            DataStore.getInstance(getActivity()).unregisterLeagueTeamsDBObserver(this);
+        } else {
+            DataStore.getInstance(getActivity()).unregisterAllLeagueDBObserver(this);
+            DataStore.getInstance(getActivity()).unregisterLeagueScoreDBObserver(this);
         }
+        DataStore.getInstance(getActivity()).unregisterLeaguesStandingsDBObserver(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public void notify(String tableName, Object data) {
+
     }
 
     //query has finished
@@ -640,11 +615,6 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         this.teamOverviewLeagueTeam = teamOverviewLeagueTeam;
         this.teamOverviewLeague = teamOverviewLeague;
         refreshPage();
-    }
-
-    //when data gets updated, first reset everything
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     @Override
