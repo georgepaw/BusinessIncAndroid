@@ -96,7 +96,6 @@ public class SQLiteManager {
 
     public synchronized Cursor query(Context context, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit){
         Cursor cursor = openDatabase().query(table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
-        closeDatabase();
         if(cursor.getCount() < 1){ //the cursor is empty, tell the data store to load the data
             switch (table) {
                 case DBProviderContract.ALLTEAMS_TABLE_NAME:

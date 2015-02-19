@@ -48,7 +48,7 @@ public class LeagueSchedule extends AsyncTask<Void, Void, ResponseStatus> {
         LinkedList<ContentValues> cV = new LinkedList<>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
-                ContentValues dis = new Match(jsonArray.getJSONObject(i)).toContentValues();
+                ContentValues dis = new Match(leagueID, jsonArray.getJSONObject(i)).toContentValues();
                 dis.put(League.KEY_LEAGUEID, leagueID);
                 cV.add(dis);
             } catch (Exception e){

@@ -98,11 +98,9 @@ public class DBProviderContract {
     public static final String CREATE_ALLLEAGUES_TABLE = CREATE_TABLE + " " + ALLLEAGUES_TABLE_NAME + "( " + League.CREATE_TABLE + " )";
 
     public static final String CREATE_LEAGUESSCORE_TABLE = CREATE_TABLE + " " + LEAGUESSCORE_TABLE_NAME + "( " +
-                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Match.CREATE_TABLE + " )";
 
     public static final String CREATE_LEAGUESFIXTURES_TABLE = CREATE_TABLE + " " + LEAGUESFIXTURES_TABLE_NAME + "( " +
-                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Match.CREATE_TABLE + " )";
 
     public static final String CREATE_LEAGUESSTANDINGS_TABLE = CREATE_TABLE + " " + LEAGUESSTANDINGS_TABLE_NAME + "( " +
@@ -110,17 +108,14 @@ public class DBProviderContract {
                                                                LeagueTeam.CREATE_TABLE + " )";
 
     public static final String CREATE_TEAMSFIXTURES_TABLE = CREATE_TABLE + " " + TEAMSFIXTURES_TABLE_NAME + "( " +
-                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Team.KEY_TEAMID + "\t" + INTEGER + "," +
                                                                 Match.CREATE_TABLE + " )";
 
     public static final String CREATE_TEAMSSCORES_TABLE = CREATE_TABLE + " " + TEAMSSCORES_TABLE_NAME + "( " +
-                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Team.KEY_TEAMID + "\t" + INTEGER + "," +
                                                                 Match.CREATE_TABLE + " )";
 
     public static final String CREATE_MYUPCOMINGGAMES_TABLE = CREATE_TABLE + " " + MYUPCOMINGGAMES_TABLE_NAME + "( " +
-                                                                League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Match.CREATE_TABLE + " )";
 
     public static final String CREATE_MYUPCOMINGREFEREEGAMES_TABLE = CREATE_TABLE + " " + MYUPCOMINGREFEREEGAMES_TABLE_NAME + "( " +

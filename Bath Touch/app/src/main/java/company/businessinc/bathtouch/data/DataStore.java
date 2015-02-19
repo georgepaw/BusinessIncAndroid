@@ -148,6 +148,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Team> output = Team.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -164,6 +165,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Team> output = Team.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -180,6 +182,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<League> output = League.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -196,6 +199,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<League> output = League.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -212,6 +216,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Match> output = Match.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -228,6 +233,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Match> output = Match.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -244,6 +250,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<LeagueTeam> output = LeagueTeam.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -260,6 +267,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Match> output = Match.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -276,6 +284,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Match> output = Match.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -292,6 +301,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Match> output = Match.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -308,6 +318,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Match> output = Match.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -328,6 +339,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             }
         }
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -344,6 +356,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
         List<Player> output = Player.cursorToList(cursor);
         cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
@@ -610,6 +623,19 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         myMatchesAvailability = new ArrayList<>();
         matchesAvailability = new ArrayList<>();
         loadedLeagueTeams = new ArrayList<>();
+        notifyAllTeamsDBObservers(null);
+        notifyMyLeaguesDBObservers(null);
+        notifyAllLeagueDBObservers(null);
+        notifyLeagueScoreDBObservers(null);
+        notifyLeaguesFixturesDBObservers(null);
+        notifyLeaguesStandingsDBObservers(null);
+        notifyTeamsFixturesDBObservers(null);
+        notifyTeamsScoresDBObservers(null);
+        notifyMyUpcomingGamesDBObservers(null);
+        notifyMyUpcomingRefereeDBObservers(null);
+        notifyLeagueTeamsDBObservers(null);
+        notifyMyUpcomingGameAvailabilitysDBObservers(null);
+        notifyMyTeamsPlayerAvailabilitysDBObservers(null);
     }
 
     public synchronized void refreshMatchAvailabilities(){

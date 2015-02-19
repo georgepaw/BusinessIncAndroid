@@ -54,7 +54,7 @@ public class TeamSchedule extends AsyncTask<Void, Void, ResponseStatus> {
         LinkedList<ContentValues> cV = new LinkedList<>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
-                Match m = new Match(jsonArray.getJSONObject(i));
+                Match m = new Match(leagueID, jsonArray.getJSONObject(i));
                 ContentValues dis = m.toContentValues();
                 dis.put(League.KEY_LEAGUEID, leagueID);
                 //check is this is a game that current user would play in, if yes add it to upcoming games

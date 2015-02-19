@@ -32,6 +32,8 @@ import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,7 +60,7 @@ public class MainActivity extends ActionBarActivity
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        DBObserver{
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -75,7 +77,6 @@ public class MainActivity extends ActionBarActivity
 
     private Match nextRefMatch;
     private Match nextPlayingMatch;
-    private int nextPlayingMatchLeagueID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,13 +97,13 @@ public class MainActivity extends ActionBarActivity
         } else if (mSharedPreferences.contains(COOKIE)) {
             APICall.setCookie(mSharedPreferences.getString(COOKIE, ""));
         }
-        if (mSharedPreferences.getBoolean(USERLOGGEDIN, false) != DataStore.getInstance(this).isUserLoggedIn()) {
-            try {
-                DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
-            } catch (JSONException e) {
-                Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
-            }
+
+        try {
+            DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
+        } catch (JSONException e) {
+            Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
         }
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -273,9 +274,11 @@ public class MainActivity extends ActionBarActivity
 
         if (DataStore.getInstance(this).isUserLoggedIn()) {
             if (DataStore.getInstance(this).isReferee()) {
-                getSupportLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
+                DataStore.getInstance(this).registerMyUpcomingRefereeDBObserver(this);
+                getNextRefMatch();
             }
-            getSupportLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
+            DataStore.getInstance(this).registerMyUpcomingGamesDBObserver(this);
+            getNextPlayingMatch();
         }
 
 
@@ -336,10 +339,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -352,8 +352,6 @@ public class MainActivity extends ActionBarActivity
                     intent.putExtra(Match.KEY_TEAMONE, nextRefMatch.getTeamOne());
                     intent.putExtra(Match.KEY_TEAMTWO, nextRefMatch.getTeamTwo());
                     startActivity(intent);
-                } else {
-                    //This card should be gone
                 }
                 break;
             case HomePageAdapter.NEXTGAME:
@@ -367,7 +365,7 @@ public class MainActivity extends ActionBarActivity
                     intent.putExtra(Match.KEY_PLACE, nextPlayingMatch.getPlace());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     intent.putExtra(Match.KEY_DATETIME, sdf.format(nextPlayingMatch.getDateTime()));
-                    intent.putExtra(League.KEY_LEAGUEID, nextPlayingMatchLeagueID);
+                    intent.putExtra(Match.KEY_LEAGUEID, nextPlayingMatch.getLeagueID());
                     startActivity(intent);
                 } else {
                     Log.d("Main", "Players is not a captain, can't go here");
@@ -436,72 +434,27 @@ public class MainActivity extends ActionBarActivity
         finish();
     }
 
-    //Invoked when the cursor loader is created
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        switch (loaderID) {
-            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(this, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_CONTENTURI, null, null, null, null);
-            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
-                // Returns a new CursorLoader
-                return new CursorLoader(this, DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, null, null, null);
-            default:
-                // An invalid id was passed in
-                return null;
+    private void getNextRefMatch(){
+        Match match = getNextMatch(DataStore.getInstance(this).getMyUpcomingRefereeGames());
+        if (match != null && (nextRefMatch == null || nextRefMatch.getDateTime().after(match.getDateTime()))) {
+            nextRefMatch = match;
         }
     }
 
-    //query has finished
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()) {
-            return;
-        }
-        Match match;
-        switch (loader.getId()) {
-            case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
-                match = getNextMatch(data);
-                if (nextRefMatch == null || nextRefMatch.getDateTime().after(match.getDateTime())) {
-                    nextRefMatch = match;
-                }
-                break;
-            case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
-                match = getNextMatch(data);
-                if (nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(match.getDateTime())) {
-                    nextPlayingMatch = match;
-                }
-                getLeague();
-                break;
+    private void getNextPlayingMatch(){
+        Match match = getNextMatch(DataStore.getInstance(this).getMyUpcomingGames());
+        if (match != null && (nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(match.getDateTime()))) {
+            nextPlayingMatch = match;
+            MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
+            fragment.setLeagueID(nextPlayingMatch.getLeagueID());
         }
     }
 
-    private Match getNextMatch(Cursor data) {
-        List<Match> matchList = new ArrayList<>();
-        while (!data.isAfterLast()) {
-            matchList.add(new Match(data));
-            data.moveToNext();
-        }
+    private Match getNextMatch(List<Match> matchList) {
         if (matchList.size() > 0) {
-            matchList = Match.sortList(matchList, Match.SortType.ASCENDING);
-            return matchList.get(0);
+            return Match.sortList(matchList, Match.SortType.ASCENDING).get(0);
         }
         return null;
-    }
-
-    private void getLeague() {
-        Cursor cursor = getContentResolver().query(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(nextPlayingMatch.getMatchID())}, null);
-        if (cursor.moveToFirst() && cursor.getCount() > 0) {
-            nextPlayingMatchLeagueID = cursor.getInt(0);
-            MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
-            fragment.setLeagueID(nextPlayingMatchLeagueID);
-        }
-        cursor.close();
-    }
-
-    //when data gets updated, first reset everything
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     @Override
@@ -537,5 +490,25 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void notify(String tableName, Object data) {
+        switch(tableName){
+            case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:
+                getNextPlayingMatch();
+                break;
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME:
+                getNextRefMatch();
+                break;
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        //Un register to prevent memory leak
+        DataStore.getInstance(this).unregisterMyUpcomingRefereeDBObserver(this);
+        DataStore.getInstance(this).unregisterMyUpcomingGamesDBObserver(this);
+        super.onDestroy();
     }
 }

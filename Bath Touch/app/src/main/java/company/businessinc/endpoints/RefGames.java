@@ -52,7 +52,7 @@ public class RefGames extends AsyncTask<Void, Void, ResponseStatus> {
         List<Match> list = new LinkedList<Match>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
-                list.add(new Match(jsonArray.getJSONObject(i)));
+                list.add(new Match(-1, jsonArray.getJSONObject(i)));
             } catch (Exception e){
                 Log.d(TAG, "Couldn't parse JSON into Match object");
                 return new ResponseStatus(false);

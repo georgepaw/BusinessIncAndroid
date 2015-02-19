@@ -116,82 +116,82 @@ public class DBProvider extends ContentProvider {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         String tableName = getTableName(uri);
         Cursor returnCursor = db.query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
-        if(returnCursor.getCount() < 1){ //the cursor is empty, tell the data store to load the data
-            switch (sUriMatcher.match(uri)) {
-                case DBProviderContract.ALLTEAMS_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllTeams();
-                    break;
-                case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadAllLeagues();
-                    break;
-                case DBProviderContract.MYLEAGUES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadMyLeagues();
-                    break;
-                case DBProviderContract.LEAGUESSCORE_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.LEAGUETEAMS_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadLeaguesTeams(Integer.valueOf(selectionArgs[0]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "TeamList" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
-                    if(selection != null && selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadLeagueFixtures(Integer.valueOf(selectionArgs[0]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "LeagueSchedule" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadLeagueStandings(Integer.valueOf(selectionArgs[0]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "LeagueView" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
-                        DataStore.getInstance(getContext()).loadTeamsFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "TeamFixtures" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.TEAMSSCORES_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
-                        DataStore.getInstance(getContext()).loadTeamsLeagueScore(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "TeamScores" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadMyUpcomingGames();
-                    break;
-                case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
-                    DataStore.getInstance(getContext()).loadMyUpcomingRefGames();
-                    break;
-                case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadMyAvailability(Integer.valueOf(selectionArgs[0]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "MyUpcomingGamesAvailability" + " callback, selection/selection args not valid");
-                    }
-                    break;
-                case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
-                        DataStore.getInstance(getContext()).loadMatchPlayersAvailability(Integer.valueOf(selectionArgs[0]));
-                    } else{
-                        Log.d(TAG, "Can't call " + "MyTeamPlayersAvailability" + " callback, selection/selection args not valid");
-                    }
-                    break;
-            }
-        }
-        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+//        if(returnCursor.getCount() < 1){ //the cursor is empty, tell the data store to load the data
+//            switch (sUriMatcher.match(uri)) {
+//                case DBProviderContract.ALLTEAMS_URL_QUERY:
+//                    DataStore.getInstance(getContext()).loadAllTeams();
+//                    break;
+//                case DBProviderContract.ALLLEAGUES_URL_QUERY:
+//                    DataStore.getInstance(getContext()).loadAllLeagues();
+//                    break;
+//                case DBProviderContract.MYLEAGUES_URL_QUERY:
+//                    DataStore.getInstance(getContext()).loadMyLeagues();
+//                    break;
+//                case DBProviderContract.LEAGUESSCORE_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+//                        DataStore.getInstance(getContext()).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.LEAGUETEAMS_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+//                        DataStore.getInstance(getContext()).loadLeaguesTeams(Integer.valueOf(selectionArgs[0]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "TeamList" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.LEAGUESFIXTURES_URL_QUERY:
+//                    if(selection != null && selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+//                        DataStore.getInstance(getContext()).loadLeagueFixtures(Integer.valueOf(selectionArgs[0]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "LeagueSchedule" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+//                        DataStore.getInstance(getContext()).loadLeagueStandings(Integer.valueOf(selectionArgs[0]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "LeagueView" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
+//                        DataStore.getInstance(getContext()).loadTeamsFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "TeamFixtures" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.TEAMSSCORES_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
+//                        DataStore.getInstance(getContext()).loadTeamsLeagueScore(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "TeamScores" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
+//                    DataStore.getInstance(getContext()).loadMyUpcomingGames();
+//                    break;
+//                case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
+//                    DataStore.getInstance(getContext()).loadMyUpcomingRefGames();
+//                    break;
+//                case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
+//                        DataStore.getInstance(getContext()).loadMyAvailability(Integer.valueOf(selectionArgs[0]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "MyUpcomingGamesAvailability" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//                case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
+//                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
+//                        DataStore.getInstance(getContext()).loadMatchPlayersAvailability(Integer.valueOf(selectionArgs[0]));
+//                    } else{
+//                        Log.d(TAG, "Can't call " + "MyTeamPlayersAvailability" + " callback, selection/selection args not valid");
+//                    }
+//                    break;
+//            }
+//        }
+//        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return returnCursor;
     }
 
@@ -208,7 +208,7 @@ public class DBProvider extends ContentProvider {
         long id = localSQLiteDatabase.insert(tableName, null, values);
         //check if it was correct
         if (-1 != id) {
-            getContext().getContentResolver().notifyChange(uri, null);
+//            getContext().getContentResolver().notifyChange(uri, null);
             return Uri.withAppendedPath(uri, Long.toString(id));
         } else {
             Log.d(TAG, "Couldn't insert " + values.toString() + " to " + tableName);
@@ -231,7 +231,7 @@ public class DBProvider extends ContentProvider {
         db.setTransactionSuccessful();
         db.endTransaction();
 
-        getContext().getApplicationContext().getContentResolver().notifyChange(uri, null);
+//        getContext().getApplicationContext().getContentResolver().notifyChange(uri, null);
         return insertValuesArray.length;
     }
 
@@ -248,7 +248,7 @@ public class DBProvider extends ContentProvider {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         int rows = db.update(tableName, values, selection, selectionArgs);
         if (0 != rows) {
-            getContext().getContentResolver().notifyChange(uri, null);
+//            getContext().getContentResolver().notifyChange(uri, null);
             return rows;
         } else {
             Log.d(TAG, "Couldn't update with " + values.toString());
