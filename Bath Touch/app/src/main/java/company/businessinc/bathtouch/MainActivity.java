@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
@@ -42,9 +44,7 @@ import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
-import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.Team;
 import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
 
@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -81,25 +81,25 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
-        if(!mSharedPreferences.contains(USERLOGGEDIN)) {
+        if (!mSharedPreferences.contains(USERLOGGEDIN)) {
             Log.d("MAIN", "HAS NOT LOGGED IN");
             Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
             finish();
         }
-        if(mSharedPreferences.getBoolean(USERLOGGEDIN,false) && !mSharedPreferences.contains(COOKIE)) { //user logged in but no cookie string, kick him out
+        if (mSharedPreferences.getBoolean(USERLOGGEDIN, false) && !mSharedPreferences.contains(COOKIE)) { //user logged in but no cookie string, kick him out
             Log.d("MAIN", "USER LOGGED IN BUT NO COOKIE");
             mSharedPreferences.edit().remove(USERLOGGEDIN).commit();
             Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
             finish();
-        } else if(mSharedPreferences.contains(COOKIE)){
+        } else if (mSharedPreferences.contains(COOKIE)) {
             APICall.setCookie(mSharedPreferences.getString(COOKIE, ""));
         }
 
-        try{
+        try {
             DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
-        } catch (JSONException e){
+        } catch (JSONException e) {
             Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
         }
 
@@ -107,9 +107,9 @@ public class MainActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             mFragmentManager = getSupportFragmentManager();
-            if(DataStore.getInstance(this).isUserLoggedIn())
+            if (DataStore.getInstance(this).isUserLoggedIn())
                 mFragmentManager.beginTransaction()
                         .replace(R.id.container, MyTeamFragment.newInstance(), "HOMEPAGETAG")
                         .commit();
@@ -123,7 +123,7 @@ public class MainActivity extends ActionBarActivity
 //        DrawerView navigationDrawer = (DrawerView) findViewById(R.id.drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        if(!DataStore.getInstance(this).isUserLoggedIn()) {
+        if (!DataStore.getInstance(this).isUserLoggedIn()) {
             mNavigationDrawerLayout.setProfile(
                     new DrawerProfile()
                             .setAvatar(getResources().getDrawable(R.drawable.ic_account_circle_grey600_48dp))
@@ -153,7 +153,7 @@ public class MainActivity extends ActionBarActivity
             );
         } else {
             TextDrawable avatar = TextDrawable.builder()
-                    .buildRound(DataStore.getInstance(MainActivity.this).getUserTeam().substring(0,1)
+                    .buildRound(DataStore.getInstance(MainActivity.this).getUserTeam().substring(0, 1)
                             .toUpperCase(), DataStore.getInstance(MainActivity.this).getUserTeamColorPrimary());
             mNavigationDrawerLayout.setProfile(
                     new DrawerProfile()
@@ -220,7 +220,7 @@ public class MainActivity extends ActionBarActivity
                             }
                         })
         );
-        if(DataStore.getInstance(this).isUserCaptain()) {
+        if (DataStore.getInstance(this).isUserCaptain()) {
             mNavigationDrawerLayout.addItem(
                     new DrawerItem()
                             .setImage(getResources().getDrawable(R.drawable.ic_supervisor_account_grey600_48dp))
@@ -254,7 +254,7 @@ public class MainActivity extends ActionBarActivity
                 toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
-        ){
+        ) {
 
             public void onDrawerClosed(View view) {
                 invalidateOptionsMenu();
@@ -271,12 +271,54 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
         mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        if(DataStore.getInstance(this).isUserLoggedIn()) {
-            if(DataStore.getInstance(this).isReferee()) {
+        if (DataStore.getInstance(this).isUserLoggedIn()) {
+            if (DataStore.getInstance(this).isReferee()) {
                 getSupportLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
             }
             getSupportLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
         }
+
+
+        //FAB STUFF JAMES
+
+        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
+        nextMatchButton.setTitle("Next Match");
+        nextMatchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_arrow_forward_black));
+        nextMatchButton.setColorNormal(Color.WHITE);
+        nextMatchButton.setColorPressed(getResources().getColor(R.color.primary));
+        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(nextMatchButton);
+
+        final FloatingActionButton exampleLeagueA = new FloatingActionButton(getApplicationContext());
+        exampleLeagueA.setTitle("Your Account");
+        exampleLeagueA.setIconDrawable(getResources().getDrawable(R.drawable.ic_person_big_black));
+        exampleLeagueA.setColorNormal(Color.WHITE);
+        exampleLeagueA.setColorPressed(getResources().getColor(R.color.primary));
+        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(exampleLeagueA);
+
+//        final FloatingActionButton actionC = new FloatingActionButton(getApplicationContext());
+//        actionC.setColorNormal(Color.WHITE);
+//        actionC.setTitle("Show all Leagues");
+//        actionC.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+//                exampleLeagueA.setVisibility(exampleLeagueA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+//                //Toggle the title of action C
+//                if (actionB.getVisibility() == View.VISIBLE) {
+//                    actionC.setTitle("Hide all Leagues");
+//                } else {
+//                    actionC.setTitle("Show all Leagues");
+//                }
+//            }
+//        });
+//        //Added last to bottom
+//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
+
+
+        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
+        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
+
+        //END FAB STUFF JAMES
     }
 
     @Override
@@ -302,9 +344,9 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onHomePageCardSelected(int position) {
-        switch(position) {
+        switch (position) {
             case HomePageAdapter.NEXTREFGAME:
-                if(nextRefMatch != null){
+                if (nextRefMatch != null) {
                     Intent intent = new Intent(this, SubmitScoreActivity.class);
                     intent.putExtra(Match.KEY_MATCHID, nextRefMatch.getMatchID());
                     intent.putExtra(Match.KEY_TEAMONE, nextRefMatch.getTeamOne());
@@ -317,7 +359,7 @@ public class MainActivity extends ActionBarActivity
             case HomePageAdapter.NEXTGAME:
                 Log.d("CARDS", "Next game card selected");
                 //Only allow the card to open if there is a next game
-                if(nextPlayingMatch != null && DataStore.getInstance(this).isUserCaptain()) {
+                if (nextPlayingMatch != null && DataStore.getInstance(this).isUserCaptain()) {
                     Intent intent = new Intent(this, TeamRosterActivity.class);
                     intent.putExtra(Match.KEY_MATCHID, nextPlayingMatch.getMatchID());
                     intent.putExtra(Match.KEY_TEAMONE, nextPlayingMatch.getTeamOne());
@@ -358,21 +400,20 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void changeFragments(String tag) {
-        if(mFragmentManager == null)
+        if (mFragmentManager == null)
             mFragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
-        if(fragment == null) {
-            if(tag.equals("HOMEPAGETAG"))
+        if (fragment == null) {
+            if (tag.equals("HOMEPAGETAG"))
                 ft.replace(R.id.container, MyTeamFragment.newInstance(), tag);
-            if(tag.equals("LEAGUETABLETAG"))
+            if (tag.equals("LEAGUETABLETAG"))
                 ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
-            if(tag.equals("TEAMRESULTSTAG"))
+            if (tag.equals("TEAMRESULTSTAG"))
                 ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
             ft.addToBackStack(tag);
             ft.commit();
-        }
-        else if(!fragment.isVisible()) {
+        } else if (!fragment.isVisible()) {
             ft.replace(R.id.container, fragment, tag);
             ft.addToBackStack(tag);
             ft.commit();
@@ -384,10 +425,10 @@ public class MainActivity extends ActionBarActivity
         Intent intent = new Intent(this, SignInActivity.class);
         APICall.clearCookies();
         mSharedPreferences.edit().remove(USERLOGGEDIN).commit();
-        if(mSharedPreferences.contains(COOKIE)){
+        if (mSharedPreferences.contains(COOKIE)) {
             mSharedPreferences.edit().remove(COOKIE).commit();
         }
-        if(mSharedPreferences.contains(USER)){
+        if (mSharedPreferences.contains(USER)) {
             mSharedPreferences.edit().remove(USER).commit();
         }
         DataStore.getInstance(this).clearUserData();
@@ -414,20 +455,20 @@ public class MainActivity extends ActionBarActivity
     //query has finished
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()){
+        if (!data.moveToFirst()) {
             return;
         }
         Match match;
-        switch(loader.getId()) {
+        switch (loader.getId()) {
             case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
                 match = getNextMatch(data);
-                if(nextRefMatch == null || nextRefMatch.getDateTime().after(match.getDateTime())){
+                if (nextRefMatch == null || nextRefMatch.getDateTime().after(match.getDateTime())) {
                     nextRefMatch = match;
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
                 match = getNextMatch(data);
-                if(nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(match.getDateTime())){
+                if (nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(match.getDateTime())) {
                     nextPlayingMatch = match;
                 }
                 getLeague();
@@ -435,22 +476,22 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    private Match getNextMatch(Cursor data){
+    private Match getNextMatch(Cursor data) {
         List<Match> matchList = new ArrayList<>();
-        while(!data.isAfterLast()){
+        while (!data.isAfterLast()) {
             matchList.add(new Match(data));
             data.moveToNext();
         }
-        if(matchList.size() > 0){
+        if (matchList.size() > 0) {
             matchList = Match.sortList(matchList, Match.SortType.ASCENDING);
             return matchList.get(0);
         }
         return null;
     }
 
-    private void getLeague(){
-        Cursor cursor = getContentResolver().query(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI,null, DBProviderContract.SELECTION_MATCHID, new String[] {Integer.toString(nextPlayingMatch.getMatchID())},null);
-        if(cursor.moveToFirst() && cursor.getCount() > 0){
+    private void getLeague() {
+        Cursor cursor = getContentResolver().query(DBProviderContract.MYUPCOMINGGAMES_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(nextPlayingMatch.getMatchID())}, null);
+        if (cursor.moveToFirst() && cursor.getCount() > 0) {
             nextPlayingMatchLeagueID = cursor.getInt(0);
             MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
             fragment.setLeagueID(nextPlayingMatchLeagueID);
