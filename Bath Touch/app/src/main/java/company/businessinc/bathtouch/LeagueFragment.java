@@ -11,8 +11,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,10 +44,11 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
     private View mLayout;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private List<LeagueTeam> mLeagueTeams;
     private List<Team> mAllTeams = new ArrayList<Team>();
     private Integer mLeagueID;
+
 
     public static LeagueFragment newInstance(int leagueID) {
         LeagueFragment fragment = new LeagueFragment();
@@ -89,9 +92,27 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
 //        // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
+
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getActivity());
+//        mLayoutManager.addItemAnimator(mRecyclerView.getItemAnimator());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                if(e.equals(MotionEvent.ACTION_MOVE)){
+                    Log.d("TOUCHED", e.toString());
+
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+        });
 
         int userTeamId = DataStore.getInstance(getActivity().getApplicationContext()).getUserTeamID();
 
@@ -118,8 +139,6 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
         rCursor.close();
 
         getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
-
-
 
         return mLayout;
     }
@@ -195,14 +214,13 @@ public class LeagueFragment extends Fragment implements LoaderManager.LoaderCall
 
     private void loadAllTeams(Cursor data) {
         Log.d("LEAGUEFRAG", "load finished for all teams");
-        if (data.moveToFirst()){
-            while(!data.isAfterLast()){
+        if (data.moveToFirst()) {
+            while (!data.isAfterLast()) {
                 mAllTeams.add(new Team(data));
                 data.moveToNext();
             }
             ((LeagueTableAdapter) mAdapter).setAllTeams(mAllTeams);
-        }
-        else{
+        } else {
             Log.d("LEAGUEFRAG", "table was empty of teams");
 
         }

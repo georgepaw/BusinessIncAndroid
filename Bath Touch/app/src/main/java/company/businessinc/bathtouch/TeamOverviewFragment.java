@@ -2,9 +2,9 @@ package company.businessinc.bathtouch;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.Typeface;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,7 @@ import company.businessinc.dataModels.Team;
 
 
 public class TeamOverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
 
     private TeamOverviewCallbacks mCallbacks;
     private View mLayout;
@@ -50,7 +51,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             mNextRefMatchName, mNextRefMatchPlace, mNextRefMatchDate, mPastMatchesHeader,
             mLeagueHeader, mLeaguePoints, mLeagueWins, mLeagueDraws, mLeagueLosses;
     private FrameLayout mNextMatchDivider, mNextRefMatchDivider, mPastMatchesDivider;
-    private ImageView mNextMatchImage;
+    private ImageView mNextMatchImage, mNextRefMatchImage;
     private List<ImageView> mPastMatchesImages;
     private CheckBox mNextMatchCheckBox;
     private LinearLayout mNextMatchCheckBoxContainer;
@@ -81,6 +82,8 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
     private LeagueTeam teamOverviewLeagueTeam;
     private League teamOverviewLeague;
 
+    private CardView mNextMatchCard, mNextRefMatchCard, mPastMatchesCard, mLeagueCard;
+
 
     public static TeamOverviewFragment newInstance(int teamID, int leagueID) {
         TeamOverviewFragment fragment = new TeamOverviewFragment();
@@ -109,11 +112,11 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("TeamOverviewFragment", "onCreateView called");
-        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
-            if(DataStore.getInstance(getActivity()).isReferee()) {
+        if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+            if (DataStore.getInstance(getActivity()).isReferee()) {
                 getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY, null, this);
             }
-            if(!DataStore.getInstance(getActivity()).isUserCaptain()){
+            if (!DataStore.getInstance(getActivity()).isUserCaptain()) {
                 getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY, null, this);
             }
             getLoaderManager().initLoader(DBProviderContract.MYUPCOMINGGAMES_URL_QUERY, null, this);
@@ -131,27 +134,33 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         mSwipeRefresh = (SwipeRefreshLayout) (mLayout.findViewById(R.id.fragment_team_overview_swiperefresh));
         mSwipeRefresh.setOnRefreshListener(this);
 
-        mNextMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextmatch);
-        mNextMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider1);
+//        mNextMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextmatch);
+        mNextMatchCard = (CardView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch);
+
+//        mNextMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider1);
         mNextMatchHeader = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_header);
         mNextMatchName = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_name);
         mNextMatchPlace = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_place);
         mNextMatchDate = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_date);
 
-        mPastMatchesContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_pastmatches);
-        mPastMatchesDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider3);
+//        mPastMatchesContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_pastmatches);
+        mPastMatchesCard = (CardView)  mLayout.findViewById(R.id.fragment_team_overview_pastmatches);
+//        mPastMatchesDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider3);
         mPastMatchesHeader = (TextView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_header);
 
-        mNextRefMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch);
-        mNextRefMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider2);
-        if(!DataStore.getInstance(getActivity()).isReferee()) {
-            mNextRefMatchContainer.setVisibility(View.GONE);
-            mNextRefMatchDivider.setVisibility(View.GONE);
-        }
+//        mNextRefMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch);
+        mNextRefMatchCard = (CardView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch);
+
+//        mNextRefMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider2);
+//        if (!DataStore.getInstance(getActivity()).isReferee()) {
+//            mNextRefMatchContainer.setVisibility(View.GONE);
+//            mNextRefMatchDivider.setVisibility(View.GONE);
+//        }
         mNextRefMatchName = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_name);
         mNextRefMatchPlace = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_place);
         mNextRefMatchDate = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_date);
         mNextRefMatchSubmit = (Button) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_submit);
+        mNextRefMatchImage = (ImageView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_image);
 
         mNextMatchCheckBoxContainer = (LinearLayout) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_checkbox_container);
         mNextMatchCheckBox = (CheckBox) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_checkbox);
@@ -159,13 +168,14 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
 
         mNextMatchImage = (ImageView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_image);
         mPastMatchesImages = new ArrayList<>();
-        mPastMatchesImages.add(0,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_1));
-        mPastMatchesImages.add(1,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_2));
-        mPastMatchesImages.add(2,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_3));
-        mPastMatchesImages.add(3,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_4));
-        mPastMatchesImages.add(4,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_5));
+        mPastMatchesImages.add(0, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_1));
+        mPastMatchesImages.add(1, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_2));
+        mPastMatchesImages.add(2, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_3));
+        mPastMatchesImages.add(3, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_4));
+        mPastMatchesImages.add(4, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_5));
 
-        mLeagueContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_league);
+//        mLeagueContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_league);
+        mLeagueCard = (CardView) mLayout.findViewById(R.id.fragment_team_overview_league);
         mLeagueHeader = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_header);
         mLeaguePoints = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_points);
         mLeagueWins = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_wins);
@@ -235,19 +245,19 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
     //query has finished
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()){
+        if (!data.moveToFirst()) {
             return;
         }
-        switch(loader.getId()) {
+        switch (loader.getId()) {
             case DBProviderContract.MYUPCOMINGREFEREEGAMES_URL_QUERY:
                 List<Match> nextRefMatchList = new ArrayList<>();
-                while(!data.isAfterLast()){
+                while (!data.isAfterLast()) {
                     nextRefMatchList.add(new Match(data));
                     data.moveToNext();
                 }
-                if(nextRefMatchList.size() > 0){
+                if (nextRefMatchList.size() > 0) {
                     nextRefMatchList = Match.sortList(nextRefMatchList, Match.SortType.ASCENDING);
-                    if(nextRefMatch == null || nextRefMatch.getDateTime().after(nextRefMatchList.get(0).getDateTime())){
+                    if (nextRefMatch == null || nextRefMatch.getDateTime().after(nextRefMatchList.get(0).getDateTime())) {
                         nextRefMatch = nextRefMatchList.get(0);
                     }
                     setNextMatch(nextRefMatch, true, false);
@@ -255,20 +265,20 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_URL_QUERY:
                 List<Match> nextMatch = new ArrayList<>();
-                while(!data.isAfterLast()){
-                    if(data.getInt(0) == mLeagueID) {
+                while (!data.isAfterLast()) {
+                    if (data.getInt(0) == mLeagueID) {
                         nextMatch.add(new Match(data));
                     }
                     data.moveToNext();
                 }
-                if(nextMatch.size() > 0){
+                if (nextMatch.size() > 0) {
                     nextMatch = Match.sortList(nextMatch, Match.SortType.ASCENDING);
-                    if(nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(nextMatch.get(0).getDateTime())){
+                    if (nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(nextMatch.get(0).getDateTime())) {
                         nextPlayingMatch = nextMatch.get(0);
                     }
                 }
-                if(nextPlayingMatch!=null){
-                    if(DataStore.getInstance(getActivity()).isUserCaptain()){
+                if (nextPlayingMatch != null) {
+                    if (DataStore.getInstance(getActivity()).isUserCaptain()) {
                         setNextMatch(nextPlayingMatch, false, false);
                     } else {
                         loadNextMatchCard();
@@ -277,24 +287,24 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 break;
             case DBProviderContract.MYLEAGUES_URL_QUERY:
             case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                if(league == null){
-                    while(!data.isAfterLast()){
+                if (league == null) {
+                    while (!data.isAfterLast()) {
                         League l = new League(data);
-                        if(l.getLeagueID() == mLeagueID)
+                        if (l.getLeagueID() == mLeagueID)
                             league = l;
                         data.moveToNext();
                     }
-                    if(league != null){
+                    if (league != null) {
                         Cursor rCursor = getActivity().getContentResolver().query(DBProviderContract
-                                .LEAGUESSTANDINGS_TABLE_CONTENTURI,null,DBProviderContract.SELECTION_LEAGUEID,
-                                new String[]{Integer.toString(mLeagueID)},null);
-                        if(rCursor.getCount() > 0){
+                                        .LEAGUESSTANDINGS_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_LEAGUEID,
+                                new String[]{Integer.toString(mLeagueID)}, null);
+                        if (rCursor.getCount() > 0) {
                             leagueStandings = loadLeagueTeams(rCursor);
                             setLeague(leagueStandings, league);
                         }
                         rCursor.close();
                         //try loading the scores
-                        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+                        if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
                             rCursor = getActivity().getContentResolver().query(DBProviderContract.TEAMSSCORES_TABLE_CONTENTURI,
                                     null,
                                     DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
@@ -307,53 +317,53 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                                     new String[]{Integer.toString(mLeagueID)},
                                     null);
                         }
-                        if(rCursor.getCount() > 0){
+                        if (rCursor.getCount() > 0) {
                             leagueScores = loadLeagueMatches(rCursor);
                             setLeagueStandings(leagueScores, league);
                         }
                         rCursor.close();
                         //Load the fixtures
-                        if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+                        if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
                             loadTeamOverview();
                         }
                     }
                 }
                 break;
             case DBProviderContract.LEAGUESSTANDINGS_URL_QUERY:
-                if(league != null){
+                if (league != null) {
                     leagueStandings = loadLeagueTeams(data);
-                    if(leagueStandings.size() > 0){
+                    if (leagueStandings.size() > 0) {
                         setLeague(leagueStandings, league);
                     }
                 }
                 break;
             case DBProviderContract.LEAGUESSCORE_URL_QUERY:
             case DBProviderContract.TEAMSSCORES_URL_QUERY:
-                if(league != null){
+                if (league != null) {
                     leagueScores = loadLeagueMatches(data);
-                    if(leagueScores.size() > 0){
+                    if (leagueScores.size() > 0) {
                         setLeagueStandings(leagueScores, league);
                     }
                 }
                 break;
             case DBProviderContract.TEAMSFIXTURES_URL_QUERY:
-                if(league != null){
+                if (league != null) {
                     leagueFixtures = loadLeagueMatches(data);
-                    if(leagueFixtures.size() > 0){
+                    if (leagueFixtures.size() > 0) {
                         loadTeamOverview();
                     }
                 }
                 break;
             case DBProviderContract.LEAGUETEAMS_URL_QUERY:
-                if(league != null && myTeam == null){
+                if (league != null && myTeam == null) {
                     myTeam = loadTeam(data);
-                    if(myTeam!=null){
+                    if (myTeam != null) {
                         loadTeamOverview();
                     }
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_URL_QUERY:
-                if(nextPlayingMatch != null){
+                if (nextPlayingMatch != null) {
                     isPlaying = isPlaying(nextPlayingMatch.getMatchID(), data);
                     loadNextMatchCard();
                 }
@@ -361,9 +371,9 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         }
     }
 
-    private void loadTeamOverview(){
+    private void loadTeamOverview() {
         Cursor rCursor;
-        if(leagueFixtures == null){
+        if (leagueFixtures == null) {
             rCursor = getActivity().getContentResolver().query(DBProviderContract.TEAMSFIXTURES_TABLE_CONTENTURI,
                     null,
                     DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
@@ -372,7 +382,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             leagueFixtures = loadLeagueMatches(rCursor);
             rCursor.close();
         }
-        if(myTeam == null){
+        if (myTeam == null) {
             rCursor = getActivity().getContentResolver().query(DBProviderContract.LEAGUETEAMS_TABLE_CONTENTURI,
                     null,
                     DBProviderContract.SELECTION_LEAGUEID,
@@ -381,14 +391,14 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             myTeam = loadTeam(rCursor);
             rCursor.close();
         }
-        if(leagueFixtures != null && myTeam != null && thisLeagueTeam != null && league != null){
-            setLeagueOverview(leagueFixtures, myTeam,thisLeagueTeam,league);
+        if (leagueFixtures != null && myTeam != null && thisLeagueTeam != null && league != null) {
+            setLeagueOverview(leagueFixtures, myTeam, thisLeagueTeam, league);
         }
     }
 
-    public List<LeagueTeam> loadLeagueTeams(Cursor data){
+    public List<LeagueTeam> loadLeagueTeams(Cursor data) {
         List<LeagueTeam> leagueTeams = new ArrayList<>();
-        if(data.moveToFirst()) {
+        if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 if (data.getInt(0) == mLeagueID) {
                     LeagueTeam leagueTeam = new LeagueTeam(data);
@@ -406,9 +416,9 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         return leagueTeams;
     }
 
-    public List<Match> loadLeagueMatches(Cursor data){
+    public List<Match> loadLeagueMatches(Cursor data) {
         List<Match> matchList = new ArrayList<>();
-        if(data.moveToFirst()) {
+        if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 if (data.getInt(0) == mLeagueID) {
                     matchList.add(new Match(data));
@@ -420,7 +430,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
     }
 
     private void loadNextMatchCard() {
-        if (isPlaying == null){
+        if (isPlaying == null) {
             Cursor rCursor = getActivity().getContentResolver().query(DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_CONTENTURI,
                     null,
                     DBProviderContract.SELECTION_MATCHID,
@@ -431,13 +441,13 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             }
             rCursor.close();
         }
-        if(nextPlayingMatch != null && isPlaying != null){
+        if (nextPlayingMatch != null && isPlaying != null) {
             setNextMatch(nextPlayingMatch, false, isPlaying);
         }
     }
 
-    private Boolean isPlaying(int matchID, Cursor cursor){
-        if(cursor.moveToFirst()) {
+    private Boolean isPlaying(int matchID, Cursor cursor) {
+        if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 if (matchID == cursor.getInt(0)) {
                     return cursor.getInt(1) == 1;
@@ -448,9 +458,9 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         return null;
     }
 
-    public Team loadTeam(Cursor data){
+    public Team loadTeam(Cursor data) {
         Team team = null;
-        if(data.moveToFirst()) {
+        if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 team = new Team(data);
                 if (data.getInt(0) == mLeagueID && team.getTeamID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
@@ -462,16 +472,17 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         return null;
     }
 
-    public void setLeague(List<LeagueTeam> data, League league){
-        if(data!=null && league != null) {
+    public void setLeague(List<LeagueTeam> data, League league) {
+        if (data != null && league != null) {
             this.leagueViewLeague = league;
             this.leagueTeam = data;
-            mLeagueContainer.setVisibility(View.VISIBLE);
+//            mLeagueContainer.setVisibility(View.VISIBLE);
+            mLeagueCard.setVisibility(View.VISIBLE);
             String header = league.getLeagueName();
-            for(LeagueTeam team : data) {
-                if(team.getTeamID() == mTeamID) {
+            for (LeagueTeam team : data) {
+                if (team.getTeamID() == mTeamID) {
                     int position = team.getPosition();
-                    switch(position % 10){
+                    switch (position % 10) {
                         case 1:
                             mLeagueHeader.setText(position + "st in " + header);
                             break;
@@ -500,12 +511,17 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         }
     }
 
-    public void setNextMatch(final Match nextMatch, boolean isRefMatch, boolean isPlaying){
-        if(isRefMatch) {
-            mNextRefMatchContainer.setVisibility(View.VISIBLE);
-            mNextRefMatchDivider.setVisibility(View.VISIBLE);
+    public void setNextMatch(final Match nextMatch, boolean isRefMatch, boolean isPlaying) {
+
+        //set up the next ref match layout
+        if (isRefMatch) {
+//            mNextRefMatchContainer.setVisibility(View.VISIBLE);
+            mNextRefMatchCard.setVisibility(View.VISIBLE);
+
+
+//            mNextRefMatchDivider.setVisibility(View.VISIBLE);
             this.nextRefMatch = nextMatch;
-            this.isPlaying  = isPlaying;
+            this.isPlaying = isPlaying;
             mNextRefMatchName.setText(nextMatch.getTeamOne() + " vs " + nextMatch.getTeamTwo());
             mNextRefMatchPlace.setText(nextMatch.getPlace());
             DateFormatter sdf = new DateFormatter();
@@ -522,21 +538,34 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                     startActivity(intent);
                 }
             });
-        } else {
+
+            //TODO show next team and color
+            Drawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .textColor(Color.WHITE)
+                    .toUpperCase()
+                    .endConfig()
+                    .buildRound("N", Color.RED);
+            mNextRefMatchImage.setImageDrawable(drawable);
+        }
+        //Set up the next match layout
+        else {
             this.nextMatch = nextMatch;
-            this.isPlaying  = isPlaying;
-            mNextMatchContainer.setVisibility(View.VISIBLE);
-            mNextMatchDivider.setVisibility(View.VISIBLE);
-            if(nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
+            this.isPlaying = isPlaying;
+//            mNextMatchContainer.setVisibility(View.VISIBLE);
+            mNextMatchCard.setVisibility(View.VISIBLE);
+
+//            mNextMatchDivider.setVisibility(View.VISIBLE);
+            if (nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
                 mNextMatchName.setText(nextMatch.getTeamTwo());
                 TextDrawable avatar = TextDrawable.builder()
-                        .buildRound(nextMatch.getTeamTwo().substring(0,1), getActivity()
+                        .buildRound(nextMatch.getTeamTwo().substring(0, 1), getActivity()
                                 .getResources().getColor(R.color.dark_divider));
                 mNextMatchImage.setImageDrawable(avatar);
             } else {
                 mNextMatchName.setText(nextMatch.getTeamOne());
                 TextDrawable avatar = TextDrawable.builder()
-                        .buildRound(nextMatch.getTeamOne().substring(0,1), getActivity()
+                        .buildRound(nextMatch.getTeamOne().substring(0, 1), getActivity()
                                 .getResources().getColor(R.color.dark_divider));
                 mNextMatchImage.setImageDrawable(avatar);
             }
@@ -544,7 +573,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             DateFormatter sdf = new DateFormatter();
             mNextMatchDate.setText(sdf.format(nextMatch.getDateTime()));
             final int nxtmtchID = nextMatch.getMatchID();
-            if(!DataStore.getInstance(getActivity()).isUserCaptain()) {
+            if (!DataStore.getInstance(getActivity()).isUserCaptain()) {
                 mNextMatchCheckBoxContainer.setVisibility(View.VISIBLE);
 //                mNextMatchCheckBox.setButtonTintList(ColorStateList.valueOf(DataStore.getInstance(getActivity()).getUserTeamColorPrimary()));
                 mNextMatchCheckBox.setChecked(isPlaying);
@@ -580,9 +609,10 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         refreshPage();
     }
 
-    public void setLeagueStandings(List<Match> data, League league){
-        mPastMatchesContainer.setVisibility(View.VISIBLE);
-        mPastMatchesDivider.setVisibility(View.VISIBLE);
+    public void setLeagueStandings(List<Match> data, League league) {
+//        mPastMatchesContainer.setVisibility(View.VISIBLE);
+        mPastMatchesCard.setVisibility(View.VISIBLE);
+//        mPastMatchesDivider.setVisibility(View.VISIBLE);
         pastMatches = data;
         this.pastMatchesLeague = league;
         TextDrawable win = TextDrawable.builder()
@@ -593,7 +623,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 .buildRound("L", getActivity().getResources().getColor(R.color.darkred));
         int max = Math.min(pastMatches.size(), 5);
         mPastMatchesHeader.setText("Last " + max + " matches");
-        for(int i = 0; i < max; i++) {
+        for (int i = 0; i < max; i++) {
             final Match match = pastMatches.get(i);
             if (match.getTeamOneID() == mTeamID) {
                 if (match.getTeamOnePoints() > match.getTeamTwoPoints()) {
@@ -608,7 +638,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                     mPastMatchesImages.get(i).setImageDrawable(lose);
                 }
             }
-            if(match.getTeamOnePoints() == match.getTeamTwoPoints()){
+            if (match.getTeamOnePoints() == match.getTeamTwoPoints()) {
                 mPastMatchesImages.get(i).setImageDrawable(draw);
             }
             final int lgId = mLeagueID;
@@ -634,7 +664,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
         refreshPage();
     }
 
-    public void setLeagueOverview(List<Match> teamOverviewLeagueFixtures, Team teamOverviewTeam, LeagueTeam teamOverviewLeagueTeam, League teamOverviewLeague){
+    public void setLeagueOverview(List<Match> teamOverviewLeagueFixtures, Team teamOverviewTeam, LeagueTeam teamOverviewLeagueTeam, League teamOverviewLeague) {
         this.teamOverviewLeagueFixtures = teamOverviewLeagueFixtures;
         this.teamOverviewTeam = teamOverviewTeam;
         this.teamOverviewLeagueTeam = teamOverviewLeagueTeam;
@@ -660,10 +690,10 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                 pager.getAdapter().notifyDataSetChanged();
             }
 
-        },3000);
+        }, 3000);
     }
 
-        public static interface TeamOverviewCallbacks {
+    public static interface TeamOverviewCallbacks {
     }
 
     public void refreshPage() {

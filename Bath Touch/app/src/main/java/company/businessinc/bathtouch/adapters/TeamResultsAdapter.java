@@ -1,7 +1,9 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +23,7 @@ import java.util.List;
 import company.businessinc.bathtouch.DateFormatter;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 
 /**
  * Created by user on 21/11/14.
@@ -31,6 +34,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private OnResultSelectedCallbacks mCallbacks;
     private Context mContext;
     private String mLeagueName = "";
+    private List<Team> allTeams = new ArrayList<Team>();
+    private List<Match> leagueScores;
+    private String teamName;
+
 
     public interface OnResultSelectedCallbacks {
         public void showMatchOverview(int position);
@@ -39,10 +46,8 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public class ViewHolderResults extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTeam1Name, mTeam2Name, mTeam1Score, mTeam2Score, mLocation, mDate, mLeague;
-        public ImageView mImageView, mCloseButton;
-        public RelativeLayout mCard, mMatchCardButton;
-        public LinearLayout mExpandable;
-
+        public ImageView mImageView, mCloseButton, mOppTeamImg;
+        public RelativeLayout mCard, mMatchCardButton, mExpandable;
 
         public ViewHolderResults(View v) {
             super(v);
@@ -57,7 +62,8 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mCloseButton = (ImageView) v.findViewById(R.id.match_result_close_button);
             mCard = (RelativeLayout) v.findViewById(R.id.match_result_item_container);
             mMatchCardButton = (RelativeLayout) v.findViewById(R.id.match_result_match_overview_button);
-            mExpandable = (LinearLayout) v.findViewById(R.id.match_result_expandable);
+            mExpandable = (RelativeLayout) v.findViewById(R.id.match_result_expandable);
+            mOppTeamImg = (ImageView) v.findViewById(R.id.match_result_opp_team_image);
 
 
             mCard.setOnClickListener(this);
@@ -78,9 +84,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             changeVis(getPosition());
         }
     }
-
-    private List<Match> leagueScores;
-    private String teamName;
 
     public TeamResultsAdapter(Fragment context) {
         leagueScores = new ArrayList<>();
@@ -137,9 +140,26 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void bindResultItem(ViewHolderResults v, int position){
 
+        Match match = leagueScores.get(position);
+
+        Team oppTeam = null;
+        String oppTeamName;
+
+        if(match.getTeamOne().equals(teamName)){
+            oppTeamName = match.getTeamTwo();
+        }else{
+            oppTeamName = match.getTeamOne();
+        }
+
+        for(Team e : allTeams){
+            if(e.getTeamName().equals(oppTeamName)){
+                oppTeam = e;
+            }
+        }
+
+
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Match match = leagueScores.get(position);
         v.mTeam1Name.setText(match.getTeamOne());
         v.mTeam2Name.setText(match.getTeamTwo());
         v.mTeam1Score.setText(match.getTeamOnePoints().toString());
@@ -191,12 +211,33 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mImageView.setImageDrawable(draw);
         }
 
-        //        check whether to open close or leave a card alone
         if (position == expandedPosition) {
+            int teamColor;
+            try{
+                //set specific team colors if it has been loaded by db
+                teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
+
+                Drawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(teamColor)
+                        .toUpperCase()
+                        .endConfig()
+                        .buildRound("D", Color.WHITE);
+                v.mOppTeamImg.setImageDrawable(drawable);
+
+            }
+            catch (Exception e){
+                teamColor = Color.GRAY;
+            }
+ //        check whether to open close or leave a card alone
             v.mExpandable.setVisibility(View.VISIBLE);
+            v.mExpandable.setBackgroundColor(teamColor);
+            v.mExpandable.getBackground().setAlpha(200);
         } else {
             v.mExpandable.setVisibility(View.GONE);
         }
+
+
     }
 
     public void changeVis(int loc) {
@@ -213,6 +254,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             expandedPosition = loc;
             notifyItemChanged(expandedPosition);
         }
+    }
+
+    public void addAllTeams(ArrayList<Team> list){
+        allTeams = list;
     }
 
     // Return the size of your dataset (invoked by the layout manager)
