@@ -96,13 +96,13 @@ public class MainActivity extends ActionBarActivity
         } else if (mSharedPreferences.contains(COOKIE)) {
             APICall.setCookie(mSharedPreferences.getString(COOKIE, ""));
         }
-        if (mSharedPreferences.getBoolean(USERLOGGEDIN, false) != DataStore.getInstance(this).isUserLoggedIn()) {
-            try {
-                DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
-            } catch (JSONException e) {
-                Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
-            }
+
+        try {
+            DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
+        } catch (JSONException e) {
+            Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
         }
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
