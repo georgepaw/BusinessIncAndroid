@@ -127,6 +127,44 @@
                             android:layout_marginLeft="30dp"
                             android:text="Joe Bloggs" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="30dp"
+                            android:text="PF:"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="90dp"/>
+
+                        <TextView
+                            android:id="@+id/league_item_pts_for"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="30dp"
+                            android:text="54"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="70dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="30dp"
+                            android:text="PA:"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="30dp"/>
+
+                        <TextView
+                            android:id="@+id/league_item_pts_agn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="30dp"
+                            android:text="22"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="10dp"/>
+
                     </RelativeLayout>
 
                 </RelativeLayout>

@@ -112,6 +112,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //                }
 //            });
 
+
             mDisplayItem.setOnClickListener(this);
 
 
@@ -120,6 +121,14 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         //
         @Override
         public void onClick(View v) {
+
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mTextArea.getLayoutParams();
+
+
+//                Log.d("LEAGUETABLEAAPTER", "found expanded" + Integer.toString(viewType));
+
+
+
             //Move the text up to show more details
             if(expanded){
                 Animation animSlideDown = AnimationUtils.loadAnimation(mContext, R.anim.slide_league_text);
@@ -132,12 +141,14 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 mTextArea.startAnimation(animSlideDown);
                 mExtraText.setVisibility(View.GONE);
+                p.setMargins(0,0,0,0);
                 expanded = false;
             }
             else{
                 Animation animSlideUp = AnimationUtils.loadAnimation(mContext, R.anim.slide_league_text);
                 mTextArea.startAnimation(animSlideUp);
                 mExtraText.setVisibility(View.VISIBLE);
+                p.setMargins(0,0,0,20);
                 expanded = true;
             }
 
@@ -178,8 +189,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.league_item, parent, false);
+        ViewHolderLeague vh = new ViewHolderLeague(v);
         // set the view's size, margins, paddings and layout parameters
-        return new ViewHolderLeague(v);
+
+
+
+        return vh;
 
 
     }
@@ -284,6 +299,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //        } else {
 //            v.mExpandArea.setVisibility(View.GONE);
 //        }
+
     }
 
 
