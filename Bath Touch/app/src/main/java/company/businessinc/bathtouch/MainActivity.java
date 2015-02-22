@@ -281,42 +281,42 @@ public class MainActivity extends ActionBarActivity
 
         //FAB STUFF JAMES
 
-        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
-        nextMatchButton.setTitle("Next Match");
-        nextMatchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_arrow_forward_black));
-        nextMatchButton.setColorNormal(Color.WHITE);
-        nextMatchButton.setColorPressed(getResources().getColor(R.color.primary));
-        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(nextMatchButton);
-
-        final FloatingActionButton exampleLeagueA = new FloatingActionButton(getApplicationContext());
-        exampleLeagueA.setTitle("Your Account");
-        exampleLeagueA.setIconDrawable(getResources().getDrawable(R.drawable.ic_person_big_black));
-        exampleLeagueA.setColorNormal(Color.WHITE);
-        exampleLeagueA.setColorPressed(getResources().getColor(R.color.primary));
-        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(exampleLeagueA);
-
-//        final FloatingActionButton actionC = new FloatingActionButton(getApplicationContext());
-//        actionC.setColorNormal(Color.WHITE);
-//        actionC.setTitle("Show all Leagues");
-//        actionC.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-//                exampleLeagueA.setVisibility(exampleLeagueA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-//                //Toggle the title of action C
-//                if (actionB.getVisibility() == View.VISIBLE) {
-//                    actionC.setTitle("Hide all Leagues");
-//                } else {
-//                    actionC.setTitle("Show all Leagues");
-//                }
-//            }
-//        });
-//        //Added last to bottom
-//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
-
-
-        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
-        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
+//        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
+//        nextMatchButton.setTitle("Next Match");
+//        nextMatchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_arrow_forward_black));
+//        nextMatchButton.setColorNormal(Color.WHITE);
+//        nextMatchButton.setColorPressed(getResources().getColor(R.color.primary));
+//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(nextMatchButton);
+//
+//        final FloatingActionButton exampleLeagueA = new FloatingActionButton(getApplicationContext());
+//        exampleLeagueA.setTitle("Your Account");
+//        exampleLeagueA.setIconDrawable(getResources().getDrawable(R.drawable.ic_person_big_black));
+//        exampleLeagueA.setColorNormal(Color.WHITE);
+//        exampleLeagueA.setColorPressed(getResources().getColor(R.color.primary));
+//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(exampleLeagueA);
+//
+////        final FloatingActionButton actionC = new FloatingActionButton(getApplicationContext());
+////        actionC.setColorNormal(Color.WHITE);
+////        actionC.setTitle("Show all Leagues");
+////        actionC.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+////                exampleLeagueA.setVisibility(exampleLeagueA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+////                //Toggle the title of action C
+////                if (actionB.getVisibility() == View.VISIBLE) {
+////                    actionC.setTitle("Hide all Leagues");
+////                } else {
+////                    actionC.setTitle("Show all Leagues");
+////                }
+////            }
+////        });
+////        //Added last to bottom
+////        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
+//
+//
+//        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
+//        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
 
         //END FAB STUFF JAMES
     }
