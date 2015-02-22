@@ -103,6 +103,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //            mTeamOverviewButton = (RelativeLayout) v.findViewById(R.id.league_item_team_overview_button);
             mTextArea = (RelativeLayout) v.findViewById(R.id.league_item_text_container);
             mExtraText = (RelativeLayout) v.findViewById(R.id.league_item_extra_text_container);
+            mPtsFor = (TextView) v.findViewById(R.id.league_item_pts_for);
+            mPtsAgn = (TextView) v.findViewById(R.id.league_item_pts_agn);
+
 
 //            mCloseButton.setOnClickListener(this);
 //            mTeamOverviewButton.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +233,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         try {
             if (mTeamId == team.getTeamID()) {
-//                v.mDisplayItem.setBackground(mContext.getResources().getDrawable(R.color.grey_300));
                 v.mDisplayItem.setBackgroundColor(mTeamColor);
                 textColor = Color.WHITE;
                 circleTextColor = mTeamColor;
@@ -257,10 +259,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeamPts.setText(team.getLeaguePoints().toString());
         v.mTeamPts.setTypeface(null, Typeface.BOLD);
         v.mTeamPts.setTextColor(textColor);
-//        v.mPtsFor.setText(team.getPointsFor().toString());
-//        v.mPtsFor.setTextColor(textColor);
-//        v.mPtsAgn.setText(team.getPointsAgainst().toString());
-//        v.mPtsAgn.setTextColor(textColor);
+        v.mPtsFor.setText("\u25B2  " + team.getPointsFor().toString());
+        v.mPtsAgn.setText("\u25BC  " + team.getPointsAgainst().toString());
 
         //Set circle icons for positions, points for and against
         String leaguePosition = team.getPosition().toString();
