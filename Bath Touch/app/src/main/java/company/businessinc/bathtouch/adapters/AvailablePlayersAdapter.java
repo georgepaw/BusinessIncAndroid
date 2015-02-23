@@ -183,7 +183,6 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             int id = player.getUserID();
 
-//            v.mPlayerNumber.setText(Integer.toString(position));
             v.mPlayerName.setText(player.getName());
 //            v.mPlayerAvail.setVisibility(View.VISIBLE);
             if (player.getIsGhostPlayer()) {
@@ -202,7 +201,6 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 //                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
             }
 
-            v.mPlayerNumber.setText(Integer.toString(id));
         }
 
     }
