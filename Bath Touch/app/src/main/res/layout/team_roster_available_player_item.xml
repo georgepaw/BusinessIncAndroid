@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/team_roster_player_name"
-        android:text="Number" />
+        android:text="" />
 
     <CheckBox
         android:id="@+id/team_roster_player_checkbox"

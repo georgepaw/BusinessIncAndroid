@@ -77,7 +77,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public class ViewHolderLeague extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTeamName, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName;
+        public TextView mTeamName, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName, mTeamPos;
         public ImageView mImagePosition;
         public RelativeLayout mDisplayItem, mTextArea, mExtraText;
 
@@ -105,6 +105,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mExtraText = (RelativeLayout) v.findViewById(R.id.league_item_extra_text_container);
             mPtsFor = (TextView) v.findViewById(R.id.league_item_pts_for);
             mPtsAgn = (TextView) v.findViewById(R.id.league_item_pts_agn);
+            mTeamPos = (TextView) v.findViewById(R.id.league_item_team_position);
 
 
 //            mCloseButton.setOnClickListener(this);
@@ -271,7 +272,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .endConfig()
                 .buildRound(leaguePosition, circleColor);
 
-        v.mImagePosition.setImageDrawable(drawable);
+//        v.mImagePosition.setImageDrawable(drawable);
+        v.mTeamPos.setText(leaguePosition);
+        v.mTeamPos.setTextColor(circleColor);
 
 //        String downArrow = "\u25BC";
 //        String upArrow = "\u25B2";

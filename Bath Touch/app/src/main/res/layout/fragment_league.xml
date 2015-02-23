@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/white"
+            android:elevation="4dp"
             >
 
             <RelativeLayout
@@ -24,7 +25,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/team_number"
+                    android:id="@+id/fragment_league_header_team_number"
                     style="@style/body_2_text"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -33,17 +34,17 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/team_name"
+                    android:id="@+id/fragment_league_header_team_name"
                     style="@style/body_2_text"
                     android:layout_width="fill_parent"
                     android:layout_height="20dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_toRightOf="@id/team_number"
+                    android:layout_toRightOf="@id/fragment_league_header_team_number"
                     android:text="Team"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/team_points"
+                    android:id="@+id/fragment_league_header_team_points"
                     style="@style/body_2_text"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
@@ -53,30 +54,30 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/team_lose"
+                    android:id="@+id/fragment_league_header_team_lose"
                     style="@style/body_2_text"
                     android:layout_width="24dp"
                     android:layout_height="20dp"
-                    android:layout_toLeftOf="@id/team_points"
+                    android:layout_toLeftOf="@id/fragment_league_header_team_points"
                     android:text="L"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/team_draw"
+                    android:id="@+id/fragment_league_header_team_draw"
                     style="@style/body_2_text"
                     android:layout_width="24dp"
                     android:layout_height="20dp"
-                    android:layout_toLeftOf="@id/team_lose"
+                    android:layout_toLeftOf="@id/fragment_league_header_team_lose"
                     android:text="D"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/team_won"
+                    android:id="@+id/fragment_league_header_team_won"
                     style="@style/body_2_text"
                     android:layout_width="24dp"
                     android:layout_height="20dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_toLeftOf="@id/team_draw"
+                    android:layout_toLeftOf="@id/fragment_league_header_team_draw"
                     android:text="W"
                     android:textStyle="bold" />
 
@@ -90,7 +91,7 @@
                 android:paddingLeft="66dp">
 
                 <View
-                    android:id="@+id/team_roster_header_item_divider"
+                    android:id="@+id/fragment_league_header_item_divider"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/grey_300">

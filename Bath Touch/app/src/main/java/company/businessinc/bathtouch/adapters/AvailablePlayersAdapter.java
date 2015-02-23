@@ -1,6 +1,10 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,12 +86,14 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     public class ViewHolderHeader extends RecyclerView.ViewHolder {
         private TextView mTextView;
         private View mDivider;
+        private ImageView mCheck;
 
         public ViewHolderHeader(View itemView) {
             super(itemView);
 
             mTextView = (TextView) itemView.findViewById(R.id.team_roster_header_item_text);
             mDivider = (View) itemView.findViewById(R.id.team_roster_header_item_divider);
+            mCheck = (ImageView) itemView.findViewById(R.id.team_roster_header_check_image);
         }
     }
 
@@ -127,12 +133,30 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             ViewHolderHeader v = (ViewHolderHeader) holder;
             v.mTextView.setTextColor(color);
             v.mDivider.setBackgroundColor(color);
+            v.mCheck.setVisibility(View.GONE);
 
+            int selected = selectedPlayers.size();
+            int unselected = unselectedPlayers.size();
+
+            Drawable checkIcon = context.getResources().getDrawable(R.mipmap.ic_check_black);
+            int green = context.getResources().getColor(R.color.green);
+            ColorFilter filter = new LightingColorFilter( green, green);
+            checkIcon.setColorFilter(filter);
+
+            //update contents of header based on player number
             if (position == 0) {
-                v.mTextView.setText("Playing");
+                v.mTextView.setText(String.format("Playing (%d)", selected));
+                if(selected >= 6){
+                    v.mCheck.setImageDrawable(checkIcon);
+                    v.mCheck.setVisibility(View.VISIBLE); //TODO implement real team valiation
+                }
             } else {
-                v.mTextView.setText("Not Playing");
+
+                v.mTextView.setText(String.format("Not Playing (%d)", unselected));
             }
+
+
+
 
         } else {
             //is a player item, so set that up
@@ -159,7 +183,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             int id = player.getUserID();
 
-            v.mPlayerNumber.setText(Integer.toString(position));
+//            v.mPlayerNumber.setText(Integer.toString(position));
             v.mPlayerName.setText(player.getName());
 //            v.mPlayerAvail.setVisibility(View.VISIBLE);
             if (player.getIsGhostPlayer()) {
@@ -199,6 +223,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             notifyItemMoved(position + 2, selectedPlayers.size());
 
+
         } else {
             Log.d("CLICK", "Removed from selected");
             position = position - 1;
@@ -209,6 +234,10 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             notifyItemMoved(position + 1, selectedPlayers.size() + 2); //BOW TO THE MAGIC CONSTANTS
         }
+
+        //update numbers in header
+        notifyItemChanged(0);
+        notifyItemChanged(selectedPlayers.size() + 1);
 
         //update the availability in the database
         DataStore.getInstance(context).setPlayersAvailability(!player.getIsPlaying(), player.getUserID(), matchID);
