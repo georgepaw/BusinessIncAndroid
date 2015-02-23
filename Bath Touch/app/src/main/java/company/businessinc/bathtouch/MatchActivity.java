@@ -37,7 +37,7 @@ import company.businessinc.dataModels.Match;
 
 
 public class MatchActivity extends ActionBarActivity implements LeagueFragment.LeagueCallbacks,
-        MatchFactsFragment.OnFragmentInteractionListener {
+        MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener {
 
     private static final String TAG = "MatchActivty";
     private String mTeamOneName,mTeamTwoName;
@@ -47,6 +47,8 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
     private ViewPagerAdapter mViewPagerAdapter;
     private String mPlace;
     private Date mDate;
+
+    private int NUMTABS = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +152,30 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
 
     }
 
+
+    /*
+    Called when the create new ghost player is selected
+    Starts a new create player flow intent
+     */
+    public void startCreateGhostPlayerIntent(){
+        Intent intent = new Intent(MatchActivity.this, CreateAccountActivity.class);
+        Bundle args = new Bundle();
+        args.putBoolean("ghost", true);
+        intent.putExtras(args);
+        startActivity(intent);
+        finish();
+    }
+
+    /*
+    Implemented interface from available players fragment
+    when create ghost player button is pressed
+     */
+    @Override
+    public void createGhostPlayerEvent() {
+        Log.d("TEAMROSTERACTIVITY", "creating new intent");
+        startCreateGhostPlayerIntent();
+    }
+
     private class ViewPagerAdapter extends FragmentPagerAdapter {
 
         public ViewPagerAdapter(FragmentManager fm) {
@@ -159,6 +185,9 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
         @Override
         public Fragment getItem(int position) {
             switch (position) {
+                case 0:
+                    AvailablePlayersFragment frag = AvailablePlayersFragment.newInstance(mMatchID);
+                    return frag;
                 case 1:
                     LeagueFragment leagueFragment = LeagueFragment.newInstance(mLeagueID);
                     return leagueFragment;
@@ -171,18 +200,20 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
 
         @Override
         public int getCount() {
-            return 3;
+            return NUMTABS;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0:
-                    return "Match facts";
+                    return "Players";
                 case 1:
                     return "Table";
                 case 2:
                     return "Head-to-head";
+                case 3:
+                    return "Match Facts";
                 default:
                     return "null";
             }

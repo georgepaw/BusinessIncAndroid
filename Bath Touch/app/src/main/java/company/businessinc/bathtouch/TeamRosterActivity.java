@@ -306,7 +306,8 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public Fragment getItem(int position) {
-            return AvailablePlayersFragment.newInstance(position, matchID);
+//            return AvailablePlayersFragment.newInstance(matchID);
+            return null;
         }
     }
 
