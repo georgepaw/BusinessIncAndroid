@@ -3,8 +3,6 @@ package company.businessinc.bathtouch;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -15,10 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
-import company.businessinc.bathtouch.data.DBProvider;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
@@ -222,7 +215,7 @@ public class ResultsListFragment extends Fragment implements LoaderManager.Loade
             mCallbacks.onResultsItemSelected(position);
         }
 
-        Intent intent = new Intent(getActivity(), MatchActivity.class);
+        Intent intent = new Intent(getActivity(), MatchFragment.class);
         Bundle args = new Bundle();
         args.putString(Match.KEY_TEAMONE, leagueScores.get(position).getTeamOne());
         args.putString(Match.KEY_TEAMTWO, leagueScores.get(position).getTeamTwo());

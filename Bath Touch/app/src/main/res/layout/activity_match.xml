@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="company.businessinc.bathtouch.MatchActivity">
+    tools:context="company.businessinc.bathtouch.MatchFragment">
 
     <RelativeLayout
         android:id="@+id/activity_match_header"

@@ -1,26 +1,15 @@
 package company.businessinc.bathtouch;
 
-import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,19 +20,15 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
-import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 
-public class MatchActivity extends Fragment implements LeagueFragment.LeagueCallbacks,
+public class MatchFragment extends Fragment implements LeagueFragment.LeagueCallbacks,
         MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener {
 
     private static final String TAG = "MatchActivty";
@@ -58,8 +43,8 @@ public class MatchActivity extends Fragment implements LeagueFragment.LeagueCall
 
     private int NUMTABS = 4;
 
-    public static MatchActivity newInstance(Bundle args){
-        MatchActivity frag = new MatchActivity();
+    public static MatchFragment newInstance(Bundle args){
+        MatchFragment frag = new MatchFragment();
 
         frag.setArguments(args);
         return frag;

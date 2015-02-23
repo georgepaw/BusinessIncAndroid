@@ -73,7 +73,7 @@
             android:label="@string/title_activity_forgot_password" >
         </activity>
         <activity
-            android:name=".MatchActivity"
+            android:name=".MatchFragment"
             android:label="@string/title_activity_match"
             android:parentActivityName=".MainActivity" >
             <meta-data

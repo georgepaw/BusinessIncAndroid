@@ -664,7 +664,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             mPastMatchesImages.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), MatchActivity.class);
+                    Intent intent = new Intent(getActivity(), MatchFragment.class);
                     Bundle args = new Bundle();
                     args.putString(Match.KEY_TEAMONE, match.getTeamOne());
                     args.putString(Match.KEY_TEAMTWO, match.getTeamTwo());

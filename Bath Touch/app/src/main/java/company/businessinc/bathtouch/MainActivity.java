@@ -408,7 +408,7 @@ public class MainActivity extends ActionBarActivity
             if (tag.equals("TEAMRESULTSTAG"))
                 ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
             if (tag.equals("MATCHDETAILSFRAG")) {
-                ft.replace(R.id.container, MatchActivity.newInstance(args), tag);
+                ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
             }
 
             ft.addToBackStack(tag);
