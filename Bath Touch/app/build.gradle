@@ -32,6 +32,7 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.2.0'
 
     compile 'com.timehop.stickyheadersrecyclerview:library:0.3.6@aar'
+    compile 'com.cocosw:bottomsheet:0.+@aar'
 
 
 }

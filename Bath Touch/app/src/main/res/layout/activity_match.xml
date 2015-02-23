@@ -10,13 +10,12 @@
         android:id="@+id/activity_match_header"
         android:background="@color/primary"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="80dp"
         android:layout_below="@+id/toolbar"
         android:elevation="2dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical">
+        >
 
         <RelativeLayout
             android:id="@+id/activity_match_header_team_one"

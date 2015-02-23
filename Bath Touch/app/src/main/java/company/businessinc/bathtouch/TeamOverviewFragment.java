@@ -588,19 +588,34 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             } else {
                 mNextMatchCheckBoxContainer.setVisibility(View.GONE);
                 mNextMatchManage.setVisibility(View.VISIBLE);
+                mNextMatchManage.setText("Match Details");
                 mNextMatchManage.setTextColor(DataStore.getInstance(getActivity()).getUserTeamColorPrimary());
                 mNextMatchManage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), TeamRosterActivity.class);
-                        intent.putExtra(Match.KEY_MATCHID, nextMatch.getMatchID());
-                        intent.putExtra(Match.KEY_TEAMONE, nextMatch.getTeamOne());
-                        intent.putExtra(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
-                        intent.putExtra(Match.KEY_PLACE, nextMatch.getPlace());
+//                        Intent intent = new Intent(getActivity(), TeamRosterActivity.class);
+//                        intent.putExtra(Match.KEY_MATCHID, nextMatch.getMatchID());
+//                        intent.putExtra(Match.KEY_TEAMONE, nextMatch.getTeamOne());
+//                        intent.putExtra(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
+//                        intent.putExtra(Match.KEY_PLACE, nextMatch.getPlace());
+//                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+//                        intent.putExtra(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
+//                        intent.putExtra(League.KEY_LEAGUEID, mLeagueID);
+//                        startActivity(intent);
+                        Intent intent = new Intent(getActivity(), MatchActivity.class);
+                        Bundle args = new Bundle();
+                        args.putString(Match.KEY_TEAMONE, nextMatch.getTeamOne());
+                        args.putString(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
+                        args.putInt(Match.KEY_TEAMONEPOINTS, nextMatch.getTeamOnePoints());
+                        args.putInt(Match.KEY_TEAMTWOPOINTS, nextMatch.getTeamTwoPoints());
+                        args.putInt("leagueID", mLeagueID);
+                        args.putInt(Match.KEY_MATCHID, nextMatch.getMatchID());
+                        args.putString(Match.KEY_PLACE, nextMatch.getPlace());
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
-                        intent.putExtra(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
-                        intent.putExtra(League.KEY_LEAGUEID, mLeagueID);
+                        args.putString(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
+                        intent.putExtras(args);
                         startActivity(intent);
+
                     }
                 });
             }

@@ -84,9 +84,10 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     }
 
     public class ViewHolderHeader extends RecyclerView.ViewHolder {
-        private TextView mTextView;
+        private TextView mTextView, mPlayerCount, mSubsCount;
         private View mDivider;
         private ImageView mCheck;
+        private RelativeLayout mPlayerStats;
 
         public ViewHolderHeader(View itemView) {
             super(itemView);
@@ -94,6 +95,9 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             mTextView = (TextView) itemView.findViewById(R.id.team_roster_header_item_text);
             mDivider = (View) itemView.findViewById(R.id.team_roster_header_item_divider);
             mCheck = (ImageView) itemView.findViewById(R.id.team_roster_header_check_image);
+            mPlayerCount = (TextView) itemView.findViewById(R.id.team_roster_header_player_count);
+            mSubsCount = (TextView) itemView.findViewById(R.id.team_roster_header_subs_count);
+            mPlayerStats = (RelativeLayout) itemView.findViewById(R.id.team_roster_header_team_stats);
         }
     }
 
@@ -134,6 +138,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             v.mTextView.setTextColor(color);
             v.mDivider.setBackgroundColor(color);
             v.mCheck.setVisibility(View.GONE);
+            v.mPlayerStats.setVisibility(View.GONE);
 
             int selected = selectedPlayers.size();
             int unselected = unselectedPlayers.size();
@@ -145,13 +150,24 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             //update contents of header based on player number
             if (position == 0) {
-                v.mTextView.setText(String.format("Playing (%d)", selected));
+                v.mPlayerStats.setVisibility(View.VISIBLE);
+
+                v.mTextView.setText(String.format("Playing"));
+                int overflow = 0;
+
+                //if the team has the required number of players, not included gender ratios yet
                 if(selected >= 6){
+                    overflow = selected - 6;
+                    selected = 6;
                     v.mCheck.setImageDrawable(checkIcon);
                     v.mCheck.setVisibility(View.VISIBLE); //TODO implement real team valiation
                 }
-            } else {
+                v.mPlayerCount.setText(String.format("%d/%d", selected, selected));
+                v.mSubsCount.setText(String.format("%d/%d", overflow, overflow));
 
+            } else {
+                //2nd header only shows it's remaining players
+                v.mPlayerStats.setVisibility(View.GONE);
                 v.mTextView.setText(String.format("Not Playing (%d)", unselected));
             }
 
@@ -183,8 +199,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             int id = player.getUserID();
 
+
             v.mPlayerName.setText(player.getName());
-//            v.mPlayerAvail.setVisibility(View.VISIBLE);
             if (player.getIsGhostPlayer()) {
                 v.mPlayerReal.setVisibility(View.INVISIBLE);
             }
@@ -194,11 +210,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             if (player.getIsPlaying()) {
                 v.mCheckBox.setChecked(true);
-
-//                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_full_green);
             } else {
                 v.mCheckBox.setChecked(false);
-//                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
             }
 
         }
