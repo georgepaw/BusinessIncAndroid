@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context="company.businessinc.bathtouch.MatchActivity">
 
-    <include layout="@layout/include_toolbar"/>
-
     <RelativeLayout
         android:id="@+id/activity_match_header"
         android:background="@color/primary"

@@ -106,6 +106,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
             mTeamID = getArguments().getInt(Team.KEY_TEAMID);
             mLeagueID = getArguments().getInt(League.KEY_LEAGUEID);
         }
+        mCallbacks = (TeamOverviewCallbacks) getActivity();
     }
 
     @Override
@@ -602,7 +603,8 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
 //                        intent.putExtra(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
 //                        intent.putExtra(League.KEY_LEAGUEID, mLeagueID);
 //                        startActivity(intent);
-                        Intent intent = new Intent(getActivity(), MatchActivity.class);
+
+//                        Intent intent = new Intent(getActivity(), MatchActivity.class);
                         Bundle args = new Bundle();
                         args.putString(Match.KEY_TEAMONE, nextMatch.getTeamOne());
                         args.putString(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
@@ -613,8 +615,10 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
                         args.putString(Match.KEY_PLACE, nextMatch.getPlace());
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                         args.putString(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
-                        intent.putExtras(args);
-                        startActivity(intent);
+//                        intent.putExtras(args);
+//                        startActivity(intent);
+
+                        mCallbacks.matchDetailsSelectedCallback(args);
 
                     }
                 });
@@ -709,6 +713,7 @@ public class TeamOverviewFragment extends Fragment implements LoaderManager.Load
     }
 
     public static interface TeamOverviewCallbacks {
+        public void matchDetailsSelectedCallback(Bundle args);
     }
 
     public void refreshPage() {

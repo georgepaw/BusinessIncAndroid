@@ -66,7 +66,7 @@ public class AvailablePlayersFragment extends Fragment implements LoaderManager.
             getLoaderManager().initLoader(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY, null, this);
         }
 
-        mCallbacks = (AvailablePlayersListener) getActivity();
+        mCallbacks = (AvailablePlayersListener) getParentFragment();
 
     }
 

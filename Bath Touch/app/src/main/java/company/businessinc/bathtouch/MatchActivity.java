@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.LoaderManager;
@@ -16,9 +17,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +43,7 @@ import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 
-public class MatchActivity extends ActionBarActivity implements LeagueFragment.LeagueCallbacks,
+public class MatchActivity extends Fragment implements LeagueFragment.LeagueCallbacks,
         MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener {
 
     private static final String TAG = "MatchActivty";
@@ -49,15 +54,29 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
     private ViewPagerAdapter mViewPagerAdapter;
     private String mPlace;
     private Date mDate;
+    private View mLayout;
 
     private int NUMTABS = 4;
 
+    public static MatchActivity newInstance(Bundle args){
+        MatchActivity frag = new MatchActivity();
+
+        frag.setArguments(args);
+        return frag;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match);
-;
-        Bundle extras = getIntent().getExtras();
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mLayout = inflater.inflate(R.layout.activity_match, container, false);
+
+        Bundle extras = getArguments();
         if(extras != null){
             try {
                 mTeamOneName = extras.getString(Match.KEY_TEAMONE);
@@ -78,15 +97,15 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
         ImageView teamOneImage, teamTwoImage;
         TextView teamOneText, teamTwoText, scoreText, dateText;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Match");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary()));
+//        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar);
+//        toolbar.setTitle("Match");
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary()));
 
 
-        headerBox = (RelativeLayout) findViewById(R.id.activity_match_header);
-        headerBox.setBackgroundColor(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary());
+        headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
+        headerBox.setBackgroundColor(DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary());
 
         TextDrawable teamOneDrawable = TextDrawable.builder()
                 .buildRound(mTeamOneName.substring(0,1).toUpperCase(), Color.RED);
@@ -94,36 +113,36 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
         TextDrawable teamTwoDrawable = TextDrawable.builder()
                 .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), Color.BLUE);
 
-        teamOneImage = (ImageView) findViewById(R.id.activity_match_header_team_one_image);
+        teamOneImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_one_image);
         teamOneImage.setImageDrawable(teamOneDrawable);
 
-        teamTwoImage = (ImageView) findViewById(R.id.activity_match_header_team_two_image);
+        teamTwoImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_two_image);
         teamTwoImage.setImageDrawable(teamTwoDrawable);
 
-        teamOneText = (TextView) findViewById(R.id.activity_match_header_team_one_text);
+        teamOneText = (TextView) mLayout.findViewById(R.id.activity_match_header_team_one_text);
         teamOneText.setText(mTeamOneName);
-        teamTwoText = (TextView) findViewById(R.id.activity_match_header_team_two_text);
+        teamTwoText = (TextView) mLayout.findViewById(R.id.activity_match_header_team_two_text);
         teamTwoText.setText(mTeamTwoName);
 
 
-        scoreText = (TextView) findViewById(R.id.activity_match_header_score);
+        scoreText = (TextView) mLayout.findViewById(R.id.activity_match_header_score);
         scoreText.setText(mTeamOneScore + " - " + mTeamTwoScore);
-        dateText = (TextView) findViewById(R.id.activity_match_header_date);
+        dateText = (TextView) mLayout.findViewById(R.id.activity_match_header_date);
         DateFormatter sdf = new DateFormatter();
         dateText.setText(sdf.format(mDate));
 
-        mViewPager = (ViewPager) findViewById(R.id.activity_match_view_pager);
+        mViewPager = (ViewPager) mLayout.findViewById(R.id.activity_match_view_pager);
 
         // it's PagerAdapter set.
-        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.activity_match_sliding_tabs);
+        mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.activity_match_sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
-        mSlidingTabLayout.setBackgroundColor(DataStore.getInstance(this).getUserTeamColorPrimary());
-        mSlidingTabLayout.setSelectedIndicatorColors(DataStore.getInstance(this).getUserTeamColorSecondary());
+        mSlidingTabLayout.setBackgroundColor(DataStore.getInstance(getActivity()).getUserTeamColorPrimary());
+        mSlidingTabLayout.setSelectedIndicatorColors(DataStore.getInstance(getActivity()).getUserTeamColorSecondary());
 
         Resources res = getResources();
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setEnablePadding(false);
-        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
 
@@ -143,12 +162,8 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
                 }
             });
         }
-    }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
+        return mLayout;
     }
 
     @Override
@@ -172,12 +187,12 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
     Starts a new create player flow intent
      */
     public void startCreateGhostPlayerIntent(){
-        Intent intent = new Intent(MatchActivity.this, CreateAccountActivity.class);
-        Bundle args = new Bundle();
-        args.putBoolean("ghost", true);
-        intent.putExtras(args);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(MatchActivity.this, CreateAccountActivity.class);
+//        Bundle args = new Bundle();
+//        args.putBoolean("ghost", true);
+//        intent.putExtras(args);
+//        startActivity(intent);
+//        finish();
     }
 
     /*

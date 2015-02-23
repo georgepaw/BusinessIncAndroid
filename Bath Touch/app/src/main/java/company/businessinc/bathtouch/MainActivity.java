@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,8 +25,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
@@ -51,14 +48,13 @@ import company.businessinc.networking.APICall;
 
 public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
-        TeamOverviewFragment.TeamOverviewCallbacks,
         MyTeamFragment.MyTeamFragmentCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, TeamOverviewFragment.TeamOverviewCallbacks {
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -191,7 +187,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("HOMEPAGETAG");
+                                changeFragments("HOMEPAGETAG", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -203,7 +199,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("LEAGUETABLETAG");
+                                changeFragments("LEAGUETABLETAG", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -215,7 +211,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("TEAMRESULTSTAG");
+                                changeFragments("TEAMRESULTSTAG", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -377,12 +373,12 @@ public class MainActivity extends ActionBarActivity
                 Log.d("MATCH", "starting leage table activity");
 //                Intent intent = new Intent(this, LeagueTableActivity.class);
 //                startActivity(intent);
-                changeFragments("LEAGUETABLETAG");
+                changeFragments("LEAGUETABLETAG", null);
                 break;
             case HomePageAdapter.TEAMRESULTS:
                 Log.d("MATCH", "starting team results fragment");
 
-                changeFragments("TEAMRESULTSTAG");
+                changeFragments("TEAMRESULTSTAG", null);
                 break;
             default:
                 break;
@@ -399,7 +395,7 @@ public class MainActivity extends ActionBarActivity
         Log.d("TEAM", Integer.toString(position));
     }
 
-    public void changeFragments(String tag) {
+    public void changeFragments(String tag, Bundle args) {
         if (mFragmentManager == null)
             mFragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
@@ -411,6 +407,10 @@ public class MainActivity extends ActionBarActivity
                 ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
             if (tag.equals("TEAMRESULTSTAG"))
                 ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
+            if (tag.equals("MATCHDETAILSFRAG")) {
+                ft.replace(R.id.container, MatchActivity.newInstance(args), tag);
+            }
+
             ft.addToBackStack(tag);
             ft.commit();
         } else if (!fragment.isVisible()) {
@@ -537,5 +537,10 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void matchDetailsSelectedCallback(Bundle args) {
+        changeFragments("MATCHDETAILSFRAG", args);
     }
 }
