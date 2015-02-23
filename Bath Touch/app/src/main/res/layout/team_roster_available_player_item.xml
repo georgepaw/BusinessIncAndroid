@@ -9,13 +9,13 @@
 
     <ImageView
         android:id="@+id/team_roster_player_status_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_person_full_black" />
+        android:src="@drawable/ic_account_circle_grey600_48dp" />
 
 
     <TextView
@@ -45,14 +45,7 @@
 
         />
 
-    <ImageView
-        android:id="@+id/team_roster_player_avail_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_block_red" />
+
 
     <RelativeLayout
         android:layout_width="wrap_content"

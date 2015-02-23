@@ -50,8 +50,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
 
     public class ViewHolderPlayer extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView mPlayerReal;
-        ImageView mPlayerAvail;
+        ImageView mPlayerReal, mPlayerAvail;
         TextView mPlayerName;
         CheckBox mCheckBox;
         TextView mPlayerNumber;
@@ -61,7 +60,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             mPlayerReal = (ImageView) itemView.findViewById(R.id.team_roster_player_status_icon);
-            mPlayerAvail = (ImageView) itemView.findViewById(R.id.team_roster_player_avail_icon);
+//            mPlayerAvail = (ImageView) itemView.findViewById(R.id.team_roster_player_avail_icon);
             mPlayerName = (TextView) itemView.findViewById(R.id.team_roster_player_name);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.team_roster_player_checkbox);
             mPlayerNumber = (TextView) itemView.findViewById(R.id.team_roster_player_number);
@@ -162,12 +161,14 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
             v.mPlayerNumber.setText(Integer.toString(position));
             v.mPlayerName.setText(player.getName());
-            v.mPlayerAvail.setVisibility(View.INVISIBLE);
-            if (!player.getIsGhostPlayer()) {
-                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_full_green);
-            } else {
-                v.mPlayerAvail.setImageResource(R.drawable.ic_checkbox_outline);
+//            v.mPlayerAvail.setVisibility(View.VISIBLE);
+            if (player.getIsGhostPlayer()) {
+                v.mPlayerReal.setVisibility(View.INVISIBLE);
             }
+            else{
+                v.mPlayerReal.setVisibility(View.VISIBLE);
+            }
+
             if (player.getIsPlaying()) {
                 v.mCheckBox.setChecked(true);
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -72,10 +74,19 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
             }
         }
 
+        RelativeLayout headerBox;
+        ImageView teamOneImage, teamTwoImage;
+        TextView teamOneText, teamTwoText, scoreText, dateText;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Match");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary()));
+
+
+        headerBox = (RelativeLayout) findViewById(R.id.activity_match_header);
+        headerBox.setBackgroundColor(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary());
 
         TextDrawable teamOneDrawable = TextDrawable.builder()
                 .buildRound(mTeamOneName.substring(0,1).toUpperCase(), Color.RED);
@@ -83,19 +94,21 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
         TextDrawable teamTwoDrawable = TextDrawable.builder()
                 .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), Color.BLUE);
 
-        ImageView teamOneImage = (ImageView) findViewById(R.id.activity_match_header_team_one_image);
+        teamOneImage = (ImageView) findViewById(R.id.activity_match_header_team_one_image);
         teamOneImage.setImageDrawable(teamOneDrawable);
 
-        ImageView teamTwoImage = (ImageView) findViewById(R.id.activity_match_header_team_two_image);
+        teamTwoImage = (ImageView) findViewById(R.id.activity_match_header_team_two_image);
         teamTwoImage.setImageDrawable(teamTwoDrawable);
 
-        TextView teamOneText = (TextView) findViewById(R.id.activity_match_header_team_one_text);
+        teamOneText = (TextView) findViewById(R.id.activity_match_header_team_one_text);
         teamOneText.setText(mTeamOneName);
-        TextView teamTwoText = (TextView) findViewById(R.id.activity_match_header_team_two_text);
+        teamTwoText = (TextView) findViewById(R.id.activity_match_header_team_two_text);
         teamTwoText.setText(mTeamTwoName);
-        TextView scoreText = (TextView) findViewById(R.id.activity_match_header_score);
+
+
+        scoreText = (TextView) findViewById(R.id.activity_match_header_score);
         scoreText.setText(mTeamOneScore + " - " + mTeamTwoScore);
-        TextView dateText = (TextView) findViewById(R.id.activity_match_header_date);
+        dateText = (TextView) findViewById(R.id.activity_match_header_date);
         DateFormatter sdf = new DateFormatter();
         dateText.setText(sdf.format(mDate));
 
@@ -103,10 +116,11 @@ public class MatchActivity extends ActionBarActivity implements LeagueFragment.L
 
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.activity_match_sliding_tabs);
-        mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator_inverse, android.R.id.text1);
+        mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
+        mSlidingTabLayout.setBackgroundColor(DataStore.getInstance(this).getUserTeamColorPrimary());
+        mSlidingTabLayout.setSelectedIndicatorColors(DataStore.getInstance(this).getUserTeamColorSecondary());
 
         Resources res = getResources();
-        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setEnablePadding(false);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());

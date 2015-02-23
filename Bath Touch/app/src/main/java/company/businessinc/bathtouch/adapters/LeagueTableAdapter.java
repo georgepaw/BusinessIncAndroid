@@ -213,8 +213,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         LeagueTeam team = leagueTeams.get(position);
         Team fullTeam = null;
-        int circleColor = Color.BLACK;
-        int textColor = mContext.getResources().getColor(R.color.primary_text_default_material_light);
+        int circleColor = Color.GRAY;
+        int textColor = mContext.getResources().getColor(R.color.body_text_2);
         int circleTextColor = Color.WHITE;
 
         for (Team e : allTeams) {

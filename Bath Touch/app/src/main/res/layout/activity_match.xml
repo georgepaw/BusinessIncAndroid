@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:id="@+id/activity_match_header"
-        android:background="@color/background_material_light"
+        android:background="@color/primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
@@ -32,7 +32,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/activity_match_header_team_one_text"/>
+                android:id="@+id/activity_match_header_team_one_text"
+                android:textColor="@color/white"
+                android:text="Team one"/>
 
             </LinearLayout>
 
@@ -49,12 +51,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="34sp"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginBottom="4dp"
+                android:text="0-0"
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/activity_match_header_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="4th December"
+                android:textColor="@color/white"/>
+
             </LinearLayout>
 
         <LinearLayout
@@ -74,7 +81,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/activity_match_header_team_two_text"/>
+                android:id="@+id/activity_match_header_team_two_text"
+                android:textColor="@color/white"
+                android:text="Team two"/>
 
         </LinearLayout>
 
