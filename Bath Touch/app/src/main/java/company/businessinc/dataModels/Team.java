@@ -2,9 +2,11 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gp on 18/11/14.
@@ -164,5 +166,16 @@ public class Team {
         values.put(KEY_TEAMCOLORPRIMARY, teamColorPrimary);
         values.put(KEY_TEAMCOLORSECONDARY, teamColorSecondary);
         return values;
+    }
+
+    public static List<Team> cursorToList(Cursor cursor){
+        List<Team> output = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output.add(new Team(cursor));
+                cursor.moveToNext();
+            }
+        }
+        return output;
     }
 }

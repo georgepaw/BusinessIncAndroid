@@ -2,10 +2,13 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by gp on 18/11/14.
@@ -243,6 +246,17 @@ public class LeagueTeam {
         this.pointsAgainst = pointsAgainst;
     }
 
+    public static List<LeagueTeam> cursorToList(Cursor cursor){
+        List<LeagueTeam> output = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output.add(new LeagueTeam(cursor));
+                cursor.moveToNext();
+            }
+        }
+        return output;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_TEAMNAME, teamName);
@@ -256,5 +270,15 @@ public class LeagueTeam {
         values.put(KEY_POINTSFOR, pointsFor);
         values.put(KEY_POINTSAGAINST, pointsAgainst);
         return values;
+    }
+
+    public static List<LeagueTeam> sortByPosition(List<LeagueTeam> leagueTeams){
+        Collections.sort(leagueTeams, new Comparator<LeagueTeam>() {
+            @Override
+            public int compare(LeagueTeam T1, LeagueTeam T2) {
+                return T1.getPosition() - T2.getPosition();
+            }
+        });
+        return leagueTeams;
     }
 }

@@ -1,10 +1,7 @@
 package company.businessinc.endpoints;
 
-import java.util.List;
-
-import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.User;
+import company.businessinc.dataModels.ResponseStatus;
 
 public interface TeamScheduleInterface {
-    public void teamScheduleCallback(List<Match> data, int leagueID, int teamID);
+    public void teamScheduleCallback(ResponseStatus responseStatus, int leagueID, int teamID);
 }

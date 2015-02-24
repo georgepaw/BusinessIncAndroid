@@ -9,8 +9,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.Status;
+import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.endpoints.ScoreSubmit;
 import company.businessinc.endpoints.ScoreSubmitInterface;
 
@@ -65,7 +66,7 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
     }
 
     @Override
-    public void scoreSubmitCallback(Status data) {
+    public void scoreSubmitCallback(ResponseStatus data) {
         if(data != null){
             if(data.getStatus()) {
                 Toast.makeText(this, "Score submitted successfully", Toast.LENGTH_SHORT).show();

@@ -16,14 +16,16 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Team;
@@ -31,10 +33,8 @@ import company.businessinc.dataModels.Team;
 /**
  * Created by user on 22/11/14.
  */
-public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DBObserver{
 
-
-    private LeagueTableData mDataset;
     private List<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
     private List<Team> allTeams = new ArrayList<Team>();
     private Context mContext;
@@ -42,6 +42,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private View previousExpandedView = null;
     private int mTeamId;
     private int mTeamColor;
+    private int leagueID;
 
 
     public void animateChange(View v, int pos) {
@@ -112,46 +113,11 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //                }
 //            });
 
-
-            mDisplayItem.setOnClickListener(this);
-
-
         }
 
-        //
         @Override
         public void onClick(View v) {
-
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mTextArea.getLayoutParams();
-
-
-//                Log.d("LEAGUETABLEAAPTER", "found expanded" + Integer.toString(viewType));
-
-
-
-            //Move the text up to show more details
-            if(expanded){
-                Animation animSlideDown = AnimationUtils.loadAnimation(mContext, R.anim.slide_league_text);
-                animSlideDown.setInterpolator(new Interpolator() {
-                    @Override
-                    public float getInterpolation(float input) {
-                        return Math.abs(input -1f);
-                    }
-                });
-
-                mTextArea.startAnimation(animSlideDown);
-                mExtraText.setVisibility(View.GONE);
-                p.setMargins(0,0,0,0);
-                expanded = false;
-            }
-            else{
-                Animation animSlideUp = AnimationUtils.loadAnimation(mContext, R.anim.slide_league_text);
-                mTextArea.startAnimation(animSlideUp);
-                mExtraText.setVisibility(View.VISIBLE);
-                p.setMargins(0,0,0,20);
-                expanded = true;
-            }
-
+            changeVis(getPosition());
         }
 
 
@@ -159,21 +125,38 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    public LeagueTableAdapter(Activity context, int id) {
+    
+    public LeagueTableAdapter(Activity context, int leagueID, int teamId) {
         mContext = context.getApplicationContext();
-        mTeamId = id;
+        mTeamId = teamId;
         mTeamColor = DataStore.getInstance(mContext).getUserTeamColorPrimary();
+
+        this.leagueID = leagueID;
     }
 
-    public void setLeagueTeams(List<LeagueTeam> leagueTeams) {
-        this.leagueTeams = leagueTeams;
-        notifyDataSetChanged();
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        super.onAttachedToRecyclerView(recyclerView);
+        DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
+        DataStore.getInstance(mContext).registerLeaguesStandingsDBObserver(this);
+        this.allTeams = DataStore.getInstance(mContext).getAllTeams();
+        this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
     }
 
-    public void setAllTeams(List<Team> teams) {
-        Log.d("LEAGUETABLEADAPTER", "loaded all teams into adapter");
-        this.allTeams = teams;
-        notifyDataSetChanged();
+    @Override
+    public void notify(String tableName, Object data) {
+        switch (tableName){
+            case DBProviderContract.ALLTEAMS_TABLE_NAME:
+                this.allTeams = DataStore.getInstance(mContext).getAllTeams();
+                notifyDataSetChanged();
+                break;
+            case DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME:
+                if(data == null || data == leagueID){
+                    this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
+                    notifyDataSetChanged();
+                }
+                break;
+        }
     }
 
 
@@ -199,9 +182,15 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
+    @Override
+    public void onDetachedFromRecyclerView (RecyclerView recyclerView){
+        DataStore.getInstance(mContext).unregisterAllTeamsDBObservers(this);
+        DataStore.getInstance(mContext).unregisterLeaguesStandingsDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
+
+
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-
         bindLeagueItem((ViewHolderLeague) holder, position);
     }
 

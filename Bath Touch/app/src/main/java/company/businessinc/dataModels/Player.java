@@ -2,13 +2,11 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Grzegorz on 02/02/2015.
@@ -147,5 +145,16 @@ public class Player {
         values.put(KEY_ISGHOSTPLAYER, isGhostPlayer ? 1 : 0);
         values.put(KEY_EMAIL, email);
         return values;
+    }
+
+    public static List<Player> cursorToList(Cursor cursor){
+        List<Player> output = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output.add(new Player(cursor));
+                cursor.moveToNext();
+            }
+        }
+        return output;
     }
 }

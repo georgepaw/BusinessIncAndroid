@@ -1,9 +1,7 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +21,6 @@ import java.util.List;
 import company.businessinc.bathtouch.DateFormatter;
 import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.Match;
-import company.businessinc.dataModels.Team;
 
 /**
  * Created by user on 21/11/14.
@@ -33,14 +30,13 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int expandedPosition = -1;
     private OnResultSelectedCallbacks mCallbacks;
     private Context mContext;
-    private String mLeagueName = "";
-    private List<Team> allTeams = new ArrayList<Team>();
+    private int leagueID;
+    private String leagueName;
     private List<Match> leagueScores;
     private String teamName;
 
-
     public interface OnResultSelectedCallbacks {
-        public void showMatchOverview(int position);
+        public void showMatchOverview(int position, int matchID);
     }
 
 
@@ -73,7 +69,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mMatchCardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallbacks.showMatchOverview(getPosition());
+                    mCallbacks.showMatchOverview(getPosition(), leagueScores.get(getPosition()).getMatchID());
                 }
             });
         }
@@ -85,10 +81,23 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public TeamResultsAdapter(Fragment context) {
+    public TeamResultsAdapter(Fragment context, int leagueID) {
         leagueScores = new ArrayList<>();
-//        mContext = context;
+        this.leagueID = leagueID;
         mCallbacks = (OnResultSelectedCallbacks) context;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        super.onAttachedToRecyclerView(recyclerView);
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+        } else {
+            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+        }
+        setData();
+        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        setLeagueName();
     }
 
     @Override
@@ -101,6 +110,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
+
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.match_result_item, parent, false);
@@ -109,14 +119,39 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             default:
                 return new ViewHolderResults(v);
         }
-
-
     }
 
-    public void setData(List<Match> leagueScores, String teamName) {
-        this.leagueScores = leagueScores;
-        this.teamName = teamName;
-        notifyDataSetChanged();
+    @Override
+    public void onDetachedFromRecyclerView (RecyclerView recyclerView){
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+        } else {
+            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+        }
+        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void notify(String tableName, Object data) {
+        switch (tableName){
+            case DBProviderContract.TEAMSSCORES_TABLE_NAME:
+            case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
+            case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+                notifyDataSetChanged();
+                break;
+        }
+    }
+
+    private void setData() {
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            this.leagueScores = DataStore.getInstance(mContext).getTeamScores(leagueID,
+                                                                DataStore.getInstance(mContext).getUserTeamID());
+            teamName = DataStore.getInstance(mContext).getUserTeam();
+        } else {
+            this.leagueScores = DataStore.getInstance(mContext).getLeagueScores(leagueID);
+            teamName = "";
+        }
     }
 
     public void setLeagueName(String name){
@@ -160,16 +195,17 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        Match match = leagueScores.get(position);
         v.mTeam1Name.setText(match.getTeamOne());
         v.mTeam2Name.setText(match.getTeamTwo());
         v.mTeam1Score.setText(match.getTeamOnePoints().toString());
         v.mTeam2Score.setText(match.getTeamTwoPoints().toString());
         v.mLocation.setText(match.getPlace().toString());
 
-        if(mLeagueName == ""){
+        if(leagueName.equals("")){
             Log.d("TEAMADAPTER", "league name was null");
         }
-        v.mLeague.setText(mLeagueName);
+        v.mLeague.setText(leagueName);
 
         DateFormatter df = new DateFormatter();
         v.mDate.setText(df.format(match.getDateTime()));
@@ -254,10 +290,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             expandedPosition = loc;
             notifyItemChanged(expandedPosition);
         }
-    }
-
-    public void addAllTeams(ArrayList<Team> list){
-        allTeams = list;
     }
 
     // Return the size of your dataset (invoked by the layout manager)

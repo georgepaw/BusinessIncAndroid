@@ -17,13 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Player;
 
 /**
  * Created by user on 30/01/15.
  */
-public class AvailablePlayersAdapter extends RecyclerView.Adapter {
+public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBObserver {
 
     private boolean is_available;
     private AvailablePlayerCallbacks mCallbacks;
@@ -42,6 +44,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         mCallbacks = (AvailablePlayerCallbacks) context;
         this.context = context;
         this.matchID = matchID;
+        playerList = DataStore.getInstance(context).getPlayersAvailability(matchID, is_available);
+
     }
 
 
@@ -79,8 +83,14 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        DataStore.getInstance(context).registerMyTeamsPlayerAvailabilitysDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
 
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        playerList = DataStore.getInstance(context).getPlayersAvailability(matchID, is_available);
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.team_roster_available_player_item, parent, false);
         return new ViewHolderPlayer(v);
@@ -115,6 +125,12 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         v.mPlayerNumber.setText(Integer.toString(id));
     }
 
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView){
+        DataStore.getInstance(context).unregisterMyTeamsPlayerAvailabilitysDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
+
     public void removeAt(int position){
         Player player = playerList.get(position);
         playerList.remove(position);
@@ -130,19 +146,16 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         return playerList.size();
     }
 
-    public void addToPlayerList(Player player){
-        boolean found = false;
-        for(int i = 0; i < playerList.size(); i++){
-            if(playerList.get(i).getUserID() == player.getUserID()){
-                playerList.set(i, player);
-                found = true;
+    @Override
+    public void notify(String tableName, Object data) {
+        switch(tableName){
+            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME:
+                if(data == null || data == matchID) {
+                    playerList = DataStore.getInstance(context).getPlayersAvailability(matchID, is_available);
+                    notifyDataSetChanged();
+                }
                 break;
-            }
         }
-        if(!found) {
-            playerList.add(player);
-        }
-        notifyDataSetChanged();
     }
 }
 

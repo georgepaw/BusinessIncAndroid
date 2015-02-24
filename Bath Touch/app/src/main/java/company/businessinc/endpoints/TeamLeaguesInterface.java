@@ -1,9 +1,7 @@
 package company.businessinc.endpoints;
 
-import java.util.List;
-
-import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.ResponseStatus;
 
 public interface TeamLeaguesInterface {
-    public void teamLeaguesCallback(List<League> data);
+    public void teamLeaguesCallback(ResponseStatus responseStatus);
 }
