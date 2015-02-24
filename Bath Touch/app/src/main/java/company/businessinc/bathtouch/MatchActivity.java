@@ -1,16 +1,11 @@
 package company.businessinc.bathtouch;
 
-import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -24,14 +19,9 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
-import company.businessinc.bathtouch.data.DBProviderContract;
-import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 

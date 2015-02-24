@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import company.businessinc.bathtouch.R;
 import company.businessinc.bathtouch.adapters.ExpandableListAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;

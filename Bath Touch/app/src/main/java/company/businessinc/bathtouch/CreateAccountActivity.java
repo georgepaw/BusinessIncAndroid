@@ -3,13 +3,9 @@ package company.businessinc.bathtouch;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +20,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.ResponseStatus;
@@ -265,14 +263,14 @@ public class CreateAccountActivity extends ActionBarActivity {
         }
     }
 
-    public static class CreateAccountTeam extends Fragment implements UserNewInterface, UserLoginInterface, LoaderManager.LoaderCallbacks<Cursor>{
+    public static class CreateAccountTeam extends Fragment implements UserNewInterface, UserLoginInterface, DBObserver{
 
         private SharedPreferences mSharedPreferences;
         private String userLoggedIn = "login";
         private static final String cookie = "Cookie";
         private Spinner mTeamSpinner;
         private Button mNext;
-        private ArrayList<Team> mLeagueTeams;
+        private List<Team> mLeagueTeams;
         private String mSelectedTeam, mUsername, mPassword;
         private boolean mIsGhost = false;
 
@@ -288,8 +286,15 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_team_button_skip_next);
 
             mLeagueTeams = new ArrayList<>();
-            getLoaderManager().initLoader(DBProviderContract.ALLTEAMS_URL_QUERY, null, this);
+            DataStore.getInstance(getActivity()).registerAllTeamsDBObservers(this);
+            loadTeams();
              return rootView;
+        }
+
+        @Override
+        public void onDestroyView(){
+            DataStore.getInstance(getActivity()).unregisterAllTeamsDBObservers(this);
+            super.onDestroyView();
         }
 
         public void create_account(View view) {
@@ -326,28 +331,8 @@ public class CreateAccountActivity extends ActionBarActivity {
             }
         }
 
-        @Override
-        public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
-            switch (loaderID) {
-                case DBProviderContract.ALLTEAMS_URL_QUERY:
-                    // Returns a new CursorLoader
-                    return new CursorLoader(getActivity(), DBProviderContract.ALLTEAMS_TABLE_CONTENTURI, null, null, null, null);
-                default:
-                    // An invalid id was passed in
-                    return null;
-            }
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            mLeagueTeams = new ArrayList<>();
-            if (data.moveToFirst()){
-                while(!data.isAfterLast()){
-                    mLeagueTeams.add(new Team(data));
-                    data.moveToNext();
-                }
-            }
-
+        public void loadTeams() {
+            mLeagueTeams = DataStore.getInstance(getActivity()).getAllTeams();
             final ArrayList<String> teamNames = new ArrayList<>();
             for(Team t : mLeagueTeams) {
                 teamNames.add(t.getTeamName());
@@ -376,8 +361,12 @@ public class CreateAccountActivity extends ActionBarActivity {
         }
 
         @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-
+        public void notify(String tableName, Object data) {
+            switch(tableName){
+                case DBProviderContract.ALLTEAMS_TABLE_NAME:
+                    loadTeams();
+                    break;
+            }
         }
 
         @Override

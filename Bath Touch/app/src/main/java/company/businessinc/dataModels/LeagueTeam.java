@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -268,5 +270,15 @@ public class LeagueTeam {
         values.put(KEY_POINTSFOR, pointsFor);
         values.put(KEY_POINTSAGAINST, pointsAgainst);
         return values;
+    }
+
+    public static List<LeagueTeam> sortByPosition(List<LeagueTeam> leagueTeams){
+        Collections.sort(leagueTeams, new Comparator<LeagueTeam>() {
+            @Override
+            public int compare(LeagueTeam T1, LeagueTeam T2) {
+                return T1.getPosition() - T2.getPosition();
+            }
+        });
+        return leagueTeams;
     }
 }

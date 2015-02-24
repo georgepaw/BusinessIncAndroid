@@ -18,6 +18,7 @@ public class DBProviderContract {
     public static final String SELECTION_LEAGUEIDANDTEAMID = League.KEY_LEAGUEID + " = ? AND " + Team.KEY_TEAMID + " = ?";
     public static final String SELECTION_MATCHID = Match.KEY_MATCHID + " = ?";
     public static final String SELECTION_MATCHIDANDUSERID = Match.KEY_MATCHID + " = ? AND " + Player.KEY_USERID + " = ?";
+    public static final String SELECTION_MATCHIDANDISPLAYING = Match.KEY_MATCHID + " = ? AND " + Player.KEY_ISPLAYING + " = ?";
 
     public static final String SQL_DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS";
 
@@ -104,7 +105,7 @@ public class DBProviderContract {
                                                                 Match.CREATE_TABLE + " )";
 
     public static final String CREATE_LEAGUESSTANDINGS_TABLE = CREATE_TABLE + " " + LEAGUESSTANDINGS_TABLE_NAME + "( " +
-                                                               League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
+                                                               League.KEY_LEAGUEID + "\t" + INTEGER + "," +
                                                                LeagueTeam.CREATE_TABLE + " )";
 
     public static final String CREATE_TEAMSFIXTURES_TABLE = CREATE_TABLE + " " + TEAMSFIXTURES_TABLE_NAME + "( " +
@@ -122,6 +123,11 @@ public class DBProviderContract {
                                                                 Match.CREATE_TABLE + " )";
 
 
+    public static final String CREATE_LEAGUETEAMS_TABLE = CREATE_TABLE + " " + LEAGUETEAMS_TABLE_NAME + "( " +
+            League.KEY_LEAGUEID + "\t" + INTEGER + "," +
+            Team.CREATE_TABLE + " )";
+
+
     public static final String CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE = CREATE_TABLE + " " + MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME + "( " +
                                                                 Match.KEY_MATCHID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Player.KEY_ISPLAYING + "\t" + INTEGER + " )";
@@ -129,11 +135,6 @@ public class DBProviderContract {
     public static final String CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE = CREATE_TABLE + " " + MYTEAMPLAYERSAVAILABILITY_TABLE_NAME + "( " +
                                                                 Match.KEY_MATCHID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
                                                                 Player.CREATE_TABLE + " )";
-
-
-    public static final String CREATE_LEAGUETEAMS_TABLE = CREATE_TABLE + " " + LEAGUETEAMS_TABLE_NAME + "( " +
-            League.KEY_LEAGUEID + "\t" + INTEGER + " " + PRIMARY_KEY + "," +
-            Team.CREATE_TABLE + " )";
 
     public static final String[] CREATE_TABLES = {CREATE_ALLTEAMS_TABLE, CREATE_MYLEAGUES_TABLE, CREATE_ALLLEAGUES_TABLE, CREATE_LEAGUESSCORE_TABLE,
             CREATE_LEAGUESFIXTURES_TABLE ,CREATE_LEAGUESSTANDINGS_TABLE, CREATE_TEAMSFIXTURES_TABLE,

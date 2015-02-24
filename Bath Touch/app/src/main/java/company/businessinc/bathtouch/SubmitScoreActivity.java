@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import company.businessinc.bathtouch.R;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.endpoints.ScoreSubmit;

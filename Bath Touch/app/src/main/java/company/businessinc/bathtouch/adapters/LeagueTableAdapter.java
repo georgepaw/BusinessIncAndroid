@@ -19,8 +19,9 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import java.util.ArrayList;
 import java.util.List;
 
-import company.businessinc.bathtouch.ApdaterData.LeagueTableData;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Team;
@@ -28,16 +29,15 @@ import company.businessinc.dataModels.Team;
 /**
  * Created by user on 22/11/14.
  */
-public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DBObserver{
 
-
-    private LeagueTableData mDataset;
     private List<LeagueTeam> leagueTeams = new ArrayList<LeagueTeam>();
     private List<Team> allTeams = new ArrayList<Team>();
     private Context mContext;
     private int expandedPosition = -1;
     private int mTeamId;
     private int mTeamColor;
+    private int leagueID;
 
 
     public void changeVis(int loc) {
@@ -103,20 +103,33 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
 
-    public LeagueTableAdapter(Activity context, int id) {
+    public LeagueTableAdapter(Activity context, int leagueID, int teamId) {
         mContext = context.getApplicationContext();
-        mTeamId = id;
+        mTeamId = teamId;
         mTeamColor = DataStore.getInstance(mContext).getUserTeamColorPrimary();
+        this.leagueID = leagueID;
     }
 
-    public void setLeagueTeams(List<LeagueTeam> leagueTeams) {
-        this.leagueTeams = leagueTeams;
+    private void setLeagueTeams() {
         notifyDataSetChanged();
     }
 
-    public void setAllTeams(List<Team> teams) {
+    @Override
+    public void notify(String tableName, Object data) {
+        switch (tableName){
+            case DBProviderContract.ALLTEAMS_TABLE_NAME:
+                notifyDataSetChanged();
+                break;
+            case DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME:
+                if(data == null || data == leagueID){
+                    notifyDataSetChanged();
+                }
+                break;
+        }
+    }
+
+    private void setAllTeams() {
         Log.d("LEAGUETABLEADAPTER", "loaded all teams into adapter");
-        this.allTeams = teams;
         notifyDataSetChanged();
     }
 
@@ -130,7 +143,10 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
-        // create a new view
+        DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
+        DataStore.getInstance(mContext).registerLeaguesStandingsDBObserver(this);
+        this.allTeams = DataStore.getInstance(mContext).getAllTeams();
+        this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.league_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
@@ -139,9 +155,15 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
+    @Override
+    public void onDetachedFromRecyclerView (RecyclerView recyclerView){
+        DataStore.getInstance(mContext).unregisterAllTeamsDBObservers(this);
+        DataStore.getInstance(mContext).unregisterLeaguesStandingsDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
+
+
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-
         bindLeagueItem((ViewHolderLeague) holder, position);
     }
 
@@ -230,7 +252,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return leagueTeams.size();
+        return DataStore.getInstance(mContext).getLeagueStandings(leagueID).size();
     }
 
 

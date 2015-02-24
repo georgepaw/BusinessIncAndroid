@@ -1,18 +1,14 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -26,14 +22,14 @@ import android.view.ViewGroup;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
+import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 
-public class TeamResultsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TeamResultsFragment extends Fragment {
 
 
     private TeamResultsCallbacks mCallbacks;
@@ -41,7 +37,6 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
-    private List<League> leagueNames = new LinkedList<League>();
 
 
     public static TeamResultsFragment newInstance() {
@@ -59,8 +54,6 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
-
-        getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
     }
 
     @Override
@@ -99,7 +92,7 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
         mSlidingTabLayout.setDistributeEvenly(false);
         mSlidingTabLayout.setEnablePadding(true);
-        mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+        mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), getActivity());
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
 
@@ -119,8 +112,14 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
                 }
             });
         }
-
+        DataStore.getInstance(getActivity()).registerAllLeagueDBObserver(mViewPagerAdapter);
         return mLayout;
+    }
+
+    @Override
+    public  void onDestroyView(){
+        DataStore.getInstance(getActivity()).unregisterAllLeagueDBObserver(mViewPagerAdapter);
+        super.onDestroyView();
     }
 
     public int darker (int color, float factor) {
@@ -136,7 +135,7 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
     }
 
     private void setSlidingTabLayoutContentDescriptions() {
-        mSlidingTabLayout.setContentDescription(0,"Winter 2015");
+        mSlidingTabLayout.setContentDescription(0, "Winter 2015");
     }
 
     @Override
@@ -151,70 +150,46 @@ public class TeamResultsFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        switch (loaderID) {
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
-
-    //query has finished
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()){
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                if (data.moveToFirst()){
-                    leagueNames = new ArrayList<>();
-                    while(!data.isAfterLast()){
-                        League league = new League(data);
-                        leagueNames.add(league);
-                        data.moveToNext();
-                    }
-                    if(leagueNames.size()>0) {
-                        Collections.reverse(leagueNames);
-                        mSlidingTabLayout.setViewPager(mViewPager);
-                        mViewPagerAdapter.notifyDataSetChanged();
-                    }
-                }
-                break;
-        }
-    }
-
-    //when data gets updated, first reset everything
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentPagerAdapter implements DBObserver {
 
-        public ViewPagerAdapter(FragmentManager fm) {
+        private List<League> leagues = new ArrayList<>();
+        private Context context;
+
+        public ViewPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
+            this.context = context;
         }
 
         @Override
         public Fragment getItem(int position) {
             Log.d("Team Results", "Creating fragment");
-            ResultsListFragment frag = ResultsListFragment.newInstance(leagueNames.get(position).getLeagueID());
+            ResultsListFragment frag = ResultsListFragment.newInstance(leagues.get(position).getLeagueID());
             return frag;
         }
 
         @Override
         public int getCount() {
-            return leagueNames.size();
+            return leagues.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return leagueNames.get(position).getLeagueName();
+            return leagues.get(position).getLeagueName();
+        }
+
+        @Override
+        public void notify(String tableName, Object data) {
+            switch(tableName){
+                case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+                    leagues = DataStore.getInstance(context).getAllLeagues();
+                    notifyDataSetChanged();
+                    break;
+            }
         }
     }
 

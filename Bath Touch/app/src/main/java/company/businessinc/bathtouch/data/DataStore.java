@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import company.businessinc.dataModels.*;
 import company.businessinc.endpoints.*;
@@ -89,6 +91,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     public synchronized void setUser(User user){
         this.user = user;
+        loadAllLeagues();
+        if(isUserLoggedIn()){
+           loadMyLeagues();
+        }
     }
 
     public boolean isUserLoggedIn(){
@@ -169,6 +175,30 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output;
     }
 
+    public Team getTeam(int leagueID, int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUETEAMS_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
+                new String[]{Integer.toString(leagueID), Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Team> output = Team.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size() > 0 ? output.get(0) : null;
+    }
+
+    /**
+     * Get team of the current logged in user
+     */
+    public Team getTeam(int leagueID){
+        return getTeam(leagueID, DataStore.getInstance(context).getUserTeamID());
+    }
+
     public List<League> getMyLeagues(){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.MYLEAGUES_TABLE_NAME,
@@ -184,6 +214,28 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
+    }
+
+    public League getLeague(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.ALLLEAGUES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<League> output = League.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size() > 0 ? output.get(0) : null;
+    }
+
+    public String getLeagueName(int leagueID){
+        League league = getLeague(leagueID);
+        return league != null ? league.getLeagueName() : null;
     }
 
     public List<League> getAllLeagues(){
@@ -248,10 +300,31 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<LeagueTeam> output = LeagueTeam.cursorToList(cursor);
+        List<LeagueTeam> output = LeagueTeam.sortByPosition(LeagueTeam.cursorToList(cursor));
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
+    }
+
+    public LeagueTeam getLeagueTeam(int leagueID, int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
+                new String[]{Integer.toString(leagueID), Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<LeagueTeam> output = LeagueTeam.sortByPosition(LeagueTeam.cursorToList(cursor));
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size() > 0 ? output.get(0) : null;
+    }
+
+    public LeagueTeam getLeagueTeam(int leagueID){
+        return getLeagueTeam(leagueID, getUserTeamID());
     }
 
     public List<Match> getTeamFixtures(int leagueID, int teamID){
@@ -305,6 +378,11 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output;
     }
 
+    public Match getNextGame(){
+        List<Match> matchList = Match.sortList(getMyUpcomingGames(), Match.SortType.ASCENDING);
+        return matchList.size() > 0 ? matchList.get(0) : null;
+    }
+
     public List<Match> getMyUpcomingRefereeGames(){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
@@ -320,6 +398,11 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
+    }
+
+    public Match getNextRefGame(){
+        List<Match> matchList = Match.sortList(getMyUpcomingRefereeGames(), Match.SortType.ASCENDING);
+        return matchList.size() > 0 ? matchList.get(0) : null;
     }
 
     public boolean amIPlaying(int matchID){
@@ -349,6 +432,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 DBProviderContract.SELECTION_MATCHID,
                 new String[]{Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Player> output = Player.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output;
+    }
+
+    public List<Player> getPlayersAvailability(int matchID, boolean arePlaying){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_MATCHIDANDISPLAYING,
+                new String[]{Integer.toString(matchID), arePlaying ? "1" : "0"},
                 null,
                 null,
                 null,
@@ -415,7 +515,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public void loadAllLeagues(){
         if(!loadedAllLeagues){
             new LeagueList(this, context).execute();
-            loadedAllLeagues = false;
+            loadedAllLeagues = true;
         }
     }
 
@@ -455,7 +555,6 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         if(responseStatus.getStatus()){
             Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was successful, notify my DBObservers");
             notifyLeaguesFixturesDBObservers(leagueID);
-            notifyMyUpcomingGamesDBObservers(null);
         } else{
             Log.d(TAG, "The call LeagueScores for leagueID " + leagueID + " was not successful");
         }
@@ -492,7 +591,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public void teamScheduleCallback(ResponseStatus responseStatus, int leagueID, int teamID){
         if(responseStatus.getStatus()){
             Log.d(TAG, "The call TeamSchedule for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my DBObservers");
-            notifyTeamsFixturesDBObservers(new Tuple<>(leagueID,teamID));
+            notifyTeamsFixturesDBObservers(new Tuple<>(leagueID, teamID));
+            notifyMyUpcomingGamesDBObservers(null);
         } else{
             Log.d(TAG, "The call TeamSchedule for leagueID " + leagueID + " for teamID "+ teamID+" was not successful");
         }
@@ -593,7 +693,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public synchronized void clearUserData() {
-        user = new User();
+        setUser(new User());
         dropAllTables();
         loadedAllTeams = false;
         loadedMyLeagues = false;
@@ -623,6 +723,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         myMatchesAvailability = new ArrayList<>();
         matchesAvailability = new ArrayList<>();
         loadedLeagueTeams = new ArrayList<>();
+        loadAllLeagues();
+        if(isUserLoggedIn()){
+            loadMyLeagues();
+        }
         notifyAllTeamsDBObservers(null);
         notifyMyLeaguesDBObservers(null);
         notifyAllLeagueDBObservers(null);
@@ -779,12 +883,17 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     
     private void notifyDBObservers(List<DBObserver> dbObservers, final String tableName, final Object data){
         for (final DBObserver dbObserver : dbObservers) {
-            new Thread(new Runnable() {
-                @Override
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
                 public void run() {
                     dbObserver.notify(tableName, data);
                 }
-            }).start();
+            });
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                }
+//            }).start();
         }
     }
 

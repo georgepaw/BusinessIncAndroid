@@ -20,17 +20,24 @@ import java.util.List;
 
 import company.businessinc.bathtouch.DateFormatter;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 
 /**
  * Created by user on 21/11/14.
  */
-public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DBObserver {
 
     private int expandedPosition = -1;
     private OnResultSelectedCallbacks mCallbacks;
     private Context mContext;
-    private String mLeagueName = "";
+    private int leagueID;
+    private String leagueName;
+    private List<Match> leagueScores;
+    private String teamName;
 
     public interface OnResultSelectedCallbacks {
         public void showMatchOverview(int position);
@@ -79,13 +86,11 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private List<Match> leagueScores;
-    private String teamName;
-
-    public TeamResultsAdapter(Fragment context) {
+    public TeamResultsAdapter(Fragment context, int leagueID) {
         leagueScores = new ArrayList<>();
-//        mContext = context;
+        this.leagueID = leagueID;
         mCallbacks = (OnResultSelectedCallbacks) context;
+        setData();
     }
 
     @Override
@@ -98,7 +103,16 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
+
         // create a new view
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+        } else {
+            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+        }
+        setData();
+        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        setLeagueName();
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.match_result_item, parent, false);
 
@@ -106,19 +120,43 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             default:
                 return new ViewHolderResults(v);
         }
-
-
     }
 
-    public void setData(List<Match> leagueScores, String teamName) {
-        this.leagueScores = leagueScores;
-        this.teamName = teamName;
-        notifyDataSetChanged();
+    @Override
+    public void onDetachedFromRecyclerView (RecyclerView recyclerView){
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+        } else {
+            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+        }
+        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
     }
 
-    public void setLeagueName(String name){
+    @Override
+    public void notify(String tableName, Object data) {
+        switch (tableName){
+            case DBProviderContract.TEAMSSCORES_TABLE_NAME:
+            case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
+            case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+                notifyDataSetChanged();
+                break;
+        }
+    }
 
-        mLeagueName = name;
+    private void setData() {
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            this.leagueScores = DataStore.getInstance(mContext).getTeamScores(leagueID,
+                                                                DataStore.getInstance(mContext).getUserTeamID());
+            teamName = DataStore.getInstance(mContext).getUserTeam();
+        } else {
+            this.leagueScores = DataStore.getInstance(mContext).getLeagueScores(leagueID);
+            teamName = "";
+        }
+    }
+
+    private void setLeagueName(){
+        leagueName = DataStore.getInstance(mContext).getLeagueName(leagueID);
     }
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -146,10 +184,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeam2Score.setText(match.getTeamTwoPoints().toString());
         v.mLocation.setText(match.getPlace().toString());
 
-        if(mLeagueName == ""){
+        if(leagueName.equals("")){
             Log.d("TEAMADAPTER", "league name was null");
         }
-        v.mLeague.setText(mLeagueName);
+        v.mLeague.setText(leagueName);
 
         DateFormatter df = new DateFormatter();
         v.mDate.setText(df.format(match.getDateTime()));

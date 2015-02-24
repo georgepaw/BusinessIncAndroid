@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -13,9 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -33,19 +29,15 @@ import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
 import company.businessinc.bathtouch.data.DBObserver;
-import company.businessinc.bathtouch.data.DBProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
 import company.businessinc.networking.APICall;
@@ -74,9 +66,6 @@ public class MainActivity extends ActionBarActivity
     private DrawerFrameLayout mNavigationDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragmentManager;
-
-    private Match nextRefMatch;
-    private Match nextPlayingMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -275,10 +264,9 @@ public class MainActivity extends ActionBarActivity
         if (DataStore.getInstance(this).isUserLoggedIn()) {
             if (DataStore.getInstance(this).isReferee()) {
                 DataStore.getInstance(this).registerMyUpcomingRefereeDBObserver(this);
-                getNextRefMatch();
             }
             DataStore.getInstance(this).registerMyUpcomingGamesDBObserver(this);
-            getNextPlayingMatch();
+            setLeagueID();
         }
 
 
@@ -346,8 +334,9 @@ public class MainActivity extends ActionBarActivity
     public void onHomePageCardSelected(int position) {
         switch (position) {
             case HomePageAdapter.NEXTREFGAME:
-                if (nextRefMatch != null) {
+                if (DataStore.getInstance(this).getNextGame() != null) {
                     Intent intent = new Intent(this, SubmitScoreActivity.class);
+                    Match nextRefMatch = DataStore.getInstance(this).getNextGame();
                     intent.putExtra(Match.KEY_MATCHID, nextRefMatch.getMatchID());
                     intent.putExtra(Match.KEY_TEAMONE, nextRefMatch.getTeamOne());
                     intent.putExtra(Match.KEY_TEAMTWO, nextRefMatch.getTeamTwo());
@@ -357,7 +346,8 @@ public class MainActivity extends ActionBarActivity
             case HomePageAdapter.NEXTGAME:
                 Log.d("CARDS", "Next game card selected");
                 //Only allow the card to open if there is a next game
-                if (nextPlayingMatch != null && DataStore.getInstance(this).isUserCaptain()) {
+                if (DataStore.getInstance(this).getNextGame() != null && DataStore.getInstance(this).isUserCaptain()) {
+                    Match nextPlayingMatch = DataStore.getInstance(this).getNextGame();
                     Intent intent = new Intent(this, TeamRosterActivity.class);
                     intent.putExtra(Match.KEY_MATCHID, nextPlayingMatch.getMatchID());
                     intent.putExtra(Match.KEY_TEAMONE, nextPlayingMatch.getTeamOne());
@@ -366,6 +356,7 @@ public class MainActivity extends ActionBarActivity
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     intent.putExtra(Match.KEY_DATETIME, sdf.format(nextPlayingMatch.getDateTime()));
                     intent.putExtra(Match.KEY_LEAGUEID, nextPlayingMatch.getLeagueID());
+                    setLeagueID();
                     startActivity(intent);
                 } else {
                     Log.d("Main", "Players is not a captain, can't go here");
@@ -434,29 +425,6 @@ public class MainActivity extends ActionBarActivity
         finish();
     }
 
-    private void getNextRefMatch(){
-        Match match = getNextMatch(DataStore.getInstance(this).getMyUpcomingRefereeGames());
-        if (match != null && (nextRefMatch == null || nextRefMatch.getDateTime().after(match.getDateTime()))) {
-            nextRefMatch = match;
-        }
-    }
-
-    private void getNextPlayingMatch(){
-        Match match = getNextMatch(DataStore.getInstance(this).getMyUpcomingGames());
-        if (match != null && (nextPlayingMatch == null || nextPlayingMatch.getDateTime().after(match.getDateTime()))) {
-            nextPlayingMatch = match;
-            MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
-            fragment.setLeagueID(nextPlayingMatch.getLeagueID());
-        }
-    }
-
-    private Match getNextMatch(List<Match> matchList) {
-        if (matchList.size() > 0) {
-            return Match.sortList(matchList, Match.SortType.ASCENDING).get(0);
-        }
-        return null;
-    }
-
     @Override
     public void onNextMatchCardSelected() {
         onHomePageCardSelected(HomePageAdapter.NEXTGAME);
@@ -496,11 +464,17 @@ public class MainActivity extends ActionBarActivity
     public void notify(String tableName, Object data) {
         switch(tableName){
             case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:
-                getNextPlayingMatch();
+                setLeagueID();
                 break;
             case DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME:
-                getNextRefMatch();
                 break;
+        }
+    }
+
+    private void setLeagueID(){
+        final MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
+        if(DataStore.getInstance(this).getNextGame() != null) {
+            fragment.setLeagueID(DataStore.getInstance(getApplicationContext()).getNextGame().getLeagueID());
         }
     }
 
