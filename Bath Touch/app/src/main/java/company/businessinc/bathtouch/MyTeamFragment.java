@@ -189,7 +189,7 @@ public class MyTeamFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0:
-                    return "Overview";
+                    return "Activity";
                 case 1:
                     return "Results";
                 case 2:

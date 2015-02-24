@@ -3,13 +3,12 @@
     android:id="@+id/home_page_card_table"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    >
+    android:clickable="true">
 
     <RelativeLayout
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="@drawable/bkg"
         android:clickable="true">
 
@@ -17,8 +16,9 @@
         <RelativeLayout
             android:id="@+id/match_result_item_container"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_alignParentRight="true">
+            android:layout_height="88dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bkg">
 
             <ImageView
                 android:id="@+id/match_result_item_result_image"
@@ -33,11 +33,12 @@
             <RelativeLayout
                 android:id="@+id/match_result_item_team1_container"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_alignParentTop="true"
+                android:gravity="center"
                 android:paddingLeft="72dp"
                 android:paddingRight="16dp"
-                android:paddingTop="20dp">
+                android:paddingTop="16dp">
 
                 <TextView
                     android:id="@+id/match_result_item_match_team1_name"
@@ -45,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="CompSci Vipers"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
 
@@ -55,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="16"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
 
             </RelativeLayout>
@@ -65,19 +66,20 @@
                 android:id="@+id/match_result_item_team2_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:layout_below="@id/match_result_item_team1_container"
+                android:gravity="center"
+                android:paddingBottom="16dp"
                 android:paddingLeft="72dp"
-                android:paddingRight="16dp"
-                android:paddingTop="4dp">
+                android:paddingRight="16dp">
 
                 <TextView
                     android:id="@+id/match_result_item_match_team2_name"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerInParent="true"
                     android:text="Autistics Athletics"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/match_result_item_match_team2_score"
@@ -86,7 +88,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerHorizontal="true"
                     android:text="8"
-                    android:textSize="14sp">
+                    android:textSize="16sp">
 
                 </TextView>
 
@@ -96,134 +98,164 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1px"
+            android:layout_alignBottom="@id/match_result_item_container"
+            android:background="@color/grey_300">
+
+        </View>
+
+        <RelativeLayout
             android:id="@+id/match_result_expandable"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/match_result_item_container"
-            android:background="@color/cardview_light_background"
-            android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="16dp">
+            >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_assignment_grey" />
-
-                <TextView
-                    android:id="@+id/match_result_league"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="30dp"
-                    android:text="Bath Summer League 2015"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_event_grey600_48dp" />
-
-                <TextView
-                    android:id="@+id/match_result_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="30dp"
-                    android:text="Tue, 2nd Feb"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_place_drop_grey" />
-
-                <TextView
-                    android:id="@+id/match_result_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="30dp"
-                    android:text="Old Trafford"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="8dp"
-                android:clickable="true"
-
-                >
-
-                <ImageView
-                    android:id="@+id/match_result_close_button"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/grey_button"
-                    android:clickable="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_expandless_grey" />
+                android:layout_height="180dp"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp">
 
                 <RelativeLayout
-                    android:id="@+id/match_result_match_overview_button"
-                    android:layout_width="165dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/grey_button"
-                    android:clickable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:paddingRight="30dp"
-                        android:text="View Match Overview"
-                        android:textSize="14dp" />
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_arrow_forward_grey" />
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:scaleType="fitStart"
+                        android:src="@mipmap/ic_assessment_white" />
 
+                    <TextView
+                        android:id="@+id/match_result_league"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="40dp"
+                        android:text="Bath Summer League 2015"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:src="@mipmap/ic_event_white" />
+
+                    <TextView
+                        android:id="@+id/match_result_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="40dp"
+                        android:text="Tue, 2nd Feb"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
 
                 </RelativeLayout>
 
-            </RelativeLayout>
-        </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:src="@mipmap/ic_place_white" />
+
+                    <TextView
+                        android:id="@+id/match_result_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="40dp"
+                        android:text="Old Trafford"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+
+                    >
+
+                    <ImageView
+                        android:id="@+id/match_result_close_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:clickable="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_expandless_grey" />
+
+                    <RelativeLayout
+                        android:id="@+id/match_result_match_overview_button"
+                        android:layout_width="165dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:clickable="true">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:paddingRight="30dp"
+                            android:text="View Match Overview"
+                            android:textColor="@color/white"
+                            android:textSize="14dp" />
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_arrow_forward_grey" />
+
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/match_result_opp_team_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="50dp"/>
+
+        </RelativeLayout>
+
+
+
 
 
     </RelativeLayout>

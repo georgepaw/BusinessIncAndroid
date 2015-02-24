@@ -112,7 +112,7 @@ public class TeamResultsFragment extends Fragment {
                 }
             });
         }
-        DataStore.getInstance(getActivity()).registerAllLeagueDBObserver(mViewPagerAdapter);
+
         return mLayout;
     }
 

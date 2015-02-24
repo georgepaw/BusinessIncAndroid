@@ -3,12 +3,16 @@ package company.businessinc.bathtouch;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeRefreshLayout.OnRefreshListener{
 
@@ -49,6 +52,14 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     private int mLeagueID;
     private League league;
     private SwipeRefreshLayout mSwipeRefresh;
+
+
+    private List<Match> teamOverviewLeagueFixtures;
+    private Team teamOverviewTeam;
+    private LeagueTeam teamOverviewLeagueTeam;
+    private League teamOverviewLeague;
+
+    private CardView mNextMatchCard, mNextRefMatchCard, mPastMatchesCard, mLeagueCard;
 
 
     public static TeamOverviewFragment newInstance(int teamID, int leagueID) {
@@ -100,27 +111,33 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
         mSwipeRefresh = (SwipeRefreshLayout) (mLayout.findViewById(R.id.fragment_team_overview_swiperefresh));
         mSwipeRefresh.setOnRefreshListener(this);
 
-        mNextMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextmatch);
-        mNextMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider1);
+//        mNextMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextmatch);
+        mNextMatchCard = (CardView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch);
+
+//        mNextMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider1);
         mNextMatchHeader = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_header);
         mNextMatchName = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_name);
         mNextMatchPlace = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_place);
         mNextMatchDate = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_date);
 
-        mPastMatchesContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_pastmatches);
-        mPastMatchesDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider3);
+//        mPastMatchesContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_pastmatches);
+        mPastMatchesCard = (CardView)  mLayout.findViewById(R.id.fragment_team_overview_pastmatches);
+//        mPastMatchesDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider3);
         mPastMatchesHeader = (TextView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_header);
 
-        mNextRefMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch);
-        mNextRefMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider2);
-        if(!DataStore.getInstance(getActivity()).isReferee()) {
-            mNextRefMatchContainer.setVisibility(View.GONE);
-            mNextRefMatchDivider.setVisibility(View.GONE);
-        }
+//        mNextRefMatchContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch);
+        mNextRefMatchCard = (CardView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch);
+
+//        mNextRefMatchDivider = (FrameLayout) mLayout.findViewById(R.id.fragment_team_overview_divider2);
+//        if (!DataStore.getInstance(getActivity()).isReferee()) {
+//            mNextRefMatchContainer.setVisibility(View.GONE);
+//            mNextRefMatchDivider.setVisibility(View.GONE);
+//        }
         mNextRefMatchName = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_name);
         mNextRefMatchPlace = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_place);
         mNextRefMatchDate = (TextView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_date);
         mNextRefMatchSubmit = (Button) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_submit);
+        mNextRefMatchImage = (ImageView) mLayout.findViewById(R.id.fragment_team_overview_nextrefmatch_image);
 
         mNextMatchCheckBoxContainer = (LinearLayout) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_checkbox_container);
         mNextMatchCheckBox = (CheckBox) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_checkbox);
@@ -128,13 +145,14 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
 
         mNextMatchImage = (ImageView) mLayout.findViewById(R.id.fragment_team_overview_nextmatch_image);
         mPastMatchesImages = new ArrayList<>();
-        mPastMatchesImages.add(0,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_1));
-        mPastMatchesImages.add(1,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_2));
-        mPastMatchesImages.add(2,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_3));
-        mPastMatchesImages.add(3,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_4));
-        mPastMatchesImages.add(4,(ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_5));
+        mPastMatchesImages.add(0, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_1));
+        mPastMatchesImages.add(1, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_2));
+        mPastMatchesImages.add(2, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_3));
+        mPastMatchesImages.add(3, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_4));
+        mPastMatchesImages.add(4, (ImageView) mLayout.findViewById(R.id.fragment_team_overview_pastmatches_image_5));
 
-        mLeagueContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_league);
+//        mLeagueContainer = (RelativeLayout) mLayout.findViewById(R.id.fragment_team_overview_league);
+        mLeagueCard = (CardView) mLayout.findViewById(R.id.fragment_team_overview_league);
         mLeagueHeader = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_header);
         mLeaguePoints = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_points);
         mLeagueWins = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_wins);
@@ -262,7 +280,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 mLeagueLosses.setTextColor(color);
             }
         }
-        refreshPage();
+        return leagueTeams;
     }
 
     public void setNextMatch(boolean isRefMatch){
@@ -307,7 +325,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             DateFormatter sdf = new DateFormatter();
             mNextMatchDate.setText(sdf.format(nextMatch.getDateTime()));
             final int nxtmtchID = nextMatch.getMatchID();
-            if(!DataStore.getInstance(getActivity()).isUserCaptain()) {
+            if (!DataStore.getInstance(getActivity()).isUserCaptain()) {
                 mNextMatchCheckBoxContainer.setVisibility(View.VISIBLE);
                 mNextMatchCheckBox.setChecked(DataStore.getInstance(getActivity()).amIPlaying(nxtmtchID));
                 mNextMatchCheckBox.setEnabled(true);
@@ -338,6 +356,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 });
             }
         }
+
         refreshPage();
     }
 
@@ -351,10 +370,9 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 .buildRound("D", getActivity().getResources().getColor(R.color.darkorange));
         TextDrawable lose = TextDrawable.builder()
                 .buildRound("L", getActivity().getResources().getColor(R.color.darkred));
-        List<Match> pastMatches = DataStore.getInstance(getActivity()).getTeamScores(league.getLeagueID(),mTeamID);
         int max = Math.min(pastMatches.size(), 5);
         mPastMatchesHeader.setText("Last " + max + " matches");
-        for(int i = 0; i < max; i++) {
+        for (int i = 0; i < max; i++) {
             final Match match = pastMatches.get(i);
             if (match.getTeamOneID() == mTeamID) {
                 if (match.getTeamOnePoints() > match.getTeamTwoPoints()) {
@@ -369,7 +387,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     mPastMatchesImages.get(i).setImageDrawable(lose);
                 }
             }
-            if(match.getTeamOnePoints() == match.getTeamTwoPoints()){
+            if (match.getTeamOnePoints() == match.getTeamTwoPoints()) {
                 mPastMatchesImages.get(i).setImageDrawable(draw);
             }
             final int lgId = mLeagueID;
@@ -416,7 +434,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
         },3000);
     }
 
-        public static interface TeamOverviewCallbacks {
+    public static interface TeamOverviewCallbacks {
     }
 
     public void refreshPage() {
