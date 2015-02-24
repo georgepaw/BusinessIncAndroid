@@ -117,7 +117,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @Override
         public void onClick(View v) {
-            changeVis(getPosition());
+            animateChange(v, getPosition());
         }
 
 

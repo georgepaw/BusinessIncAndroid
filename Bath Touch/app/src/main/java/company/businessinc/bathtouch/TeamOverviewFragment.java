@@ -40,7 +40,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             mNextRefMatchName, mNextRefMatchPlace, mNextRefMatchDate, mPastMatchesHeader,
             mLeagueHeader, mLeaguePoints, mLeagueWins, mLeagueDraws, mLeagueLosses;
     private FrameLayout mNextMatchDivider, mNextRefMatchDivider, mPastMatchesDivider;
-    private ImageView mNextMatchImage;
+    private ImageView mNextMatchImage, mNextRefMatchImage;
     private List<ImageView> mPastMatchesImages;
     private CheckBox mNextMatchCheckBox;
     private LinearLayout mNextMatchCheckBoxContainer;
@@ -52,12 +52,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     private int mLeagueID;
     private League league;
     private SwipeRefreshLayout mSwipeRefresh;
-
-
-    private List<Match> teamOverviewLeagueFixtures;
-    private Team teamOverviewTeam;
-    private LeagueTeam teamOverviewLeagueTeam;
-    private League teamOverviewLeague;
 
     private CardView mNextMatchCard, mNextRefMatchCard, mPastMatchesCard, mLeagueCard;
 
@@ -159,6 +153,13 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
         mLeagueDraws = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_draws);
         mLeagueLosses = (TextView) mLayout.findViewById(R.id.fragment_team_overview_league_losses);
 
+
+        mNextRefMatchCard.setVisibility(View.GONE);
+        mNextMatchCard.setVisibility(View.GONE);
+        mNextRefMatchCard.setVisibility(View.GONE);
+        mPastMatchesCard.setVisibility(View.GONE);
+        mLeagueCard.setVisibility(View.GONE);
+
         leagueChanged();
 
         return mLayout;
@@ -249,7 +250,9 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     }
 
     public void setLeague(){
-        mLeagueContainer.setVisibility(View.VISIBLE);
+//        mLeagueContainer.setVisibility(View.VISIBLE);
+
+        mLeagueCard.setVisibility(View.VISIBLE);
         String header = league.getLeagueName();
         List<LeagueTeam> leagueTeams = DataStore.getInstance(getActivity()).getLeagueStandings(league.getLeagueID());
         for(LeagueTeam team : leagueTeams) {
@@ -280,14 +283,15 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 mLeagueLosses.setTextColor(color);
             }
         }
-        return leagueTeams;
     }
 
     public void setNextMatch(boolean isRefMatch){
         if(isRefMatch && DataStore.getInstance(getActivity()).getNextRefGame() != null) {
+            //            mNextRefMatchContainer.setVisibility(View.VISIBLE);
+            mNextRefMatchCard.setVisibility(View.VISIBLE);
+
             final Match nextMatch = DataStore.getInstance(getActivity()).getNextRefGame();
-            mNextRefMatchContainer.setVisibility(View.VISIBLE);
-            mNextRefMatchDivider.setVisibility(View.VISIBLE);
+
             mNextRefMatchName.setText(nextMatch.getTeamOne() + " vs " + nextMatch.getTeamTwo());
             mNextRefMatchPlace.setText(nextMatch.getPlace());
             DateFormatter sdf = new DateFormatter();
@@ -304,20 +308,31 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     startActivity(intent);
                 }
             });
+
+            //TODO show next team and color
+            Drawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .textColor(Color.WHITE)
+                    .toUpperCase()
+                    .endConfig()
+                    .buildRound("N", Color.RED);
+            mNextRefMatchImage.setImageDrawable(drawable);
         } else if(!isRefMatch && DataStore.getInstance(getActivity()).getNextGame() != null) {
             final Match nextMatch = DataStore.getInstance(getActivity()).getNextGame();
-            mNextMatchContainer.setVisibility(View.VISIBLE);
-            mNextMatchDivider.setVisibility(View.VISIBLE);
-            if(nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
+            //            mNextMatchContainer.setVisibility(View.VISIBLE);
+            mNextMatchCard.setVisibility(View.VISIBLE);
+
+//            mNextMatchDivider.setVisibility(View.VISIBLE);
+            if (nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
                 mNextMatchName.setText(nextMatch.getTeamTwo());
                 TextDrawable avatar = TextDrawable.builder()
-                        .buildRound(nextMatch.getTeamTwo().substring(0,1), getActivity()
+                        .buildRound(nextMatch.getTeamTwo().substring(0, 1), getActivity()
                                 .getResources().getColor(R.color.dark_divider));
                 mNextMatchImage.setImageDrawable(avatar);
             } else {
                 mNextMatchName.setText(nextMatch.getTeamOne());
                 TextDrawable avatar = TextDrawable.builder()
-                        .buildRound(nextMatch.getTeamOne().substring(0,1), getActivity()
+                        .buildRound(nextMatch.getTeamOne().substring(0, 1), getActivity()
                                 .getResources().getColor(R.color.dark_divider));
                 mNextMatchImage.setImageDrawable(avatar);
             }
@@ -361,15 +376,16 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     }
 
     public void setLeagueScores(){
-        mPastMatchesContainer.setVisibility(View.VISIBLE);
-        mPastMatchesDivider.setVisibility(View.VISIBLE);
-        getActivity();
+//        mPastMatchesContainer.setVisibility(View.VISIBLE);
+        mPastMatchesCard.setVisibility(View.VISIBLE);
+//        mPastMatchesDivider.setVisibility(View.VISIBLE);
         TextDrawable win = TextDrawable.builder()
                 .buildRound("W", getActivity().getResources().getColor(R.color.darkgreen));
         TextDrawable draw = TextDrawable.builder()
                 .buildRound("D", getActivity().getResources().getColor(R.color.darkorange));
         TextDrawable lose = TextDrawable.builder()
                 .buildRound("L", getActivity().getResources().getColor(R.color.darkred));
+        List<Match> pastMatches = DataStore.getInstance(getActivity()).getTeamScores(league.getLeagueID(),mTeamID);
         int max = Math.min(pastMatches.size(), 5);
         mPastMatchesHeader.setText("Last " + max + " matches");
         for (int i = 0; i < max; i++) {
