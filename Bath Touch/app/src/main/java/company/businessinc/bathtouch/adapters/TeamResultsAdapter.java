@@ -1,7 +1,9 @@
 package company.businessinc.bathtouch.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,12 +22,16 @@ import java.util.List;
 
 import company.businessinc.bathtouch.DateFormatter;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 
 /**
  * Created by user on 21/11/14.
  */
-public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DBObserver {
 
     private int expandedPosition = -1;
     private OnResultSelectedCallbacks mCallbacks;
@@ -33,6 +39,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int leagueID;
     private String leagueName;
     private List<Match> leagueScores;
+    private List<Team> allTeams = new ArrayList<Team>();
     private String teamName;
 
     public interface OnResultSelectedCallbacks {
@@ -95,8 +102,9 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else {
             DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
         }
-        setData();
+        DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
         DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        setData();
         setLeagueName();
     }
 
@@ -124,11 +132,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onDetachedFromRecyclerView (RecyclerView recyclerView){
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
-            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+            DataStore.getInstance(mContext).unregisterTeamsScoresDBObserver(this);
         } else {
-            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+            DataStore.getInstance(mContext).unregisterLeagueScoreDBObserver(this);
         }
-        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        DataStore.getInstance(mContext).unregisterAllLeagueDBObserver(this);
+        DataStore.getInstance(mContext).unregisterAllTeamsDBObservers(this);
         super.onDetachedFromRecyclerView(recyclerView);
     }
 
@@ -138,6 +147,9 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case DBProviderContract.TEAMSSCORES_TABLE_NAME:
             case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
             case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+            case DBProviderContract.ALLTEAMS_TABLE_NAME:
+                setData();
+                setLeagueName();
                 notifyDataSetChanged();
                 break;
         }
@@ -152,11 +164,11 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.leagueScores = DataStore.getInstance(mContext).getLeagueScores(leagueID);
             teamName = "";
         }
+        this.allTeams = DataStore.getInstance(mContext).getAllTeams();
     }
 
-    public void setLeagueName(String name){
-
-        mLeagueName = name;
+    private void setLeagueName(){
+        leagueName = DataStore.getInstance(mContext).getLeagueName(leagueID);
     }
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -195,7 +207,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Match match = leagueScores.get(position);
         v.mTeam1Name.setText(match.getTeamOne());
         v.mTeam2Name.setText(match.getTeamTwo());
         v.mTeam1Score.setText(match.getTeamOnePoints().toString());
