@@ -35,7 +35,6 @@ public class LeagueTableFragment extends Fragment{
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
-    private List<League> leagueNames = new LinkedList<League>();
 
 
     public static LeagueTableFragment newInstance() {
@@ -151,8 +150,12 @@ public class LeagueTableFragment extends Fragment{
 
     private class ViewPagerAdapter extends FragmentPagerAdapter implements DBObserver {
 
+
+        private List<League> leagueNames = new LinkedList<League>();
+
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
+            leagueNames = DataStore.getInstance(getActivity()).getAllLeagues();
         }
 
         @Override

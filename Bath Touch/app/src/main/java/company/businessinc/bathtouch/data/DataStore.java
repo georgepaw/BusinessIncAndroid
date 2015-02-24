@@ -419,6 +419,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         if(cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
                 output = cursor.getInt(1) == 1;
+                cursor.moveToNext();
             }
         }
         cursor.close();
@@ -458,6 +459,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
+    }
+
+    public Match getPastLeagueMatch(int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUESSCORE_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_MATCHID,
+                new String[]{Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size() > 0? output.get(0):null;
     }
 
     /**
@@ -613,7 +631,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public void teamScoresCallback(ResponseStatus responseStatus, int leagueID, int teamID){
         if(responseStatus.getStatus()){
             Log.d(TAG, "The call TeamScores for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my DBObservers");
-            notifyTeamsScoresDBObservers(new Tuple<>(leagueID,teamID));
+            notifyTeamsScoresDBObservers(new Tuple<>(leagueID, teamID));
+            notifyLeagueScoreDBObservers(leagueID);
         } else{
             Log.d(TAG, "The call TeamScores for leagueID " + leagueID + " for teamID "+ teamID+" was not successful");
         }
@@ -668,7 +687,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                     notifyMyUpcomingGameAvailabilitysDBObservers(matchID);
                     break;
                 case SETPLAYERSAVAILABILITY:
-                    notifyMyUpcomingGameAvailabilitysDBObservers(new Tuple<>(matchID,userID));
+                    notifyMyTeamsPlayerAvailabilitysDBObservers(matchID);
                     break;
             }
         } else{
@@ -760,9 +779,12 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     private void dropAvailability(){
+        matchesAvailability = new ArrayList<>();
         SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
         db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME);
         db.execSQL(DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE);
+        SQLiteManager.getInstance(context).closeDatabase();
+        notifyMyTeamsPlayerAvailabilitysDBObservers(null);
     }
 
     /**
@@ -770,55 +792,81 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
      */
 
     public synchronized void registerAllTeamsDBObservers(DBObserver dbObserver) {
-        AllTeamsDBObservers.add(dbObserver);
+        if(!AllTeamsDBObservers.contains(dbObserver)) {
+            AllTeamsDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerMyLeaguesDBObserver(DBObserver dbObserver) {
-        MyLeaguesDBObservers.add(dbObserver);
+        if(!MyLeaguesDBObservers.contains(dbObserver)) {
+            MyLeaguesDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerAllLeagueDBObserver(DBObserver dbObserver) {
-        AllLeagueDBObservers.add(dbObserver);
+        if(!AllLeagueDBObservers.contains(dbObserver)) {
+            AllLeagueDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerLeagueScoreDBObserver(DBObserver dbObserver) {
-        LeagueScoreDBObservers.add(dbObserver);
+        if(!LeagueScoreDBObservers.contains(dbObserver)) {
+            LeagueScoreDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerLeaguesFixturesDBObserver(DBObserver dbObserver) {
-        LeaguesFixturesDBObservers.add(dbObserver);
+        if(!LeaguesFixturesDBObservers.contains(dbObserver)) {
+            LeaguesFixturesDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerLeaguesStandingsDBObserver(DBObserver dbObserver) {
-        LeaguesStandingsDBObservers.add(dbObserver);
+        if(!LeaguesStandingsDBObservers.contains(dbObserver)) {
+            LeaguesStandingsDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerTeamsFixturesDBObserver(DBObserver dbObserver) {
-        TeamsFixturesDBObservers.add(dbObserver);
+        if(!TeamsFixturesDBObservers.contains(dbObserver)) {
+            TeamsFixturesDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerTeamsScoresDBObserver(DBObserver dbObserver) {
-        TeamsScoresDBObservers.add(dbObserver);
+        if(!TeamsScoresDBObservers.contains(dbObserver)) {
+            TeamsScoresDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerMyUpcomingGamesDBObserver(DBObserver dbObserver) {
-        MyUpcomingGamesDBObservers.add(dbObserver);
+        if(!MyUpcomingGamesDBObservers.contains(dbObserver)) {
+            MyUpcomingGamesDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerMyUpcomingRefereeDBObserver(DBObserver dbObserver) {
-        MyUpcomingRefereeDBObservers.add(dbObserver);
+        if(!MyUpcomingRefereeDBObservers.contains(dbObserver)) {
+            MyUpcomingRefereeDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerLeagueTeamsDBObserver(DBObserver dbObserver) {
-        LeagueTeamsDBObservers.add(dbObserver);
+        if(!LeagueTeamsDBObservers.contains(dbObserver)) {
+            LeagueTeamsDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerMyUpcomingGameAvailabilitysDBObserver(DBObserver dbObserver) {
-        MyUpcomingGameAvailabilityDBObservers.add(dbObserver);
+        if(!MyUpcomingGameAvailabilityDBObservers.contains(dbObserver)) {
+            MyUpcomingGameAvailabilityDBObservers.add(dbObserver);
+        }
     }
 
     public synchronized void registerMyTeamsPlayerAvailabilitysDBObserver(DBObserver dbObserver) {
-        MyTeamsPlayerAvailabilityDBObservers.add(dbObserver);
+        if(!MyTeamsPlayerAvailabilityDBObservers.contains(dbObserver)) {
+            MyTeamsPlayerAvailabilityDBObservers.add(dbObserver);
+        }
     }
 
     /**
@@ -826,6 +874,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
      */
 
     public synchronized void unregisterAllTeamsDBObservers(DBObserver dbObserver) {
+
         AllTeamsDBObservers.remove(dbObserver);
     }
 

@@ -40,7 +40,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private String teamName;
 
     public interface OnResultSelectedCallbacks {
-        public void showMatchOverview(int position);
+        public void showMatchOverview(int position, int matchID);
     }
 
 
@@ -74,7 +74,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mMatchCardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallbacks.showMatchOverview(getPosition());
+                    mCallbacks.showMatchOverview(getPosition(), leagueScores.get(getPosition()).getMatchID());
                 }
             });
         }
@@ -90,7 +90,19 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         leagueScores = new ArrayList<>();
         this.leagueID = leagueID;
         mCallbacks = (OnResultSelectedCallbacks) context;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        super.onAttachedToRecyclerView(recyclerView);
+        if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+        } else {
+            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+        }
         setData();
+        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
+        setLeagueName();
     }
 
     @Override
@@ -105,14 +117,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                                       int viewType) {
 
         // create a new view
-        if(DataStore.getInstance(mContext).isUserLoggedIn()){
-            DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
-        } else {
-            DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
-        }
-        setData();
-        DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
-        setLeagueName();
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.match_result_item, parent, false);
 

@@ -11,6 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
+import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.Match;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 
 /**
@@ -84,23 +89,23 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     On a Result item selected in the recycler view, this is called
     Starts a new activity that shows the overview of a match
      */
-    public void selectItem(int position) {
+    public void selectItem(int position, int matchID) {
         if (mCallbacks != null) {
             mCallbacks.onResultsItemSelected(position);
         }
 
         Intent intent = new Intent(getActivity(), MatchActivity.class);
         Bundle args = new Bundle();
-        //TODO FIX THIS
-//        args.putString(Match.KEY_TEAMONE, leagueScores.get(position).getTeamOne());
-//        args.putString(Match.KEY_TEAMTWO, leagueScores.get(position).getTeamTwo());
-//        args.putInt(Match.KEY_TEAMONEPOINTS, leagueScores.get(position).getTeamOnePoints());
-//        args.putInt(Match.KEY_TEAMTWOPOINTS, leagueScores.get(position).getTeamTwoPoints());
-//        args.putInt("leagueID", mLeagueID);
-//        args.putInt(Match.KEY_MATCHID, leagueScores.get(position).getMatchID());
-//        args.putString(Match.KEY_PLACE, leagueScores.get(position).getPlace());
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
-//        args.putString(Match.KEY_DATETIME, sdf.format(leagueScores.get(position).getDateTime()));
+        Match selectedMatch = DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID);
+        args.putString(Match.KEY_TEAMONE, selectedMatch.getTeamOne());
+        args.putString(Match.KEY_TEAMTWO, selectedMatch.getTeamTwo());
+        args.putInt(Match.KEY_TEAMONEPOINTS, selectedMatch.getTeamOnePoints());
+        args.putInt(Match.KEY_TEAMTWOPOINTS, selectedMatch.getTeamTwoPoints());
+        args.putInt("leagueID", mLeagueID);
+        args.putInt(Match.KEY_MATCHID, selectedMatch.getMatchID());
+        args.putString(Match.KEY_PLACE, selectedMatch.getPlace());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+        args.putString(Match.KEY_DATETIME, sdf.format(selectedMatch.getDateTime()));
         intent.putExtras(args);
         startActivity(intent);
     }
@@ -123,8 +128,8 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     }
 
     @Override
-    public void showMatchOverview(int position) {
-        selectItem(position);
+    public void showMatchOverview(int position, int matchID) {
+        selectItem(position, matchID);
     }
 
     /**

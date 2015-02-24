@@ -163,7 +163,10 @@ public class TeamResultsFragment extends Fragment {
         public ViewPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
             this.context = context;
+            leagues = DataStore.getInstance(context).getAllLeagues();
         }
+
+
 
         @Override
         public Fragment getItem(int position) {

@@ -107,30 +107,33 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mContext = context.getApplicationContext();
         mTeamId = teamId;
         mTeamColor = DataStore.getInstance(mContext).getUserTeamColorPrimary();
+
         this.leagueID = leagueID;
     }
 
-    private void setLeagueTeams() {
-        notifyDataSetChanged();
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        super.onAttachedToRecyclerView(recyclerView);
+        DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
+        DataStore.getInstance(mContext).registerLeaguesStandingsDBObserver(this);
+        this.allTeams = DataStore.getInstance(mContext).getAllTeams();
+        this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
     }
 
     @Override
     public void notify(String tableName, Object data) {
         switch (tableName){
             case DBProviderContract.ALLTEAMS_TABLE_NAME:
+                this.allTeams = DataStore.getInstance(mContext).getAllTeams();
                 notifyDataSetChanged();
                 break;
             case DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME:
                 if(data == null || data == leagueID){
+                    this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
                     notifyDataSetChanged();
                 }
                 break;
         }
-    }
-
-    private void setAllTeams() {
-        Log.d("LEAGUETABLEADAPTER", "loaded all teams into adapter");
-        notifyDataSetChanged();
     }
 
 
@@ -143,10 +146,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
-        DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
-        DataStore.getInstance(mContext).registerLeaguesStandingsDBObserver(this);
-        this.allTeams = DataStore.getInstance(mContext).getAllTeams();
-        this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.league_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
@@ -252,7 +251,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return DataStore.getInstance(mContext).getLeagueStandings(leagueID).size();
+        return leagueTeams.size();
     }
 
 

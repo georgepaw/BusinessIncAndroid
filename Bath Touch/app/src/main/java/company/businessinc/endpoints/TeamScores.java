@@ -49,20 +49,23 @@ public class TeamScores extends AsyncTask<Void, Void, ResponseStatus> {
             Log.d(TAG, "Couldn't parse String into JSON");
             return new ResponseStatus(false);
         }
-        LinkedList<ContentValues> cV = new LinkedList<>();
+        LinkedList<ContentValues> teamScores = new LinkedList<>();
         for(int i = 0; i < jsonArray.length(); i++){
             try{
                 ContentValues dis = new Match(leagueID, jsonArray.getJSONObject(i)).toContentValues();
                 dis.put(League.KEY_LEAGUEID, leagueID);
+                //all the team scores should also be stored as league scores
+                SQLiteManager.getInstance(context).insert(DBProviderContract.LEAGUESSCORE_TABLE_NAME, dis);
                 dis.put(Team.KEY_TEAMID, teamID);
-                cV.add(dis);
+                teamScores.add(dis);
             } catch (Exception e){
                 Log.d(TAG, "Couldn't parse JSON into Match object");
                 return new ResponseStatus(false);
             }
         }
-        ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
+        ContentValues[] contentValues = teamScores.toArray(new ContentValues[teamScores.size()]);
         SQLiteManager.getInstance(context).bulkInsert(DBProviderContract.TEAMSSCORES_TABLE_NAME, contentValues);
+
         return new ResponseStatus(true);
     }
 

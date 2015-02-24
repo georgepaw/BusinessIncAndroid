@@ -54,7 +54,7 @@ public class SQLiteManager {
         SQLiteDatabase db = openDatabase();
         long val = 0;
         try{
-            val = db.insert(tableName, null, contentValues);
+            val = db.insertOrThrow(tableName, null, contentValues);
         } catch (Exception e){
             Log.d(TAG, "Error doing insert, but we won't let this thing go down!" );
         }
@@ -69,7 +69,7 @@ public class SQLiteManager {
         try{
             for(ContentValues cv : contentValues){
                 try {
-                    val += db.insert(tableName, null, cv);
+                    val += db.insertOrThrow(tableName, null, cv);
                 } catch( Exception e){
                     Log.d(TAG, "Error doing bulk insert, but we won't let this thing go down!" );
                 }
@@ -108,42 +108,42 @@ public class SQLiteManager {
                     DataStore.getInstance(context).loadMyLeagues();
                     break;
                 case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                         DataStore.getInstance(context).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.LEAGUETEAMS_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                         DataStore.getInstance(context).loadLeaguesTeams(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "TeamList" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.LEAGUESFIXTURES_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                         DataStore.getInstance(context).loadLeagueFixtures(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "LeagueSchedule" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length == 1) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                         DataStore.getInstance(context).loadLeagueStandings(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "LeagueView" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.TEAMSFIXTURES_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length>= 2) {
                         DataStore.getInstance(context).loadTeamsFixtures(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
                     } else{
                         Log.d(TAG, "Can't call " + "TeamFixtures" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.TEAMSSCORES_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length == 2) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length >= 2) {
                         DataStore.getInstance(context).loadTeamsLeagueScore(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
                     } else{
                         Log.d(TAG, "Can't call " + "TeamScores" + " callback, selection/selection args not valid");
@@ -156,14 +156,14 @@ public class SQLiteManager {
                     DataStore.getInstance(context).loadMyUpcomingRefGames();
                     break;
                 case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length >= 1) {
                         DataStore.getInstance(context).loadMyAvailability(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "MyUpcomingGamesAvailability" + " callback, selection/selection args not valid");
                     }
                     break;
                 case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME:
-                    if(selection != null && selection.equals(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length == 1) {
+                    if(selection != null && selection.contains(DBProviderContract.SELECTION_MATCHID) && selectionArgs.length >= 1) {
                         DataStore.getInstance(context).loadMatchPlayersAvailability(Integer.valueOf(selectionArgs[0]));
                     } else{
                         Log.d(TAG, "Can't call " + "MyTeamPlayersAvailability" + " callback, selection/selection args not valid");

@@ -44,6 +44,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         mCallbacks = (AvailablePlayerCallbacks) context;
         this.context = context;
         this.matchID = matchID;
+        playerList = DataStore.getInstance(context).getPlayersAvailability(matchID, is_available);
 
     }
 
@@ -84,12 +85,12 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView){
         DataStore.getInstance(context).registerMyTeamsPlayerAvailabilitysDBObserver(this);
-        playerList = DataStore.getInstance(context).getPlayersAvailability(matchID, is_available);
         super.onDetachedFromRecyclerView(recyclerView);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        playerList = DataStore.getInstance(context).getPlayersAvailability(matchID, is_available);
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.team_roster_available_player_item, parent, false);
         return new ViewHolderPlayer(v);

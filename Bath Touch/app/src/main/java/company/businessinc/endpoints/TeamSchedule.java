@@ -62,6 +62,8 @@ public class TeamSchedule extends AsyncTask<Void, Void, ResponseStatus> {
                         || m.getTeamTwoID() == DataStore.getInstance(context).getUserTeamID()){
                     SQLiteManager.getInstance(context).insert(DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, dis);
                 }
+                //also store the fixture in all leagues table
+                SQLiteManager.getInstance(context).insert(DBProviderContract.LEAGUESFIXTURES_TABLE_NAME, dis);
                 dis.put(Team.KEY_TEAMID, teamID);
                 cV.add(dis);
             } catch (Exception e){
