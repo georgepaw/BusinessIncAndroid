@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import company.businessinc.dataModels.Status;
+import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.endpoints.UserResetPassword;
 import company.businessinc.endpoints.UserResetPasswordInterface;
 
@@ -44,7 +44,7 @@ public class ForgotPasswordActivity extends ActionBarActivity implements UserRes
     }
 
     @Override
-    public void userResetPasswordCallback(Status data) {
+    public void userResetPasswordCallback(ResponseStatus data) {
         if(data != null) {
             if(data.getStatus()) {
                 Log.d("Reset", "Password reset");

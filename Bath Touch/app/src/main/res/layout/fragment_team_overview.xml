@@ -144,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/fragment_team_overview_nextrefmatch_image"
                         android:layout_toRightOf="@+id/fragment_team_overview_nextrefmatch_image"
-                        android:text="HP All Stars vs EE Tigers"
+                        android:text=""
                         android:textStyle="bold" />
 
                     <TextView
@@ -153,7 +153,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/fragment_team_overview_nextrefmatch_name"
                         android:layout_toRightOf="@+id/fragment_team_overview_nextrefmatch_image"
-                        android:text="Wills Memorial Building" />
+                        android:text="" />
 
                     <TextView
                         android:id="@+id/fragment_team_overview_nextrefmatch_date"
@@ -161,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/fragment_team_overview_nextrefmatch_place"
                         android:layout_toRightOf="@+id/fragment_team_overview_nextrefmatch_image"
-                        android:text="Tomorrow, 14:30" />
+                        android:text="" />
 
                     <Button
                         android:id="@+id/fragment_team_overview_nextrefmatch_submit"

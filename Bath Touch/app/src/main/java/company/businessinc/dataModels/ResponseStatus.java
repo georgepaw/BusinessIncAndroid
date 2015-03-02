@@ -6,30 +6,30 @@ import org.json.JSONObject;
 /**
  * Created by gp on 19/11/14.
  */
-public class Status {
-    private Boolean status;
+public class ResponseStatus {
+    private boolean status;
 
-    public Status(Boolean status) {
+    public ResponseStatus(Boolean status) {
         this.status = status;
     }
 
-    public Status() {
-        this.status = null;
+    public ResponseStatus() {
+        this.status = false;
     }
 
-    public Status(JSONObject jsonObject) throws JSONException{
+    public ResponseStatus(JSONObject jsonObject) throws JSONException{
         try {
             this.status = jsonObject.getBoolean("status");
         } catch (JSONException e){
-            this.status = null;
+            this.status = false;
         }
     }
 
-    public Boolean getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 }

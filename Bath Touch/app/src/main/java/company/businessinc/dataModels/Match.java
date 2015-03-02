@@ -2,18 +2,12 @@ package company.businessinc.dataModels;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.text.format.DateFormat;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by gp on 18/11/14.
@@ -22,6 +16,7 @@ public class Match {
 
     public static enum SortType{ASCENDING, DESCENDING}
 
+    private Integer leagueID;
     private Integer matchID;
     private Integer teamOneID;
     private Integer teamTwoID;
@@ -35,6 +30,7 @@ public class Match {
     private Integer teamTwoPoints;
     private Boolean isForfeit;
 
+    public static final String KEY_LEAGUEID = "leagueID";
     public static final String KEY_MATCHID = "matchID";
     public static final String KEY_TEAMONEID = "teamOneID";
     public static final String KEY_TEAMTWOID = "teamTwoID";
@@ -47,8 +43,9 @@ public class Match {
     public static final String KEY_TEAMONEPOINTS = "teamOnePoints";
     public static final String KEY_TEAMTWOPOINTS = "teamTwoPoints";
     public static final String KEY_ISFORFEIT = "isForfeit";
-    public static final String[] COLUMNS = {KEY_MATCHID,KEY_TEAMONEID, KEY_TEAMTWOID, KEY_TEAMONE, KEY_TEAMTWO, KEY_REFID, KEY_REFNAME, KEY_DATETIME, KEY_PLACE, KEY_TEAMONEPOINTS, KEY_TEAMTWOPOINTS, KEY_ISFORFEIT};
-    public static final String CREATE_TABLE =   KEY_MATCHID + "\tINTEGER,\n" +
+    public static final String[] COLUMNS = {KEY_LEAGUEID, KEY_MATCHID,KEY_TEAMONEID, KEY_TEAMTWOID, KEY_TEAMONE, KEY_TEAMTWO, KEY_REFID, KEY_REFNAME, KEY_DATETIME, KEY_PLACE, KEY_TEAMONEPOINTS, KEY_TEAMTWOPOINTS, KEY_ISFORFEIT};
+    public static final String CREATE_TABLE =   KEY_LEAGUEID + "\tINTEGER,\n" +
+                                                KEY_MATCHID + "\tINTEGER,\n" +
                                                 KEY_TEAMONEID + "\tINTEGER,\n" +
                                                 KEY_TEAMTWOID + "\tINTEGER,\n" +
                                                 KEY_TEAMONE + "\tTEXT,\n" +
@@ -61,7 +58,8 @@ public class Match {
                                                 KEY_TEAMTWOPOINTS + "\tINTEGER,\n" +
                                                 KEY_ISFORFEIT + "\tINTEGER";
 
-    public Match(Integer matchID, Integer teamOneID, Integer teamTwoID, String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
+    public Match(Integer leagueID, Integer matchID, Integer teamOneID, Integer teamTwoID, String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
+        this.leagueID = leagueID;
         this.matchID = matchID;
         this.teamOneID = teamOneID;
         this.teamTwoID = teamTwoID;
@@ -77,6 +75,11 @@ public class Match {
     }
 
     public Match(Cursor cursor){
+        try {
+            this.leagueID = cursor.getInt(cursor.getColumnIndex(KEY_LEAGUEID));
+        } catch(Exception e) {
+            this.leagueID = null;
+        }
         try {
             this.matchID = cursor.getInt(cursor.getColumnIndex(KEY_MATCHID));
         } catch(Exception e) {
@@ -141,7 +144,8 @@ public class Match {
         }
     }
 
-    public Match(JSONObject jsonObject) throws JSONException {
+    public Match(Integer leagueID, JSONObject jsonObject) throws JSONException {
+        this.leagueID = leagueID;
         try {
             this.matchID = jsonObject.getInt("matchID");
         } catch(JSONException e) {
@@ -206,6 +210,14 @@ public class Match {
         } catch(JSONException e) {
             this.isForfeit = false;
         }
+    }
+
+    public Integer getLeagueID() {
+        return leagueID;
+    }
+
+    public void setLeagueID(Integer leagueID) {
+        this.leagueID = leagueID;
     }
 
     public Integer getMatchID() {
@@ -306,6 +318,7 @@ public class Match {
 
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
+        values.put(KEY_LEAGUEID,leagueID);
         values.put(KEY_MATCHID,matchID);
         values.put(KEY_TEAMONEID, teamOneID);
         values.put(KEY_TEAMTWOID, teamTwoID);
@@ -343,5 +356,16 @@ public class Match {
             }
         });
         return data;
+    }
+
+    public static List<Match> cursorToList(Cursor cursor){
+        List<Match> output = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                output.add(new Match(cursor));
+                cursor.moveToNext();
+            }
+        }
+        return output;
     }
 }

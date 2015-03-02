@@ -1,12 +1,9 @@
 package company.businessinc.bathtouch;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -140,8 +137,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         mMatchPlace.setText(place);
 //        mTeamOneName.setText(teamOne);
         mTeamTwoName.setText(teamTwo);
-
-//        getSupportLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
 
     }
 

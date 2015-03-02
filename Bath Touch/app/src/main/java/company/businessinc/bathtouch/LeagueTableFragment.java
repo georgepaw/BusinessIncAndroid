@@ -1,18 +1,13 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -22,17 +17,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.LinkedList;
 import java.util.List;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
+import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 
-public class LeagueTableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class LeagueTableFragment extends Fragment{
 
 
     private LeagueTableCallbacks mCallbacks;
@@ -40,7 +35,6 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
-    private List<League> leagueNames = new LinkedList<League>();
 
 
     public static LeagueTableFragment newInstance() {
@@ -58,8 +52,6 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
-
-        getLoaderManager().initLoader(DBProviderContract.ALLLEAGUES_URL_QUERY, null, this);
     }
 
     @Override
@@ -116,7 +108,15 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
                 }
             });
         }
+        DataStore.getInstance(getActivity()).registerAllLeagueDBObserver(mViewPagerAdapter);
+        mViewPagerAdapter.setLeagues();
         return mLayout;
+    }
+
+    @Override
+    public void onDestroyView(){
+        DataStore.getInstance(getActivity()).unregisterAllLeagueDBObserver(mViewPagerAdapter);
+        super.onDestroyView();
     }
 
     public int darker (int color, float factor) {
@@ -143,53 +143,19 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        switch (loaderID) {
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                return new CursorLoader(getActivity(), DBProviderContract.ALLLEAGUES_TABLE_CONTENTURI, null, null, null, null);
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
-
-    //query has finished
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()){
-            case DBProviderContract.ALLLEAGUES_URL_QUERY:
-                if (data.moveToFirst()){
-                    leagueNames = new ArrayList<>();
-                    while(!data.isAfterLast()){
-                        League league = new League(data);
-                        leagueNames.add(league);
-                        data.moveToNext();
-                    }
-                    if(leagueNames.size()>0) {
-                        Collections.reverse(leagueNames);
-                        mSlidingTabLayout.setViewPager(mViewPager);
-                        mViewPagerAdapter.notifyDataSetChanged();
-                    }
-                }
-                break;
-        }
-    }
-
-    //when data gets updated, first reset everything
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentPagerAdapter implements DBObserver {
+
+
+        private List<League> leagueNames = new LinkedList<League>();
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
+            leagueNames = DataStore.getInstance(getActivity()).getAllLeagues();
         }
 
         @Override
@@ -207,6 +173,20 @@ public class LeagueTableFragment extends Fragment implements LoaderManager.Loade
         @Override
         public CharSequence getPageTitle(int position) {
             return leagueNames.get(position).getLeagueName();
+        }
+
+        @Override
+        public void notify(String tableName, Object data) {
+            switch (tableName){
+                case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+                    setLeagues();
+                    break;
+            }
+        }
+
+        public void setLeagues(){
+            leagueNames = DataStore.getInstance(getActivity()).getAllLeagues();
+            notifyDataSetChanged();
         }
     }
 

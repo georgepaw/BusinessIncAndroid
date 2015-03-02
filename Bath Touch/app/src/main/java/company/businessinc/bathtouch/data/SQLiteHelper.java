@@ -9,9 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class SQLiteHelper extends SQLiteOpenHelper{
 
-    SQLiteHelper(Context context) {
+    private static SQLiteHelper sInstance;
+
+    public static SQLiteHelper getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new SQLiteHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    private SQLiteHelper(Context context) {
         super(context, DBProviderContract.DATABASE_NAME, null, DBProviderContract.DATABASE_VERSION);
-        this.getWritableDatabase();
     }
 
     @Override
