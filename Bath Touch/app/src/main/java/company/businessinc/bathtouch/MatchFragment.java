@@ -43,10 +43,6 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     private boolean mHasBeenPlayed = false;
     private View mLayout;
 
-    public interface CreateGhostPlayerListener {
-        public void createGhostPlayer(Bundle args);
-    }
-
     private int NUMTABS = 4;
 
     public static MatchFragment newInstance(Bundle args){
