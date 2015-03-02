@@ -37,6 +37,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
     private Context context;
     private int matchID;
+    private boolean hasBeenPlayed;
 
     private int NUMHEADERS = 2;
 
@@ -47,11 +48,12 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         void onPlayerSelected(Player player);
     }
 
-    public AvailablePlayersAdapter(boolean available, Context context, int matchID) {
+    public AvailablePlayersAdapter(boolean available, Context context, int matchID, boolean hasBeenPlayed) {
         is_available = available;
 //        mCallbacks = (AvailablePlayerCallbacks) context;
         this.context = context;
         this.matchID = matchID;
+        this.hasBeenPlayed = hasBeenPlayed;
 
     }
 
@@ -167,14 +169,15 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 int overflow = 0;
 
                 //if the team has the required number of players, not included gender ratios yet
-                if(selected >= 6){
+                //Check at least 2 femals and 1 male available
+                if(selected >= 6 && Player.getGenderCount(selectedPlayers, false) >= 2 && Player.getGenderCount(selectedPlayers, true) >= 1){
                     overflow = selected - 6;
                     selected = 6;
                     v.mCheck.setImageDrawable(checkIcon);
-                    v.mCheck.setVisibility(View.VISIBLE); //TODO implement real team valiation
+                    v.mCheck.setVisibility(View.VISIBLE);
                 }
-                v.mPlayerCount.setText(String.format("%d/%d", selected, selected));
-                v.mSubsCount.setText(String.format("%d/%d", overflow, overflow));
+                v.mPlayerCount.setText(String.format("%d/%d", Player.getGenderCount(selectedPlayers, true), Player.getGenderCount(selectedPlayers, false)));
+                v.mSubsCount.setText(String.format("%d", overflow));
 
             } else {
                 //2nd header only shows it's remaining players
@@ -229,10 +232,10 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             }
 
             //Make sure only captain, can change players availability, or player can change his own availability
-            if(DataStore.getInstance(context).isUserCaptain() || DataStore.getInstance(context).getUserName().contains(player.getName())){
+            if(!hasBeenPlayed && (DataStore.getInstance(context).isUserCaptain() || DataStore.getInstance(context).getUserName().contains(player.getName()))){
                 v.mCheckBox.setEnabled(true);
             } else {
-                v.mCheckBox.setEnabled(true);
+                v.mCheckBox.setEnabled(false);
             }
 
         }

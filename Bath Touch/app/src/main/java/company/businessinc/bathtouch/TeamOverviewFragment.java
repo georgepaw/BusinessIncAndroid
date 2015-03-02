@@ -405,6 +405,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     args.putInt("leagueID", lgId);
                     args.putInt(Match.KEY_MATCHID, match.getMatchID());
                     args.putString(Match.KEY_PLACE, match.getPlace());
+                    args.putBoolean("hasBeenPlayed", false);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     args.putString(Match.KEY_DATETIME, sdf.format(match.getDateTime()));
                     intent.putExtras(args);

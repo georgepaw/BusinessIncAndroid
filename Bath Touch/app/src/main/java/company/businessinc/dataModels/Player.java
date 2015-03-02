@@ -19,7 +19,7 @@ public class Player {
     private Boolean isPlaying;
     private Boolean isGhostPlayer;
     private String email;
-
+    private Boolean isMale;
 
 
     public static final String KEY_NAME = "name";
@@ -27,13 +27,15 @@ public class Player {
     public static final String KEY_ISPLAYING = "isPlaying";
     public static final String KEY_ISGHOSTPLAYER = "isGhostPlayer";
     public static final String KEY_EMAIL = "email";
-    public static final String[] COLUMNS = {KEY_NAME, KEY_USERID, KEY_ISPLAYING, KEY_ISGHOSTPLAYER};
+    public static final String KEY_ISMALE = "isMale";
+    public static final String[] COLUMNS = {KEY_NAME, KEY_USERID, KEY_ISPLAYING, KEY_ISGHOSTPLAYER,KEY_ISMALE};
 
     public static final String CREATE_TABLE =   KEY_USERID + "\tINTEGER,\n"+
                                                 KEY_NAME + "\tTEXT,\n"+
                                                 KEY_ISPLAYING + "\tINTEGER,\n"+
                                                 KEY_ISGHOSTPLAYER + "\tINTEGER,\n"+
-                                                KEY_EMAIL + "\tTEXT";
+                                                KEY_EMAIL + "\tTEXT,\n"+
+                                                KEY_ISMALE + "\tINTEGER";
 
     public Player(String name, Integer userID, Boolean isPlaying, Boolean isGhostPlayer, String email) {
         this.name = name;
@@ -69,6 +71,13 @@ public class Player {
         } catch(Exception e) {
             this.email = null;
         }
+
+
+        try {
+            this.isMale = cursor.getInt(cursor.getColumnIndex(KEY_ISMALE)) == 1;
+        } catch(Exception e) {
+            this.isMale = null;
+        }
     }
 
     public Player(JSONObject jsonObject) throws JSONException {
@@ -96,6 +105,12 @@ public class Player {
             this.email = jsonObject.getString(KEY_EMAIL);
         } catch(JSONException e) {
             this.email = null;
+        }
+
+        try {
+            this.isMale = jsonObject.getInt("gender") == 0;
+        } catch(JSONException e) {
+            this.isMale = null;
         }
     }
 
@@ -139,6 +154,14 @@ public class Player {
         this.email = email;
     }
 
+    public Boolean getIsMale() {
+        return isMale;
+    }
+
+    public void setIsMale(Boolean isMale) {
+        this.isMale = isMale;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name);
@@ -146,6 +169,7 @@ public class Player {
         values.put(KEY_ISPLAYING, isPlaying ? 1 : 0);
         values.put(KEY_ISGHOSTPLAYER, isGhostPlayer ? 1 : 0);
         values.put(KEY_EMAIL, email);
+        values.put(KEY_ISMALE, isMale ? 1 : 0);
         return values;
     }
 
@@ -174,5 +198,15 @@ public class Player {
             }
         });
         return data;
+    }
+
+    public static int getGenderCount(List<Player> data, boolean isMale){
+        int i = 0;
+        for(Player p : data){
+            if(p.getIsMale() == isMale){
+                i++;
+            }
+        }
+        return i;
     }
 }
