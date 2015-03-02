@@ -1,73 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:layout_marginBottom="4dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:orientation="vertical"
-    card_view:cardCornerRadius="2dp"
 
-    >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/team_roster_card"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/team_roster_player_status_icon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_account_circle_grey600_48dp" />
+
+
+    <TextView
+        android:id="@+id/team_roster_player_name"
+        style="@style/body_2_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/team_roster_player_status_icon"
+        android:paddingLeft="20dp"
+        android:text="John Snow" />
+
+    <TextView
+        android:id="@+id/team_roster_player_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/team_roster_player_name"
+        android:text="" />
+
+    <CheckBox
+        android:id="@+id/team_roster_player_checkbox"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+
+        />
+
+
 
     <RelativeLayout
-        android:id="@+id/team_roster_card"
-        android:clickable="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="66dp"
+        >
 
-        <ImageView
-            android:id="@+id/team_roster_player_status_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:src="@drawable/ic_person_full_black"
-            android:scaleType="fitXY"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300">
 
-
-        <TextView
-            android:id="@+id/team_roster_player_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/team_roster_player_status_icon"
-            android:paddingLeft="20dp"
-            android:text="John Snow"
-            android:textColor="@color/grey"
-            android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/team_roster_player_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/team_roster_player_name"
-            android:text="Number"
-            android:layout_centerVertical="true"
-            />
-
-        <CheckBox
-            android:id="@+id/team_roster_player_checkbox"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-
-            />
-
-        <ImageView
-            android:id="@+id/team_roster_player_avail_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_block_red" />
-
+        </View>
     </RelativeLayout>
 
 
+</RelativeLayout>
 
-</android.support.v7.widget.CardView>
+
+

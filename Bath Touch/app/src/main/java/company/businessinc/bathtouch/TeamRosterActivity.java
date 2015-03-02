@@ -121,13 +121,13 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         mMatchPlace = (TextView) findViewById(R.id.team_roster_match_place);
         mTeamTwoName = (TextView) findViewById(R.id.team_roster_team_1_name);
 
-        mGhostPlayer = (Button) findViewById(R.id.team_roster_create_ghost);
-        mGhostPlayer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startCreateGhostPlayerIntent();
-            }
-        });
+//        mGhostPlayer = (Button) findViewById(R.id.team_roster_create_ghost);
+//        mGhostPlayer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startCreateGhostPlayerIntent();
+//            }
+//        });
 
         mLeagueName.setText("");
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM");
@@ -301,7 +301,8 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public Fragment getItem(int position) {
-            return AvailablePlayersFragment.newInstance(position, matchID);
+//            return AvailablePlayersFragment.newInstance(matchID);
+            return null;
         }
     }
 

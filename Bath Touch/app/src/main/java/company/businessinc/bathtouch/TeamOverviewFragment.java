@@ -77,12 +77,10 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             mTeamID = getArguments().getInt(Team.KEY_TEAMID);
             mLeagueID = getArguments().getInt(League.KEY_LEAGUEID);
         }
+        mCallbacks = (TeamOverviewCallbacks) getActivity();
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()) {
             if(DataStore.getInstance(getActivity()).isReferee()) {
                 DataStore.getInstance(getActivity()).registerMyUpcomingRefereeDBObserver(this);
-            }
-            if(!DataStore.getInstance(getActivity()).isUserCaptain()){
-                DataStore.getInstance(getActivity()).registerMyUpcomingGameAvailabilitysDBObserver(this);
             }
             DataStore.getInstance(getActivity()).registerMyUpcomingGamesDBObserver(this);
             DataStore.getInstance(getActivity()).registerTeamsScoresDBObserver(this);
@@ -92,7 +90,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             DataStore.getInstance(getActivity()).registerLeagueScoreDBObserver(this);
         }
         DataStore.getInstance(getActivity()).registerLeaguesStandingsDBObserver(this);
-
     }
 
     @Override
@@ -189,9 +186,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             if(DataStore.getInstance(getActivity()).isReferee()) {
                 DataStore.getInstance(getActivity()).unregisterMyUpcomingRefereeDBObserver(this);
             }
-            if(!DataStore.getInstance(getActivity()).isUserCaptain()){
-                DataStore.getInstance(getActivity()).unregisterMyUpcomingGameAvailabilitysDBObserver(this);
-            }
             DataStore.getInstance(getActivity()).unregisterMyUpcomingGamesDBObserver(this);
             DataStore.getInstance(getActivity()).unregisterTeamsScoresDBObserver(this);
             DataStore.getInstance(getActivity()).unregisterLeagueTeamsDBObserver(this);
@@ -231,7 +225,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             case DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME:
             case DBProviderContract.LEAGUETEAMS_TABLE_NAME:
             case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
-            case DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME:
                 notifyUIThread();
                 break;
         }
@@ -339,37 +332,30 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             mNextMatchPlace.setText(nextMatch.getPlace());
             DateFormatter sdf = new DateFormatter();
             mNextMatchDate.setText(sdf.format(nextMatch.getDateTime()));
-            final int nxtmtchID = nextMatch.getMatchID();
-            if (!DataStore.getInstance(getActivity()).isUserCaptain()) {
-                mNextMatchCheckBoxContainer.setVisibility(View.VISIBLE);
-                mNextMatchCheckBox.setChecked(DataStore.getInstance(getActivity()).amIPlaying(nxtmtchID));
-                mNextMatchCheckBox.setEnabled(true);
-                mNextMatchCheckBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        DataStore.getInstance(getActivity()).setMyAvailability(isChecked, nxtmtchID);
-                        mNextMatchCheckBox.setEnabled(false);
-                    }
-                });
-            } else {
-                mNextMatchCheckBoxContainer.setVisibility(View.GONE);
-                mNextMatchManage.setVisibility(View.VISIBLE);
-                mNextMatchManage.setTextColor(DataStore.getInstance(getActivity()).getUserTeamColorPrimary());
-                mNextMatchManage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), TeamRosterActivity.class);
-                        intent.putExtra(Match.KEY_MATCHID, nextMatch.getMatchID());
-                        intent.putExtra(Match.KEY_TEAMONE, nextMatch.getTeamOne());
-                        intent.putExtra(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
-                        intent.putExtra(Match.KEY_PLACE, nextMatch.getPlace());
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
-                        intent.putExtra(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
-                        intent.putExtra(League.KEY_LEAGUEID, mLeagueID);
-                        startActivity(intent);
-                    }
-                });
-            }
+            mNextMatchCheckBoxContainer.setVisibility(View.GONE);
+            mNextMatchManage.setVisibility(View.VISIBLE);
+            mNextMatchManage.setText("Match Details");
+            mNextMatchManage.setTextColor(DataStore.getInstance(getActivity()).getUserTeamColorPrimary());
+            mNextMatchManage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle args = new Bundle();
+                    args.putString(Match.KEY_TEAMONE, nextMatch.getTeamOne());
+                    args.putString(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
+                    args.putInt(Match.KEY_TEAMONEPOINTS, nextMatch.getTeamOnePoints());
+                    args.putInt(Match.KEY_TEAMTWOPOINTS, nextMatch.getTeamTwoPoints());
+                    args.putInt("leagueID", mLeagueID);
+                    args.putInt(Match.KEY_MATCHID, nextMatch.getMatchID());
+                    args.putString(Match.KEY_PLACE, nextMatch.getPlace());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+                    args.putString(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
+    //                        intent.putExtras(args);
+    //                        startActivity(intent);
+
+                    mCallbacks.matchDetailsSelectedCallback(args);
+
+                }
+            });
         }
 
         refreshPage();
@@ -410,7 +396,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             mPastMatchesImages.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), MatchActivity.class);
+                    Intent intent = new Intent(getActivity(), MatchFragment.class);
                     Bundle args = new Bundle();
                     args.putString(Match.KEY_TEAMONE, match.getTeamOne());
                     args.putString(Match.KEY_TEAMTWO, match.getTeamTwo());
@@ -451,6 +437,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     }
 
     public static interface TeamOverviewCallbacks {
+        public void matchDetailsSelectedCallback(Bundle args);
     }
 
     public void refreshPage() {

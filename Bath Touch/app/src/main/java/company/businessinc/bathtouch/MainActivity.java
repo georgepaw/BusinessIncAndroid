@@ -22,8 +22,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
@@ -45,13 +43,13 @@ import company.businessinc.networking.APICall;
 
 public class MainActivity extends ActionBarActivity
         implements HomePageFragment.HomePageCallbacks,
-        TeamOverviewFragment.TeamOverviewCallbacks,
         MyTeamFragment.MyTeamFragmentCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
         LeagueTableFragment.LeagueTableCallbacks,
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
+        TeamOverviewFragment.TeamOverviewCallbacks,
         DBObserver{
 
     private SharedPreferences mSharedPreferences;
@@ -181,7 +179,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("HOMEPAGETAG");
+                                changeFragments("HOMEPAGETAG", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -193,7 +191,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("LEAGUETABLETAG");
+                                changeFragments("LEAGUETABLETAG", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -205,7 +203,7 @@ public class MainActivity extends ActionBarActivity
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("TEAMRESULTSTAG");
+                                changeFragments("TEAMRESULTSTAG", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -272,42 +270,42 @@ public class MainActivity extends ActionBarActivity
 
         //FAB STUFF JAMES
 
-        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
-        nextMatchButton.setTitle("Next Match");
-        nextMatchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_arrow_forward_black));
-        nextMatchButton.setColorNormal(Color.WHITE);
-        nextMatchButton.setColorPressed(getResources().getColor(R.color.primary));
-        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(nextMatchButton);
-
-        final FloatingActionButton exampleLeagueA = new FloatingActionButton(getApplicationContext());
-        exampleLeagueA.setTitle("Your Account");
-        exampleLeagueA.setIconDrawable(getResources().getDrawable(R.drawable.ic_person_big_black));
-        exampleLeagueA.setColorNormal(Color.WHITE);
-        exampleLeagueA.setColorPressed(getResources().getColor(R.color.primary));
-        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(exampleLeagueA);
-
-//        final FloatingActionButton actionC = new FloatingActionButton(getApplicationContext());
-//        actionC.setColorNormal(Color.WHITE);
-//        actionC.setTitle("Show all Leagues");
-//        actionC.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-//                exampleLeagueA.setVisibility(exampleLeagueA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-//                //Toggle the title of action C
-//                if (actionB.getVisibility() == View.VISIBLE) {
-//                    actionC.setTitle("Hide all Leagues");
-//                } else {
-//                    actionC.setTitle("Show all Leagues");
-//                }
-//            }
-//        });
-//        //Added last to bottom
-//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
-
-
-        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
-        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
+//        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
+//        nextMatchButton.setTitle("Next Match");
+//        nextMatchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_arrow_forward_black));
+//        nextMatchButton.setColorNormal(Color.WHITE);
+//        nextMatchButton.setColorPressed(getResources().getColor(R.color.primary));
+//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(nextMatchButton);
+//
+//        final FloatingActionButton exampleLeagueA = new FloatingActionButton(getApplicationContext());
+//        exampleLeagueA.setTitle("Your Account");
+//        exampleLeagueA.setIconDrawable(getResources().getDrawable(R.drawable.ic_person_big_black));
+//        exampleLeagueA.setColorNormal(Color.WHITE);
+//        exampleLeagueA.setColorPressed(getResources().getColor(R.color.primary));
+//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(exampleLeagueA);
+//
+////        final FloatingActionButton actionC = new FloatingActionButton(getApplicationContext());
+////        actionC.setColorNormal(Color.WHITE);
+////        actionC.setTitle("Show all Leagues");
+////        actionC.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+////                exampleLeagueA.setVisibility(exampleLeagueA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+////                //Toggle the title of action C
+////                if (actionB.getVisibility() == View.VISIBLE) {
+////                    actionC.setTitle("Hide all Leagues");
+////                } else {
+////                    actionC.setTitle("Show all Leagues");
+////                }
+////            }
+////        });
+////        //Added last to bottom
+////        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
+//
+//
+//        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
+//        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
 
         //END FAB STUFF JAMES
     }
@@ -366,12 +364,12 @@ public class MainActivity extends ActionBarActivity
                 Log.d("MATCH", "starting leage table activity");
 //                Intent intent = new Intent(this, LeagueTableActivity.class);
 //                startActivity(intent);
-                changeFragments("LEAGUETABLETAG");
+                changeFragments("LEAGUETABLETAG", null);
                 break;
             case HomePageAdapter.TEAMRESULTS:
                 Log.d("MATCH", "starting team results fragment");
 
-                changeFragments("TEAMRESULTSTAG");
+                changeFragments("TEAMRESULTSTAG", null);
                 break;
             default:
                 break;
@@ -388,7 +386,7 @@ public class MainActivity extends ActionBarActivity
         Log.d("TEAM", Integer.toString(position));
     }
 
-    public void changeFragments(String tag) {
+    public void changeFragments(String tag, Bundle args) {
         if (mFragmentManager == null)
             mFragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
@@ -400,6 +398,10 @@ public class MainActivity extends ActionBarActivity
                 ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
             if (tag.equals("TEAMRESULTSTAG"))
                 ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
+            if (tag.equals("MATCHDETAILSFRAG")) {
+                ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
+            }
+
             ft.addToBackStack(tag);
             ft.commit();
         } else if (!fragment.isVisible()) {
@@ -446,8 +448,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onResultsItemSelected(int position) {
-
+    public void onResultsItemSelected(Bundle args) {
+        changeFragments("MATCHDETAILSFRAG", args);
     }
 
     @Override
@@ -461,6 +463,10 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    public void matchDetailsSelectedCallback(Bundle args) {
+        changeFragments("MATCHDETAILSFRAG", args);
+    }
+
     public void notify(String tableName, Object data) {
         switch(tableName){
             case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:

@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -156,5 +158,21 @@ public class Player {
             }
         }
         return output;
+    }
+
+    public static List<Player> sortByName(List<Player> data){
+        Collections.sort(data, new Comparator<Player>() {
+            public int compare(Player p1, Player p2) {
+                if (p1 == null && p2 == null) {
+                    return 0;
+                } else if (p1 == null) {
+                    return 1;
+                } else if (p2 == null) {
+                    return -1;
+                }
+                return p1.getName().compareToIgnoreCase(p2.getName()) ;
+            }
+        });
+        return data;
     }
 }

@@ -9,7 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
+import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
@@ -90,11 +94,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     Starts a new activity that shows the overview of a match
      */
     public void selectItem(int position, int matchID) {
-        if (mCallbacks != null) {
-            mCallbacks.onResultsItemSelected(position);
-        }
 
-        Intent intent = new Intent(getActivity(), MatchActivity.class);
         Bundle args = new Bundle();
         Match selectedMatch = DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID);
         args.putString(Match.KEY_TEAMONE, selectedMatch.getTeamOne());
@@ -106,8 +106,10 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         args.putString(Match.KEY_PLACE, selectedMatch.getPlace());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
         args.putString(Match.KEY_DATETIME, sdf.format(selectedMatch.getDateTime()));
-        intent.putExtras(args);
-        startActivity(intent);
+
+        if (mCallbacks != null) {
+            mCallbacks.onResultsItemSelected(args);
+        }
     }
 
     @Override
@@ -143,7 +145,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface ResultsListCallbacks {
-        public void onResultsItemSelected(int position);
+        public void onResultsItemSelected(Bundle args);
     }
 
 }

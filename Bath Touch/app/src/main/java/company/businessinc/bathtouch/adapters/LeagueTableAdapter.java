@@ -78,7 +78,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public class ViewHolderLeague extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTeamName, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName;
+        public TextView mTeamName, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName, mTeamPos;
         public ImageView mImagePosition;
         public RelativeLayout mDisplayItem, mTextArea, mExtraText;
 
@@ -101,9 +101,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //            mCloseButton = (ImageView) v.findViewById(R.id.league_item_close_button);
 //            mExpandArea = (RelativeLayout) v.findViewById(R.id.llExpandArea);
             mDisplayItem = (RelativeLayout) v.findViewById(R.id.league_display_item_container);
-//            mTeamOverviewButton = (RelativeLayout) v.findViewById(R.id.league_item_team_overview_button);
             mTextArea = (RelativeLayout) v.findViewById(R.id.league_item_text_container);
             mExtraText = (RelativeLayout) v.findViewById(R.id.league_item_extra_text_container);
+            mPtsFor = (TextView) v.findViewById(R.id.league_item_pts_for);
+            mPtsAgn = (TextView) v.findViewById(R.id.league_item_pts_agn);
+            mTeamPos = (TextView) v.findViewById(R.id.league_item_team_position);
+            mDisplayItem.setOnClickListener(this);
 
 //            mCloseButton.setOnClickListener(this);
 //            mTeamOverviewButton.setOnClickListener(new View.OnClickListener() {
@@ -199,8 +202,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         LeagueTeam team = leagueTeams.get(position);
         Team fullTeam = null;
-        int circleColor = Color.BLACK;
-        int textColor = mContext.getResources().getColor(R.color.primary_text_default_material_light);
+        int circleColor = Color.GRAY;
+        int textColor = mContext.getResources().getColor(R.color.body_text_2);
         int circleTextColor = Color.WHITE;
 
         for (Team e : allTeams) {
@@ -219,7 +222,6 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         try {
             if (mTeamId == team.getTeamID()) {
-//                v.mDisplayItem.setBackground(mContext.getResources().getDrawable(R.color.grey_300));
                 v.mDisplayItem.setBackgroundColor(mTeamColor);
                 textColor = Color.WHITE;
                 circleTextColor = mTeamColor;
@@ -246,10 +248,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeamPts.setText(team.getLeaguePoints().toString());
         v.mTeamPts.setTypeface(null, Typeface.BOLD);
         v.mTeamPts.setTextColor(textColor);
-//        v.mPtsFor.setText(team.getPointsFor().toString());
-//        v.mPtsFor.setTextColor(textColor);
-//        v.mPtsAgn.setText(team.getPointsAgainst().toString());
-//        v.mPtsAgn.setTextColor(textColor);
+        v.mPtsFor.setText("\u25B2  " + team.getPointsFor().toString());
+        v.mPtsAgn.setText("\u25BC  " + team.getPointsAgainst().toString());
 
         //Set circle icons for positions, points for and against
         String leaguePosition = team.getPosition().toString();
@@ -260,7 +260,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .endConfig()
                 .buildRound(leaguePosition, circleColor);
 
-        v.mImagePosition.setImageDrawable(drawable);
+//        v.mImagePosition.setImageDrawable(drawable);
+        v.mTeamPos.setText(leaguePosition);
+        v.mTeamPos.setTextColor(circleColor);
 
 //        String downArrow = "\u25BC";
 //        String upArrow = "\u25B2";
@@ -321,7 +323,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mIsVisibleAfter = (view.getVisibility() == View.VISIBLE);
 
             mMarginStart = mViewLayoutParams.bottomMargin;
-            mMarginEnd = (mMarginStart == 0 ? (0- view.getHeight()) : 0);
+            mMarginEnd = (mMarginStart != 0 ? (0- view.getHeight()) : 0);
 
             view.setVisibility(View.VISIBLE);
         }

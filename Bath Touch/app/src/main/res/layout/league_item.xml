@@ -14,10 +14,10 @@
         <RelativeLayout
             android:id="@+id/league_display_item_container"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="56dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="@drawable/bkg"
+            android:background="@color/white"
             android:clickable="true">
 
             <RelativeLayout
@@ -37,12 +37,22 @@
 
                     <ImageView
                         android:id="@+id/image_view"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_centerVertical="true"
-                        />
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="20dp" />
+
+                    <TextView
+                        android:id="@+id/league_item_team_position"
+                        android:layout_width="35dp"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textSize="34dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif-regular"/>
 
                     <RelativeLayout
                         android:id="@+id/league_item_text_container"
@@ -54,14 +64,14 @@
 
                         <TextView
                             android:id="@+id/league_item_team_name"
-                            style="@style/regular_main_text"
+                            style="@style/body_2_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CompSci Vipers" />
 
                         <TextView
                             android:id="@+id/league_item_team_points"
-                            style="@style/regular_main_text"
+                            style="@style/subhead_text"
                             android:layout_width="35dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
@@ -73,7 +83,7 @@
 
                         <TextView
                             android:id="@+id/league_item_team_lose"
-                            style="@style/regular_main_text"
+                            style="@style/body_2_text"
                             android:layout_width="24dp"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -83,7 +93,7 @@
 
                         <TextView
                             android:id="@+id/league_item_team_draw"
-                            style="@style/regular_main_text"
+                            style="@style/body_2_text"
                             android:layout_width="24dp"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -94,7 +104,7 @@
 
                         <TextView
                             android:id="@+id/league_item_team_won"
-                            style="@style/regular_main_text"
+                            style="@style/body_2_text"
                             android:layout_width="24dp"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -127,43 +137,26 @@
                             android:layout_marginLeft="30dp"
                             android:text="Joe Bloggs" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="30dp"
-                            android:text="PF:"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="90dp"/>
 
                         <TextView
                             android:id="@+id/league_item_pts_for"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="30dp"
-                            android:text="54"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="70dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="30dp"
-                            android:text="PA:"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="30dp"/>
+                            android:layout_marginRight="70dp"
+                            android:text="54" />
 
                         <TextView
                             android:id="@+id/league_item_pts_agn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="30dp"
-                            android:text="22"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="10dp"/>
+                            android:layout_marginRight="10dp"
+                            android:text="22" />
 
                     </RelativeLayout>
 
@@ -174,13 +167,22 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_alignBottom="@id/league_display_item_container"
-            android:background="@color/grey_300">
+            android:paddingLeft="72dp"
+            >
 
-        </View>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/grey_300">
+
+            </View>
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

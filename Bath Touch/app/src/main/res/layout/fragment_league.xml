@@ -1,6 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="company.businessinc.bathtouch.LeagueFragment">
@@ -12,83 +11,95 @@
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/fragment_league_table_header"
-            android:background="@color/grey_100"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:elevation="@dimen/headerbar_elevation">
+            android:layout_height="40dp"
+            android:background="@color/white"
+            android:elevation="4dp"
+            >
 
-            <TextView
-                android:id="@+id/team_number"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:text="#"
-                android:textColor="@color/grey_700"
-                android:textSize="14sp"
-                android:layout_marginLeft="16dp"/>
-
-            <TextView
-                android:id="@+id/team_name"
-                android:layout_width="fill_parent"
-                android:layout_height="20dp"
-                android:layout_toRightOf="@id/team_number"
-                android:text="Team"
-                android:textColor="@color/grey_700"
-                android:textSize="14sp"
-                android:layout_marginLeft="16dp"/>
-
-            <TextView
-                android:id="@+id/team_points"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_alignParentRight="true"
-                android:text="Pts"
-                android:textColor="@color/grey_700"
-                android:textSize="14sp"
-                android:layout_marginRight="8dp"/>
+                android:layout_height="match_parent"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/team_lose"
-                android:layout_width="24dp"
-                android:layout_height="20dp"
-                android:layout_toLeftOf="@id/team_points"
-                android:text="L"
-                android:textColor="@color/grey_700"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/fragment_league_header_team_number"
+                    style="@style/body_2_text"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="#"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/team_draw"
-                android:layout_width="24dp"
-                android:layout_height="20dp"
-                android:layout_toLeftOf="@id/team_lose"
-                android:text="D"
-                android:textColor="@color/grey_700"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/fragment_league_header_team_name"
+                    style="@style/body_2_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_toRightOf="@id/fragment_league_header_team_number"
+                    android:text="Team"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_marginLeft="8dp"
-                android:id="@+id/team_won"
-                android:layout_width="24dp"
-                android:layout_height="20dp"
-                android:layout_toLeftOf="@id/team_draw"
-                android:text="W"
-                android:textColor="@color/grey_700"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/fragment_league_header_team_points"
+                    style="@style/body_2_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="8dp"
+                    android:text="Pts"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/fragment_league_header_team_lose"
+                    style="@style/body_2_text"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_toLeftOf="@id/fragment_league_header_team_points"
+                    android:text="L"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/fragment_league_header_team_draw"
+                    style="@style/body_2_text"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_toLeftOf="@id/fragment_league_header_team_lose"
+                    android:text="D"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/fragment_league_header_team_won"
+                    style="@style/body_2_text"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toLeftOf="@id/fragment_league_header_team_draw"
+                    android:text="W"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="5px"
+                android:layout_alignParentBottom="true"
+                android:paddingLeft="66dp">
+
+                <View
+                    android:id="@+id/fragment_league_header_item_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey_300">
+
+                </View>
+            </RelativeLayout>
 
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="@color/grey_300"
-            android:layout_alignBottom="@id/fragment_league_table_header">
-
-        </View>
 
 
         <android.support.v7.widget.RecyclerView

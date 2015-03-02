@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -67,6 +68,10 @@ public class LeagueFragment extends Fragment {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_league, container, false);
 
+        //set up the header for the league colors
+        setupLeagueHeader();
+
+        //set up the recycler view
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.fragment_league_recycle);
 
 //        // use this setting to improve performance if you know that changes
@@ -103,6 +108,24 @@ public class LeagueFragment extends Fragment {
 //        Bundle args = new Bundle();
 //        args.putString("teamOneName", mLeagueTeams.get(position).);
 
+    }
+
+    public void setupLeagueHeader(){
+        int userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+        TextView t = (TextView) mLayout.findViewById(R.id.fragment_league_header_team_number);
+        t.setTextColor(userColor);
+        t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_name);
+        t.setTextColor(userColor);
+        t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_draw);
+        t.setTextColor(userColor);
+        t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_lose);
+        t.setTextColor(userColor);
+        t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_points);
+        t.setTextColor(userColor);
+        t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_won);
+        t.setTextColor(userColor);
+        View v = mLayout.findViewById(R.id.fragment_league_header_item_divider);
+        v.setBackgroundColor(userColor);
     }
 
     @Override
