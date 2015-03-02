@@ -9,9 +9,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,17 +17,12 @@ import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
-
-import java.util.List;
-
 import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
-import company.businessinc.bathtouch.data.DBProviderContract;
-import company.businessinc.dataModels.Player;
 
 /**
  * Created by user on 30/01/15.
  */
-public class AvailablePlayersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AvailablePlayersFragment extends Fragment{
 
     private RecyclerView mRecyclerView;
     private View mLayout;
@@ -39,9 +31,6 @@ public class AvailablePlayersFragment extends Fragment implements LoaderManager.
     private boolean available_toggle;
     private int matchID;
     private AvailablePlayersListener mCallbacks;
-
-    private List<Player> selectedPlayers;
-    private List<Player> unselectedPlayers;
 
     public interface AvailablePlayersListener {
         public void createGhostPlayerEvent();
@@ -63,7 +52,6 @@ public class AvailablePlayersFragment extends Fragment implements LoaderManager.
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             matchID = bundle.getInt("matchID");
-            getLoaderManager().initLoader(DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY, null, this);
         }
 
         mCallbacks = (AvailablePlayersListener) getParentFragment();
@@ -112,41 +100,6 @@ public class AvailablePlayersFragment extends Fragment implements LoaderManager.
         return mLayout;
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        switch (loaderID) {
-            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
-                return new CursorLoader(getActivity(), DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_CONTENTURI, null, DBProviderContract.SELECTION_MATCHID, new String[]{Integer.toString(matchID)}, null);
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
-
-    //query has finished
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_URL_QUERY:
-                if (data.moveToFirst()) {
-                    while (!data.isAfterLast()) {
-                        Player player = new Player(data);
-//                        if(player.getIsPlaying() == available_toggle){
-//                            ((AvailablePlayersAdapter)mAdapter).addToPlayerList(player);
-//                        }
-                        ((AvailablePlayersAdapter) mAdapter).addToPlayerList(player);
-
-                        data.moveToNext();
-                    }
-                }
-                break;
-        }
-    }
-
-    //when data gets updated, first reset everything
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
 
     public class DividerDecoration extends RecyclerView.ItemDecoration {
 
@@ -229,6 +182,4 @@ public class AvailablePlayersFragment extends Fragment implements LoaderManager.
             }
         }
     }
-
-
 }

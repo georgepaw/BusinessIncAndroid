@@ -455,7 +455,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Player> output = Player.cursorToList(cursor);
+        List<Player> output = Player.sortByName(Player.cursorToList(cursor));
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;

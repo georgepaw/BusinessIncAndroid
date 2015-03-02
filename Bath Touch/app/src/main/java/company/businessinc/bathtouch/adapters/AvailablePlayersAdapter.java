@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,17 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Player;
 
 /**
  * Created by user on 30/01/15.
  */
-public class AvailablePlayersAdapter extends RecyclerView.Adapter {
+public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBObserver {
 
     private boolean is_available;
     private AvailablePlayerCallbacks mCallbacks;
-    private List<Player> playerList = new ArrayList<Player>();
     private List<Player> selectedPlayers = new ArrayList<Player>();
     private List<Player> unselectedPlayers = new ArrayList<Player>();
 
@@ -50,6 +52,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 //        mCallbacks = (AvailablePlayerCallbacks) context;
         this.context = context;
         this.matchID = matchID;
+
     }
 
 
@@ -110,9 +113,17 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        DataStore.getInstance(context).registerMyTeamsPlayerAvailabilitysDBObserver(this);
+        selectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, true);
+        unselectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, false);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-
+        selectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, true);
+        unselectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, false);
         if (viewType == 0) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.team_roster_header_item, parent, false);
@@ -201,6 +212,9 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
 
 
             v.mPlayerName.setText(player.getName());
+            if(DataStore.getInstance(context).getUserName().contains(player.getName())){
+                v.mPlayerName.setTypeface(null, Typeface.BOLD_ITALIC);
+            }
             if (player.getIsGhostPlayer()) {
                 v.mPlayerReal.setVisibility(View.INVISIBLE);
             }
@@ -212,6 +226,13 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
                 v.mCheckBox.setChecked(true);
             } else {
                 v.mCheckBox.setChecked(false);
+            }
+
+            //Make sure only captain, can change players availability, or player can change his own availability
+            if(DataStore.getInstance(context).isUserCaptain() || DataStore.getInstance(context).getUserName().contains(player.getName())){
+                v.mCheckBox.setEnabled(true);
+            } else {
+                v.mCheckBox.setEnabled(true);
             }
 
         }
@@ -230,10 +251,10 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             relPosition = position - selectedPlayers.size();
             player = unselectedPlayers.get(relPosition);
             unselectedPlayers.remove(relPosition);
-            selectedPlayers.add(player);
+            int pos = insertToCorrectPlace(selectedPlayers,player);
 
-            notifyItemMoved(position + 2, selectedPlayers.size());
-
+            notifyItemMoved(position + 2, pos+1);
+            DataStore.getInstance(context).setPlayersAvailability(true,player.getUserID(),matchID);
 
         } else {
             Log.d("CLICK", "Removed from selected");
@@ -241,18 +262,34 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
             player = selectedPlayers.get(position);
             Log.d("SELECTED", player.getName());
             selectedPlayers.remove(position);
-            unselectedPlayers.add(0, player);
+            int pos = insertToCorrectPlace(unselectedPlayers,player);
 
-            notifyItemMoved(position + 1, selectedPlayers.size() + 2); //BOW TO THE MAGIC CONSTANTS
+            notifyItemMoved(position + 1, selectedPlayers.size() + pos + 2); //BOW TO THE MAGIC CONSTANTS
+            DataStore.getInstance(context).setPlayersAvailability(false, player.getUserID(), matchID);
         }
+    }
 
-        //update numbers in header
-        notifyItemChanged(0);
-        notifyItemChanged(selectedPlayers.size() + 1);
+    private int insertToCorrectPlace(List<Player> list, Player player){
+        //the list should be sorted by players names
+        if( list.size() ==0){
+            list.add(player);
+            return 0;
+        }
+        int i;
+        for(i = 0; i < list.size(); i++){
+            if(list.get(i).getName().compareToIgnoreCase(player.getName()) > 0){
+                break;
+            }
+        }
+        list.add(i, player);
+        return i;
+    }
 
         //update the availability in the database
-        DataStore.getInstance(context).setPlayersAvailability(!player.getIsPlaying(), player.getUserID(), matchID);
-
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView){
+        DataStore.getInstance(context).unregisterMyTeamsPlayerAvailabilitysDBObserver(this);
+        super.onDetachedFromRecyclerView(recyclerView);
     }
 
 
@@ -261,38 +298,17 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter {
         return selectedPlayers.size() + unselectedPlayers.size() + NUMHEADERS;
     }
 
-    public void addToPlayerList(Player player) {
-        boolean found = false;
-
-        //add to the correct list
-        if (player.getIsPlaying()) {
-            //update an existing player
-            for (int i = 0; i < selectedPlayers.size(); i++) {
-                if (selectedPlayers.get(i).getUserID() == player.getUserID()) {
-                    selectedPlayers.set(i, player);
-                    found = true;
-                    break;
+    @Override
+    public void notify(String tableName, Object data) {
+        switch(tableName){
+            case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME:
+                if(data == null || data == matchID) {
+                    selectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, true);
+                    unselectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, false);
+                    notifyDataSetChanged();
                 }
-
-            }
-            if (!found) {
-                selectedPlayers.add(player);
-            }
-        } else {
-            for (int i = 0; i < unselectedPlayers.size(); i++) {
-                if (unselectedPlayers.get(i).getUserID() == player.getUserID()) {
-                    unselectedPlayers.set(i, player);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                unselectedPlayers.add(player);
-            }
+                break;
         }
-
-
-        notifyDataSetChanged();
     }
 }
 

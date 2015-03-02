@@ -101,13 +101,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //            mCloseButton = (ImageView) v.findViewById(R.id.league_item_close_button);
 //            mExpandArea = (RelativeLayout) v.findViewById(R.id.llExpandArea);
             mDisplayItem = (RelativeLayout) v.findViewById(R.id.league_display_item_container);
-//            mTeamOverviewButton = (RelativeLayout) v.findViewById(R.id.league_item_team_overview_button);
             mTextArea = (RelativeLayout) v.findViewById(R.id.league_item_text_container);
             mExtraText = (RelativeLayout) v.findViewById(R.id.league_item_extra_text_container);
             mPtsFor = (TextView) v.findViewById(R.id.league_item_pts_for);
             mPtsAgn = (TextView) v.findViewById(R.id.league_item_pts_agn);
             mTeamPos = (TextView) v.findViewById(R.id.league_item_team_position);
-
+            mDisplayItem.setOnClickListener(this);
 
 //            mCloseButton.setOnClickListener(this);
 //            mTeamOverviewButton.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +323,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mIsVisibleAfter = (view.getVisibility() == View.VISIBLE);
 
             mMarginStart = mViewLayoutParams.bottomMargin;
-            mMarginEnd = (mMarginStart == 0 ? (0- view.getHeight()) : 0);
+            mMarginEnd = (mMarginStart != 0 ? (0- view.getHeight()) : 0);
 
             view.setVisibility(View.VISIBLE);
         }
