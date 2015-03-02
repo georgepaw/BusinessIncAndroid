@@ -30,6 +30,7 @@ public class AvailablePlayersFragment extends Fragment{
     private AvailablePlayersAdapter mAdapter;
     private boolean available_toggle;
     private int matchID;
+    private boolean hasBeenPlayed;
     private AvailablePlayersListener mCallbacks;
 
     public interface AvailablePlayersListener {
@@ -37,11 +38,12 @@ public class AvailablePlayersFragment extends Fragment{
     }
 
 
-    public static AvailablePlayersFragment newInstance(int matchID) {
+    public static AvailablePlayersFragment newInstance(int matchID, boolean hasBeenPlayed) {
         AvailablePlayersFragment fragment = new AvailablePlayersFragment();
         Bundle args = new Bundle();
 
         args.putInt("matchID", matchID);
+        args.putBoolean("hasBeenPlayed", hasBeenPlayed);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +54,7 @@ public class AvailablePlayersFragment extends Fragment{
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             matchID = bundle.getInt("matchID");
+            hasBeenPlayed = bundle.getBoolean("hasBeenPlayed");
         }
 
         mCallbacks = (AvailablePlayersListener) getParentFragment();
@@ -78,7 +81,7 @@ public class AvailablePlayersFragment extends Fragment{
 
 
         //Adapter loads the data fror the leagues
-        mAdapter = new AvailablePlayersAdapter(available_toggle, getActivity(), matchID);
+        mAdapter = new AvailablePlayersAdapter(available_toggle, getActivity(), matchID, hasBeenPlayed);
         mRecyclerView.setAdapter(mAdapter);
 
 

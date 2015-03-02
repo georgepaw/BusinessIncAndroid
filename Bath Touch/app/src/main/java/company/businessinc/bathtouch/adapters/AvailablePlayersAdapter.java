@@ -37,6 +37,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
     private Context context;
     private int matchID;
+    private boolean hasBeenPlayed;
 
     private int NUMHEADERS = 2;
 
@@ -47,11 +48,12 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         void onPlayerSelected(Player player);
     }
 
-    public AvailablePlayersAdapter(boolean available, Context context, int matchID) {
+    public AvailablePlayersAdapter(boolean available, Context context, int matchID, boolean hasBeenPlayed) {
         is_available = available;
 //        mCallbacks = (AvailablePlayerCallbacks) context;
         this.context = context;
         this.matchID = matchID;
+        this.hasBeenPlayed = hasBeenPlayed;
 
     }
 
@@ -229,10 +231,10 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             }
 
             //Make sure only captain, can change players availability, or player can change his own availability
-            if(DataStore.getInstance(context).isUserCaptain() || DataStore.getInstance(context).getUserName().contains(player.getName())){
+            if(!hasBeenPlayed && (DataStore.getInstance(context).isUserCaptain() || DataStore.getInstance(context).getUserName().contains(player.getName()))){
                 v.mCheckBox.setEnabled(true);
             } else {
-                v.mCheckBox.setEnabled(true);
+                v.mCheckBox.setEnabled(false);
             }
 
         }

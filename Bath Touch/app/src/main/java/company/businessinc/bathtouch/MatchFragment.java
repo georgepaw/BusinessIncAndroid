@@ -39,6 +39,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     private ViewPagerAdapter mViewPagerAdapter;
     private String mPlace;
     private Date mDate;
+    private boolean mHasBeenPlayed = false;
     private View mLayout;
 
     private int NUMTABS = 4;
@@ -73,6 +74,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                 mDate = sdf.parse(extras.getString(Match.KEY_DATETIME));
                 mLeagueID = extras.getInt(League.KEY_LEAGUEID);
+                mHasBeenPlayed = extras.getBoolean("hasBeenPlayed");
             } catch (Exception e){
                 Log.d(TAG, "Couldn't parse the bundle");
             }
@@ -200,7 +202,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    AvailablePlayersFragment frag = AvailablePlayersFragment.newInstance(mMatchID);
+                    AvailablePlayersFragment frag = AvailablePlayersFragment.newInstance(mMatchID, mHasBeenPlayed);
                     return frag;
                 case 1:
                     LeagueFragment leagueFragment = LeagueFragment.newInstance(mLeagueID);

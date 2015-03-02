@@ -104,6 +104,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         args.putInt("leagueID", mLeagueID);
         args.putInt(Match.KEY_MATCHID, selectedMatch.getMatchID());
         args.putString(Match.KEY_PLACE, selectedMatch.getPlace());
+        args.putBoolean("hasBeenPlayed", true);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
         args.putString(Match.KEY_DATETIME, sdf.format(selectedMatch.getDateTime()));
 
