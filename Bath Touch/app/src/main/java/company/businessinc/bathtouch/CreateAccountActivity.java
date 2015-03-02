@@ -82,10 +82,14 @@ public class CreateAccountActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            final boolean isMale = true; //TODO this is hardcoded add a box
+
             View rootView = inflater.inflate(R.layout.fragment_create_account_start, container, false);
             mFirstNameEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_start_name_first_edit_text);
             mSecondnameEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_start_name_second_edit_text);
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_start_button_skip_next);
+
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -98,11 +102,12 @@ public class CreateAccountActivity extends ActionBarActivity {
                         String name = mFirstNameEditText.getText().toString() + " "
                                 + mSecondnameEditText.getText().toString();
                         args.putString("name", name);
+                        args.putBoolean("isMale", isMale);
                         InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                                 InputMethodManager.HIDE_NOT_ALWAYS);
                         if (mIsGhost) {
-                            create_account(name);
+                            create_account(name, isMale);
                         } else {
                             CreateAccountEmail cau = new CreateAccountEmail();
                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -117,9 +122,9 @@ public class CreateAccountActivity extends ActionBarActivity {
             return rootView;
         }
 
-        public void create_account(String name) {
+        public void create_account(String name, Boolean isMale) {
             if (CheckNetworkConnection.check(getActivity())) {
-                new UserNew(this, name, DataStore.getInstance(getActivity()).getUserTeamID(), true).execute();
+                new UserNew(this, name, DataStore.getInstance(getActivity()).getUserTeamID(), true, isMale).execute();
             } else {
                 Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
                 Log.d("Create User", "Network is not working");
@@ -302,29 +307,19 @@ public class CreateAccountActivity extends ActionBarActivity {
                 Bundle args = getArguments();
                 String name = args.getString("name");
                 mIsGhost = args.getBoolean("ghost");
-                if(mIsGhost) {
-                    int teamID = -1;
-                    for (Team t : mLeagueTeams) {
-                        if (t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())) {
-                            teamID = t.getTeamID();
-                        }
+                Boolean isMale = args.getBoolean("isMale");
+                String email = args.getString("email");
+                mUsername = args.getString("username");
+                mPassword = args.getString("password");
+                Log.d("Create User", name + email + mUsername + mPassword);
+                int teamID = -1;
+                for (Team t : mLeagueTeams) {
+                    if (t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())) {
+                        teamID = t.getTeamID();
                     }
-                    Log.d("Create User", "Network is working, let's create a ghost user");
-                    new UserNew(this, name, teamID, true).execute();
-                } else {
-                    String email = args.getString("email");
-                    mUsername = args.getString("username");
-                    mPassword = args.getString("password");
-                    Log.d("Create User", name + email + mUsername + mPassword);
-                    int teamID = -1;
-                    for (Team t : mLeagueTeams) {
-                        if (t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())) {
-                            teamID = t.getTeamID();
-                        }
-                    }
-                    Log.d("Create User", "Network is working, let's create a user");
-                    new UserNew(this, mUsername, mPassword, email, name, teamID).execute();
                 }
+                Log.d("Create User", "Network is working, let's create a user");
+                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale).execute();
             } else {
                 Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
                 Log.d("Create User", "Network is not working");
