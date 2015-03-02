@@ -1,5 +1,6 @@
 package company.businessinc.bathtouch;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
@@ -174,12 +175,11 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     Starts a new create player flow intent
      */
     public void startCreateGhostPlayerIntent(){
-//        Intent intent = new Intent(MatchActivity.this, CreateAccountActivity.class);
-//        Bundle args = new Bundle();
-//        args.putBoolean("ghost", true);
-//        intent.putExtras(args);
-//        startActivity(intent);
-//        finish();
+        Intent intent = new Intent(getActivity(), CreateAccountActivity.class);
+        Bundle args = new Bundle();
+        args.putBoolean("ghost", true);
+        intent.putExtras(args);
+        getActivity().startActivity(intent);
     }
 
     /*
