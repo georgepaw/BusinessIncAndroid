@@ -387,7 +387,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
                 null,
-                null,
+                DBProviderContract.SELECTION_SCORES_ARE_NULL,
                 null,
                 null,
                 null,
