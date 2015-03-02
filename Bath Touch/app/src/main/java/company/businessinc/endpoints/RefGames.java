@@ -60,13 +60,8 @@ public class RefGames extends AsyncTask<Void, Void, ResponseStatus> {
         }
         //sort the games in ascending order
         list = Match.sortList(list, Match.SortType.ASCENDING);
-        //Should probably replace this with a better search
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.add(GregorianCalendar.HOUR,-4); //minus 4 hours so that he can see the next game during and after it's being played
         for(Match m : list){
-            if(m.getDateTime().compareTo(gc.getTime()) > 0){
-                SQLiteManager.getInstance(context).insert(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, m.toContentValues());
-            }
+            SQLiteManager.getInstance(context).insert(DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, m.toContentValues());
         }
         return new ResponseStatus(true);
     }

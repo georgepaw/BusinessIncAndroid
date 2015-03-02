@@ -199,9 +199,11 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
-                    if(pager!=null) {
-                        pager.getAdapter().notifyDataSetChanged();
+                    if(getActivity()!=null) {
+                        ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
+                        if (pager != null) {
+                            pager.getAdapter().notifyDataSetChanged();
+                        }
                     }
                 }
             });
