@@ -30,6 +30,7 @@ public class UserNew extends AsyncTask<Void, Void, ResponseStatus> {
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
         parameters.add(new BasicNameValuePair("isGhost", Boolean.toString(isGhost)));
         parameters.add(new BasicNameValuePair("gender", isMale ? "0" : "1"));
+        parameters.add(new BasicNameValuePair("isRef", "0"));
     }
 
     public UserNew(UserNewInterface callback, String name, int teamID, boolean isGhost, boolean isMale) {
