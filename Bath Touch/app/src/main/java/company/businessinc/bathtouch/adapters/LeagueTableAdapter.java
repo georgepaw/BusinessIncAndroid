@@ -78,7 +78,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public class ViewHolderLeague extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTeamName, mTeamWin, mTeamLose, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName, mTeamPos;
+        public TextView mTeamName, mTeamWin, mTeamLose, mTeamForfeits, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName, mTeamPos;
         public ImageView mImagePosition;
         public RelativeLayout mDisplayItem, mTextArea, mExtraText;
 
@@ -91,6 +91,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTeamWin = (TextView) v.findViewById(R.id.league_item_team_won);
             mTeamLose = (TextView) v.findViewById(R.id.league_item_team_lose);
             mTeamDraw = (TextView) v.findViewById(R.id.league_item_team_draw);
+            mTeamForfeits = (TextView) v.findViewById(R.id.league_item_team_forfeit);
             mTeamPts = (TextView) v.findViewById(R.id.league_item_team_points);
 //            mPtsFor = (TextView) v.findViewById(R.id.league_item_ptsfor);
 //            mPtsAgn = (TextView) v.findViewById(R.id.league_item_ptsagn);
@@ -132,7 +133,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public LeagueTableAdapter(Activity context, int leagueID, int teamId) {
         mContext = context.getApplicationContext();
         mTeamId = teamId;
-        mTeamColor = DataStore.getInstance(mContext).getUserTeamColorPrimary();
+        if(DataStore.getInstance(context).isUserLoggedIn()) {
+            mTeamColor = DataStore.getInstance(mContext).getUserTeamColorPrimary();
+        }
 
         this.leagueID = leagueID;
     }
@@ -239,6 +242,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mTeamName.setText(team.getTeamName());
         v.mTeamName.setTextColor(textColor);
 //        v.mTeamPos.setText(team.getPosition().toString());
+        v.mTeamForfeits.setText(team.getForfeit().toString());
+        v.mTeamForfeits.setTextColor(textColor);
         v.mTeamDraw.setText(team.getDraw().toString());
         v.mTeamDraw.setTextColor(textColor);
         v.mTeamLose.setText(team.getLose().toString());

@@ -54,11 +54,20 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/fragment_league_header_team_lose"
+                    android:id="@+id/fragment_league_header_forfeits"
                     style="@style/body_2_text"
                     android:layout_width="24dp"
                     android:layout_height="20dp"
                     android:layout_toLeftOf="@id/fragment_league_header_team_points"
+                    android:text="F"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/fragment_league_header_team_lose"
+                    style="@style/body_2_text"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_toLeftOf="@id/fragment_league_header_forfeits"
                     android:text="L"
                     android:textStyle="bold" />
 

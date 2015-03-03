@@ -61,19 +61,6 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
     public void onSubmitScore(View v) {
         Integer mTeamOneScore = null;
         Integer mTeamTwoScore = null;
-        try{
-            mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
-        } catch(NumberFormatException e){
-            Toast.makeText(this, "Enter score for " + teamOneNameText, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try{
-            mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
-        } catch(NumberFormatException e){
-            Toast.makeText(this, "Enter score for " + teamTwoNameText, Toast.LENGTH_SHORT).show();
-            return;
-        }
         if(!mTeamOneCaptianApprove.isChecked() || !mTeamTwoCaptianApprove.isChecked()){
             Toast.makeText(this, "Captains need to approve scores!", Toast.LENGTH_SHORT).show();
         } else if(mTeamOneForfeit.isChecked() && mTeamTwoForfeit.isChecked()) {
@@ -88,6 +75,20 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
                 mTeamOneScore = 10;
                 mTeamTwoScore = 0;
                 mIsForfeit = true;
+            } else {
+                try{
+                    mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+                } catch(NumberFormatException e){
+                    Toast.makeText(this, "Enter score for " + teamOneNameText, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try{
+                    mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+                } catch(NumberFormatException e){
+                    Toast.makeText(this, "Enter score for " + teamTwoNameText, Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
             new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
         }

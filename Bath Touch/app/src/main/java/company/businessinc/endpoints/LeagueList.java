@@ -11,6 +11,7 @@ import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.networking.APICall;
 import company.businessinc.networking.APICallType;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
 import java.util.LinkedList;
@@ -24,12 +25,21 @@ public class LeagueList extends AsyncTask<Void, Void, ResponseStatus> {
     private LeagueListInterface callback;
     private List<NameValuePair> parameters;
     private Context context;
+    private boolean liveCall = false;
 
 
     public LeagueList(LeagueListInterface callback, Context context) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         this.context = context;
+    }
+
+    public LeagueList(LeagueListInterface callback, Context context, boolean live) {
+        this.callback = callback;
+        parameters = new LinkedList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("live",""));
+        this.context = context;
+        liveCall = live;
     }
 
     @Override
@@ -51,13 +61,17 @@ public class LeagueList extends AsyncTask<Void, Void, ResponseStatus> {
             }
         }
         ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-        SQLiteManager.getInstance(context).bulkInsert(DBProviderContract.ALLLEAGUES_TABLE_NAME, contentValues);
+        if(liveCall){
+            SQLiteManager.getInstance(context).bulkInsert(DBProviderContract.LIVELEAGUE_TABLE_NAME, contentValues);
+        } else {
+            SQLiteManager.getInstance(context).bulkInsert(DBProviderContract.ALLLEAGUES_TABLE_NAME, contentValues);
+        }
         return new ResponseStatus(true);
     }
 
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(ResponseStatus responseStatus) {
-        callback.leagueListCallback(responseStatus);
+        callback.leagueListCallback(responseStatus, liveCall);
     }
 }

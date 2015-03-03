@@ -30,6 +30,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private boolean loadedAllTeams = false;
     private boolean loadedMyLeagues = false;
     private boolean loadedAllLeagues = false;
+    private boolean loadedLiveLeagues = false;
     private ArrayList<Integer> loadedLeagueScores = new ArrayList<>();
     private ArrayList<Integer> loadedLeagueFixtures = new ArrayList<>();
     private ArrayList<Integer> loadedLeagueStandings = new ArrayList<>();
@@ -44,6 +45,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private List<DBObserver> AllTeamsDBObservers = new ArrayList<>();
     private List<DBObserver> MyLeaguesDBObservers = new ArrayList<>();
     private List<DBObserver> AllLeagueDBObservers = new ArrayList<>();
+    private List<DBObserver> LiveLeagueDBObservers = new ArrayList<>();
     private List<DBObserver> LeagueScoreDBObservers = new ArrayList<>();
     private List<DBObserver> LeaguesFixturesDBObservers = new ArrayList<>();
     private List<DBObserver> LeaguesStandingsDBObservers = new ArrayList<>();
@@ -255,6 +257,46 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output;
     }
 
+
+
+    public List<League> getAllLiveLeagues(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LIVELEAGUE_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<League> output = League.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output;
+    }
+    public League getLiveLeague(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LIVELEAGUE_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<League> output = League.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size() > 0 ? output.get(0) : null;
+    }
+
+    public String getLiveLeagueName(int leagueID){
+        League league = getLiveLeague(leagueID);
+        return league != null ? league.getLeagueName() : null;
+    }
+
     public List<Match> getLeagueScores(int leagueID){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.LEAGUESSCORE_TABLE_NAME,
@@ -266,7 +308,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Match> output = Match.cursorToList(cursor);
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
@@ -283,7 +325,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Match> output = Match.cursorToList(cursor);
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
@@ -338,13 +380,13 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Match> output = Match.cursorToList(cursor);
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
-    public List<Match> getTeamScores(int leagueID, int teamID){
+    public List<Match> getTeamScores(int leagueID, int teamID, Match.SortType sortType){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.TEAMSSCORES_TABLE_NAME,
                 null,
@@ -355,7 +397,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Match> output = Match.cursorToList(cursor);
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), sortType);
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
@@ -372,14 +414,14 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Match> output = Match.cursorToList(cursor);
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
     }
 
     public Match getNextGame(){
-        List<Match> matchList = Match.sortList(getMyUpcomingGames(), Match.SortType.ASCENDING);
+        List<Match> matchList = getMyUpcomingGames();
         return matchList.size() > 0 ? matchList.get(0) : null;
     }
 
@@ -537,10 +579,22 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    public void leagueListCallback(ResponseStatus responseStatus){
+    public void loadLiveLeagues(){
+        if(!loadedLiveLeagues){
+            new LeagueList(this, context, true).execute();
+            loadedLiveLeagues = true;
+        }
+    }
+
+    public void leagueListCallback(ResponseStatus responseStatus, boolean liveCall){
         if(responseStatus.getStatus()){
-            Log.d(TAG, "The call LeagueList was successful, notify my DBObservers");
-            notifyAllLeagueDBObservers(null);
+            if(liveCall){
+                Log.d(TAG, "The call LeagueList Live was successful, notify my DBObservers");
+                notifyLiveLeagueDBObservers(null);
+            } else {
+                Log.d(TAG, "The call LeagueList was successful, notify my DBObservers");
+                notifyAllLeagueDBObservers(null);
+            }
         } else{
             Log.d(TAG, "The call LeagueList was not successful");
         }
@@ -717,6 +771,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
+        loadedLiveLeagues = false;
         loadedLeagueScores = new ArrayList<>();
         loadedLeagueFixtures = new ArrayList<>();
         loadedLeagueStandings = new ArrayList<>();
@@ -733,6 +788,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
+        loadedLiveLeagues = false;
         loadedLeagueScores = new ArrayList<>();
         loadedLeagueFixtures = new ArrayList<>();
         loadedLeagueStandings = new ArrayList<>();
@@ -749,6 +805,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         notifyAllTeamsDBObservers(null);
         notifyMyLeaguesDBObservers(null);
         notifyAllLeagueDBObservers(null);
+        notifyLiveLeagueDBObservers(null);
         notifyLeagueScoreDBObservers(null);
         notifyLeaguesFixturesDBObservers(null);
         notifyLeaguesStandingsDBObservers(null);
@@ -806,6 +863,12 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     public synchronized void registerAllLeagueDBObserver(DBObserver dbObserver) {
         if(!AllLeagueDBObservers.contains(dbObserver)) {
             AllLeagueDBObservers.add(dbObserver);
+        }
+    }
+
+    public synchronized void registerLiveLeagueDBObserver(DBObserver dbObserver) {
+        if(!LiveLeagueDBObservers.contains(dbObserver)) {
+            LiveLeagueDBObservers.add(dbObserver);
         }
     }
 
@@ -886,6 +949,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         AllLeagueDBObservers.remove(dbObserver);
     }
 
+    public synchronized void unregisterLiveLeagueDBObserver(DBObserver dbObserver) {
+        LiveLeagueDBObservers.remove(dbObserver);
+    }
+
     public synchronized void unregisterLeagueScoreDBObserver(DBObserver dbObserver) {
         LeagueScoreDBObservers.remove(dbObserver);
     }
@@ -956,6 +1023,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     private void notifyAllLeagueDBObservers(final Object data) {
         notifyDBObservers(AllLeagueDBObservers, DBProviderContract.ALLLEAGUES_TABLE_NAME, data);
+    }
+
+    private void notifyLiveLeagueDBObservers(final Object data) {
+        notifyDBObservers(LiveLeagueDBObservers, DBProviderContract.LIVELEAGUE_TABLE_NAME, data);
     }
 
     private void notifyLeagueScoreDBObservers(final Object data) {

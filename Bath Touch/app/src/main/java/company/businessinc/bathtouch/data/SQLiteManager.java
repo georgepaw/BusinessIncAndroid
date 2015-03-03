@@ -104,6 +104,9 @@ public class SQLiteManager {
                 case DBProviderContract.ALLLEAGUES_TABLE_NAME:
                     DataStore.getInstance(context).loadAllLeagues();
                     break;
+                case DBProviderContract.LIVELEAGUE_TABLE_NAME:
+                    DataStore.getInstance(context).loadLiveLeagues();
+                    break;
                 case DBProviderContract.MYLEAGUES_TABLE_NAME:
                     DataStore.getInstance(context).loadMyLeagues();
                     break;
