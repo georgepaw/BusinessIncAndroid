@@ -131,11 +131,7 @@ public class MyTeamFragment extends Fragment{
         }
 
 
-        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
-            DataStore.getInstance(getActivity()).registerMyUpcomingGamesDBObserver(mViewPagerAdapter);
-        } else{
-            DataStore.getInstance(getActivity()).registerLiveLeagueDBObserver(mViewPagerAdapter);
-        }
+        DataStore.getInstance(getActivity()).registerLiveLeagueDBObserver(mViewPagerAdapter);
         mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
     }
@@ -232,7 +228,6 @@ public class MyTeamFragment extends Fragment{
         @Override
         public void notify(String tableName, Object data) {
             switch(tableName){
-                case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:
                 case DBProviderContract.LIVELEAGUE_TABLE_NAME:
                     mLeagueID = getLeagueID();
                     notifyDataSetChanged();
@@ -241,17 +236,9 @@ public class MyTeamFragment extends Fragment{
         }
 
         private int getLeagueID(){
-            if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
-                DataStore.getInstance(getActivity()).registerMyUpcomingGamesDBObserver(this);
-                Match match = DataStore.getInstance(getActivity()).getNextGame();
-                if(match != null){
-                    return match.getLeagueID();
-                }
-            } else {
-                List<League> leagues = DataStore.getInstance(getActivity()).getAllLiveLeagues();
-                if(leagues.size() > 0){
-                    return leagues.get(0).getLeagueID(); //TODO what's the point of live league if there is more than one?
-                }
+            List<League> leagues = DataStore.getInstance(getActivity()).getAllLiveLeagues();
+            if(leagues.size() > 0){
+                return leagues.get(0).getLeagueID(); //TODO what's the point of live league if there is more than one?
             }
             return  -1;
         }
@@ -264,7 +251,6 @@ public class MyTeamFragment extends Fragment{
     @Override
     public void onDestroyView(){
         //Un register to prevent memory leak
-        DataStore.getInstance(getActivity()).unregisterMyUpcomingGamesDBObserver(mViewPagerAdapter);
         DataStore.getInstance(getActivity()).unregisterLiveLeagueDBObserver(mViewPagerAdapter);
         super.onDestroyView();
     }

@@ -107,7 +107,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mPtsFor = (TextView) v.findViewById(R.id.league_item_pts_for);
             mPtsAgn = (TextView) v.findViewById(R.id.league_item_pts_agn);
             mTeamPos = (TextView) v.findViewById(R.id.league_item_team_position);
-            mDisplayItem.setOnClickListener(this);
+            //mDisplayItem.setOnClickListener(this);
 
 //            mCloseButton.setOnClickListener(this);
 //            mTeamOverviewButton.setOnClickListener(new View.OnClickListener() {

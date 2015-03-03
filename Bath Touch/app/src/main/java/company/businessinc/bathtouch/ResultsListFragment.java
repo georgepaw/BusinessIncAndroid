@@ -99,6 +99,8 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         Match selectedMatch = DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID);
         args.putString(Match.KEY_TEAMONE, selectedMatch.getTeamOne());
         args.putString(Match.KEY_TEAMTWO, selectedMatch.getTeamTwo());
+        args.putInt(Match.KEY_TEAMONEID, selectedMatch.getTeamOneID());
+        args.putInt(Match.KEY_TEAMTWOID, selectedMatch.getTeamTwoID());
         args.putInt(Match.KEY_TEAMONEPOINTS, selectedMatch.getTeamOnePoints());
         args.putInt(Match.KEY_TEAMTWOPOINTS, selectedMatch.getTeamTwoPoints());
         args.putInt("leagueID", mLeagueID);

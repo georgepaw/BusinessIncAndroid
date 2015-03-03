@@ -10,7 +10,7 @@ import android.util.Log;
  * Created by gp on 19/11/14.
  */
 public class CheckNetworkConnection {
-    public static boolean check(Activity thisClass){
+    public static boolean check(Context thisClass){
         boolean b = false;
         ConnectivityManager connMgr = (ConnectivityManager)
                 thisClass.getSystemService(Context.CONNECTIVITY_SERVICE);

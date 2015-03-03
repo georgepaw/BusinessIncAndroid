@@ -36,6 +36,8 @@ public class LeagueTableFragment extends Fragment{
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
 
+    private static final String ANON_PRIMARY = "#ff0000";
+
 
     public static LeagueTableFragment newInstance() {
         LeagueTableFragment fragment = new LeagueTableFragment();
@@ -64,13 +66,20 @@ public class LeagueTableFragment extends Fragment{
                              Bundle savedInstanceState) {
         mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
 
+        int userColor;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+        } else {
+            userColor = Color.parseColor(ANON_PRIMARY);
+        }
+
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("League Tables");
         actionBar.setElevation(0f);
 
         DrawerFrameLayout drawerFrameLayout = (DrawerFrameLayout) (getActivity().findViewById(R.id.drawer_layout));
-        int color = getResources().getColor(R.color.primary);
+        int color = userColor;
         color = darker(color, 0.7f);
         drawerFrameLayout.setStatusBarBackgroundColor(color);
 
@@ -82,6 +91,7 @@ public class LeagueTableFragment extends Fragment{
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.fragment_league_table_sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
+        mSlidingTabLayout.setBackgroundColor(userColor);
 
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.accent_material_light));
