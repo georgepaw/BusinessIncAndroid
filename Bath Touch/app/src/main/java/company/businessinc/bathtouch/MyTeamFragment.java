@@ -262,14 +262,11 @@ public class MyTeamFragment extends Fragment{
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroyView(){
         //Un register to prevent memory leak
-        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
-            DataStore.getInstance(getActivity()).unregisterMyUpcomingGamesDBObserver(mViewPagerAdapter);
-        } else{
-            DataStore.getInstance(getActivity()).unregisterLiveLeagueDBObserver(mViewPagerAdapter);
-        }
-        super.onDestroy();
+        DataStore.getInstance(getActivity()).unregisterMyUpcomingGamesDBObserver(mViewPagerAdapter);
+        DataStore.getInstance(getActivity()).unregisterLiveLeagueDBObserver(mViewPagerAdapter);
+        super.onDestroyView();
     }
 
 }
