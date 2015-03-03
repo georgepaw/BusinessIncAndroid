@@ -43,11 +43,14 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     private boolean mHasBeenPlayed = false;
     private View mLayout;
 
-    private int NUMTABS = 4;
+    private static final String ANON_PRIMARY = "#ff0000";
+    private static final String ANON_SECONDARY = "#ffffff";
+
+    private static final String[] headersLoggedIn = new String[]{"Players", "Table"};
+    private static final String[] headersAnon = new String[]{"Table"};
 
     public static MatchFragment newInstance(Bundle args){
         MatchFragment frag = new MatchFragment();
-
         frag.setArguments(args);
         return frag;
     }
@@ -91,12 +94,21 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary()));
 
+        int primaryColour;
+        int secondaryColour;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            primaryColour = DataStore.getInstance(getActivity()).getUserTeamColorPrimary();
+            secondaryColour = DataStore.getInstance(getActivity()).getUserTeamColorSecondary();
+        } else {
+            primaryColour = Color.parseColor(ANON_PRIMARY);
+            secondaryColour = Color.parseColor(ANON_SECONDARY);
+        }
 
         headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
-        headerBox.setBackgroundColor(DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary());
+        headerBox.setBackgroundColor(primaryColour);
 
         TextDrawable teamOneDrawable = TextDrawable.builder()
-                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), Color.RED);
+                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), Color.RED); //TODO remove this hardcoding
 
         TextDrawable teamTwoDrawable = TextDrawable.builder()
                 .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), Color.BLUE);
@@ -124,8 +136,8 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.activity_match_sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
-        mSlidingTabLayout.setBackgroundColor(DataStore.getInstance(getActivity()).getUserTeamColorPrimary());
-        mSlidingTabLayout.setSelectedIndicatorColors(DataStore.getInstance(getActivity()).getUserTeamColorSecondary());
+        mSlidingTabLayout.setBackgroundColor(primaryColour);
+        mSlidingTabLayout.setSelectedIndicatorColors(secondaryColour);
 
         Resources res = getResources();
         mSlidingTabLayout.setDistributeEvenly(true);
@@ -151,6 +163,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
             });
         }
 
+        mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
     }
 
@@ -196,42 +209,43 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
+            notifyDataSetChanged();
         }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    AvailablePlayersFragment frag = AvailablePlayersFragment.newInstance(mMatchID, mHasBeenPlayed);
-                    return frag;
-                case 1:
-                    LeagueFragment leagueFragment = LeagueFragment.newInstance(mLeagueID);
-                    return leagueFragment;
+            String switchString;
+            if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+                switchString = position < headersLoggedIn.length ? headersLoggedIn[position] : "null";
+            } else {
+                switchString = position < headersAnon.length ? headersAnon[position] : "null";
+            }
+            switch (switchString) {
+                case "Players":
+                    return AvailablePlayersFragment.newInstance(mMatchID, mHasBeenPlayed);
+                case "Table":
+                    return LeagueFragment.newInstance(mLeagueID);
                 default:
-                    MatchFactsFragment matchFactsFragment = MatchFactsFragment.newInstance("a", "b");
-                    return matchFactsFragment;
+                    return MatchFactsFragment.newInstance("a", "b");
             }
 
         }
 
         @Override
         public int getCount() {
-            return NUMTABS;
+            if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+                return headersLoggedIn.length;
+            } else{
+                return headersAnon.length;
+            }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position){
-                case 0:
-                    return "Players";
-                case 1:
-                    return "Table";
-                case 2:
-                    return "Head-to-head";
-                case 3:
-                    return "Match Facts";
-                default:
-                    return "null";
+            if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+                return position < headersLoggedIn.length ? headersLoggedIn[position] : "null";
+            } else {
+                return position < headersAnon.length ? headersAnon[position] : "null";
             }
         }
     }

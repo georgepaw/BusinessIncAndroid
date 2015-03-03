@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +37,9 @@ public class LeagueFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private List<LeagueTeam> mLeagueTeams;
     private Integer mLeagueID;
+
+    private static final String ANON_PRIMARY = "#ff0000";
+    private static final String ANON_SECONDARY = "#ffffff";
 
     public static LeagueFragment newInstance(int leagueID) {
         LeagueFragment fragment = new LeagueFragment();
@@ -82,7 +86,10 @@ public class LeagueFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        int userTeamId = DataStore.getInstance(getActivity().getApplicationContext()).getUserTeamID();
+        int userTeamId = -1;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            userTeamId = DataStore.getInstance(getActivity().getApplicationContext()).getUserTeamID();
+        }
 
 
 //        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()
@@ -111,7 +118,13 @@ public class LeagueFragment extends Fragment {
     }
 
     public void setupLeagueHeader(){
-        int userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+
+        int userColor;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+        } else {
+            userColor = Color.parseColor(ANON_PRIMARY);
+        }
         TextView t = (TextView) mLayout.findViewById(R.id.fragment_league_header_team_number);
         t.setTextColor(userColor);
         t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_name);
@@ -123,6 +136,8 @@ public class LeagueFragment extends Fragment {
         t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_points);
         t.setTextColor(userColor);
         t = (TextView)mLayout.findViewById(R.id.fragment_league_header_team_won);
+        t.setTextColor(userColor);
+        t = (TextView)mLayout.findViewById(R.id.fragment_league_header_forfeits);
         t.setTextColor(userColor);
         View v = mLayout.findViewById(R.id.fragment_league_header_item_divider);
         v.setBackgroundColor(userColor);

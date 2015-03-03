@@ -27,10 +27,12 @@ import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
 import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.dataModels.League;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.HomePageAdapter;
@@ -49,8 +51,7 @@ public class MainActivity extends ActionBarActivity
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
-        TeamOverviewFragment.TeamOverviewCallbacks,
-        DBObserver{
+        TeamOverviewFragment.TeamOverviewCallbacks{
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
@@ -97,14 +98,9 @@ public class MainActivity extends ActionBarActivity
 
         if (savedInstanceState == null) {
             mFragmentManager = getSupportFragmentManager();
-            if (DataStore.getInstance(this).isUserLoggedIn())
-                mFragmentManager.beginTransaction()
-                        .replace(R.id.container, MyTeamFragment.newInstance(), "HOMEPAGETAG")
-                        .commit();
-            else
-                mFragmentManager.beginTransaction()
-                        .replace(R.id.container, HomePageFragment.newInstance(), "HOMEPAGETAG")
-                        .commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.container, MyTeamFragment.newInstance(), "HOMEPAGETAG")
+                    .commit();
         }
 
         mNavigationDrawerLayout = (DrawerFrameLayout) findViewById(R.id.drawer_layout);
@@ -172,10 +168,17 @@ public class MainActivity extends ActionBarActivity
             );
         }
 
+        String myTeamFragmentName;
+        if(DataStore.getInstance(this).isUserLoggedIn()){
+            myTeamFragmentName = "My Team";
+        } else {
+            myTeamFragmentName = "Overview";
+        }
+
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_home_grey600_48dp))
-                        .setTextPrimary("My Team")
+                        .setTextPrimary(myTeamFragmentName)
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
@@ -258,15 +261,6 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
         mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        if (DataStore.getInstance(this).isUserLoggedIn()) {
-            if (DataStore.getInstance(this).isReferee()) {
-                DataStore.getInstance(this).registerMyUpcomingRefereeDBObserver(this);
-            }
-            DataStore.getInstance(this).registerMyUpcomingGamesDBObserver(this);
-            setLeagueID();
-        }
-
 
         //FAB STUFF JAMES
 
@@ -354,7 +348,7 @@ public class MainActivity extends ActionBarActivity
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     intent.putExtra(Match.KEY_DATETIME, sdf.format(nextPlayingMatch.getDateTime()));
                     intent.putExtra(Match.KEY_LEAGUEID, nextPlayingMatch.getLeagueID());
-                    setLeagueID();
+                    //setLeagueID(nextPlayingMatch.getLeagueID());
                     startActivity(intent);
                 } else {
                     Log.d("Main", "Players is not a captain, can't go here");
@@ -467,28 +461,5 @@ public class MainActivity extends ActionBarActivity
         changeFragments("MATCHDETAILSFRAG", args);
     }
 
-    public void notify(String tableName, Object data) {
-        switch(tableName){
-            case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:
-                setLeagueID();
-                break;
-            case DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME:
-                break;
-        }
-    }
 
-    private void setLeagueID(){
-        final MyTeamFragment fragment = (MyTeamFragment) mFragmentManager.findFragmentByTag("HOMEPAGETAG");
-        if(DataStore.getInstance(this).getNextGame() != null) {
-            fragment.setLeagueID(DataStore.getInstance(getApplicationContext()).getNextGame().getLeagueID());
-        }
-    }
-
-    @Override
-    public void onDestroy(){
-        //Un register to prevent memory leak
-        DataStore.getInstance(this).unregisterMyUpcomingRefereeDBObserver(this);
-        DataStore.getInstance(this).unregisterMyUpcomingGamesDBObserver(this);
-        super.onDestroy();
-    }
 }

@@ -349,6 +349,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     args.putInt("leagueID", mLeagueID);
                     args.putInt(Match.KEY_MATCHID, nextMatch.getMatchID());
                     args.putString(Match.KEY_PLACE, nextMatch.getPlace());
+                    args.putBoolean("hasBeenPlayed", false);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     args.putString(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
     //                        intent.putExtras(args);
@@ -373,7 +374,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 .buildRound("D", getActivity().getResources().getColor(R.color.darkorange));
         TextDrawable lose = TextDrawable.builder()
                 .buildRound("L", getActivity().getResources().getColor(R.color.darkred));
-        List<Match> pastMatches = DataStore.getInstance(getActivity()).getTeamScores(league.getLeagueID(),mTeamID);
+        List<Match> pastMatches = DataStore.getInstance(getActivity()).getTeamScores(league.getLeagueID(),mTeamID, Match.SortType.DESCENDING);
         int max = Math.min(pastMatches.size(), 5);
         mPastMatchesHeader.setText("Last " + max + " matches");
         for (int i = 0; i < max; i++) {
@@ -398,20 +399,18 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             mPastMatchesImages.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), MatchFragment.class);
                     Bundle args = new Bundle();
                     args.putString(Match.KEY_TEAMONE, match.getTeamOne());
                     args.putString(Match.KEY_TEAMTWO, match.getTeamTwo());
                     args.putInt(Match.KEY_TEAMONEPOINTS, match.getTeamOnePoints());
                     args.putInt(Match.KEY_TEAMTWOPOINTS, match.getTeamTwoPoints());
-                    args.putInt("leagueID", lgId);
+                    args.putInt("leagueID", mLeagueID);
                     args.putInt(Match.KEY_MATCHID, match.getMatchID());
                     args.putString(Match.KEY_PLACE, match.getPlace());
-                    args.putBoolean("hasBeenPlayed", false);
+                    args.putBoolean("hasBeenPlayed", true);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     args.putString(Match.KEY_DATETIME, sdf.format(match.getDateTime()));
-                    intent.putExtras(args);
-                    startActivity(intent);
+                    mCallbacks.matchDetailsSelectedCallback(args);
                 }
             });
         }

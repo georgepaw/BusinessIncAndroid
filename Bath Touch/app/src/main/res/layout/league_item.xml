@@ -82,12 +82,22 @@
                             android:textStyle="bold" />
 
                         <TextView
+                                android:id="@+id/league_item_team_forfeit"
+                                style="@style/body_2_text"
+                                android:layout_width="24dp"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@id/league_item_team_points"
+                                android:gravity="center"
+                                android:text="F" />
+
+                        <TextView
                             android:id="@+id/league_item_team_lose"
                             style="@style/body_2_text"
                             android:layout_width="24dp"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_toLeftOf="@id/league_item_team_points"
+                            android:layout_toLeftOf="@id/league_item_team_forfeit"
                             android:gravity="center"
                             android:text="L" />
 

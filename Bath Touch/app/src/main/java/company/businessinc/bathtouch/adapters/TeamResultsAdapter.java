@@ -158,7 +158,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private void setData() {
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
             this.leagueScores = DataStore.getInstance(mContext).getTeamScores(leagueID,
-                                                                DataStore.getInstance(mContext).getUserTeamID());
+                                                                DataStore.getInstance(mContext).getUserTeamID(), Match.SortType.ASCENDING);
             teamName = DataStore.getInstance(mContext).getUserTeam();
         } else {
             this.leagueScores = DataStore.getInstance(mContext).getLeagueScores(leagueID);
@@ -236,26 +236,29 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             v.mTeam2Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Score.setTypeface(null, Typeface.NORMAL);
             if (match.getTeamOnePoints() > match.getTeamTwoPoints()) {
-                //won, set green
                 v.mImageView.setImageDrawable(win);
+            } else if(match.getTeamOnePoints() == match.getTeamTwoPoints()) {
+                v.mImageView.setImageDrawable(draw);
+            } else {
+                v.mImageView.setImageDrawable(lose);
+            }
+        } else if(match.getTeamTwo().equals(teamName)) {
+            v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
+            v.mTeam1Score.setTypeface(null, Typeface.NORMAL);
+            v.mTeam2Name.setTypeface(null, Typeface.BOLD);
+            v.mTeam2Score.setTypeface(null, Typeface.BOLD);
+            if (match.getTeamOnePoints() < match.getTeamTwoPoints()) {
+                v.mImageView.setImageDrawable(win);
+            } else if(match.getTeamOnePoints() == match.getTeamTwoPoints()) {
+                v.mImageView.setImageDrawable(draw);
             } else {
                 v.mImageView.setImageDrawable(lose);
             }
         } else {
             v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam1Score.setTypeface(null, Typeface.NORMAL);
-            v.mTeam2Name.setTypeface(null, Typeface.BOLD);
-            v.mTeam2Score.setTypeface(null, Typeface.BOLD);
-            if (match.getTeamOnePoints() < match.getTeamTwoPoints()) {
-                //won, set green
-                v.mImageView.setImageDrawable(win);
-            } else {
-                v.mImageView.setImageDrawable(lose);
-            }
-        }
-
-        if (match.getTeamOnePoints() == match.getTeamTwoPoints()) {
-            v.mImageView.setImageDrawable(draw);
+            v.mTeam2Name.setTypeface(null, Typeface.NORMAL);
+            v.mTeam2Score.setTypeface(null, Typeface.NORMAL);
         }
 
         if (position == expandedPosition) {
