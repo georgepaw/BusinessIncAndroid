@@ -24,20 +24,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import company.businessinc.bathtouch.data.DBObserver;
+import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
+import company.businessinc.dataModels.Team;
 
 
 public class MatchFragment extends Fragment implements LeagueFragment.LeagueCallbacks,
-        MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener {
+        MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener, DBObserver {
 
     private static final String TAG = "MatchActivty";
     private String mTeamOneName,mTeamTwoName;
-    private Integer mLeagueID, mMatchID, mTeamOneScore, mTeamTwoScore;
+    private Integer mLeagueID, mMatchID, mTeamOneScore, mTeamTwoScore, mTeamOneID, mTeamTwoID;
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
+    private TextDrawable teamOneDrawable, teamTwoDrawable;
+    private ImageView teamOneImage, teamTwoImage;
     private String mPlace;
     private Date mDate;
     private boolean mHasBeenPlayed = false;
@@ -71,6 +76,8 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
             try {
                 mTeamOneName = extras.getString(Match.KEY_TEAMONE);
                 mTeamOneScore = extras.getInt(Match.KEY_TEAMONEPOINTS);
+                mTeamOneID = extras.getInt(Match.KEY_TEAMONEID);
+                mTeamTwoID = extras.getInt(Match.KEY_TEAMTWOID);
                 mTeamTwoName = extras.getString(Match.KEY_TEAMTWO);
                 mTeamTwoScore = extras.getInt(Match.KEY_TEAMTWOPOINTS);
                 mMatchID = extras.getInt(Match.KEY_MATCHID);
@@ -107,11 +114,27 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
         headerBox.setBackgroundColor(primaryColour);
 
-        TextDrawable teamOneDrawable = TextDrawable.builder()
-                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), Color.RED); //TODO remove this hardcoding
+        int colourTeamOne;
+        int colourTeamTwo;
+        Team teamOne = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamOneID);
+        Team teamTwo = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamTwoID);
+        if(teamOne != null){
+            colourTeamOne = Color.parseColor(teamOne.getTeamColorPrimary());
+        } else {
+            colourTeamOne = Color.RED;
+        }
 
-        TextDrawable teamTwoDrawable = TextDrawable.builder()
-                .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), Color.BLUE);
+        if(teamTwo != null){
+            colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
+        } else {
+            colourTeamTwo = Color.RED;
+        }
+
+        teamOneDrawable = TextDrawable.builder()
+                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), colourTeamOne);
+
+        teamTwoDrawable = TextDrawable.builder()
+                .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), colourTeamTwo);
 
         teamOneImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_one_image);
         teamOneImage.setImageDrawable(teamOneDrawable);
@@ -162,9 +185,15 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
                 }
             });
         }
-
+        DataStore.getInstance(getActivity()).registerLeagueTeamsDBObserver(this);
         mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
+    }
+
+    @Override
+    public void onDestroyView(){
+        DataStore.getInstance(getActivity()).unregisterLeagueTeamsDBObserver(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -203,6 +232,17 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     public void createGhostPlayerEvent() {
         Log.d("TEAMROSTERACTIVITY", "creating new intent");
         startCreateGhostPlayerIntent();
+    }
+
+    @Override
+    public void notify(String tableName, Object data) {
+        switch (tableName){
+            case DBProviderContract.LEAGUETEAMS_TABLE_NAME:
+                    if(mViewPager!=null) {
+                        mViewPager.getAdapter().notifyDataSetChanged();
+                    }
+                break;
+        }
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {

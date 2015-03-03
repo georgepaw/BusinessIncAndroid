@@ -11,10 +11,19 @@ import android.widget.Toast;
 
 import company.businessinc.bathtouch.R;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.CachedRequest;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.endpoints.ScoreSubmit;
 import company.businessinc.endpoints.ScoreSubmitInterface;
+import company.businessinc.networking.CheckNetworkConnection;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmitInterface {
@@ -90,7 +99,22 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
                     return;
                 }
             }
-            new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+            if(CheckNetworkConnection.check(this)) {
+                new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+            } else {
+                Toast.makeText(this, "No network connection, the score will be submitted automatically", Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("matchID", Integer.toString(mMatchId));
+                    jsonObject.put("teamOneScore", Integer.toString(mTeamOneScore));
+                    jsonObject.put("teamTwoScore", Integer.toString(mTeamTwoScore));
+                    jsonObject.put("isForfeit", Boolean.toString(mIsForfeit));
+                    DataStore.getInstance(this).cacheRequest(new CachedRequest(CachedRequest.RequestType.SUBMITSCORE, jsonObject));
+                } catch (JSONException e){
+
+                }
+                finish();
+            }
         }
     }
 

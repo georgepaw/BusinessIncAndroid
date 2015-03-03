@@ -233,9 +233,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     }
 
     private void leagueChanged(){
-        if (DataStore.getInstance(getActivity()).getNextGame() != null) {
-            league = DataStore.getInstance(getActivity()).getLeague(mLeagueID);
-        }
+        league = DataStore.getInstance(getActivity()).getLeague(mLeagueID);
         if (league != null) {
             setLeague();
             setLeagueScores();
@@ -344,6 +342,8 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     Bundle args = new Bundle();
                     args.putString(Match.KEY_TEAMONE, nextMatch.getTeamOne());
                     args.putString(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
+                    args.putInt(Match.KEY_TEAMONEID, nextMatch.getTeamOneID());
+                    args.putInt(Match.KEY_TEAMTWOID, nextMatch.getTeamTwoID());
                     args.putInt(Match.KEY_TEAMONEPOINTS, nextMatch.getTeamOnePoints());
                     args.putInt(Match.KEY_TEAMTWOPOINTS, nextMatch.getTeamTwoPoints());
                     args.putInt("leagueID", mLeagueID);
@@ -402,6 +402,8 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     Bundle args = new Bundle();
                     args.putString(Match.KEY_TEAMONE, match.getTeamOne());
                     args.putString(Match.KEY_TEAMTWO, match.getTeamTwo());
+                    args.putInt(Match.KEY_TEAMONEID, match.getTeamOneID());
+                    args.putInt(Match.KEY_TEAMTWOID, match.getTeamTwoID());
                     args.putInt(Match.KEY_TEAMONEPOINTS, match.getTeamOnePoints());
                     args.putInt(Match.KEY_TEAMTWOPOINTS, match.getTeamTwoPoints());
                     args.putInt("leagueID", mLeagueID);

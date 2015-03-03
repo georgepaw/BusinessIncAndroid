@@ -7,8 +7,14 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
+import company.businessinc.bathtouch.SubmitScoreActivity;
 import company.businessinc.dataModels.*;
 import company.businessinc.endpoints.*;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +24,7 @@ import java.util.List;
  * Created by Louis on 29/11/2014.
  */
 public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface, LeagueViewInterface, LeagueScheduleInterface,
-        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface, UpAvailabilityInterface, TeamAvailabilityInterface {
+        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface, UpAvailabilityInterface, TeamAvailabilityInterface, ScoreSubmitInterface {
 
     private static DataStore sInstance;
     private Context context;
@@ -177,12 +183,12 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output;
     }
 
-    public Team getTeam(int leagueID, int matchID){
+    public Team getTeam(int leagueID, int teamID){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.LEAGUETEAMS_TABLE_NAME,
                 null,
                 DBProviderContract.SELECTION_LEAGUEIDANDTEAMID,
-                new String[]{Integer.toString(leagueID), Integer.toString(matchID)},
+                new String[]{Integer.toString(leagueID), Integer.toString(teamID)},
                 null,
                 null,
                 null,
@@ -557,7 +563,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public void loadMyLeagues(){
-        if(!loadedMyLeagues){
+        if(!loadedMyLeagues && user.getTeamID()!=null){ //check that user has a team
             new TeamLeagues(this, user.getTeamID(), context).execute();
             loadedMyLeagues = true;
         }
@@ -767,7 +773,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     public synchronized void clearUserData() {
         setUser(new User());
-        dropAllTables();
+        dropUserTables();
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
@@ -783,8 +789,21 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedLeagueTeams = new ArrayList<>();
     }
 
+    public synchronized void dropUserTables(){
+        String[] userTables = new String[]{DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME};
+        String[] createUserTables = new String[]{DBProviderContract.CREATE_MYUPCOMINGGAMES_TABLE, DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE, DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE, DBProviderContract.CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE};
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        for(String t : userTables){
+            db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + t);
+        }
+        //Recreate them
+        for(String t : createUserTables){
+            db.execSQL(t);
+        }
+        SQLiteManager.getInstance(context).closeDatabase();
+    }
+
     public synchronized void refreshData() {
-        dropAllTables();
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
@@ -842,6 +861,50 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         db.execSQL(DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE);
         SQLiteManager.getInstance(context).closeDatabase();
         notifyMyTeamsPlayerAvailabilitysDBObservers(null);
+    }
+
+    public void internetIsBack(){
+        Log.d(TAG, "Internet is back on, check if there are any cached requests");
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.CACHEDREQUESTS_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        List<CachedRequest> cachedRequests = CachedRequest.cursorToList(cursor);
+        db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + DBProviderContract.CACHEDREQUESTS_TABLE_NAME);
+        db.execSQL(DBProviderContract.CREATE_CACHEDREQUEST_TABLE);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        for(CachedRequest cachedRequest : cachedRequests){
+            if(cachedRequest.getRequestType() == CachedRequest.RequestType.SUBMITSCORE){
+                JSONObject jsonObject = cachedRequest.getParameters();
+                try {
+                    new ScoreSubmit(this, jsonObject.getInt("matchID"), jsonObject.getInt("teamOneScore"), jsonObject.getInt("teamTwoScore"), jsonObject.getBoolean("isForfeit")).execute();
+                } catch (JSONException e){
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public void scoreSubmitCallback(ResponseStatus data) {
+        if(data.getStatus()) {
+            Toast.makeText(context, "Cached score has been submitted", Toast.LENGTH_SHORT).show();
+            refreshData();
+        }
+
+    }
+
+    public void cacheRequest(CachedRequest cachedRequest){
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        db.insert(DBProviderContract.CACHEDREQUESTS_TABLE_NAME,null,cachedRequest.toContentValues());
+        SQLiteManager.getInstance(context).closeDatabase();
     }
 
     /**

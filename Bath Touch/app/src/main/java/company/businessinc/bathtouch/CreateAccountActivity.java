@@ -57,8 +57,13 @@ public class CreateAccountActivity extends ActionBarActivity {
     public static class CreateAccountStart extends Fragment implements UserNewInterface {
 
         private EditText mFirstNameEditText, mSecondnameEditText;
+        private Spinner mGenderSpinner;
         private Button mNext;
         private boolean mIsGhost;
+
+        private static final String MALE = "Male";
+        private static final String FEMALE = "Female";
+
 
         public static CreateAccountStart newInstance(boolean isGhost) {
             CreateAccountStart fragment = new CreateAccountStart();
@@ -83,12 +88,15 @@ public class CreateAccountActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            final boolean isMale = true; //TODO this is hardcoded add a box
-
             View rootView = inflater.inflate(R.layout.fragment_create_account_start, container, false);
             mFirstNameEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_start_name_first_edit_text);
             mSecondnameEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_start_name_second_edit_text);
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_start_button_skip_next);
+            mGenderSpinner = (Spinner) rootView.findViewById(R.id.fragment_create_account_gender_spinner);
+
+            ArrayAdapter<String> teamAdapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_spinner_item, new String[]{FEMALE,MALE});
+            mGenderSpinner.setAdapter(teamAdapter);
 
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,6 +106,7 @@ public class CreateAccountActivity extends ActionBarActivity {
                         mFirstNameEditText.setError("Please enter a first name");
                         mSecondnameEditText.setError("Please enter a second name");
                     } else {
+                        boolean isMale = mGenderSpinner.getSelectedItem().toString().equals(MALE);
                         Bundle args = new Bundle();
                         String name = mFirstNameEditText.getText().toString() + " "
                                 + mSecondnameEditText.getText().toString();
