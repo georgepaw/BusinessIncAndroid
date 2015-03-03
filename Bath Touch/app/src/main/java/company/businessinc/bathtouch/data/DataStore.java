@@ -804,6 +804,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public synchronized void refreshData() {
+        dropUserTables();
         loadedAllTeams = false;
         loadedMyLeagues = false;
         loadedAllLeagues = false;
