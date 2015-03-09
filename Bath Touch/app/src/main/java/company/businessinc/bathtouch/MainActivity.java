@@ -344,7 +344,14 @@ public class MainActivity extends ActionBarActivity
     @Override protected void onResume()
     {
         super.onResume();
-        DataStore.getInstance(getApplicationContext());
+        if (mSharedPreferences.contains(COOKIE)) { //restore cookie
+            APICall.setCookie(mSharedPreferences.getString(COOKIE, ""));
+        }
+        try { //restore the user
+            DataStore.getInstance(this).setUser(new User(new JSONObject(mSharedPreferences.getString(USER, ""))));
+        } catch (JSONException e) {
+            Log.d("MAIN LOGIN", "CAN'T PARSE THE USER");
+        }
         checkPlayServices();
     }
 

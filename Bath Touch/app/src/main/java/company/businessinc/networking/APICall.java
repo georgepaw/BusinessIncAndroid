@@ -84,6 +84,7 @@ public class APICall {
     }
 
     public static void setCookie(String cookieString) {
+        cookieStore.clear();
         cookieStore.addCookie(parseStringToCookie(cookieString));
     }
 
