@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,15 +25,23 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.ResponseStatus;
+import company.businessinc.endpoints.DeviceRegister;
+import company.businessinc.endpoints.DeviceUnregister;
+import company.businessinc.endpoints.DeviceUnregisterInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -51,13 +62,22 @@ public class MainActivity extends ActionBarActivity
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
-        TeamOverviewFragment.TeamOverviewCallbacks{
+        TeamOverviewFragment.TeamOverviewCallbacks,
+        DeviceUnregisterInterface{
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
     private static final String COOKIE = "cookie";
     private static final String USER = "user";
     private static final String CURRENT_FRAGMENT = "cur_frag";
+    private static final String TAG = "MainActivity";
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public static final String PROPERTY_REG_ID = "registration_id";
+    private static final String PROPERTY_APP_VERSION = "appVersion";
+    String SENDER_ID = "388248839516"; //got this from Google
+    private GoogleCloudMessaging gcm =null;
+    private String regid = null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -262,6 +282,23 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
         mNavigationDrawerLayout.setDrawerListener(mDrawerToggle);
 
+
+        //Google play services + notifications
+        if (checkPlayServices())
+        {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            regid = getRegistrationId(getApplicationContext());
+
+            if (regid.isEmpty())
+            {
+                registerInBackground();
+            }
+            else
+            {
+                Log.d(TAG, "No valid Google Play Services APK found.");
+            }
+        }
+
         //FAB STUFF JAMES
 
 //        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
@@ -302,6 +339,13 @@ public class MainActivity extends ActionBarActivity
 //        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
 
         //END FAB STUFF JAMES
+    }
+
+    @Override protected void onResume()
+    {
+        super.onResume();
+        DataStore.getInstance(getApplicationContext());
+        checkPlayServices();
     }
 
     @Override
@@ -406,6 +450,27 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void logOut() {
+        String regId = mSharedPreferences.getString(PROPERTY_REG_ID, "null"); //unregister this device from GCM if possible
+        if (!regId.equals("null") && DataStore.getInstance(getApplicationContext()).isUserLoggedIn()) {
+            new DeviceUnregister(this, getApplicationContext(), regId).execute();
+        } else {
+            Log.d("WTF", "Reg id for this device isn't here!");
+            performLogOut();
+        }
+
+    }
+
+    @Override
+    public void deviceUnregisterCallback(ResponseStatus responseStatus) {
+        if(responseStatus.getStatus()){
+            Log.d(TAG, "Unregistered the device successfuly");
+        } else {
+            Log.d(TAG, "Problem unregistering the device");
+        }
+        performLogOut();
+    }
+
+    private void performLogOut(){
         Log.d("MAIN", "LOGGING OUT");
         Intent intent = new Intent(this, SignInActivity.class);
         APICall.clearCookies();
@@ -459,6 +524,85 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void matchDetailsSelectedCallback(Bundle args) {
         changeFragments("MATCHDETAILSFRAG", args);
+    }
+
+    //GCM methods
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.d(TAG, "This device is not supported - Google Play Services.");
+                //finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private String getRegistrationId(Context context){
+        String registrationId = mSharedPreferences.getString(PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
+            Log.d(TAG, "Registration ID not found.");
+            return "";
+        }
+        int registeredVersion = mSharedPreferences.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            Log.d(TAG, "App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    private static int getAppVersion(Context context){
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+
+    private void registerInBackground(){
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    regid = gcm.register(SENDER_ID);
+                    msg = "Device registered, registration ID=" + regid;
+
+                    //store this in prefrences
+                    storeRegistrationId(getApplicationContext(), regid);
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        }.execute(null, null, null);
+    }
+
+    private void storeRegistrationId(Context context, String regId) {
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(PROPERTY_REG_ID, regId);
+        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
     }
 
 

@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class APICall {
 
-    private static final String url = "http://www.watchanysport.com";
+    private static final String url = "http://ec2-54-171-186-239.eu-west-1.compute.amazonaws.com/";
     private static final String TAG = "APICall";
     private static CookieStore cookieStore = new BasicCookieStore();
     private static HttpClient httpclient = AndroidHttpClient.newInstance("Android");

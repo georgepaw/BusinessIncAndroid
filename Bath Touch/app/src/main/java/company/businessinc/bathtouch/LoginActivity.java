@@ -13,19 +13,23 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.dataModels.User;
+import company.businessinc.endpoints.DeviceRegister;
+import company.businessinc.endpoints.DeviceRegisterInterface;
 import company.businessinc.endpoints.UserLogin;
 import company.businessinc.endpoints.UserLoginInterface;
 import company.businessinc.networking.APICall;
 import company.businessinc.networking.CheckNetworkConnection;
 
 
-public class LoginActivity extends ActionBarActivity implements UserLoginInterface {
+public class LoginActivity extends ActionBarActivity implements UserLoginInterface, DeviceRegisterInterface {
 
     private SharedPreferences mSharedPreferences;
     private static final String USERLOGGEDIN = "login";
     private static final String COOKIE = "cookie";
     private static final String USER = "user";
+    public static final String PROPERTY_REG_ID = "registration_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         startActivity(intent);
         mSharedPreferences.edit().putBoolean(USERLOGGEDIN, false).commit();
         DataStore.getInstance(this).setUser(new User());
+        sendRegistrationIdToBackend();
         finish();
     }
 
@@ -79,6 +84,7 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
                 mSharedPreferences.edit().putBoolean(USERLOGGEDIN, true).commit();
                 mSharedPreferences.edit().putString(COOKIE, APICall.getCookie()).commit();
                 mSharedPreferences.edit().putString(USER, DataStore.getInstance(this).userToJSON()).commit();
+                sendRegistrationIdToBackend();
                 finish();
             } else {
                 Log.d("Login", "Invalid credentials");
@@ -92,4 +98,22 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
     }
 
 
+
+    private void sendRegistrationIdToBackend() {
+        String regId = mSharedPreferences.getString(PROPERTY_REG_ID, "null");
+        if (!regId.equals("null") && DataStore.getInstance(getApplicationContext()).isUserLoggedIn()) {
+            new DeviceRegister(this, getApplicationContext(), regId).execute();
+        } else {
+            Log.d("WTF", "Reg id for this device isn't here!");
+        }
+    }
+
+    @Override
+    public void deviceRegisterCallback(ResponseStatus responseStatus) {
+        if(responseStatus.getStatus()){
+            Log.d("RegGCMOnServer", "Call was successful");
+        } else {
+            Log.d("RegGCMOnServer", "Call was not successful");
+        }
+    }
 }

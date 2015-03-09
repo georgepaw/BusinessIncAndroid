@@ -95,7 +95,7 @@ public class TeamResultsFragment extends Fragment {
         mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.fragment_team_results_sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
         mSlidingTabLayout.setBackgroundColor(userColor);
-        
+
         setSlidingTabLayoutContentDescriptions();
 
         Resources res = getResources();

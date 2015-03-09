@@ -328,7 +328,9 @@ public class CreateAccountActivity extends ActionBarActivity {
                     }
                 }
                 Log.d("Create User", "Network is working, let's create a user");
-                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale).execute();
+                boolean isRef = false; //TODO remove hardcoding
+                boolean notifications = true;
+                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale, isRef, notifications).execute();
             } else {
                 Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
                 Log.d("Create User", "Network is not working");

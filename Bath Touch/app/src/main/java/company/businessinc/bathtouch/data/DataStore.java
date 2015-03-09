@@ -24,7 +24,8 @@ import java.util.List;
  * Created by Louis on 29/11/2014.
  */
 public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface, LeagueViewInterface, LeagueScheduleInterface,
-        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface, UpAvailabilityInterface, TeamAvailabilityInterface, ScoreSubmitInterface {
+        LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface, UpAvailabilityInterface, TeamAvailabilityInterface, ScoreSubmitInterface,
+        RequestMessagesInterface{
 
     private static DataStore sInstance;
     private Context context;
@@ -37,6 +38,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private boolean loadedMyLeagues = false;
     private boolean loadedAllLeagues = false;
     private boolean loadedLiveLeagues = false;
+    private boolean loadedMessages = false;
     private ArrayList<Integer> loadedLeagueScores = new ArrayList<>();
     private ArrayList<Integer> loadedLeagueFixtures = new ArrayList<>();
     private ArrayList<Integer> loadedLeagueStandings = new ArrayList<>();
@@ -49,6 +51,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     //Data observers for every league
     private List<DBObserver> AllTeamsDBObservers = new ArrayList<>();
+    private List<DBObserver> MessagesDBObservers = new ArrayList<>();
     private List<DBObserver> MyLeaguesDBObservers = new ArrayList<>();
     private List<DBObserver> AllLeagueDBObservers = new ArrayList<>();
     private List<DBObserver> LiveLeagueDBObservers = new ArrayList<>();
@@ -526,6 +529,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output.size() > 0? output.get(0):null;
     }
 
+    public List<Message> getPlayerRequests(int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MESSAGES_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Message> output = Message.sortList(Message.cursorToList(cursor), Message.SortType.ASCENDING);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output;
+    }
+
     /**
      * API Calls and thier callbacks
      */
@@ -543,7 +563,6 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             new TeamList(this, leagueID, context).execute();
             loadedLeagueTeams.add(leagueID);
         }
-
     }
 
     public void teamListCallback(ResponseStatus successful, TeamList.CallType callType, int leagueID){
@@ -718,6 +737,22 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+    public void loadMessages(){
+        if(!loadedMessages) {
+            new RequestMessages(this, context).execute();
+            loadedMessages = true;
+        }
+    }
+
+    public void requestMessagesCallback(ResponseStatus responseStatus){
+        if(responseStatus.getStatus()){
+            Log.d(TAG, "The call RefGames was successful, notify my DBObservers");
+            notifyMessagesDBObservers(null);
+        } else{
+            Log.d(TAG, "The call RefGames was not successful");
+        }
+    }
+
     public void loadMyAvailability(int matchID){
         if(!myMatchesAvailability.contains(matchID)){
             new UpAvailability(this,context, matchID).execute();
@@ -778,6 +813,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedMyLeagues = false;
         loadedAllLeagues = false;
         loadedLiveLeagues = false;
+        loadedMessages = false;
         loadedLeagueScores = new ArrayList<>();
         loadedLeagueFixtures = new ArrayList<>();
         loadedLeagueStandings = new ArrayList<>();
@@ -790,8 +826,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public synchronized void dropUserTables(){
-        String[] userTables = new String[]{DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME};
-        String[] createUserTables = new String[]{DBProviderContract.CREATE_MYUPCOMINGGAMES_TABLE, DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE, DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE, DBProviderContract.CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE};
+        String[] userTables = new String[]{DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, DBProviderContract.MESSAGES_TABLE_NAME};
+        String[] createUserTables = new String[]{DBProviderContract.CREATE_MYUPCOMINGGAMES_TABLE, DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE, DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE, DBProviderContract.CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE, DBProviderContract.CREATE_MESSAGES_TABLE};
         SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
         for(String t : userTables){
             db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + t);
@@ -809,6 +845,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedMyLeagues = false;
         loadedAllLeagues = false;
         loadedLiveLeagues = false;
+        loadedMessages = false;
         loadedLeagueScores = new ArrayList<>();
         loadedLeagueFixtures = new ArrayList<>();
         loadedLeagueStandings = new ArrayList<>();
@@ -836,6 +873,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         notifyLeagueTeamsDBObservers(null);
         notifyMyUpcomingGameAvailabilitysDBObservers(null);
         notifyMyTeamsPlayerAvailabilitysDBObservers(null);
+        notifyMessagesDBObservers(null);
     }
 
     public synchronized void refreshMatchAvailabilities(){
@@ -996,6 +1034,12 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+    public synchronized void registerMessagesDBObserver(DBObserver dbObserver) {
+        if(!MessagesDBObservers.contains(dbObserver)) {
+            MessagesDBObservers.add(dbObserver);
+        }
+    }
+
     /**
      * DBObservers unregistration
      */
@@ -1055,6 +1099,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     public synchronized void unregisterMyTeamsPlayerAvailabilitysDBObserver(DBObserver dbObserver) {
         MyTeamsPlayerAvailabilityDBObservers.remove(dbObserver);
+    }
+
+    public synchronized void unregisterMessagesDBObserver(DBObserver dbObserver) {
+        MessagesDBObservers.remove(dbObserver);
     }
 
     /**
@@ -1131,5 +1179,9 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     private void notifyMyTeamsPlayerAvailabilitysDBObservers(final Object data) {
         notifyDBObservers(MyTeamsPlayerAvailabilityDBObservers, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, data);
+    }
+
+    private void notifyMessagesDBObservers(final Object data) {
+        notifyDBObservers(MessagesDBObservers, DBProviderContract.MESSAGES_TABLE_NAME, data);
     }
 }

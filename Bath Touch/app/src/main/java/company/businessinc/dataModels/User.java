@@ -17,6 +17,7 @@ public class User {
     private String captainName = null;
     private Boolean isCaptain = false;
     private Boolean isReferee = false;
+    private Boolean notifications = false;
     private String teamColorPrimary;
     private String teamColorSecondary;
 
@@ -31,6 +32,7 @@ public class User {
         isReferee = false;
         teamColorPrimary = null;
         teamColorSecondary = null;
+        notifications = true;
     }
 
     public static final String KEY_NAME = "name";
@@ -42,6 +44,7 @@ public class User {
     public static final String KEY_ISREFEREE = "isReferee";
     public static final String KEY_TEAMCOLORPRIMARY = "teamColorPrimary";
     public static final String KEY_TEAMCOLORSECONDARY = "teamColorSecondary";
+    public static final String KEY_NOTIFICATIONS = "notifications";
     public static final String[] COLUMNS = {KEY_NAME, KEY_TEAMNAME, KEY_TEAMID, KEY_TEAMCOLORPRIMARY, KEY_TEAMCOLORSECONDARY};
     public static final String CREATE_TABLE =   KEY_NAME + "\tTEXT,\n" +
             KEY_TEAMNAME + "\tTEXT,\n" +
@@ -152,6 +155,11 @@ public class User {
         } catch (JSONException e){
             this.teamColorSecondary = null;
         }
+        try {
+            this.notifications = jsonObject.getBoolean(KEY_NOTIFICATIONS);
+        } catch (JSONException e){
+            this.notifications = true;
+        }
     }
 
     public Boolean isLoggedIn() {
@@ -196,6 +204,10 @@ public class User {
 
     public String getTeamColorSecondary() {
         return '#' + teamColorSecondary;
+    }
+
+    public Boolean getNotifications() {
+        return notifications;
     }
 
     public String toString(){
