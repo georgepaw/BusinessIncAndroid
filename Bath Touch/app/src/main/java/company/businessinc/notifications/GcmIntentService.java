@@ -63,7 +63,7 @@ public class GcmIntentService extends IntentService {
         String notificationBody = "";
         Date dateTime;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
-        switch(messageType){
+        switch(messageType){ //All the parameters are descrbed in the API file in the SPE folder
             case "1": //Player requests
                 notificationTitle = "Players are needed!";
                 String teamName = bundle.getString("teamName");
