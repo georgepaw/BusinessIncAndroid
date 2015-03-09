@@ -5,11 +5,15 @@ package company.businessinc.networking;
  * Created by gp on 18/11/14.
  */
 public enum APICallType {
+    DeviceRegister("/device/register/"),
+    DeviceUnregister("/device/unregister/"),
     LeagueList("/league/list/"),
     LeagueSchedule("/league/schedule/"),
     LeagueScores("/league/scores/"),
     LeagueView("/league/view/"),
     RefGames("/ref/games/"),
+    RequestMessages("/request/messages/"),
+    RequestPlayers("/request/players/"),
     ScoreSubmit("/score/submit/"),
     TeamAvailability("/team/availability/"),
     TeamScores("/team/scores/"),

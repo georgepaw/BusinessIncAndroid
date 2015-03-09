@@ -21,10 +21,7 @@ import android.widget.Toast;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.dataModels.User;
-import company.businessinc.endpoints.UserLogin;
-import company.businessinc.endpoints.UserLoginInterface;
-import company.businessinc.endpoints.UserReset;
-import company.businessinc.endpoints.UserResetInterface;
+import company.businessinc.endpoints.*;
 import company.businessinc.networking.APICall;
 import company.businessinc.networking.CheckNetworkConnection;
 
@@ -35,6 +32,7 @@ public class SignInActivity extends ActionBarActivity {
     private static final String USERLOGGEDIN = "login";
     private static final String COOKIE = "cookie";
     private static final String USER = "user";
+    public static final String PROPERTY_REG_ID = "registration_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +127,7 @@ public class SignInActivity extends ActionBarActivity {
             DataStore.getInstance(mActivity).loadAllTeams();
         }
     }
-    public static class SignInPassword extends Fragment implements UserLoginInterface, UserResetInterface{
+    public static class SignInPassword extends Fragment implements UserLoginInterface, UserResetInterface, DeviceRegisterInterface {
 
         private SharedPreferences mSharedPreferences;
         private String mUsername;
@@ -215,6 +213,7 @@ public class SignInActivity extends ActionBarActivity {
                     mSharedPreferences.edit().putBoolean(USERLOGGEDIN, true).commit();
                     mSharedPreferences.edit().putString(COOKIE, APICall.getCookie()).commit();
                     mSharedPreferences.edit().putString(USER, DataStore.getInstance(mActivity).userToJSON()).commit();
+                    sendRegistrationIdToBackend();
                     mActivity.finish();
                 } else {
                     Log.d("Login", "Invalid credentials");
@@ -242,6 +241,24 @@ public class SignInActivity extends ActionBarActivity {
             } else {
                 Log.d("Reset", "Error connecting and parsing");
                 Toast.makeText(mActivity, "Cannot connect", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private void sendRegistrationIdToBackend() {
+            String regId = mSharedPreferences.getString(PROPERTY_REG_ID, "null");
+            if (!regId.equals("null") && DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+                new DeviceRegister(this, getActivity(), regId).execute();
+            } else {
+                Log.d("WTF", "Reg id for this device isn't here!");
+            }
+        }
+
+        @Override
+        public void deviceRegisterCallback(ResponseStatus responseStatus) {
+            if(responseStatus.getStatus()){
+                Log.d("RegGCMOnServer", "Call was successful");
+            } else {
+                Log.d("RegGCMOnServer", "Call was not successful");
             }
         }
     }

@@ -20,7 +20,7 @@ public class UserNew extends AsyncTask<Void, Void, ResponseStatus> {
     private UserNewInterface callback;
     private List<NameValuePair> parameters;
 
-    public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID, boolean isGhost, boolean isMale) {
+    public UserNew(UserNewInterface callback, String username, String password, String email, String name, int teamID, boolean isGhost, boolean isMale, boolean isRef, boolean notifications) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("username", username));
@@ -30,7 +30,8 @@ public class UserNew extends AsyncTask<Void, Void, ResponseStatus> {
         parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
         parameters.add(new BasicNameValuePair("isGhost", Boolean.toString(isGhost)));
         parameters.add(new BasicNameValuePair("gender", isMale ? "0" : "1"));
-        parameters.add(new BasicNameValuePair("isRef", "0"));
+        parameters.add(new BasicNameValuePair("isRef",  Boolean.toString(isRef)));
+        parameters.add(new BasicNameValuePair("notifications", Boolean.toString(notifications)));
     }
 
     public UserNew(UserNewInterface callback, String name, int teamID, boolean isGhost, boolean isMale) {
