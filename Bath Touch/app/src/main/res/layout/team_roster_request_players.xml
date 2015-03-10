@@ -19,8 +19,10 @@
                 android:layout_gravity="center"
                 android:id="@+id/team_roster_request_males_layout">
                 <RelativeLayout
+                        android:id="@+id/team_roster_inlayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/white"
                         >
                     <TextView
                         android:id="@+id/team_roster_request_male_players"
@@ -31,9 +33,19 @@
                         android:text="Request Male Players"
                         style="@style/body_2_text"
                         android:textStyle="bold"/>
+
+                    <View
+                            android:layout_width="wrap_content"
+                            android:layout_height="1dp"
+
+                            android:background="@color/grey_300"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"/>
                 </RelativeLayout>
 
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -45,6 +57,7 @@
             <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/white"
                     >
                     <TextView style="@style/body_2_text"
                         android:id="@+id/team_roster_request_female_players"

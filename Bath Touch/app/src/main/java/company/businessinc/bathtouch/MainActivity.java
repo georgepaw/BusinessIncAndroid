@@ -245,6 +245,20 @@ public class MainActivity extends ActionBarActivity
                             })
             );
         }
+        if(DataStore.getInstance(this).getNotifications()){
+            mNavigationDrawerLayout.addItem(
+                    new DrawerItem()
+                            .setImage(getResources().getDrawable(R.drawable.ic_supervisor_account_grey600_48dp))
+                            .setTextPrimary("Player requests")
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int id, int position) {
+                                    changeFragments("PLAYERREQUESTS", null);
+                                    mNavigationDrawerLayout.closeDrawer();
+                                }
+                            })
+            );
+        }
         mNavigationDrawerLayout.addDivider();
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
@@ -446,6 +460,9 @@ public class MainActivity extends ActionBarActivity
             if (tag.equals("MATCHDETAILSFRAG")) {
                 ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
             }
+            if (tag.equals("PLAYERREQUESTS")) {
+                ft.replace(R.id.container, PlayerRequestsFragment.newInstance(), tag);
+            }
 
             ft.addToBackStack(tag);
             ft.commit();
@@ -586,8 +603,6 @@ public class MainActivity extends ActionBarActivity
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
                     regid = gcm.register(SENDER_ID);
-                    msg = "Device registered, registration ID=" + regid;
-
                     //store this in prefrences
                     storeRegistrationId(getApplicationContext(), regid);
                 } catch (IOException ex) {
@@ -598,7 +613,6 @@ public class MainActivity extends ActionBarActivity
 
             @Override
             protected void onPostExecute(String msg) {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             }
         }.execute(null, null, null);
     }

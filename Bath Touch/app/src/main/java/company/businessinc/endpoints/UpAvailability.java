@@ -65,6 +65,18 @@ public class UpAvailability extends AsyncTask<Void, Void, ResponseStatus> {
         this.context = context;
     }
 
+    public UpAvailability(UpAvailabilityInterface callback, Context context, int matchID, int teamID, boolean isPlaying) {
+        this.callback = callback;
+        parameters = new LinkedList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("isPlaying", isPlaying ? "1" : "0"));
+        parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
+        parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
+        callType = CallType.SETMYAVAILABILITY;
+        this.matchID = matchID;
+        this.isPlaying = isPlaying;
+        this.context = context;
+    }
+
     @Override
     protected ResponseStatus doInBackground(Void... a) {
         JSONObject jsonObject = null;

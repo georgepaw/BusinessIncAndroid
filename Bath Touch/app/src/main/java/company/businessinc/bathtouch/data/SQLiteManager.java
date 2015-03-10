@@ -109,6 +109,9 @@ public class SQLiteManager {
             case DBProviderContract.MYLEAGUES_TABLE_NAME:
                 DataStore.getInstance(context).loadMyLeagues();
                 break;
+            case DBProviderContract.MESSAGES_TABLE_NAME:
+                DataStore.getInstance(context).loadMessages();
+                break;
             case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
                 if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                     DataStore.getInstance(context).loadLeagueScores(Integer.valueOf(selectionArgs[0]));
