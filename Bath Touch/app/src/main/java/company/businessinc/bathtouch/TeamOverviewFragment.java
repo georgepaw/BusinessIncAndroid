@@ -365,6 +365,10 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
     }
 
     public void setLeagueScores(){
+        List<Match> pastMatches = DataStore.getInstance(getActivity()).getTeamScores(league.getLeagueID(),mTeamID, Match.SortType.DESCENDING);
+        if(pastMatches.size() == 0){
+            return;
+        }
 //        mPastMatchesContainer.setVisibility(View.VISIBLE);
         mPastMatchesCard.setVisibility(View.VISIBLE);
 //        mPastMatchesDivider.setVisibility(View.VISIBLE);
@@ -374,7 +378,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 .buildRound("D", getActivity().getResources().getColor(R.color.darkorange));
         TextDrawable lose = TextDrawable.builder()
                 .buildRound("L", getActivity().getResources().getColor(R.color.darkred));
-        List<Match> pastMatches = DataStore.getInstance(getActivity()).getTeamScores(league.getLeagueID(),mTeamID, Match.SortType.DESCENDING);
         int max = Math.min(pastMatches.size(), 5);
         mPastMatchesHeader.setText("Last " + max + " matches");
         for (int i = 0; i < max; i++) {

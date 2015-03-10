@@ -16,7 +16,7 @@ import java.util.List;
  * Created by gp on 18/11/14.
  */
 public class RequestPlayers extends AsyncTask<Void, Void, ResponseStatus> {
-    String TAG = "ScoreSubmit";
+    String TAG = "PlayerRequest";
     private RequestPlayersInterface callback;
     private List<NameValuePair> parameters;
 
@@ -31,7 +31,7 @@ public class RequestPlayers extends AsyncTask<Void, Void, ResponseStatus> {
     protected ResponseStatus doInBackground(Void... a) {
         JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject(APICall.call(APICallType.ScoreSubmit, parameters));
+            jsonObject = new JSONObject(APICall.call(APICallType.RequestPlayers, parameters));
         } catch (Exception e) {
             Log.d(TAG, "Couldn't parse String into JSON");
             return new ResponseStatus(false);

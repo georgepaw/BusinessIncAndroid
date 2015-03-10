@@ -6,15 +6,13 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +22,9 @@ import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Player;
+import company.businessinc.dataModels.ResponseStatus;
+import company.businessinc.endpoints.RequestPlayers;
+import company.businessinc.endpoints.RequestPlayersInterface;
 
 /**
  * Created by user on 30/01/15.
@@ -40,7 +41,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
     private boolean hasBeenPlayed;
 
     private int NUMHEADERS = 2;
-
+    private final int REQUESTPLAYERS;
 
     public static interface AvailablePlayerCallbacks {
         void onPlayerAvailableChecked(boolean available, int playerID);
@@ -54,6 +55,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         this.context = context;
         this.matchID = matchID;
         this.hasBeenPlayed = hasBeenPlayed;
+
+        REQUESTPLAYERS = DataStore.getInstance(context).isUserCaptain() ? 1 : 0;
 
     }
 
@@ -82,8 +85,6 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         public void onClick(View v) {
             if (v.getId() == mCheckBox.getId()) {
                 selectPlayer(getPosition());
-            } else if (v.getId() == mCard.getId()) {
-//                mCallbacks.onPlayerSelected(playerList.get(getPosition()));
             }
         }
     }
@@ -106,12 +107,45 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         }
     }
 
+    public class ViewHolderRequest extends RecyclerView.ViewHolder implements View.OnClickListener, RequestPlayersInterface {
+        CardView mMales, mFemales;
+
+        public ViewHolderRequest(View itemView) {
+            super(itemView);
+            mFemales = (CardView) itemView.findViewById(R.id.team_roster_request_females_layout);
+            mMales = (CardView) itemView.findViewById(R.id.team_roster_request_males_layout);
+
+            mMales.setOnClickListener(this);
+            mFemales.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            boolean isMale = v.getId() == mMales.getId();
+            new RequestPlayers(this, matchID, isMale).execute();
+        }
+
+        @Override
+        public void requestPlayersCallback(ResponseStatus data) {
+            if(data.getStatus()){
+                Toast.makeText(context, "Player request was successful, a notification has been sent to all players", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context, "Player request was not successful, please try again later", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     @Override
     public int getItemViewType(int pos) {
         if (pos == 0 || pos == selectedPlayers.size() + 1) {
             return 0; //header
+        } else if((pos > 0 && pos < selectedPlayers.size() + 1) || ((pos > (selectedPlayers.size() + 1) && pos < (selectedPlayers.size() + 2 + unselectedPlayers.size())))){
+            return 1;
+        } else if(pos >= (selectedPlayers.size() + unselectedPlayers.size() + 2)){
+            return 2;
+        } else {
+            return 3;
         }
-        return 1; //content
     }
 
     @Override
@@ -130,12 +164,17 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.team_roster_header_item, parent, false);
             return new ViewHolderHeader(v);
-        } else {
+        } else if(viewType == 1) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.team_roster_available_player_item, parent, false);
             return new ViewHolderPlayer(v);
+        } else if(viewType==2){
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.team_roster_request_players, parent, false);
+            return new ViewHolderRequest(v);
+        } else {
+            return null;
         }
-
     }
 
     @Override
@@ -155,6 +194,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
             int selected = selectedPlayers.size();
             int unselected = unselectedPlayers.size();
+
+
 
             Drawable checkIcon = context.getResources().getDrawable(R.mipmap.ic_check_black);
             int green = context.getResources().getColor(R.color.green);
@@ -188,7 +229,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
 
 
-        } else {
+        } else if(holder instanceof ViewHolderPlayer){
             //is a player item, so set that up
 
             ViewHolderPlayer v = (ViewHolderPlayer) holder;
@@ -238,6 +279,18 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 v.mCheckBox.setEnabled(false);
             }
 
+        } else if(holder instanceof ViewHolderRequest){
+            ViewHolderRequest v = (ViewHolderRequest)holder;
+            if(selectedPlayers.size() < 6 || Player.getGenderCount(selectedPlayers, true) < 1){
+                v.mMales.setVisibility(View.VISIBLE);
+            } else {
+                v.mMales.setVisibility(View.GONE);
+            }
+            if(selectedPlayers.size() < 6 || Player.getGenderCount(selectedPlayers, false) < 2){
+                v.mFemales.setVisibility(View.VISIBLE);
+            } else {
+                v.mFemales.setVisibility(View.GONE);
+            }
         }
 
     }
@@ -298,7 +351,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
     @Override
     public int getItemCount() {
-        return selectedPlayers.size() + unselectedPlayers.size() + NUMHEADERS;
+        return selectedPlayers.size() + unselectedPlayers.size() + NUMHEADERS + REQUESTPLAYERS;
     }
 
     @Override
