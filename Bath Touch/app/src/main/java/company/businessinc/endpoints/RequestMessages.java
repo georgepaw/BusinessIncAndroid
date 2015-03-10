@@ -53,7 +53,7 @@ public class RequestMessages extends AsyncTask<Void, Void, ResponseStatus> {
             }
         }
         ContentValues[] contentValues = cV.toArray(new ContentValues[cV.size()]);
-        SQLiteManager.getInstance(context).bulkInsert(DBProviderContract.MYLEAGUES_TABLE_NAME, contentValues);
+        SQLiteManager.getInstance(context).bulkInsert(DBProviderContract.MESSAGES_TABLE_NAME, contentValues);
         return new ResponseStatus(true);
     }
 

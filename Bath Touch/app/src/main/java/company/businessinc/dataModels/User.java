@@ -32,7 +32,7 @@ public class User {
         isReferee = false;
         teamColorPrimary = null;
         teamColorSecondary = null;
-        notifications = true;
+        notifications = false;
     }
 
     public static final String KEY_NAME = "name";
@@ -158,7 +158,7 @@ public class User {
         try {
             this.notifications = jsonObject.getBoolean(KEY_NOTIFICATIONS);
         } catch (JSONException e){
-            this.notifications = true;
+            this.notifications = false;
         }
     }
 
@@ -222,6 +222,7 @@ public class User {
                 jsonObject.put(KEY_ISREFEREE, isReferee);
                 jsonObject.put(KEY_TEAMCOLORPRIMARY, teamColorPrimary);
                 jsonObject.put(KEY_TEAMCOLORSECONDARY, teamColorSecondary);
+                jsonObject.put(KEY_NOTIFICATIONS, notifications);
             }
 
         } catch (JSONException e){

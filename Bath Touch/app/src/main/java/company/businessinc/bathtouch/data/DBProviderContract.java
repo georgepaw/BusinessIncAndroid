@@ -15,6 +15,7 @@ public class DBProviderContract {
     public static final String PRIMARY_KEY = "PRIMARY_KEY";
 
     public static final String SELECTION_LEAGUEID = League.KEY_LEAGUEID + " = ?";
+    public static final String SELECTION_TEAMID = Team.KEY_TEAMID + " = ?";
     public static final String SELECTION_LEAGUEIDANDTEAMID = League.KEY_LEAGUEID + " = ? AND " + Team.KEY_TEAMID + " = ?";
     public static final String SELECTION_LEAGUEIDANDMATCHIDANDTEAMID = League.KEY_LEAGUEID + " = ? AND " + Match.KEY_MATCHID + " = ? AND " + Team.KEY_TEAMID + " = ?";
     public static final String SELECTION_MATCHID = Match.KEY_MATCHID + " = ?";

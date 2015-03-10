@@ -27,13 +27,13 @@ public class Message {
     public static final String KEY_TEAMID = "teamID";
     public static final String KEY_ISMALE = "isMale";
     public static final String KEY_MATCHID = "matchID";
-    public static final String KEY_DATETIME = "dateTime";
+    public static final String KEY_DATE = "date";
 
-    public static final String[] COLUMNS = {KEY_TEAMID, KEY_MATCHID, KEY_TEAMNAME, KEY_DATETIME, KEY_ISMALE};
+    public static final String[] COLUMNS = {KEY_TEAMID, KEY_MATCHID, KEY_TEAMNAME, KEY_DATE, KEY_ISMALE};
     public static final String CREATE_TABLE =   KEY_TEAMID + "\tINTEGER,\n" +
             KEY_MATCHID + "\tINTEGER,\n" +
             KEY_TEAMNAME + "\tTEXT,\n" +
-            KEY_DATETIME + "\tTEXT,\n" +
+            KEY_DATE + "\tTEXT,\n" +
             KEY_ISMALE + "\tTEXT";
 
     public Message(String teamName, Integer teamID, Boolean isMale, Integer matchID, Date dateTime) {
@@ -56,7 +56,7 @@ public class Message {
             this.teamID = null;
         }
         try {
-            this.isMale = cursor.getInt(cursor.getColumnIndex(KEY_ISMALE)) == 1;
+            this.isMale = cursor.getInt(cursor.getColumnIndex(KEY_ISMALE)) == 0;
         } catch(Exception e) {
             this.isMale = null;
         }
@@ -66,7 +66,7 @@ public class Message {
             this.matchID = null;
         }
         try {
-            String dT = cursor.getString(cursor.getColumnIndex(KEY_DATETIME));
+            String dT = cursor.getString(cursor.getColumnIndex(KEY_DATE));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
             this.dateTime = sdf.parse(dT);
         } catch(Exception e) {
@@ -86,7 +86,7 @@ public class Message {
             this.teamID = null;
         }
         try {
-            this.isMale = jsonObject.getInt(KEY_ISMALE) == 1;
+            this.isMale = jsonObject.getInt("gender") == 0;
         } catch(Exception e) {
             this.isMale = null;
         }
@@ -96,7 +96,7 @@ public class Message {
             this.matchID = null;
         }
         try {
-            String dT = jsonObject.getString("dateTime");
+            String dT = jsonObject.getString(KEY_DATE);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
             this.dateTime = sdf.parse(dT);
         } catch(JSONException e) {
@@ -111,9 +111,9 @@ public class Message {
         values.put(KEY_MATCHID,matchID);
         values.put(KEY_TEAMID, teamID);
         values.put(KEY_TEAMNAME, teamName);
-        values.put(KEY_ISMALE, isMale ? 1 : 0);
+        values.put(KEY_ISMALE, isMale ? 0 : 1);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
-        values.put(KEY_DATETIME, sdf.format(dateTime));
+        values.put(KEY_DATE, sdf.format(dateTime));
         return values;
     }
 

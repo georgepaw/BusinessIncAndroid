@@ -152,6 +152,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return user.toString();
     }
 
+    public Boolean getNotifications() {
+        return user.getNotifications();
+    }
+
     public List<Team> getAllTeams(){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.ALLTEAMS_TABLE_NAME,
@@ -208,6 +212,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
      */
     public Team getTeam(int leagueID){
         return getTeam(leagueID, DataStore.getInstance(context).getUserTeamID());
+    }
+
+    public Team getTeamFromAllTeams(int teamID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.ALLTEAMS_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_TEAMID,
+                new String[]{Integer.toString(teamID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Team> output = Team.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size()>0? output.get(0) : null;
     }
 
     public List<League> getMyLeagues(){
@@ -529,7 +550,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output.size() > 0? output.get(0):null;
     }
 
-    public List<Message> getPlayerRequests(int matchID){
+    public List<Message> getPlayerRequests(){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.MESSAGES_TABLE_NAME,
                 null,
