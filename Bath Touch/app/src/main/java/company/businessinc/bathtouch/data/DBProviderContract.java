@@ -101,7 +101,7 @@ public class DBProviderContract {
     /**
      * Create tables strings
      */
-    public static final String CREATE_ALLTEAMS_TABLE = CREATE_TABLE + " " + ALLTEAMS_TABLE_NAME + "( " + Team.CREATE_TABLE + " )";
+    public static final String CREATE_ALLTEAMS_TABLE = CREATE_TABLE + " " + ALLTEAMS_TABLE_NAME + "( " + Team.CREATE_TABLE + ", PRIMARY KEY("+Team.KEY_TEAMID+"))";
 
     public static final String CREATE_MYLEAGUES_TABLE = CREATE_TABLE + " " + MYLEAGUES_TABLE_NAME + "( " + League.CREATE_TABLE + " )";
 
