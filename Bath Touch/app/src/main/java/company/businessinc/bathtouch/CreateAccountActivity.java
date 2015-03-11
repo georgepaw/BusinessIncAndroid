@@ -312,12 +312,13 @@ public class CreateAccountActivity extends ActionBarActivity {
         private String userLoggedIn = "login";
         private static final String cookie = "Cookie";
         private Spinner mTeamSpinner;
-        private CheckBox mRefCheckBox;
+        private CheckBox mRefCheckBox, mNotifyCheckBox;
         private Button mNext;
         private List<Team> mLeagueTeams;
         private String mSelectedTeam, mUsername, mPassword;
         private boolean mIsGhost = false;
         private boolean mIsRef = false;
+        private boolean mNotify = false;
 
         public CreateAccountTeam() {
         }
@@ -329,11 +330,20 @@ public class CreateAccountActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_create_account_team, container, false);
             mTeamSpinner = (Spinner) rootView.findViewById(R.id.fragment_create_account_team_team_spinner);
             mRefCheckBox = (CheckBox) rootView.findViewById(R.id.fragment_create_account_team_ref_checkbox);
+            mNotifyCheckBox = (CheckBox) rootView.findViewById(R.id.fragment_create_account_team_notification_checkbox);
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_team_button_skip_next);
-            mRefCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            mRefCheckBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     mIsRef = isChecked;
+                    Log.d("Create user", String.valueOf(mIsRef));
+                }
+            });
+            mNotifyCheckBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mNotify = isChecked;
+                    Log.d("Create user", String.valueOf(mNotify));
                 }
             });
             mLeagueTeams = new ArrayList<>();
@@ -357,7 +367,6 @@ public class CreateAccountActivity extends ActionBarActivity {
                 String email = args.getString("email");
                 mUsername = args.getString("username");
                 mPassword = args.getString("password");
-                Log.d("Create User", name + email + mUsername + mPassword);
                 int teamID = -1;
                 for (Team t : mLeagueTeams) {
                     if (t.getTeamName().equals(mTeamSpinner.getSelectedItem().toString())) {
@@ -365,7 +374,7 @@ public class CreateAccountActivity extends ActionBarActivity {
                     }
                 }
                 Log.d("Create User", "Network is working, let's create a user");
-                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale, mIsRef, false).execute();
+                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale, mIsRef, mNotify).execute();
             } else {
                 Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
                 Log.d("Create User", "Network is not working");
