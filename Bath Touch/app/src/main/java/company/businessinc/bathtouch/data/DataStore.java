@@ -914,6 +914,24 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         SQLiteManager.getInstance(context).closeDatabase();
     }
 
+    public void refreshRequests(){
+        loadedMessages = false;
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + DBProviderContract.MESSAGES_TABLE_NAME);
+        db.execSQL(DBProviderContract.CREATE_MESSAGES_TABLE);
+        SQLiteManager.getInstance(context).closeDatabase();
+        notifyMessagesDBObservers(null);
+    }
+
+    public void refreshRefGames(){
+        loadedRefGames = false;
+        SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
+        db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME);
+        db.execSQL(DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE);
+        SQLiteManager.getInstance(context).closeDatabase();
+        notifyMyUpcomingRefereeDBObservers(null);
+    }
+
     private void dropAvailability(){
         matchesAvailability = new ArrayList<>();
         SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
