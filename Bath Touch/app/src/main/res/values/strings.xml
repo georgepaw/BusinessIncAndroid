@@ -59,7 +59,7 @@
     <string name="title_activity_sign_in">SignInActivity</string>
     <string name="title_activity_forgot_password">Forgot Password</string>
     <string name="title_activity_match">MatchActivity</string>
-    <string name="account_create_ref_warning">Would you like to be included in the ref rota? Blah blah something something lorem ipsum</string>
+    <string name="account_create_ref_warning">Would you like to be included in the referee rota? This will mean you can be automatically assigned to referee a match by the system.</string>
     <string name="account_create_email_disclaimer">Disclaimer: Bath Touch won\'t use your email for anything besides player registration and communication with you. It will not be given to any third parties.</string>
 
 </resources>
