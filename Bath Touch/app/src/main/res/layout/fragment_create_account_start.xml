@@ -75,16 +75,13 @@
                     android:singleLine="true"
                     app:floatingLabel="highlight"/>
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Gender:"
-                        android:id="@+id/fragment_create_account_start_gender_text"/>
                 <Spinner
-                        android:id="@+id/fragment_create_account_gender_spinner"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
+                    android:id="@+id/fragment_create_account_gender_spinner"
+                    style="@style/Widget.AppTheme.HeaderBar.Spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    />
 
             </LinearLayout>
 

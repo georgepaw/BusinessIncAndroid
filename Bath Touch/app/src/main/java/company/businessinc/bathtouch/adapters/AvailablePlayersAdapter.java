@@ -358,7 +358,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
     public void notify(String tableName, Object data) {
         switch(tableName){
             case DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME:
-                if(data == null || data == matchID) {
+                if(data == null || (int) data == matchID) {
                     selectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, true);
                     unselectedPlayers = DataStore.getInstance(context).getPlayersAvailability(matchID, false);
                     notifyDataSetChanged();

@@ -59,8 +59,46 @@
 
                 <Spinner
                     android:id="@+id/fragment_create_account_team_team_spinner"
+                    style="@style/Widget.AppTheme.HeaderBar.Spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/account_create_ref_warning"
+                        android:layout_toLeftOf="@+id/fragment_create_account_team_ref_checkbox"/>
+                    <CheckBox
+                        android:id="@+id/fragment_create_account_team_ref_checkbox"
+                        android:layout_marginLeft="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
+                    </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/account_creation_notification_text"
+                        android:layout_toLeftOf="@+id/fragment_create_account_team_notification_checkbox"/>
+                    <CheckBox
+                        android:id="@+id/fragment_create_account_team_notification_checkbox"
+                        android:layout_marginLeft="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
+                </RelativeLayout>
 
             </LinearLayout>
 
