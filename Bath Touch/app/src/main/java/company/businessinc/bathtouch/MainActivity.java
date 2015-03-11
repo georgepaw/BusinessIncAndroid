@@ -248,7 +248,7 @@ public class MainActivity extends ActionBarActivity
         if(DataStore.getInstance(this).getNotifications()){
             mNavigationDrawerLayout.addItem(
                     new DrawerItem()
-                            .setImage(getResources().getDrawable(R.drawable.ic_supervisor_account_grey600_48dp))
+                            .setImage(getResources().getDrawable(R.drawable.ic_group_add_grey600_48dp))
                             .setTextPrimary("Player requests")
                             .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                                 @Override
