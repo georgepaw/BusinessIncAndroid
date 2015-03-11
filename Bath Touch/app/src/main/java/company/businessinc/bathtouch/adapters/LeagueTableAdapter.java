@@ -157,7 +157,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 notifyDataSetChanged();
                 break;
             case DBProviderContract.LEAGUESSTANDINGS_TABLE_NAME:
-                if(data == null || data == leagueID){
+                if(data == null || (int) data == leagueID){
                     this.leagueTeams = DataStore.getInstance(mContext).getLeagueStandings(leagueID);
                     notifyDataSetChanged();
                 }
