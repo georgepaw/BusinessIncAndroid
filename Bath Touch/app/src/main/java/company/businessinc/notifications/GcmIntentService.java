@@ -14,6 +14,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import company.businessinc.bathtouch.DateFormatter;
 import company.businessinc.bathtouch.MainActivity;
 import company.businessinc.bathtouch.R;
+import company.businessinc.bathtouch.data.DataStore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,6 +75,7 @@ public class GcmIntentService extends IntentService {
 
                 }
                 notificationBody = teamName + " are looking for " + gender + " players, can you help?";
+                DataStore.getInstance(this).refreshRequests();
                 break;
             case "2": //ref assigment
                 notificationTitle = "You are refereeing!";
@@ -84,6 +86,7 @@ public class GcmIntentService extends IntentService {
                     notificationBody = "You have been assigned to referee on " + new DateFormatter().format(dateTime) + " at " + location;
                 } catch (Exception e){
                 }
+                DataStore.getInstance(this).refreshRefGames();
                 break;
 
         }
