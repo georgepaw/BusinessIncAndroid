@@ -222,7 +222,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_event_grey600_48dp))
-                        .setTextPrimary("Results")
+                        .setTextPrimary("Matches")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {

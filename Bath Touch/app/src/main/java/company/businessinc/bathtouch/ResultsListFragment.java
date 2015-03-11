@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,6 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.team_results_recycle);
 
-        mRecyclerView.setHasFixedSize(true);
-
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 //        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(),
@@ -85,7 +84,12 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         mAdapter = new TeamResultsAdapter(this, mLeagueID);
 
         mRecyclerView.setAdapter(mAdapter);
-
+        int position = 0;
+        if(mAdapter.getScoresCount() <= mAdapter.getItemCount() - 1)
+            position = mAdapter.getScoresCount();
+        else
+            position = mAdapter.getScoresCount() - 1;
+        mLayoutManager.scrollToPositionWithOffset(position, 60);
         return mLayout;
     }
 
@@ -96,7 +100,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     public void selectItem(int position, int matchID) {
 
         Bundle args = new Bundle();
-        Match selectedMatch = DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID);
+        Match selectedMatch = DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID); //TODO Needs to be updated to past/future match
         args.putString(Match.KEY_TEAMONE, selectedMatch.getTeamOne());
         args.putString(Match.KEY_TEAMTWO, selectedMatch.getTeamTwo());
         args.putInt(Match.KEY_TEAMONEID, selectedMatch.getTeamOneID());
