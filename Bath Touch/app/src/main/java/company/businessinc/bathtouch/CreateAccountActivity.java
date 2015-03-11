@@ -14,9 +14,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -94,9 +98,8 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_start_button_skip_next);
             mGenderSpinner = (Spinner) rootView.findViewById(R.id.fragment_create_account_gender_spinner);
 
-            ArrayAdapter<String> teamAdapter = new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_spinner_item, new String[]{FEMALE,MALE});
-            mGenderSpinner.setAdapter(teamAdapter);
+            GenderSpinnerAdapter genderAdapter = new GenderSpinnerAdapter();
+            mGenderSpinner.setAdapter(genderAdapter);
 
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,6 +132,66 @@ public class CreateAccountActivity extends ActionBarActivity {
                 }
             });
             return rootView;
+        }
+
+        private class GenderSpinnerAdapter extends BaseAdapter {
+            @Override
+            public int getCount() {
+                return 2;
+            }
+
+            @Override
+            public Object getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return MALE;
+                    case 1:
+                        return FEMALE;
+                    default:
+                        return MALE;
+                }
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getDropDownView(int position, View view, ViewGroup parent) {
+                if (view == null || !view.getTag().toString().equals("DROPDOWN")) {
+                    view = getActivity().getLayoutInflater().inflate(R.layout.toolbar_spinner_item_dropdown, parent, false);
+                    view.setTag("DROPDOWN");
+                }
+
+                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                textView.setText(getTitle(position));
+
+                return view;
+            }
+
+            @Override
+            public View getView(int position, View view, ViewGroup parent) {
+                if (view == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
+                    view = getActivity().getLayoutInflater().inflate(R.layout.
+                            toolbar_spinner_item_regular, parent, false);
+                    view.setTag("NON_DROPDOWN");
+                }
+                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                textView.setText(getTitle(position));
+                return view;
+            }
+
+            private String getTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return MALE;
+                    case 1:
+                        return FEMALE;
+                    default:
+                        return MALE;
+                }
+            }
         }
 
         public void create_account(String name, Boolean isMale) {
@@ -197,7 +260,7 @@ public class CreateAccountActivity extends ActionBarActivity {
 
     public static class CreateAccountUsername extends Fragment {
 
-        private EditText mUsernameEditText;
+        private EditText mUsernameEditText, mPasswordEditText, mRePasswordEditText;
         private Button mNext;
 
         public CreateAccountUsername() {
@@ -208,50 +271,15 @@ public class CreateAccountActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_create_account_username, container, false);
             mUsernameEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_username_username_edit_text);
+            mPasswordEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_password_password_edit_text);
+            mRePasswordEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_password_repassword_edit_text);
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_username_button_skip_next);
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(mUsernameEditText.getText().length() == 0) {
                         mUsernameEditText.setError("Please enter a username");
-                    } else {
-                        Bundle args = getArguments();
-                        args.putString("username", mUsernameEditText.getText().toString());
-                        InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                                InputMethodManager.HIDE_NOT_ALWAYS);
-                        CreateAccountPassword cap = new CreateAccountPassword();
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        cap.setArguments(args);
-                        ft.replace(R.id.activity_create_account_container, cap);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                    }
-                }
-            });
-            return rootView;
-        }
-    }
-
-    public static class CreateAccountPassword extends Fragment {
-
-        private EditText mPasswordEditText, mRePasswordEditText;
-        private Button mNext;
-
-        public CreateAccountPassword() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_create_account_password, container, false);
-            mPasswordEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_password_password_edit_text);
-            mRePasswordEditText = (EditText) rootView.findViewById(R.id.fragment_create_account_password_repassword_edit_text);
-            mNext = (Button) rootView.findViewById(R.id.fragment_create_account_password_button_skip_next);
-            mNext.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mPasswordEditText.getText().length() == 0) {
+                    } else if(mPasswordEditText.getText().length() == 0) {
                         mPasswordEditText.setError("Please enter a password");
                     } else if (mPasswordEditText.getText().length() < 6) {
                         mPasswordEditText.setError("Passwords must be at least 6 characters long");
@@ -260,6 +288,7 @@ public class CreateAccountActivity extends ActionBarActivity {
                         mRePasswordEditText.setError("Passwords do not match");
                     } else {
                         Bundle args = getArguments();
+                        args.putString("username", mUsernameEditText.getText().toString());
                         args.putString("password", mPasswordEditText.getText().toString());
                         InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
@@ -283,10 +312,12 @@ public class CreateAccountActivity extends ActionBarActivity {
         private String userLoggedIn = "login";
         private static final String cookie = "Cookie";
         private Spinner mTeamSpinner;
+        private CheckBox mRefCheckBox;
         private Button mNext;
         private List<Team> mLeagueTeams;
         private String mSelectedTeam, mUsername, mPassword;
         private boolean mIsGhost = false;
+        private boolean mIsRef = false;
 
         public CreateAccountTeam() {
         }
@@ -297,8 +328,14 @@ public class CreateAccountActivity extends ActionBarActivity {
             mSharedPreferences = getActivity().getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
             View rootView = inflater.inflate(R.layout.fragment_create_account_team, container, false);
             mTeamSpinner = (Spinner) rootView.findViewById(R.id.fragment_create_account_team_team_spinner);
+            mRefCheckBox = (CheckBox) rootView.findViewById(R.id.fragment_create_account_team_ref_checkbox);
             mNext = (Button) rootView.findViewById(R.id.fragment_create_account_team_button_skip_next);
-
+            mRefCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mIsRef = isChecked;
+                }
+            });
             mLeagueTeams = new ArrayList<>();
             DataStore.getInstance(getActivity()).registerAllTeamsDBObservers(this);
             loadTeams();
@@ -328,9 +365,7 @@ public class CreateAccountActivity extends ActionBarActivity {
                     }
                 }
                 Log.d("Create User", "Network is working, let's create a user");
-                boolean isRef = false; //TODO remove hardcoding
-                boolean notifications = true;
-                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale, isRef, notifications).execute();
+                new UserNew(this, mUsername, mPassword, email, name, teamID, false, isMale, mIsRef, false).execute();
             } else {
                 Toast.makeText(getActivity(), "No connection", Toast.LENGTH_SHORT).show();
                 Log.d("Create User", "Network is not working");
