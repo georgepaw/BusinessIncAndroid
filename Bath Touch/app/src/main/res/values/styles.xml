@@ -8,11 +8,8 @@
 
     </style>
 
-    <!--<style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
-        <!--<item name="colorPrimary">@color/primary</item>-->
-        <!--<item name="colorPrimaryDark">@color/primary_dark</item>-->
-        <!--<item name="colorAccent">@color/primary_hovered</item>-->
-    <!--</style>-->
+    <style name="MainTheme" parent="AppTheme">
+    </style>
 
     <style name="AppTheme.HomeCards" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
@@ -30,10 +27,20 @@
         <item name="android:layout_height">48dp</item>
     </style>
 
+    <style name="Widget.AppTheme.HeaderBar.Spinner" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:overlapAnchor">true</item>
+    </style>
+
     <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">sans-serif-regular</item>
     </style>
 
+    <style name="RobotoTextViewStyleLight" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
 
     <!--<style name="RobotoTextViewStyleLight" parent="android:Widget.TextView">-->
         <!--<item name="android:fontFamily">sans-serif-light</item>-->
