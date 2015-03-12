@@ -100,6 +100,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         leagueFixtures = new ArrayList<>();
         this.leagueID = leagueID;
         mCallbacks = (OnResultSelectedCallbacks) context;
+        mContext = context.getActivity();
     }
 
     @Override
@@ -107,8 +108,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         super.onAttachedToRecyclerView(recyclerView);
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
             DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+            DataStore.getInstance(mContext).registerTeamsFixturesDBObserver(this);
         } else {
             DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+            DataStore.getInstance(mContext).registerLeaguesFixturesDBObserver(this);
         }
         DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
         DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
@@ -141,8 +144,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onDetachedFromRecyclerView (RecyclerView recyclerView){
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
             DataStore.getInstance(mContext).unregisterTeamsScoresDBObserver(this);
+            DataStore.getInstance(mContext).unregisterTeamsFixturesDBObserver(this);
         } else {
             DataStore.getInstance(mContext).unregisterLeagueScoreDBObserver(this);
+            DataStore.getInstance(mContext).unregisterLeaguesFixturesDBObserver(this);
         }
         DataStore.getInstance(mContext).unregisterAllLeagueDBObserver(this);
         DataStore.getInstance(mContext).unregisterAllTeamsDBObservers(this);
@@ -152,12 +157,16 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void notify(String tableName, Object data) {
         switch (tableName){
+            case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+                setLeagueName();
+                notifyDataSetChanged();
+                break;
             case DBProviderContract.TEAMSSCORES_TABLE_NAME:
             case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
-            case DBProviderContract.ALLLEAGUES_TABLE_NAME:
             case DBProviderContract.ALLTEAMS_TABLE_NAME:
+            case DBProviderContract.TEAMSFIXTURES_TABLE_NAME:
+            case DBProviderContract.LEAGUESFIXTURES_TABLE_NAME:
                 setData();
-                setLeagueName();
                 notifyDataSetChanged();
                 break;
         }
