@@ -38,7 +38,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context mContext;
     private int leagueID;
     private String leagueName;
-    private List<Match> leagueScores;
+    private List<Match> leagueScores, leagueFixtures;
     private List<Team> allTeams = new ArrayList<Team>();
     private String teamName;
 
@@ -76,7 +76,14 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mMatchCardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallbacks.showMatchOverview(getPosition(), leagueScores.get(getPosition()).getMatchID());
+                    int matchID;
+                    if(getPosition() > leagueScores.size() - 1) {
+                        matchID = leagueFixtures.get(getPosition() - leagueScores.size()).getMatchID();
+                    } else {
+                        matchID = leagueScores.get(getPosition()).getMatchID();
+                    }
+                    Log.d("TeamResultsAdapter", getPosition() + " " + (getPosition() - leagueScores.size()));
+                    mCallbacks.showMatchOverview(getPosition(), matchID);
                 }
             });
         }
@@ -90,8 +97,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public TeamResultsAdapter(Fragment context, int leagueID) {
         leagueScores = new ArrayList<>();
+        leagueFixtures = new ArrayList<>();
         this.leagueID = leagueID;
         mCallbacks = (OnResultSelectedCallbacks) context;
+        mContext = context.getActivity();
     }
 
     @Override
@@ -99,8 +108,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         super.onAttachedToRecyclerView(recyclerView);
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
             DataStore.getInstance(mContext).registerTeamsScoresDBObserver(this);
+            DataStore.getInstance(mContext).registerTeamsFixturesDBObserver(this);
         } else {
             DataStore.getInstance(mContext).registerLeagueScoreDBObserver(this);
+            DataStore.getInstance(mContext).registerLeaguesFixturesDBObserver(this);
         }
         DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
         DataStore.getInstance(mContext).registerAllLeagueDBObserver(this);
@@ -133,8 +144,10 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onDetachedFromRecyclerView (RecyclerView recyclerView){
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
             DataStore.getInstance(mContext).unregisterTeamsScoresDBObserver(this);
+            DataStore.getInstance(mContext).unregisterTeamsFixturesDBObserver(this);
         } else {
             DataStore.getInstance(mContext).unregisterLeagueScoreDBObserver(this);
+            DataStore.getInstance(mContext).unregisterLeaguesFixturesDBObserver(this);
         }
         DataStore.getInstance(mContext).unregisterAllLeagueDBObserver(this);
         DataStore.getInstance(mContext).unregisterAllTeamsDBObservers(this);
@@ -144,12 +157,16 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void notify(String tableName, Object data) {
         switch (tableName){
+            case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+                setLeagueName();
+                notifyDataSetChanged();
+                break;
             case DBProviderContract.TEAMSSCORES_TABLE_NAME:
             case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
-            case DBProviderContract.ALLLEAGUES_TABLE_NAME:
             case DBProviderContract.ALLTEAMS_TABLE_NAME:
+            case DBProviderContract.TEAMSFIXTURES_TABLE_NAME:
+            case DBProviderContract.LEAGUESFIXTURES_TABLE_NAME:
                 setData();
-                setLeagueName();
                 notifyDataSetChanged();
                 break;
         }
@@ -157,10 +174,13 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private void setData() {
         if(DataStore.getInstance(mContext).isUserLoggedIn()){
+            int teamID = DataStore.getInstance(mContext).getUserTeamID();
+            this.leagueFixtures = DataStore.getInstance(mContext).getTeamFixtures(leagueID, teamID);
             this.leagueScores = DataStore.getInstance(mContext).getTeamScores(leagueID,
-                                                                DataStore.getInstance(mContext).getUserTeamID(), Match.SortType.ASCENDING);
+                                                                teamID, Match.SortType.ASCENDING);
             teamName = DataStore.getInstance(mContext).getUserTeam();
         } else {
+            this.leagueFixtures = DataStore.getInstance(mContext).getLeagueFixtures(leagueID);
             this.leagueScores = DataStore.getInstance(mContext).getLeagueScores(leagueID);
             teamName = "";
         }
@@ -187,7 +207,15 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void bindResultItem(ViewHolderResults v, int position){
 
-        Match match = leagueScores.get(position);
+        Match match;
+        Boolean played;
+        if (position >= leagueScores.size()) {
+            match = leagueFixtures.get(position - leagueScores.size());
+            played = false;
+        } else {
+            match = leagueScores.get(position);
+            played = true;
+        }
 
         Team oppTeam = null;
         String oppTeamName;
@@ -229,36 +257,49 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .buildRound("D", context.getResources().getColor(R.color.darkorange));
         TextDrawable lose = TextDrawable.builder()
                 .buildRound("L", context.getResources().getColor(R.color.darkred));
+        TextDrawable notPlayed = TextDrawable.builder()
+                .buildRound("N", context.getResources().getColor(R.color.dark_divider));
 
         if (match.getTeamOne().equals(teamName)) {
             v.mTeam1Name.setTypeface(null, Typeface.BOLD);
             v.mTeam1Score.setTypeface(null, Typeface.BOLD);
             v.mTeam2Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Score.setTypeface(null, Typeface.NORMAL);
-            if (match.getTeamOnePoints() > match.getTeamTwoPoints()) {
-                v.mImageView.setImageDrawable(win);
-            } else if(match.getTeamOnePoints() == match.getTeamTwoPoints()) {
-                v.mImageView.setImageDrawable(draw);
+            if(played) {
+                if (match.getTeamOnePoints() > match.getTeamTwoPoints()) {
+                    v.mImageView.setImageDrawable(win);
+                } else if(match.getTeamOnePoints() == match.getTeamTwoPoints()) {
+                    v.mImageView.setImageDrawable(draw);
+                } else {
+                    v.mImageView.setImageDrawable(lose);
+                }
             } else {
-                v.mImageView.setImageDrawable(lose);
+                v.mImageView.setImageDrawable(notPlayed);
             }
         } else if(match.getTeamTwo().equals(teamName)) {
             v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam1Score.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Name.setTypeface(null, Typeface.BOLD);
             v.mTeam2Score.setTypeface(null, Typeface.BOLD);
-            if (match.getTeamOnePoints() < match.getTeamTwoPoints()) {
-                v.mImageView.setImageDrawable(win);
-            } else if(match.getTeamOnePoints() == match.getTeamTwoPoints()) {
-                v.mImageView.setImageDrawable(draw);
+            if(played) {
+                if (match.getTeamOnePoints() < match.getTeamTwoPoints()) {
+                    v.mImageView.setImageDrawable(win);
+                } else if (match.getTeamOnePoints() == match.getTeamTwoPoints()) {
+                    v.mImageView.setImageDrawable(draw);
+                } else {
+                    v.mImageView.setImageDrawable(lose);
+                }
             } else {
-                v.mImageView.setImageDrawable(lose);
+                v.mImageView.setImageDrawable(notPlayed);
             }
         } else {
             v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam1Score.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Score.setTypeface(null, Typeface.NORMAL);
+            if (! played) {
+                v.mImageView.setImageDrawable(notPlayed);
+            }
         }
 
         if (position == expandedPosition) {
@@ -310,8 +351,15 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         //plus one because of header fragment
-        return leagueScores.size();
+        return leagueScores.size() + leagueFixtures.size();
     }
 
+    public int getFixturesCount() {
+        return leagueFixtures.size();
+    }
+
+    public int getScoresCount() {
+        return leagueScores.size();
+    }
 }
 
