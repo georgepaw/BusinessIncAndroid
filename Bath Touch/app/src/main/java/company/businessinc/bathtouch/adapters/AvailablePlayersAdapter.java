@@ -1,11 +1,19 @@
 package company.businessinc.bathtouch.adapters;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.animation.LinearInterpolator;
 import android.widget.*;
 
 import java.util.ArrayList;
@@ -61,27 +70,31 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
 
     public class ViewHolderPlayer extends RecyclerView.ViewHolder implements View.OnClickListener, UpAvailabilityInterface {
-        ImageView mPlayerReal;
+        ImageView mPlayerReal, mIsGhostPlayer;
         TextView mPlayerName;
         CheckBox mCheckBox;
         TextView mPlayerNumber;
-        CardView mCard;
+        RelativeLayout mRelativeExtras;
+        CardView mCardTop, mCardPhone, mCardEmail;
 
         public ViewHolderPlayer(View itemView) {
             super(itemView);
 
             mPlayerReal = (ImageView) itemView.findViewById(R.id.team_roster_player_status_icon);
-//            mPlayerAvail = (ImageView) itemView.findViewById(R.id.team_roster_player_avail_icon);
+            mIsGhostPlayer = (ImageView) itemView.findViewById(R.id.team_roster_expanded_isGhost_image);
             mPlayerName = (TextView) itemView.findViewById(R.id.team_roster_player_name);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.team_roster_player_checkbox);
             mPlayerNumber = (TextView) itemView.findViewById(R.id.team_roster_player_number);
-            mCard = (CardView) itemView.findViewById(R.id.team_roster_card);
+            mCardTop = (CardView) itemView.findViewById(R.id.team_roster_card);
+            mRelativeExtras = (RelativeLayout) itemView.findViewById(R.id.team_roster_expanded);
+            mCardPhone = (CardView) itemView.findViewById(R.id.team_roster_expanded_phone);
+            mCardEmail = (CardView) itemView.findViewById(R.id.team_roster_expanded_email);
             mCheckBox.setOnClickListener(this);
-            mCard.setOnClickListener(this);
+            mCardTop.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             if (v.getId() == mCheckBox.getId()) {
                 int position = getPosition();
                 int userID;
@@ -94,8 +107,46 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 }
                 mCheckBox.setEnabled(false);
                 new UpAvailability(this, context, mCheckBox.isChecked() ? 1 : 0, matchID, userID).execute();
-            } else if(v.getId() == mCard.getId()) {
-                Log.d("a","");
+            } else if (v.getId() == mCardTop.getId()) {
+                ValueAnimator animator; //expand the player
+                if (mRelativeExtras.getVisibility() == View.GONE) {
+                    mRelativeExtras.setVisibility(View.VISIBLE); //expand the view
+                    final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    mRelativeExtras.measure(widthSpec, heightSpec);
+                    animator = ValueAnimator.ofInt(0, mRelativeExtras.getMeasuredHeight());
+                } else {
+                    animator = ValueAnimator.ofInt(mRelativeExtras.getHeight(), 0);
+                    animator.addListener(new Animator.AnimatorListener() { //listen to the end of animation and then get rid off the view
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            mRelativeExtras.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                        //Update Height
+                        int value = (Integer) valueAnimator.getAnimatedValue();
+                        ViewGroup.LayoutParams layoutParams = mRelativeExtras.getLayoutParams();
+                        layoutParams.height = value;
+                        mRelativeExtras.setLayoutParams(layoutParams);
+                    }
+                });
+                animator.start();
             }
         }
 
@@ -207,7 +258,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        Player player;
+        final Player player;
 
         //first item is a header for the list
         if (holder instanceof ViewHolderHeader) {
@@ -253,7 +304,6 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             }
         } else if(holder instanceof ViewHolderPlayer){
             //is a player item, so set that up
-
             ViewHolderPlayer v = (ViewHolderPlayer) holder;
 
             //check which list to select the player from, selected or unselected
@@ -272,9 +322,6 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 position = position - 1;
                 player = selectedPlayers.get(position);
             }
-
-
-            int id = player.getUserID();
 
 
             v.mPlayerName.setText(player.getName());
@@ -301,6 +348,43 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 v.mCheckBox.setEnabled(false);
             }
 
+            //set whether they are ghost or not
+            if(player.getIsGhostPlayer()){
+                v.mIsGhostPlayer.setImageResource(R.drawable.ic_check);
+                v.mCardEmail.setVisibility(View.GONE);
+            } else {
+                v.mIsGhostPlayer.setImageResource(R.drawable.ic_close);
+                v.mCardEmail.setVisibility(View.VISIBLE);
+                v.mCardEmail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { //start a email intent with the players email
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        i.putExtra(Intent.EXTRA_EMAIL, new String[]{player.getEmail()});
+                        try {
+                            context.startActivity(Intent.createChooser(i, "Send mail..."));
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+
+            final String number = getContactNumberByName(player.getName());
+            if(!number.equals("N/A")){
+                v.mCardPhone.setVisibility(View.VISIBLE);
+                v.mCardPhone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String num = "tel:" + number;
+                        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(num));
+                        context.startActivity(callIntent);
+                    }
+                });
+            } else {
+                v.mCardPhone.setVisibility(View.GONE);
+            }
+
         } else if(holder instanceof ViewHolderRequest){
             ViewHolderRequest v = (ViewHolderRequest)holder;
             if(selectedPlayers.size() < 6 || Player.getGenderCount(selectedPlayers, true) < 1){
@@ -315,6 +399,19 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             }
         }
 
+    }
+
+    public String getContactNumberByName(String name) {
+        String number = "N/A";
+        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + name +"%'";
+        String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
+        Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection, selection, null, null);
+        if (cursor.moveToFirst() && cursor.getCount() > 0) {
+            number = cursor.getString(0);
+        }
+        cursor.close();
+        return number;
     }
 
     //Toggle the availablity of a player selected from
