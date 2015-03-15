@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.*;
 
 import java.util.ArrayList;
@@ -25,14 +26,14 @@ import company.businessinc.dataModels.Player;
 import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.endpoints.RequestPlayers;
 import company.businessinc.endpoints.RequestPlayersInterface;
+import company.businessinc.endpoints.UpAvailability;
+import company.businessinc.endpoints.UpAvailabilityInterface;
 
 /**
  * Created by user on 30/01/15.
  */
 public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBObserver {
 
-    private boolean is_available;
-    private AvailablePlayerCallbacks mCallbacks;
     private List<Player> selectedPlayers = new ArrayList<Player>();
     private List<Player> unselectedPlayers = new ArrayList<Player>();
 
@@ -49,9 +50,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         void onPlayerSelected(Player player);
     }
 
-    public AvailablePlayersAdapter(boolean available, Context context, int matchID, boolean hasBeenPlayed) {
-        is_available = available;
-//        mCallbacks = (AvailablePlayerCallbacks) context;
+    public AvailablePlayersAdapter(Context context, int matchID, boolean hasBeenPlayed) {
         this.context = context;
         this.matchID = matchID;
         this.hasBeenPlayed = hasBeenPlayed;
@@ -61,12 +60,12 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
     }
 
 
-    public class ViewHolderPlayer extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView mPlayerReal, mPlayerAvail;
+    public class ViewHolderPlayer extends RecyclerView.ViewHolder implements View.OnClickListener, UpAvailabilityInterface {
+        ImageView mPlayerReal;
         TextView mPlayerName;
         CheckBox mCheckBox;
         TextView mPlayerNumber;
-        RelativeLayout mCard;
+        CardView mCard;
 
         public ViewHolderPlayer(View itemView) {
             super(itemView);
@@ -76,7 +75,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             mPlayerName = (TextView) itemView.findViewById(R.id.team_roster_player_name);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.team_roster_player_checkbox);
             mPlayerNumber = (TextView) itemView.findViewById(R.id.team_roster_player_number);
-            mCard = (RelativeLayout) itemView.findViewById(R.id.team_roster_card);
+            mCard = (CardView) itemView.findViewById(R.id.team_roster_card);
             mCheckBox.setOnClickListener(this);
             mCard.setOnClickListener(this);
         }
@@ -84,8 +83,36 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         @Override
         public void onClick(View v) {
             if (v.getId() == mCheckBox.getId()) {
-                selectPlayer(getPosition());
+                int position = getPosition();
+                int userID;
+                if (position > selectedPlayers.size() + 1) { //Magic constants by james
+                    position = position - 2;
+                    userID = unselectedPlayers.get(position - selectedPlayers.size()).getUserID();
+                } else {
+                    position = position - 1;
+                    userID = selectedPlayers.get(position).getUserID();
+                }
+                mCheckBox.setEnabled(false);
+                new UpAvailability(this, context, mCheckBox.isChecked() ? 1 : 0, matchID, userID).execute();
+            } else if(v.getId() == mCard.getId()) {
+                Log.d("a","");
             }
+        }
+
+        @Override
+        public void upAvailabilityCallback(ResponseStatus responseStatus, boolean isPlaying, UpAvailability.CallType callType, int matchID, int userID) {
+            if(responseStatus.getStatus()){
+                List<Player> listToSearch = isPlaying ? unselectedPlayers : selectedPlayers;
+                for(Player player : listToSearch){
+                    if(player.getUserID() == userID){
+                        selectPlayer(player, isPlaying);
+                        break;
+                    }
+                }
+            } else {
+                Toast.makeText(context, "Players availability couldn't be changed, try again later.", Toast.LENGTH_LONG).show();
+            }
+            mCheckBox.setEnabled(true);
         }
     }
 
@@ -219,16 +246,11 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 }
                 v.mPlayerCount.setText(String.format("%d/%d", Player.getGenderCount(selectedPlayers, true), Player.getGenderCount(selectedPlayers, false)));
                 v.mSubsCount.setText(String.format("%d", overflow));
-
             } else {
                 //2nd header only shows it's remaining players
                 v.mPlayerStats.setVisibility(View.GONE);
                 v.mTextView.setText(String.format("Not Playing (%d)", unselected));
             }
-
-
-
-
         } else if(holder instanceof ViewHolderPlayer){
             //is a player item, so set that up
 
@@ -296,38 +318,21 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
     }
 
     //Toggle the availablity of a player selected from
-    public void selectPlayer(int position) {
-        Player player;
-        int relPosition;
-        //check which list to select the player from, selected or unselected
+    public void selectPlayer(Player player, boolean isPlaying) {
+        List<Player> oldList = isPlaying ? unselectedPlayers:selectedPlayers;
+        List<Player> newList = isPlaying ? selectedPlayers:unselectedPlayers;
+        int oldPos = oldList.indexOf(player) + (isPlaying ? selectedPlayers.size() + 2 : 1);//add the magic constants
+        oldList.remove(player);
+        int newPos = insertToCorrectPlace(newList,player) + (isPlaying ? 1 : selectedPlayers.size() + 2);
+        notifyItemMoved(oldPos, newPos);
+        notifyItemChanged(0); //update the headers
+        notifyItemChanged(selectedPlayers.size()+1);
 
-        if (position > selectedPlayers.size() + 1) {
-            Log.d("CLICK", "Removed from unselected");
-            position = position - 2;
-            relPosition = position - selectedPlayers.size();
-            player = unselectedPlayers.get(relPosition);
-            unselectedPlayers.remove(relPosition);
-            int pos = insertToCorrectPlace(selectedPlayers,player);
-
-            notifyItemMoved(position + 2, pos+1);
-            DataStore.getInstance(context).setPlayersAvailability(true,player.getUserID(),matchID);
-
-        } else {
-            Log.d("CLICK", "Removed from selected");
-            position = position - 1;
-            player = selectedPlayers.get(position);
-            Log.d("SELECTED", player.getName());
-            selectedPlayers.remove(position);
-            int pos = insertToCorrectPlace(unselectedPlayers,player);
-
-            notifyItemMoved(position + 1, selectedPlayers.size() + pos + 2); //BOW TO THE MAGIC CONSTANTS
-            DataStore.getInstance(context).setPlayersAvailability(false, player.getUserID(), matchID);
-        }
     }
 
     private int insertToCorrectPlace(List<Player> list, Player player){
         //the list should be sorted by players names
-        if( list.size() ==0){
+        if(list.isEmpty()){ //in case list is empty we have to do this
             list.add(player);
             return 0;
         }
