@@ -31,8 +31,6 @@ import company.businessinc.endpoints.RequestPlayersInterface;
  */
 public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBObserver {
 
-    private boolean is_available;
-    private AvailablePlayerCallbacks mCallbacks;
     private List<Player> selectedPlayers = new ArrayList<Player>();
     private List<Player> unselectedPlayers = new ArrayList<Player>();
 
@@ -49,9 +47,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         void onPlayerSelected(Player player);
     }
 
-    public AvailablePlayersAdapter(boolean available, Context context, int matchID, boolean hasBeenPlayed) {
-        is_available = available;
-//        mCallbacks = (AvailablePlayerCallbacks) context;
+    public AvailablePlayersAdapter(Context context, int matchID, boolean hasBeenPlayed) {
         this.context = context;
         this.matchID = matchID;
         this.hasBeenPlayed = hasBeenPlayed;
@@ -62,11 +58,11 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
 
 
     public class ViewHolderPlayer extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView mPlayerReal, mPlayerAvail;
+        ImageView mPlayerReal;
         TextView mPlayerName;
         CheckBox mCheckBox;
         TextView mPlayerNumber;
-        RelativeLayout mCard;
+        CardView mCard;
 
         public ViewHolderPlayer(View itemView) {
             super(itemView);
@@ -76,7 +72,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
             mPlayerName = (TextView) itemView.findViewById(R.id.team_roster_player_name);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.team_roster_player_checkbox);
             mPlayerNumber = (TextView) itemView.findViewById(R.id.team_roster_player_number);
-            mCard = (RelativeLayout) itemView.findViewById(R.id.team_roster_card);
+            mCard = (CardView) itemView.findViewById(R.id.team_roster_card);
             mCheckBox.setOnClickListener(this);
             mCard.setOnClickListener(this);
         }
@@ -85,6 +81,8 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         public void onClick(View v) {
             if (v.getId() == mCheckBox.getId()) {
                 selectPlayer(getPosition());
+            } else if(v.getId() == mCard.getId()) {
+                Log.d("a","");
             }
         }
     }

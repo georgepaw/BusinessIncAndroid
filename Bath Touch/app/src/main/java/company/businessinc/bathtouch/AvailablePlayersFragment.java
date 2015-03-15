@@ -28,7 +28,6 @@ public class AvailablePlayersFragment extends Fragment{
     private View mLayout;
     private RecyclerView.LayoutManager mLayoutManager;
     private AvailablePlayersAdapter mAdapter;
-    private boolean available_toggle;
     private int matchID;
     private boolean hasBeenPlayed;
     private AvailablePlayersListener mCallbacks;
@@ -81,7 +80,7 @@ public class AvailablePlayersFragment extends Fragment{
 
 
         //Adapter loads the data fror the leagues
-        mAdapter = new AvailablePlayersAdapter(available_toggle, getActivity(), matchID, hasBeenPlayed);
+        mAdapter = new AvailablePlayersAdapter(getActivity(), matchID, hasBeenPlayed);
         mRecyclerView.setAdapter(mAdapter);
 
 
