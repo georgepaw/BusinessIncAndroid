@@ -1,10 +1,13 @@
 package company.businessinc.bathtouch.adapters;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +36,6 @@ import company.businessinc.dataModels.Team;
  */
 public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DBObserver {
 
-    private int expandedPosition = -1;
     private OnResultSelectedCallbacks mCallbacks;
     private Context mContext;
     private int leagueID;
@@ -43,14 +45,15 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private String teamName;
 
     public interface OnResultSelectedCallbacks {
-        public void showMatchOverview(int position, int matchID);
+        public void showMatchOverview(int matchID, boolean hasBeenPlayed);
     }
 
 
     public class ViewHolderResults extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTeam1Name, mTeam2Name, mTeam1Score, mTeam2Score, mLocation, mDate, mLeague;
-        public ImageView mImageView, mCloseButton, mOppTeamImg;
-        public RelativeLayout mCard, mMatchCardButton, mExpandable;
+        public ImageView mImageView, mOppTeamImg;
+        public RelativeLayout mMatchCardButton, mExpandable;
+        public CardView mCard;
 
         public ViewHolderResults(View v) {
             super(v);
@@ -62,36 +65,76 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mDate = (TextView) v.findViewById(R.id.match_result_date);
             mLocation = (TextView) v.findViewById(R.id.match_result_location);
             mImageView = (ImageView) v.findViewById(R.id.match_result_item_result_image);
-            mCloseButton = (ImageView) v.findViewById(R.id.match_result_close_button);
-            mCard = (RelativeLayout) v.findViewById(R.id.match_result_item_container);
+            mCard = (CardView) v.findViewById(R.id.match_result_item_container);
             mMatchCardButton = (RelativeLayout) v.findViewById(R.id.match_result_match_overview_button);
             mExpandable = (RelativeLayout) v.findViewById(R.id.match_result_expandable);
             mOppTeamImg = (ImageView) v.findViewById(R.id.match_result_opp_team_image);
 
 
             mCard.setOnClickListener(this);
-            mCloseButton.setOnClickListener(this);
 
             //If clicked, callback to main fragment to start the match over view fragment
             mMatchCardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int matchID;
+                    boolean hasBeenPlayed;
                     if(getPosition() > leagueScores.size() - 1) {
                         matchID = leagueFixtures.get(getPosition() - leagueScores.size()).getMatchID();
+                        hasBeenPlayed = false;
                     } else {
                         matchID = leagueScores.get(getPosition()).getMatchID();
+                        hasBeenPlayed = true;
                     }
                     Log.d("TeamResultsAdapter", getPosition() + " " + (getPosition() - leagueScores.size()));
-                    mCallbacks.showMatchOverview(getPosition(), matchID);
+                    mCallbacks.showMatchOverview(matchID, hasBeenPlayed);
                 }
             });
         }
 
         @Override
         public void onClick(View v) {
-            //Toggle whether the hidden element of the viewholder is displayed on a click
-            changeVis(getPosition());
+            if(v.getId() == mCard.getId()) {
+                ValueAnimator animator; //expand the player
+                if (mExpandable.getVisibility() == View.GONE) {
+                    mExpandable.setVisibility(View.VISIBLE); //expand the view
+                    final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    mExpandable.measure(widthSpec, heightSpec);
+                    animator = ValueAnimator.ofInt(0, mExpandable.getMeasuredHeight());
+                } else {
+                    animator = ValueAnimator.ofInt(mExpandable.getHeight(), 0);
+                    animator.addListener(new Animator.AnimatorListener() { //listen to the end of animation and then get rid off the view
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            mExpandable.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                        //Update Height
+                        int value = (Integer) valueAnimator.getAnimatedValue();
+                        ViewGroup.LayoutParams layoutParams = mExpandable.getLayoutParams();
+                        layoutParams.height = value;
+                        mExpandable.setLayoutParams(layoutParams);
+                    }
+                });
+                animator.start();
+            }
         }
     }
 
@@ -302,49 +345,27 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         }
 
-        if (position == expandedPosition) {
-            int teamColor;
-            try{
-                //set specific team colors if it has been loaded by db
-                teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
+        int teamColor;
+        try{
+            //set specific team colors if it has been loaded by db
+            teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
 
-                Drawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(teamColor)
-                        .toUpperCase()
-                        .endConfig()
-                        .buildRound("D", Color.WHITE);
-                v.mOppTeamImg.setImageDrawable(drawable);
+            Drawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .textColor(teamColor)
+                    .toUpperCase()
+                    .endConfig()
+                    .buildRound("D", Color.WHITE);
+            v.mOppTeamImg.setImageDrawable(drawable);
 
-            }
-            catch (Exception e){
-                teamColor = Color.GRAY;
-            }
- //        check whether to open close or leave a card alone
-            v.mExpandable.setVisibility(View.VISIBLE);
-            v.mExpandable.setBackgroundColor(teamColor);
-            v.mExpandable.getBackground().setAlpha(200);
-        } else {
-            v.mExpandable.setVisibility(View.GONE);
         }
-
-
-    }
-
-    public void changeVis(int loc) {
-
-        if (expandedPosition == loc) { //if clicking an open view, close it
-            expandedPosition = -1;
-            notifyItemChanged(loc);
-        } else {
-            if (expandedPosition > -1) {
-                int prev = expandedPosition;
-                expandedPosition = -1;
-                notifyItemChanged(prev);
-            }
-            expandedPosition = loc;
-            notifyItemChanged(expandedPosition);
+        catch (Exception e){
+            teamColor = Color.GRAY;
         }
+        v.mExpandable.setBackgroundColor(teamColor);
+        v.mExpandable.getBackground().setAlpha(200);
+
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
