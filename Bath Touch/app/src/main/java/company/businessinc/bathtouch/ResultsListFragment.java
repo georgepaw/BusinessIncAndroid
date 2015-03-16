@@ -97,10 +97,11 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     On a Result item selected in the recycler view, this is called
     Starts a new activity that shows the overview of a match
      */
-    public void selectItem(int position, int matchID) {
+    public void selectItem(int matchID, boolean hasBeenPlayed) {
 
         Bundle args = new Bundle();
-        Match selectedMatch = DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID); //TODO Needs to be updated to past/future match
+        Match selectedMatch = hasBeenPlayed ? DataStore.getInstance(getActivity()).getPastLeagueMatch(matchID) : DataStore.getInstance(getActivity()).getFutureLeagueMatch(matchID);
+
         args.putString(Match.KEY_TEAMONE, selectedMatch.getTeamOne());
         args.putString(Match.KEY_TEAMTWO, selectedMatch.getTeamTwo());
         args.putInt(Match.KEY_TEAMONEID, selectedMatch.getTeamOneID());
@@ -110,7 +111,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         args.putInt("leagueID", mLeagueID);
         args.putInt(Match.KEY_MATCHID, selectedMatch.getMatchID());
         args.putString(Match.KEY_PLACE, selectedMatch.getPlace());
-        args.putBoolean("hasBeenPlayed", true);
+        args.putBoolean("hasBeenPlayed", hasBeenPlayed);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
         args.putString(Match.KEY_DATETIME, sdf.format(selectedMatch.getDateTime()));
 
@@ -137,8 +138,8 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     }
 
     @Override
-    public void showMatchOverview(int position, int matchID) {
-        selectItem(position, matchID);
+    public void showMatchOverview(int matchID, boolean hasBeenPlayed) {
+        selectItem(matchID, hasBeenPlayed);
     }
 
     /**

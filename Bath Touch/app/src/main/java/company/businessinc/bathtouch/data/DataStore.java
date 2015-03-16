@@ -550,6 +550,23 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output.size() > 0? output.get(0):null;
     }
 
+    public Match getFutureLeagueMatch(int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUESFIXTURES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_MATCHID,
+                new String[]{Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.size() > 0? output.get(0):null;
+    }
+
     public List<Message> getPlayerRequests(){
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
                 DBProviderContract.MESSAGES_TABLE_NAME,
