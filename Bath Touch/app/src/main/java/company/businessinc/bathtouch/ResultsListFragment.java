@@ -141,10 +141,10 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
 
     @Override
     public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
         DataStore.getInstance(getActivity()).unregisterLeagueScoreDBObserver(this);
         DataStore.getInstance(getActivity()).unregisterLeaguesFixturesDBObserver(this);
+        super.onDetach();
+        mCallbacks = null;
     }
 
     @Override
