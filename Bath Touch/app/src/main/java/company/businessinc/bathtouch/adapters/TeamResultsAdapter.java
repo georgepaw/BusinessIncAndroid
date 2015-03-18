@@ -38,11 +38,11 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private OnResultSelectedCallbacks mCallbacks;
     private Context mContext;
-    private int leagueID;
+    private int leagueID, teamID;
     private String leagueName;
     private List<Match> leagueScores, leagueFixtures;
     private List<Team> allTeams = new ArrayList<Team>();
-    private String teamName;
+    private Boolean displayAllTeams = false;
 
     public interface OnResultSelectedCallbacks {
         public void showMatchOverview(int matchID, boolean hasBeenPlayed);
@@ -138,10 +138,12 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public TeamResultsAdapter(Fragment context, int leagueID) {
+    public TeamResultsAdapter(Fragment context, int leagueID, int teamID, Boolean allTeams) {
         leagueScores = new ArrayList<>();
         leagueFixtures = new ArrayList<>();
         this.leagueID = leagueID;
+        this.teamID = teamID;
+        this.displayAllTeams = allTeams;
         mCallbacks = (OnResultSelectedCallbacks) context;
         mContext = context.getActivity();
     }
@@ -216,16 +218,13 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void setData() {
-        if(DataStore.getInstance(mContext).isUserLoggedIn()){
-            int teamID = DataStore.getInstance(mContext).getUserTeamID();
-            this.leagueFixtures = DataStore.getInstance(mContext).getTeamFixtures(leagueID, teamID);
-            this.leagueScores = DataStore.getInstance(mContext).getTeamScores(leagueID,
-                                                                teamID, Match.SortType.ASCENDING);
-            teamName = DataStore.getInstance(mContext).getUserTeam();
-        } else {
+        if(displayAllTeams) {
             this.leagueFixtures = DataStore.getInstance(mContext).getLeagueFixtures(leagueID);
             this.leagueScores = DataStore.getInstance(mContext).getLeagueScores(leagueID);
-            teamName = "";
+        } else {
+            this.leagueFixtures = DataStore.getInstance(mContext).getTeamFixtures(leagueID, teamID);
+            this.leagueScores = DataStore.getInstance(mContext).getTeamScores(leagueID,
+                    teamID, Match.SortType.ASCENDING);
         }
         this.allTeams = DataStore.getInstance(mContext).getAllTeams();
     }
@@ -261,16 +260,16 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         Team oppTeam = null;
-        String oppTeamName;
+        int oppTeamId;
 
-        if(match.getTeamOne().equals(teamName)){
-            oppTeamName = match.getTeamTwo();
+        if(match.getTeamOneID().equals(teamID)){
+            oppTeamId = match.getTeamTwoID();
         }else{
-            oppTeamName = match.getTeamOne();
+            oppTeamId = match.getTeamOneID();
         }
 
         for(Team e : allTeams){
-            if(e.getTeamName().equals(oppTeamName)){
+            if(e.getTeamID().equals(oppTeamId)){
                 oppTeam = e;
             }
         }
@@ -303,7 +302,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextDrawable notPlayed = TextDrawable.builder()
                 .buildRound("N", context.getResources().getColor(R.color.dark_divider));
 
-        if (match.getTeamOne().equals(teamName)) {
+        if (match.getTeamOneID().equals(teamID)) {
             v.mTeam1Name.setTypeface(null, Typeface.BOLD);
             v.mTeam1Score.setTypeface(null, Typeface.BOLD);
             v.mTeam2Name.setTypeface(null, Typeface.NORMAL);
@@ -319,7 +318,7 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 v.mImageView.setImageDrawable(notPlayed);
             }
-        } else if(match.getTeamTwo().equals(teamName)) {
+        } else if(match.getTeamTwoID().equals(teamID)) {
             v.mTeam1Name.setTypeface(null, Typeface.NORMAL);
             v.mTeam1Score.setTypeface(null, Typeface.NORMAL);
             v.mTeam2Name.setTypeface(null, Typeface.BOLD);
