@@ -195,7 +195,10 @@ public class MyTeamFragment extends Fragment{
                 case "Activity":
                     return TeamOverviewFragment.newInstance(DataStore.getInstance(getActivity()).getUserTeamID(), mLeagueID);
                 case "Matches":
-                    return ResultsListFragment.newInstance(mLeagueID, DataStore.getInstance(getActivity()).getUserTeamID(), false);
+                    if(DataStore.getInstance(getActivity()).isUserLoggedIn())
+                        return ResultsListFragment.newInstance(mLeagueID, DataStore.getInstance(getActivity()).getUserTeamID(), false);
+                    else
+                        return ResultsListFragment.newInstance(mLeagueID, -1, true);
                 case "League":
                 default:
                     return LeagueFragment.newInstance(mLeagueID);
