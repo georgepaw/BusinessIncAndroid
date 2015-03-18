@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
+import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DataStore;
@@ -31,21 +32,22 @@ import java.util.Locale;
  * Use the {@link ResultsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResultsListFragment extends Fragment implements TeamResultsAdapter.OnResultSelectedCallbacks{
+public class ResultsListFragment extends Fragment implements TeamResultsAdapter.OnResultSelectedCallbacks, DBObserver{
 
     private View mLayout;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private TeamResultsAdapter mAdapter;
     private ResultsListCallbacks mCallbacks;
-    private Integer mLeagueID;
-    private String teamName;
+    private Integer mLeagueID, mTeamID;
+    private Boolean mAllTeams;
 
-
-    public static ResultsListFragment newInstance(Integer leagueID) {
+    public static ResultsListFragment newInstance(Integer leagueID, Integer teamID, Boolean allTeams) {
         ResultsListFragment fragment = new ResultsListFragment();
         Bundle args = new Bundle();
         args.putInt("leagueID", leagueID);
+        args.putInt("teamID", teamID);
+        args.putBoolean("allTeams", allTeams);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +61,8 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mLeagueID = getArguments().getInt("leagueID");
+            mTeamID = getArguments().getInt("teamID");
+            mAllTeams = getArguments().getBoolean("allTeams");
         }
     }
 
@@ -81,7 +85,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
 //                    }
 //                }));
 
-        mAdapter = new TeamResultsAdapter(this, mLeagueID);
+        mAdapter = new TeamResultsAdapter(this, mLeagueID, mTeamID, mAllTeams);
 
         mRecyclerView.setAdapter(mAdapter);
         int position = 0;
@@ -130,17 +134,37 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        DataStore.getInstance(activity).registerLeagueScoreDBObserver(this);
+        DataStore.getInstance(activity).registerLeaguesFixturesDBObserver(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+        DataStore.getInstance(getActivity()).unregisterLeagueScoreDBObserver(this);
+        DataStore.getInstance(getActivity()).unregisterLeaguesFixturesDBObserver(this);
     }
 
     @Override
     public void showMatchOverview(int matchID, boolean hasBeenPlayed) {
         selectItem(matchID, hasBeenPlayed);
+    }
+
+    @Override
+    public void notify(String tableName, Object data) {
+        switch (tableName){
+            case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
+            case DBProviderContract.LEAGUESFIXTURES_TABLE_NAME:
+                int position = 0;
+                if(mAdapter.getScoresCount() <= mAdapter.getItemCount() - 1)
+                    position = mAdapter.getScoresCount();
+                else
+                    position = mAdapter.getScoresCount() - 1;
+                mLayoutManager.scrollToPositionWithOffset(position, 60);
+                break;
+        }
     }
 
     /**

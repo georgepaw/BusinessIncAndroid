@@ -9,25 +9,33 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
+import company.businessinc.dataModels.Team;
 
 public class TeamResultsFragment extends Fragment {
 
@@ -35,8 +43,11 @@ public class TeamResultsFragment extends Fragment {
     private TeamResultsCallbacks mCallbacks;
     private View mLayout;
     private ViewPager mViewPager;
+    private View mSpinnerContainer;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
+    private int mTeamID;
+    private boolean mAllTeams = false;
 
     private static final String ANON_PRIMARY = "#ff0000";
 
@@ -72,14 +83,28 @@ public class TeamResultsFragment extends Fragment {
         int userColor;
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+            mTeamID = DataStore.getInstance(getActivity()).getUserTeamID();
         } else {
             userColor = Color.parseColor(ANON_PRIMARY);
+            mTeamID = 0;
         }
 
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
-        actionBar.setTitle("Past Results");
+//        actionBar.setTitle("Past Results");
         actionBar.setElevation(0f);
+
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        mSpinnerContainer = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_spinner,
+                toolbar, false);
+        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        toolbar.addView(mSpinnerContainer, lp);
+
+        TeamSpinnerAdapter spinnerAdapter = new TeamSpinnerAdapter(getActivity());
+
+        Spinner spinner = (Spinner) mSpinnerContainer.findViewById(R.id.toolbar_spinner);
+        spinner.setAdapter(spinnerAdapter);
 
         DrawerFrameLayout drawerFrameLayout = (DrawerFrameLayout) (getActivity().findViewById(R.id.drawer_layout));
         int color = userColor;
@@ -123,12 +148,36 @@ public class TeamResultsFragment extends Fragment {
             });
         }
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    mAllTeams = true;
+                    mTeamID = -1;
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                } else {
+                    mAllTeams = false;
+                    Team team = (Team) parent.getItemAtPosition(position);
+                    mTeamID = team.getTeamID();
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return mLayout;
     }
 
     @Override
     public  void onDestroyView(){
         DataStore.getInstance(getActivity()).unregisterAllLeagueDBObserver(mViewPagerAdapter);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        if(toolbar != null && mSpinnerContainer != null)
+            toolbar.removeView(mSpinnerContainer);
         super.onDestroyView();
     }
 
@@ -165,7 +214,7 @@ public class TeamResultsFragment extends Fragment {
         mCallbacks = null;
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter implements DBObserver {
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter implements DBObserver {
 
         private List<League> leagues = new ArrayList<>();
         private Context context;
@@ -177,12 +226,16 @@ public class TeamResultsFragment extends Fragment {
         }
 
 
-
         @Override
         public Fragment getItem(int position) {
             Log.d("Team Results", "Creating fragment");
-            ResultsListFragment frag = ResultsListFragment.newInstance(leagues.get(position).getLeagueID());
+            ResultsListFragment frag = ResultsListFragment.newInstance(leagues.get(position).getLeagueID(), mTeamID, mAllTeams);
             return frag;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override
@@ -209,6 +262,70 @@ public class TeamResultsFragment extends Fragment {
     public interface TeamResultsCallbacks {
 
         public void onTeamResultsItemSelected(int position);
+    }
+
+    private class TeamSpinnerAdapter  extends BaseAdapter implements DBObserver{
+        private List<Team> teams = new ArrayList<>();
+        private Context context;
+
+        public TeamSpinnerAdapter(Context context) {
+            this.context = context;
+            teams = DataStore.getInstance(context).getAllTeams();
+        }
+
+        @Override
+        public int getCount() {
+            return teams.size()+1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position > 0 && position <= teams.size() ? teams.get(position-1) : "";
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getDropDownView(int position, View view, ViewGroup parent) {
+            if (view == null || !view.getTag().toString().equals("DROPDOWN")) {
+                view = getActivity().getLayoutInflater().inflate(R.layout.toolbar_spinner_item_dropdown, parent, false);
+                view.setTag("DROPDOWN");
+            }
+
+            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            textView.setText(getTitle(position));
+
+            return view;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup parent) {
+            if (view == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
+                view = getActivity().getLayoutInflater().inflate(R.layout.
+                        toolbar_spinner_item_actionbar, parent, false);
+                view.setTag("NON_DROPDOWN");
+            }
+            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            textView.setText(getTitle(position));
+            return view;
+        }
+
+        private String getTitle(int position) {
+            return position > 0 && position <= teams.size() ? teams.get(position-1).getTeamName() : "All";
+        }
+
+        @Override
+        public void notify(String tableName, Object data) {
+            switch(tableName){
+                case DBProviderContract.ALLTEAMS_TABLE_NAME:
+                    teams = DataStore.getInstance(context).getAllTeams();
+                    notifyDataSetChanged();
+                    break;
+            }
+        }
     }
 
 }
