@@ -18,14 +18,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.CachedRequest;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.LeagueTeam;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
+import company.businessinc.endpoints.ScoreSubmit;
+import company.businessinc.endpoints.ScoreSubmitInterface;
+import company.businessinc.networking.CheckNetworkConnection;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -298,17 +309,15 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                     intent.putExtra(Match.KEY_MATCHID, nextMatch.getMatchID());
                     intent.putExtra(Match.KEY_TEAMONE, nextMatch.getTeamOne());
                     intent.putExtra(Match.KEY_TEAMTWO, nextMatch.getTeamTwo());
-                    startActivity(intent);
+                    showSubmitScoreDialog(nextMatch);
+//                    startActivity(intent);
                 }
             });
 
             //TODO show next team and color
             Drawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(Color.WHITE)
-                    .toUpperCase()
-                    .endConfig()
-                    .buildRound("N", Color.RED);
+                    .buildRound("N", getActivity()
+                            .getResources().getColor(R.color.dark_divider));
             mNextRefMatchImage.setImageDrawable(drawable);
         } else if(!isRefMatch && DataStore.getInstance(getActivity()).getNextGame() != null) {
             final Match nextMatch = DataStore.getInstance(getActivity()).getNextGame();
@@ -316,17 +325,33 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             mNextMatchCard.setVisibility(View.VISIBLE);
 
 //            mNextMatchDivider.setVisibility(View.VISIBLE);
+            int colourTeamOne;
+            int colourTeamTwo;
+
+            Team teamOne = DataStore.getInstance(getActivity()).getTeam(mLeagueID,nextMatch.getTeamOneID());
+            Team teamTwo = DataStore.getInstance(getActivity()).getTeam(mLeagueID,nextMatch.getTeamTwoID());
+
+            if(teamOne != null){
+                colourTeamOne = Color.parseColor(teamOne.getTeamColorPrimary());
+            } else {
+                colourTeamOne = Color.GRAY;
+            }
+            if(teamTwo != null){
+                colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
+            } else {
+                colourTeamTwo = Color.GRAY;
+            }
             if (nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
                 mNextMatchName.setText(nextMatch.getTeamTwo());
                 TextDrawable avatar = TextDrawable.builder()
-                        .buildRound(nextMatch.getTeamTwo().substring(0, 1), getActivity()
-                                .getResources().getColor(R.color.dark_divider));
+                        .buildRound(nextMatch.getTeamTwo().substring(0, 1),
+                                colourTeamTwo);
                 mNextMatchImage.setImageDrawable(avatar);
             } else {
                 mNextMatchName.setText(nextMatch.getTeamOne());
                 TextDrawable avatar = TextDrawable.builder()
-                        .buildRound(nextMatch.getTeamOne().substring(0, 1), getActivity()
-                                .getResources().getColor(R.color.dark_divider));
+                        .buildRound(nextMatch.getTeamOne().substring(0, 1),
+                                colourTeamOne);
                 mNextMatchImage.setImageDrawable(avatar);
             }
             mNextMatchPlace.setText(nextMatch.getPlace());
@@ -362,6 +387,102 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
         }
 
         refreshPage();
+    }
+
+    private void showSubmitScoreDialog(final Match match) {
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title("Submit Scores")
+                .customView(R.layout.dialog_submit_score, true)
+                .positiveText("Submit")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        Integer mTeamOneScore = null;
+                        Integer mTeamTwoScore = null;
+                        CheckBox mTeamCaptainConfirm = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_confirm);
+                        CheckBox mTeamOneForfeit = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_forfeit);
+                        CheckBox mTeamTwoForfeit = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_forfeit);
+                        MaterialEditText mTeamOneEditText = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_name);
+                        MaterialEditText mTeamTwoEditText = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_name);
+
+                        if(!mTeamCaptainConfirm.isChecked()){
+                            Toast.makeText(getActivity(), "Captains need to approve scores", Toast.LENGTH_SHORT).show();
+                        } else if(mTeamOneForfeit.isChecked() && mTeamTwoForfeit.isChecked()) {
+                            Toast.makeText(getActivity(), "Both teams can't forfeit", Toast.LENGTH_SHORT).show();
+                        } else {
+                            boolean mIsForfeit = false;
+                            if(mTeamOneForfeit.isChecked()){
+                                mTeamOneScore = 0;
+                                mTeamTwoScore = 10;
+                                mIsForfeit = true;
+                            } else if(mTeamTwoForfeit.isChecked()){
+                                mTeamOneScore = 10;
+                                mTeamTwoScore = 0;
+                                mIsForfeit = true;
+                            } else {
+                                try{
+                                    mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+                                } catch(NumberFormatException e){
+                                    Toast.makeText(getActivity(), "Enter score for " + match.getTeamOne(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                try{
+                                    mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+                                } catch(NumberFormatException e){
+                                    Toast.makeText(getActivity(), "Enter score for " + match.getTeamTwo(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            if(CheckNetworkConnection.check(getActivity())) {
+                                ScoreSubmitInterface activity = null;
+                                try {
+                                    activity = (ScoreSubmitInterface) getActivity();
+                                } catch (ClassCastException e) {
+                                    throw new ClassCastException(activity.toString()
+                                            + " must implement ScoreSubmitInteface");
+                                }
+                                new ScoreSubmit((ScoreSubmitInterface) getActivity(), getActivity(), match.getMatchID(), mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+                            } else {
+                                Toast.makeText(getActivity(), "No network connection, the score will be submitted automatically", Toast.LENGTH_LONG).show();
+                                try {
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("matchID", Integer.toString(match.getMatchID()));
+                                    jsonObject.put("teamOneScore", Integer.toString(mTeamOneScore));
+                                    jsonObject.put("teamTwoScore", Integer.toString(mTeamTwoScore));
+                                    jsonObject.put("isForfeit", Boolean.toString(mIsForfeit));
+                                    DataStore.getInstance(getActivity()).cacheRequest(new CachedRequest(CachedRequest.RequestType.SUBMITSCORE, jsonObject));
+                                } catch (JSONException e){
+
+                                }
+                            }
+                        }
+                    }
+                })
+                .build();
+
+        Team teamOne = DataStore.getInstance(getActivity()).getTeam(mLeagueID,match.getTeamOneID());
+        Team teamTwo = DataStore.getInstance(getActivity()).getTeam(mLeagueID,match.getTeamTwoID());
+
+        TextDrawable teamOneAvatar = TextDrawable.builder()
+                .buildRound(match.getTeamOne().substring(0,1),
+                        Color.parseColor(teamOne.getTeamColorPrimary()));
+        TextDrawable teamTwoAvatar = TextDrawable.builder()
+                .buildRound(match.getTeamTwo().substring(0,1),
+                        Color.parseColor(teamTwo.getTeamColorPrimary()));
+        ImageView teamOneImage = (ImageView) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_image);
+        ImageView teamTwoImage = (ImageView) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_image);
+        teamOneImage.setImageDrawable(teamOneAvatar);
+        teamTwoImage.setImageDrawable(teamTwoAvatar);
+
+        MaterialEditText teamOneInput = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_name);
+        MaterialEditText teamTwoInput = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_name);
+        teamOneInput.setHint(match.getTeamOne() + "'s score");
+        teamOneInput.setFloatingLabelText("Input " + match.getTeamOne() + "'s score");
+        teamTwoInput.setHint(match.getTeamTwo() + "'s score");
+        teamTwoInput.setFloatingLabelText("Input " + match.getTeamTwo() + "'s score");
+        dialog.show();
     }
 
     public void setLeagueScores(){

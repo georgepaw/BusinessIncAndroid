@@ -100,7 +100,7 @@ public class SubmitScoreActivity extends ActionBarActivity implements ScoreSubmi
                 }
             }
             if(CheckNetworkConnection.check(this)) {
-                new ScoreSubmit(this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+                new ScoreSubmit(this, this, mMatchId, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
             } else {
                 Toast.makeText(this, "No network connection, the score will be submitted automatically", Toast.LENGTH_LONG).show();
                 try {

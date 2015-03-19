@@ -86,7 +86,7 @@ public class PlayerRequestsFragment extends Fragment {
         drawerFrameLayout.setStatusBarBackgroundColor(color);
 
         DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
-        navigationDrawerLayout.selectItem(2);
+        navigationDrawerLayout.selectItem(4);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
