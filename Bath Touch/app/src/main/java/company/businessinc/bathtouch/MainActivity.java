@@ -304,17 +304,14 @@ public class MainActivity extends ActionBarActivity
 
 
         //Google play services + notifications
-        if (checkPlayServices())
-        {
+        if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(getApplicationContext());
 
-            if (regid.isEmpty())
-            {
+            if (regid.isEmpty()) {
                 registerInBackground();
             }
-            else
-            {
+            else {
                 Log.d(TAG, "No valid Google Play Services APK found.");
             }
         }

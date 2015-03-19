@@ -798,15 +798,15 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
-    public void setMyAvailability(boolean isPlaying, int matchID){
+    public void setMyAvailability(boolean isPlaying, int matchID, int userID){
         if(!myMatchesAvailability.contains(matchID)){
             myMatchesAvailability.add(matchID);
         }
-        new UpAvailability(this, context, isPlaying ? 1 : 0, matchID).execute();
+        new UpAvailability(this, context, isPlaying ? 1 : 0, matchID, userID, UpAvailability.CallType.SETMYAVAILABILITY).execute();
     }
 
     public void setPlayersAvailability(boolean isPlaying, int userID, int matchID){
-        new UpAvailability(this, context, isPlaying ? 1 : 0, matchID, userID).execute();
+        new UpAvailability(this, context, isPlaying ? 1 : 0, matchID, userID, UpAvailability.CallType.SETPLAYERSAVAILABILITY).execute();
     }
 
     public void upAvailabilityCallback(ResponseStatus responseStatus, boolean isPlaying, UpAvailability.CallType callType, int matchID, int userID){

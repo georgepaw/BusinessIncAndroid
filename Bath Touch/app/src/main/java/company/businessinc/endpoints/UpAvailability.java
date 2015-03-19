@@ -32,26 +32,17 @@ public class UpAvailability extends AsyncTask<Void, Void, ResponseStatus> {
     private CallType callType;
     private Context context;
 
-    public UpAvailability(UpAvailabilityInterface callback, Context context, int isPlaying, int matchID, int userID) {
+    public UpAvailability(UpAvailabilityInterface callback, Context context, int isPlaying, int matchID, int userID, CallType callType) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
         parameters.add(new BasicNameValuePair("isPlaying", Integer.toString(isPlaying)));
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
-        parameters.add(new BasicNameValuePair("userID", Integer.toString(userID)));
-        callType = CallType.SETPLAYERSAVAILABILITY;
+        if(callType == CallType.SETPLAYERSAVAILABILITY){
+            parameters.add(new BasicNameValuePair("userID", Integer.toString(userID)));
+        }
+        this.callType = callType;
         this.matchID = matchID;
         this.userID = userID;
-        this.isPlaying = isPlaying == 1;
-        this.context = context;
-    }
-
-    public UpAvailability(UpAvailabilityInterface callback, Context context, int isPlaying, int matchID) {
-        this.callback = callback;
-        parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("isPlaying", Integer.toString(isPlaying)));
-        parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
-        callType = CallType.SETMYAVAILABILITY;
-        this.matchID = matchID;
         this.isPlaying = isPlaying == 1;
         this.context = context;
     }

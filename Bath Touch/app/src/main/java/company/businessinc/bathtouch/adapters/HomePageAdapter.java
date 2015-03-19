@@ -484,8 +484,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mViewHolderNextMatch.playerAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        DataStore.getInstance(context).setMyAvailability(isChecked, nextMatch.getMatchID());
-                    }
+                           }
                 });
             }
             if (nextMatch.getTeamOne() != null) {
