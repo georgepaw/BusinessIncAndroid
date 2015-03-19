@@ -202,7 +202,9 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         //try and get other team details, may have not been loaded from db yet
         try {
-            v.mCaptainName.setText(fullTeam.getCaptainName());
+            String captainName = fullTeam.getCaptainName();
+            captainName = captainName.equals("") ? "No captain" : captainName;
+            v.mCaptainName.setText(captainName);
         } catch (Exception e) {
             v.mCaptainName.setText("No Captain found");
             Log.d("LEAGUETABLEDAPATER", "No team found in db for leagueTeam");

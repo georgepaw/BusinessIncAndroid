@@ -64,7 +64,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
         this.matchID = matchID;
         this.hasBeenPlayed = hasBeenPlayed;
 
-        REQUESTPLAYERS = DataStore.getInstance(context).isUserCaptain() ? 1 : 0;
+        REQUESTPLAYERS = (!hasBeenPlayed && DataStore.getInstance(context).isUserCaptain()) ? 1 : 0;
 
     }
 
@@ -162,6 +162,7 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                 }
             } else {
                 Toast.makeText(context, "Players availability couldn't be changed, try again later.", Toast.LENGTH_LONG).show();
+                mCheckBox.setChecked(!isPlaying);
             }
             mCheckBox.setEnabled(true);
         }

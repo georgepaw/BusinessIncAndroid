@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.melnykov.fab.FloatingActionButton;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
+import company.businessinc.bathtouch.data.DataStore;
 
 /**
  * Created by user on 30/01/15.
@@ -91,13 +92,17 @@ public class AvailablePlayersFragment extends Fragment{
 
 
         FloatingActionButton fab = (FloatingActionButton) mLayout.findViewById(R.id.team_roster_fab);
-        fab.attachToRecyclerView(mRecyclerView);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallbacks.createGhostPlayerEvent(); //TODO Fix this
-            }
-        });
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn() && DataStore.getInstance(getActivity()).isUserCaptain() && !hasBeenPlayed) {
+            fab.attachToRecyclerView(mRecyclerView);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallbacks.createGhostPlayerEvent();
+                }
+            });
+        } else {
+            fab.setVisibility(View.GONE);
+        }
 
         return mLayout;
     }

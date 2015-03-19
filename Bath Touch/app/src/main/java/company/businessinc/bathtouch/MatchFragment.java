@@ -255,7 +255,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         @Override
         public Fragment getItem(int position) {
             String switchString;
-            if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            if(displayLoggedInHeaders()){
                 switchString = position < headersLoggedIn.length ? headersLoggedIn[position] : "null";
             } else {
                 switchString = position < headersAnon.length ? headersAnon[position] : "null";
@@ -273,7 +273,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
 
         @Override
         public int getCount() {
-            if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            if(displayLoggedInHeaders()){
                 return headersLoggedIn.length;
             } else{
                 return headersAnon.length;
@@ -282,11 +282,15 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            if(displayLoggedInHeaders()){
                 return position < headersLoggedIn.length ? headersLoggedIn[position] : "null";
             } else {
                 return position < headersAnon.length ? headersAnon[position] : "null";
             }
+        }
+
+        private boolean displayLoggedInHeaders(){
+            return DataStore.getInstance(getActivity()).isUserLoggedIn() && (DataStore.getInstance(getActivity()).getUserTeamID() == mTeamOneID || DataStore.getInstance(getActivity()).getUserTeamID() == mTeamTwoID);
         }
     }
 }

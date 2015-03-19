@@ -68,7 +68,6 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mCard = (CardView) v.findViewById(R.id.match_result_item_container);
             mMatchCardButton = (RelativeLayout) v.findViewById(R.id.match_result_match_overview_button);
             mExpandable = (RelativeLayout) v.findViewById(R.id.match_result_expandable);
-            mOppTeamImg = (ImageView) v.findViewById(R.id.match_result_opp_team_image);
 
 
             mCard.setOnClickListener(this);
