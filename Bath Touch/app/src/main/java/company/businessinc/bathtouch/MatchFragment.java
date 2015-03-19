@@ -114,33 +114,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
         headerBox.setBackgroundColor(primaryColour);
 
-        int colourTeamOne;
-        int colourTeamTwo;
-        Team teamOne = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamOneID);
-        Team teamTwo = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamTwoID);
-        if(teamOne != null){
-            colourTeamOne = Color.parseColor(teamOne.getTeamColorPrimary());
-        } else {
-            colourTeamOne = Color.RED;
-        }
-
-        if(teamTwo != null){
-            colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
-        } else {
-            colourTeamTwo = Color.RED;
-        }
-
-        teamOneDrawable = TextDrawable.builder()
-                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), colourTeamOne);
-
-        teamTwoDrawable = TextDrawable.builder()
-                .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), colourTeamTwo);
-
-        teamOneImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_one_image);
-        teamOneImage.setImageDrawable(teamOneDrawable);
-
-        teamTwoImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_two_image);
-        teamTwoImage.setImageDrawable(teamTwoDrawable);
+        setCircles();
 
         teamOneText = (TextView) mLayout.findViewById(R.id.activity_match_header_team_one_text);
         teamOneText.setText(mTeamOneName);
@@ -240,6 +214,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
             case DBProviderContract.LEAGUETEAMS_TABLE_NAME:
                     if(mViewPager!=null) {
                         mViewPager.getAdapter().notifyDataSetChanged();
+                        setCircles();
                     }
                 break;
         }
@@ -292,5 +267,35 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         private boolean displayLoggedInHeaders(){
             return DataStore.getInstance(getActivity()).isUserLoggedIn() && (DataStore.getInstance(getActivity()).getUserTeamID() == mTeamOneID || DataStore.getInstance(getActivity()).getUserTeamID() == mTeamTwoID);
         }
+    }
+
+    private void setCircles(){
+        int colourTeamOne;
+        int colourTeamTwo;
+        Team teamOne = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamOneID);
+        Team teamTwo = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamTwoID);
+        if(teamOne != null){
+            colourTeamOne = Color.parseColor(teamOne.getTeamColorPrimary());
+        } else {
+            colourTeamOne = Color.RED;
+        }
+
+        if(teamTwo != null){
+            colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
+        } else {
+            colourTeamTwo = Color.RED;
+        }
+
+        teamOneDrawable = TextDrawable.builder()
+                .buildRound(mTeamOneName.substring(0,1).toUpperCase(), colourTeamOne);
+
+        teamTwoDrawable = TextDrawable.builder()
+                .buildRound(mTeamTwoName.substring(0,1).toUpperCase(), colourTeamTwo);
+
+        teamOneImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_one_image);
+        teamOneImage.setImageDrawable(teamOneDrawable);
+
+        teamTwoImage = (ImageView) mLayout.findViewById(R.id.activity_match_header_team_two_image);
+        teamTwoImage.setImageDrawable(teamTwoDrawable);
     }
 }

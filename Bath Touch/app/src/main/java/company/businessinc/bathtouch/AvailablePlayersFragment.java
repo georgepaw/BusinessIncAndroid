@@ -8,9 +8,13 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +107,22 @@ public class AvailablePlayersFragment extends Fragment{
         } else {
             fab.setVisibility(View.GONE);
         }
+
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mLayout.findViewById(R.id.swipeRefreshAvailabilites);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        DataStore.getInstance(getActivity()).refreshMatchAvailabilities();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                },3000);
+            }
+        });
+
 
         return mLayout;
     }

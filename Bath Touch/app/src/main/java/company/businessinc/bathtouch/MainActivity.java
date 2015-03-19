@@ -482,7 +482,11 @@ public class MainActivity extends ActionBarActivity
             ft.addToBackStack(tag);
             ft.commit();
         } else if (!fragment.isVisible()) {
-            ft.replace(R.id.container, fragment, tag);
+            if (tag.equals("MATCHDETAILSFRAG")) {
+                ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
+            } else {
+                ft.replace(R.id.container, fragment, tag);
+            }
             ft.addToBackStack(tag);
             ft.commit();
         }
