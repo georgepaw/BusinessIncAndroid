@@ -347,18 +347,9 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         try{
             //set specific team colors if it has been loaded by db
             teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
-
-            Drawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(teamColor)
-                    .toUpperCase()
-                    .endConfig()
-                    .buildRound("D", Color.WHITE);
-            v.mOppTeamImg.setImageDrawable(drawable);
-
         }
         catch (Exception e){
-            teamColor = Color.GRAY;
+            teamColor = Color.WHITE;
         }
         v.mExpandable.setBackgroundColor(teamColor);
         v.mExpandable.getBackground().setAlpha(200);

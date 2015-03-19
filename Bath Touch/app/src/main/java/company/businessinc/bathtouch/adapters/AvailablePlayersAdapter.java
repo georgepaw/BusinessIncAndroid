@@ -106,7 +106,11 @@ public class AvailablePlayersAdapter extends RecyclerView.Adapter implements DBO
                     userID = selectedPlayers.get(position).getUserID();
                 }
                 mCheckBox.setEnabled(false);
-                new UpAvailability(this, context, mCheckBox.isChecked() ? 1 : 0, matchID, userID).execute();
+                if(DataStore.getInstance(context).isUserLoggedIn() && DataStore.getInstance(context).isUserCaptain()) {
+                    new UpAvailability(this, context, mCheckBox.isChecked() ? 1 : 0, matchID, userID, UpAvailability.CallType.SETPLAYERSAVAILABILITY).execute();
+                } else {
+                    new UpAvailability(this, context, mCheckBox.isChecked() ? 1 : 0, matchID, userID, UpAvailability.CallType.SETMYAVAILABILITY).execute();
+                }
             } else if (v.getId() == mCardTop.getId()) {
                 ValueAnimator animator; //expand the player
                 if (mRelativeExtras.getVisibility() == View.GONE) {
