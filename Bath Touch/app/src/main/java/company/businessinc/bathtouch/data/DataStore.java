@@ -466,7 +466,24 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
                 null,
                 null);
 
-        List<Match> output = Match.cursorToList(cursor);
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output;
+    }
+
+    public List<Match> getMyPastRefereeGames(){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_SCORES_ARE_NOT_NULL,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
         cursor.close();
         SQLiteManager.getInstance(context).closeDatabase();
         return output;
@@ -918,7 +935,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         dropAvailability();
     }
 
-    private void dropAllTables(){
+    public void dropAllTables(){
         //first drop the tables that always exist
         SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
         for(String t : DBProviderContract.TABLES){
@@ -979,7 +996,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
             if(cachedRequest.getRequestType() == CachedRequest.RequestType.SUBMITSCORE){
                 JSONObject jsonObject = cachedRequest.getParameters();
                 try {
-                    new ScoreSubmit(this, jsonObject.getInt("matchID"), jsonObject.getInt("teamOneScore"), jsonObject.getInt("teamTwoScore"), jsonObject.getBoolean("isForfeit")).execute();
+                    new ScoreSubmit(this, context, jsonObject.getInt("matchID"), jsonObject.getInt("teamOneScore"), jsonObject.getInt("teamTwoScore"), jsonObject.getBoolean("isForfeit")).execute();
                 } catch (JSONException e){
 
                 }

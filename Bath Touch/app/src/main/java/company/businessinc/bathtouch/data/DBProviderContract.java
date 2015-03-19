@@ -22,6 +22,7 @@ public class DBProviderContract {
     public static final String SELECTION_MATCHIDANDUSERID = Match.KEY_MATCHID + " = ? AND " + Player.KEY_USERID + " = ?";
     public static final String SELECTION_MATCHIDANDISPLAYING = Match.KEY_MATCHID + " = ? AND " + Player.KEY_ISPLAYING + " = ?";
     public static final String SELECTION_SCORES_ARE_NULL = Match.KEY_TEAMONEPOINTS + " is null AND " + Match.KEY_TEAMTWOPOINTS + " is null";
+    public static final String SELECTION_SCORES_ARE_NOT_NULL = Match.KEY_TEAMONEPOINTS + " is not null AND " + Match.KEY_TEAMTWOPOINTS + " is not null";
 
     public static final String SQL_DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS";
 
