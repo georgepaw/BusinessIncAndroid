@@ -587,6 +587,40 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return output;
     }
 
+    public List<Match> getTodaysMatches(int leagueID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUETODAY_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEID,
+                new String[]{Integer.toString(leagueID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.sortList(Match.cursorToList(cursor), Match.SortType.ASCENDING);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output;
+    }
+
+    public Match getTodaysMatch(int leagueID, int matchID){
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.LEAGUETODAY_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_LEAGUEIDANDMATCHID,
+                new String[]{Integer.toString(leagueID), Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+
+        List<Match> output = Match.cursorToList(cursor);
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output.isEmpty() ? null : output.get(0);
+    }
+
     /**
      * API Calls and thier callbacks
      */
@@ -849,7 +883,7 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     public void loadLeagueToday(int leagueID){
         if(!loadedLeagueToday.contains(leagueID)) {
-            new LeagueScores(this, context, leagueID).execute();
+            new LeagueToday(this, context, leagueID).execute();
             loadedLeagueToday.add(leagueID);
         }
     }

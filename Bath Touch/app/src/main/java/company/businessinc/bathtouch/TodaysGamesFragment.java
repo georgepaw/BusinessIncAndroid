@@ -12,26 +12,18 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.LinkedList;
-import java.util.List;
-
+import android.view.*;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
-
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.League;
 
-public class LeagueTableFragment extends Fragment {
+import java.util.LinkedList;
+import java.util.List;
 
+public class TodaysGamesFragment extends Fragment{
 
-    private LeagueTableCallbacks mCallbacks;
     private View mLayout;
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
@@ -40,14 +32,14 @@ public class LeagueTableFragment extends Fragment {
     private static final String ANON_PRIMARY = "#ff0000";
 
 
-    public static LeagueTableFragment newInstance() {
-        LeagueTableFragment fragment = new LeagueTableFragment();
+    public static TodaysGamesFragment newInstance() {
+        TodaysGamesFragment fragment = new TodaysGamesFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public LeagueTableFragment() {
+    public TodaysGamesFragment() {
     }
 
     @Override
@@ -65,10 +57,10 @@ public class LeagueTableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
+        mLayout = inflater.inflate(R.layout.fragment_todays_games, container, false);
 
         int userColor;
-        if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
         } else {
             userColor = Color.parseColor(ANON_PRIMARY);
@@ -76,7 +68,7 @@ public class LeagueTableFragment extends Fragment {
 
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
-        actionBar.setTitle("League Tables");
+        actionBar.setTitle("Today's Games");
         actionBar.setElevation(0f);
 
         DrawerFrameLayout drawerFrameLayout = (DrawerFrameLayout) (getActivity().findViewById(R.id.drawer_layout));
@@ -87,10 +79,10 @@ public class LeagueTableFragment extends Fragment {
         DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
         navigationDrawerLayout.selectItem(1);
 
-        mViewPager = (ViewPager) mLayout.findViewById(R.id.fragment_league_table_view_pager);
+        mViewPager = (ViewPager) mLayout.findViewById(R.id.fragment_todays_games_view_pager);
 
         // it's PagerAdapter set.
-        mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.fragment_league_table_sliding_tabs);
+        mSlidingTabLayout = (SlidingTabLayout) mLayout.findViewById(R.id.fragment_todays_games_sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
         mSlidingTabLayout.setBackgroundColor(userColor);
 
@@ -119,44 +111,27 @@ public class LeagueTableFragment extends Fragment {
                 }
             });
         }
-        DataStore.getInstance(getActivity()).registerAllLeagueDBObserver(mViewPagerAdapter);
+        DataStore.getInstance(getActivity()).registerLiveLeagueDBObserver(mViewPagerAdapter);
         mViewPagerAdapter.setLeagues();
         return mLayout;
     }
 
     @Override
-    public void onDestroyView() {
-        DataStore.getInstance(getActivity()).unregisterAllLeagueDBObserver(mViewPagerAdapter);
+    public void onDestroyView(){
+        DataStore.getInstance(getActivity()).unregisterLiveLeagueDBObserver(mViewPagerAdapter);
         super.onDestroyView();
     }
 
-    public int darker(int color, float factor) {
+    public int darker (int color, float factor) {
         int a = Color.alpha(color);
-        int r = Color.red(color);
-        int g = Color.green(color);
-        int b = Color.blue(color);
+        int r = Color.red( color );
+        int g = Color.green( color );
+        int b = Color.blue( color );
 
-        return Color.argb(a,
-                Math.max((int) (r * factor), 0),
-                Math.max((int) (g * factor), 0),
-                Math.max((int) (b * factor), 0));
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mCallbacks = (LeagueTableCallbacks) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
+        return Color.argb( a,
+                Math.max( (int)(r * factor), 0 ),
+                Math.max( (int)(g * factor), 0 ),
+                Math.max( (int)(b * factor), 0 ) );
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter implements DBObserver {
@@ -166,14 +141,13 @@ public class LeagueTableFragment extends Fragment {
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            leagueNames = DataStore.getInstance(getActivity()).getAllLeagues();
+            leagueNames = DataStore.getInstance(getActivity()).getAllLiveLeagues();
         }
 
         @Override
         public Fragment getItem(int position) {
             Log.d("Team Results", "Creating fragment");
-            LeagueFragment frag = LeagueFragment.newInstance(leagueNames.get(position).getLeagueID());
-            return frag;
+            return TodayFragment.newInstance(leagueNames.get(position).getLeagueID());
         }
 
         @Override
@@ -188,22 +162,17 @@ public class LeagueTableFragment extends Fragment {
 
         @Override
         public void notify(String tableName, Object data) {
-            switch (tableName) {
-                case DBProviderContract.ALLLEAGUES_TABLE_NAME:
+            switch (tableName){
+                case DBProviderContract.LIVELEAGUE_TABLE_NAME:
                     setLeagues();
                     break;
             }
         }
 
-        public void setLeagues() {
+        public void setLeagues(){
             leagueNames = DataStore.getInstance(getActivity()).getAllLeagues();
             notifyDataSetChanged();
         }
-    }
-
-    public interface LeagueTableCallbacks {
-
-        public void onLeagueTableItemSelected(int position);
     }
 
 }

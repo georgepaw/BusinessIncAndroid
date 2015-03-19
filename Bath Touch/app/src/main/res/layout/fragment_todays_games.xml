@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="company.businessinc.bathtouch.TodaysGamesFragment">
+
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <company.businessinc.bathtouch.SlidingTabLayout
+            android:id="@+id/fragment_todays_games_sliding_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:elevation="@dimen/headerbar_elevation" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/fragment_todays_games_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/fragment_todays_games_sliding_tabs" />
+
+    </RelativeLayout>
+
+</FrameLayout>
