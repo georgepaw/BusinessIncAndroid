@@ -193,67 +193,7 @@ public class TodaysGameAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         }
     }
-
-
-//    public void bindLeagueItem(ViewHolderLeague v, int position) {
-//
-//        LeagueTeam team = leagueTeams.get(position);
-//        Team fullTeam = null;
-//        int circleColor;
-//        int textColor = mContext.getResources().getColor(R.color.body_text_2);
-//
-//        for (Team e : allTeams) {
-//            if (e.getTeamID() == team.getTeamID()) {
-//                fullTeam = e;
-//                break;
-//            }
-//        }
-//
-//        //try and get other team details, may have not been loaded from db yet
-//        try {
-//            String captainName = fullTeam.getCaptainName();
-//            captainName = captainName.equals("") ? "No captain" : captainName;
-//            v.mCaptainName.setText(captainName);
-//        } catch (Exception e) {
-//            v.mCaptainName.setText("No Captain found");
-//            Log.d("LEAGUETABLEDAPATER", "No team found in db for leagueTeam");
-//        }
-//        try {
-//            circleColor = Color.parseColor(fullTeam.getTeamColorPrimary());
-//        } catch (Exception e) {
-//            circleColor = Color.LTGRAY;
-//            Log.d("LEAGUEADAPTER", "Team colors still null in db");
-//        }
-//
-//
-//        //set text for teams league standings
-//        v.mTeamName.setText(team.getTeamName());
-//        v.mTeamName.setTextColor(textColor);
-////        v.mTeamPos.setText(team.getPosition().toString());
-//        v.mTeamForfeits.setText(team.getForfeit().toString());
-//        v.mTeamForfeits.setTextColor(textColor);
-//        v.mTeamDraw.setText(team.getDraw().toString());
-//        v.mTeamDraw.setTextColor(textColor);
-//        v.mTeamLose.setText(team.getLose().toString());
-//        v.mTeamLose.setTextColor(textColor);
-//        v.mTeamWin.setText(team.getWin().toString());
-//        v.mTeamWin.setTextColor(textColor);
-//        v.mTeamPts.setText(team.getLeaguePoints().toString());
-//        v.mTeamPts.setTypeface(null, Typeface.BOLD);
-//        v.mTeamPts.setTextColor(textColor);
-//        v.mPtsFor.setText(team.getPointsFor().toString());
-//        v.mPtsAgn.setText(team.getPointsAgainst().toString());
-//
-//        //Set circle icons for positions, points for and against
-//        String leaguePosition = team.getPosition().toString();
-//
-////        v.mImagePosition.setImageDrawable(drawable);
-//        v.mTeamPos.setText(leaguePosition);
-//        v.mTeamPos.setTextColor(circleColor);
-//
-//    }
-
-
+    
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
