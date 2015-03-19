@@ -128,7 +128,7 @@
                         android:layout_height="30dp"
                         android:layout_alignParentLeft="true"
                         android:scaleType="fitStart"
-                        android:src="@mipmap/ic_assessment_white" />
+                        android:src="@drawable/ic_assesment_black" />
 
                     <TextView
                         android:id="@+id/match_result_league"
@@ -137,8 +137,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="40dp"
-                        android:text=""
-                        android:textColor="@color/white"
                         android:textSize="14dp" />
                 </RelativeLayout>
 
@@ -152,7 +150,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentLeft="true"
-                        android:src="@mipmap/ic_event_white" />
+                        android:src="@drawable/ic_event_black" />
 
                     <TextView
                         android:id="@+id/match_result_date"
@@ -161,8 +159,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="40dp"
-                        android:text=""
-                        android:textColor="@color/white"
                         android:textSize="14dp" />
 
                 </RelativeLayout>
@@ -177,7 +173,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentLeft="true"
-                        android:src="@mipmap/ic_place_white" />
+                        android:src="@drawable/ic_place_black" />
 
                     <TextView
                         android:id="@+id/match_result_location"
@@ -186,8 +182,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="40dp"
-                        android:text=""
-                        android:textColor="@color/white"
                         android:textSize="14dp" />
 
                 </RelativeLayout>
@@ -216,7 +210,6 @@
                             android:layout_centerVertical="true"
                             android:paddingRight="30dp"
                             android:text="View Match Overview"
-                            android:textColor="@color/white"
                             android:textSize="14dp" />
 
                         <ImageView

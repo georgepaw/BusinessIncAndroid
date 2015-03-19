@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:card_view="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
+            android:id="@+id/fragment_todays_game_match_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                >
+
+
+            <LinearLayout
+                    android:id="@+id/fragment_todays_game_teams"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+                
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+
+                    <ImageView
+                            android:id="@+id/fragment_todays_game_team_one_image"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginRight="16dp"/>
+
+                    <TextView
+                            android:id="@+id/fragment_todays_game_team_one_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/fragment_todays_game_team_one_image"
+                            android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="VS"
+                            android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+
+                    <ImageView
+                            android:id="@+id/fragment_todays_game_team_two_image"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="16dp"/>
+
+                    <TextView
+                            android:id="@+id/fragment_todays_game_team_two_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/fragment_todays_game_team_two_image"
+                            android:paddingRight="10dp"
+                            android:textStyle="bold"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_todays_game_teams">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:orientation="vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingTop="16dp">
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:gravity="center_vertical">
+
+                        <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:scaleType="fitStart"
+                                android:src="@drawable/ic_assesment_black" />
+
+                        <TextView
+                                android:id="@+id/fragment_todays_game_league"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:paddingLeft="40dp"
+                                android:textSize="14dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:gravity="center_vertical">
+
+                        <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:src="@drawable/ic_event_black" />
+
+                        <TextView
+                                android:id="@+id/fragment_todays_game_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:paddingLeft="40dp"
+                                android:textSize="14dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:gravity="center_vertical">
+
+                        <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:src="@drawable/ic_place_black" />
+
+                        <TextView
+                                android:id="@+id/fragment_todays_game_location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:paddingLeft="40dp"
+                                android:textSize="14dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="8dp"
+                            android:clickable="true"
+
+                            >
+
+                        <RelativeLayout
+                                android:layout_width="165dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:clickable="true">
+
+                            <Button
+                                    android:id="@+id/fragment_todays_game_button"
+                                    style="?android:attr/borderlessButtonStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentRight="true"
+                                    android:text="Match Details"
+                                    android:textColor="@color/red"
+                                    android:textAllCaps="true"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"/>
+
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
