@@ -1,7 +1,10 @@
 package company.businessinc.endpoints;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.networking.APICall;
 import company.businessinc.networking.APICallType;
@@ -19,10 +22,12 @@ public class ScoreSubmit extends AsyncTask<Void, Void, ResponseStatus> {
     String TAG = "ScoreSubmit";
     private ScoreSubmitInterface callback;
     private List<NameValuePair> parameters;
+    private Context context;
 
-    public ScoreSubmit(ScoreSubmitInterface callback, int matchID, int teamOneScore, int teamTwoScore, boolean isForfeit) {
+    public ScoreSubmit(ScoreSubmitInterface callback, Context context, int matchID, int teamOneScore, int teamTwoScore, boolean isForfeit) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
+        this.context = context;
         parameters.add(new BasicNameValuePair("matchID", Integer.toString(matchID)));
         parameters.add(new BasicNameValuePair("teamOneScore", Integer.toString(teamOneScore)));
         parameters.add(new BasicNameValuePair("teamTwoScore", Integer.toString(teamTwoScore)));
@@ -41,6 +46,10 @@ public class ScoreSubmit extends AsyncTask<Void, Void, ResponseStatus> {
         ResponseStatus bool = new ResponseStatus(false);
         try{
             bool = new ResponseStatus(jsonObject);
+            if(bool.getStatus()){
+                DataStore.getInstance(context).dropAllTables();
+                DataStore.getInstance(context).refreshData();
+            }
         } catch (Exception e){
             Log.d(TAG, "Couldn't parse JSON into Status");
         }
