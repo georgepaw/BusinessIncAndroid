@@ -66,7 +66,7 @@ public class GcmIntentService extends IntentService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
         switch(messageType){ //All the parameters are descrbed in the API file in the SPE folder
             case "1": //Player requests
-                notificationTitle = "Players are needed!";
+                notificationTitle = "Player request";
                 String teamName = bundle.getString("teamName");
                 String gender = bundle.getString("gender").equals("0") ? "male" : "female";
                 try {
@@ -78,7 +78,7 @@ public class GcmIntentService extends IntentService {
                 DataStore.getInstance(this).refreshRequests();
                 break;
             case "2": //ref assigment
-                notificationTitle = "You are refereeing!";
+                notificationTitle = "New referee allocation";
                 String location = bundle.getString("location");
 
                 try {
@@ -98,7 +98,7 @@ public class GcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_notification)
                         .setContentTitle(notificationTitle)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(notificationBody))
