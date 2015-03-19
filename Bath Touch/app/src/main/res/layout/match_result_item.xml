@@ -137,7 +137,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="40dp"
-                        android:text="Bath Summer League 2015"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="14dp" />
                 </RelativeLayout>
@@ -161,7 +161,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="40dp"
-                        android:text="Tue, 2nd Feb"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="14dp" />
 
@@ -186,7 +186,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="40dp"
-                        android:text="Old Trafford"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="14dp" />
 
@@ -231,14 +231,6 @@
 
                 </RelativeLayout>
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/match_result_opp_team_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="50dp"/>
 
         </RelativeLayout>
 
