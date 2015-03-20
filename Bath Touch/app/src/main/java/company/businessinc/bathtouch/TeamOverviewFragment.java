@@ -313,6 +313,8 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
 //                    startActivity(intent);
                 }
             });
+
+            //TODO show next team and color
             Drawable drawable = TextDrawable.builder()
                     .buildRound("N", getActivity()
                             .getResources().getColor(R.color.dark_divider));
@@ -337,8 +339,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             if(teamTwo != null){
                 colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
             } else {
-                colourTeamTwo = getActivity()
-                        .getResources().getColor(R.color.dark_divider);
+                colourTeamTwo = Color.GRAY;
             }
             if (nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
                 mNextMatchName.setText(nextMatch.getTeamTwo());
@@ -542,10 +543,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
         refreshPage();
     }
 
-    public void setAvailability(){
-        mNextMatchCheckBox.setChecked(DataStore.getInstance(getActivity()).amIPlaying(DataStore.getInstance(getActivity()).getNextGame().getMatchID()));
-    }
-
     @Override
     public void onRefresh() {
         Log.d("TeamOverviewFragment", "Refreshing data");
@@ -557,9 +554,7 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 mLayout.setVisibility(View.GONE);
                 ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
                 mSwipeRefresh.setRefreshing(false);
-                if(pager.getAdapter() != null) {
-                    pager.getAdapter().notifyDataSetChanged();
-                }
+                pager.getAdapter().notifyDataSetChanged();
             }
 
         },3000);
