@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class DataStore implements TeamListInterface, TeamLeaguesInterface, LeagueListInterface, RefGamesInterface, LeagueViewInterface, LeagueScheduleInterface,
         LeagueScoresInterface, TeamScoresInterface, TeamScheduleInterface, UpAvailabilityInterface, TeamAvailabilityInterface, ScoreSubmitInterface,
-        RequestMessagesInterface, LeagueTodayInterface{
+        RequestMessagesInterface, LeagueTodayInterface, LeagueHistoricInterface, TeamHistoricInterface{
 
     private static DataStore sInstance;
     private Context context;
@@ -42,7 +42,9 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private ArrayList<Integer> loadedLeagueScores = new ArrayList<>();
     private ArrayList<Integer> loadedLeagueFixtures = new ArrayList<>();
     private ArrayList<Integer> loadedLeagueStandings = new ArrayList<>();
+    private ArrayList<Integer> loadedLeagueHistoric = new ArrayList<>();
     private HashMap<Integer, ArrayList<Integer>> loadedTeamsFixtures = new HashMap<>();
+    private HashMap<Integer, ArrayList<Integer>> loadedTeamsHistoric = new HashMap<>();
     private HashMap<Integer, ArrayList<Integer>> loadedTeamsScore = new HashMap<>();
     private boolean loadedRefGames = false;
     private ArrayList<Integer> loadedLeagueTeams = new ArrayList<>();
@@ -67,6 +69,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     private List<DBObserver> MyUpcomingGameAvailabilityDBObservers = new ArrayList<>();
     private List<DBObserver> MyTeamsPlayerAvailabilityDBObservers = new ArrayList<>();
     private List<DBObserver> LeagueTodayDBObservers = new ArrayList<>();
+    private List<DBObserver> LeagueHistoricDBObservers = new ArrayList<>();
+    private List<DBObserver> TeamHistoricDBObservers = new ArrayList<>();
 
     public static synchronized DataStore getInstance(Context context) {
 
@@ -914,6 +918,45 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+    public void loadLeagueHistoric(int leagueID){
+        if(!loadedLeagueHistoric.contains(leagueID)){
+            new LeagueHistoric(this, context, leagueID).execute();
+            loadedLeagueHistoric.add(leagueID);
+        }
+    }
+
+    @Override
+    public void leagueHistoricCallback(ResponseStatus responseStatus, int leagueID) {
+        if(responseStatus.getStatus()){
+            Log.d(TAG, "The call leagueHistoric for leagueID " + leagueID + " was successful, notify my DBObservers");
+            notifyLeagueHistoricDBObservers(leagueID);
+        } else{
+            Log.d(TAG, "The call leagueHistoric for leagueID " + leagueID + " was not successful");
+        }
+    }
+
+    public void loadTeamHistoric(int leagueID, int teamID){
+        ArrayList<Integer> integerArrayList = loadedTeamsHistoric.get(leagueID);
+        if(integerArrayList == null){
+            integerArrayList = new ArrayList<>();
+            loadedTeamsHistoric.put(leagueID, integerArrayList);
+        }
+        if(!loadedTeamsHistoric.get(leagueID).contains(teamID)){
+            new TeamHistoric(this, context, leagueID, teamID).execute();
+            loadedTeamsHistoric.get(leagueID).add(teamID);
+        }
+    }
+
+    @Override
+    public void teamHistoricCallback(ResponseStatus responseStatus, int leagueID, int teamID) {
+        if(responseStatus.getStatus()){
+            Log.d(TAG, "The call TeamHistoric for leagueID " + leagueID + " for teamID "+ teamID+" was successful, notify my DBObservers");
+            notifyTeamHistoricDBObservers(new Tuple<>(leagueID, teamID));
+        } else{
+            Log.d(TAG, "The call TeamHistoric for leagueID " + leagueID + " for teamID "+ teamID+" was not successful");
+        }
+    }
+
     public synchronized void clearUserData() {
         setUser(new User());
         dropUserTables();
@@ -925,8 +968,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedLeagueScores = new ArrayList<>();
         loadedLeagueFixtures = new ArrayList<>();
         loadedLeagueStandings = new ArrayList<>();
+        loadedLeagueHistoric = new ArrayList<>();
         loadedTeamsFixtures = new HashMap<>();
         loadedTeamsScore = new HashMap<>();
+        loadedTeamsHistoric = new HashMap<>();
         loadedRefGames = false;
         myMatchesAvailability = new ArrayList<>();
         matchesAvailability = new ArrayList<>();
@@ -935,8 +980,8 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
     }
 
     public synchronized void dropUserTables(){
-        String[] userTables = new String[]{DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, DBProviderContract.MESSAGES_TABLE_NAME};
-        String[] createUserTables = new String[]{DBProviderContract.CREATE_MYUPCOMINGGAMES_TABLE, DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE, DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE, DBProviderContract.CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE, DBProviderContract.CREATE_MESSAGES_TABLE};
+        String[] userTables = new String[]{DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME, DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME, DBProviderContract.MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, DBProviderContract.MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, DBProviderContract.MESSAGES_TABLE_NAME, DBProviderContract.LEAGUETODAY_TABLE_NAME, DBProviderContract.TEAMHISTORIC_TABLE_NAME};
+        String[] createUserTables = new String[]{DBProviderContract.CREATE_MYUPCOMINGGAMES_TABLE, DBProviderContract.CREATE_MYUPCOMINGREFEREEGAMES_TABLE, DBProviderContract.CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE, DBProviderContract.CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE, DBProviderContract.CREATE_MESSAGES_TABLE, DBProviderContract.CREATE_LEAGUE_TODAY, DBProviderContract.CREATE_TEAMHISTORIC_TABLE};
         SQLiteDatabase db = SQLiteManager.getInstance(context).openDatabase();
         for(String t : userTables){
             db.execSQL(DBProviderContract.SQL_DROP_TABLE_IF_EXISTS + " " + t);
@@ -958,8 +1003,10 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         loadedLeagueScores = new ArrayList<>();
         loadedLeagueFixtures = new ArrayList<>();
         loadedLeagueStandings = new ArrayList<>();
+        loadedLeagueHistoric = new ArrayList<>();
         loadedTeamsFixtures = new HashMap<>();
         loadedTeamsScore = new HashMap<>();
+        loadedTeamsHistoric = new HashMap<>();
         loadedRefGames = false;
         myMatchesAvailability = new ArrayList<>();
         matchesAvailability = new ArrayList<>();
@@ -1175,6 +1222,18 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         }
     }
 
+    public synchronized void registerLeagueHistoricDBObserver(DBObserver dbObserver) {
+        if(!LeagueHistoricDBObservers.contains(dbObserver)) {
+            LeagueHistoricDBObservers.add(dbObserver);
+        }
+    }
+
+    public synchronized void registerTeamHistoricDBObserver(DBObserver dbObserver) {
+        if(!TeamHistoricDBObservers.contains(dbObserver)) {
+            TeamHistoricDBObservers.add(dbObserver);
+        }
+    }
+
     /**
      * DBObservers unregistration
      */
@@ -1244,6 +1303,13 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         LeagueTodayDBObservers.remove(dbObserver);
     }
 
+    public synchronized void unregisterLeagueHistoricDBObserver(DBObserver dbObserver) {
+        LeagueHistoricDBObservers.remove(dbObserver);
+    }
+
+    public synchronized void unregisterTeamHistoricDBObserver(DBObserver dbObserver) {
+        TeamHistoricDBObservers.remove(dbObserver);
+    }
     /**
      * DBObserver notification
      */
@@ -1326,5 +1392,13 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
 
     private void notifyLeagueTodayDBObservers(final Object data) {
         notifyDBObservers(LeagueTodayDBObservers, DBProviderContract.LEAGUETODAY_TABLE_NAME, data);
+    }
+
+    private void notifyLeagueHistoricDBObservers(final Object data) {
+        notifyDBObservers(LeagueHistoricDBObservers, DBProviderContract.LEAGUEHISTORIC_TABLE_NAME, data);
+    }
+
+    private void notifyTeamHistoricDBObservers(final Object data) {
+        notifyDBObservers(TeamHistoricDBObservers, DBProviderContract.TEAMHISTORIC_TABLE_NAME, data);
     }
 }

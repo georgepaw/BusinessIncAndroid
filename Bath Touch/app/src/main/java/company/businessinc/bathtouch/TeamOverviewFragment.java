@@ -558,7 +558,9 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
                 mLayout.setVisibility(View.GONE);
                 ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
                 mSwipeRefresh.setRefreshing(false);
-                pager.getAdapter().notifyDataSetChanged();
+                if(pager.getAdapter() != null) {
+                    pager.getAdapter().notifyDataSetChanged();
+                }
             }
 
         },3000);
