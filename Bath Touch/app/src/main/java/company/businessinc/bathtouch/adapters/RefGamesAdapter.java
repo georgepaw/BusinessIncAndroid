@@ -13,11 +13,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +34,12 @@ import company.businessinc.bathtouch.R;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.CachedRequest;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
+import company.businessinc.endpoints.ScoreSubmit;
+import company.businessinc.endpoints.ScoreSubmitInterface;
+import company.businessinc.networking.CheckNetworkConnection;
 
 /**
  * Created by user on 21/11/14.
@@ -45,90 +56,21 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    public class ViewHolderResults extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolderResults extends RecyclerView.ViewHolder {
         public TextView mTeam1Name, mTeam2Name, mTeam1Score, mTeam2Score, mLocation, mDate, mLeague;
         public ImageView mImageView, mOppTeamImg;
-        public RelativeLayout mMatchCardButton, mExpandable;
         public CardView mCard;
 
         public ViewHolderResults(View v) {
             super(v);
-            mTeam1Name = (TextView) v.findViewById(R.id.match_result_item_match_team1_name);
-            mTeam2Name = (TextView) v.findViewById(R.id.match_result_item_match_team2_name);
-            mTeam1Score = (TextView) v.findViewById(R.id.match_result_item_match_team1_score);
-            mTeam2Score = (TextView) v.findViewById(R.id.match_result_item_match_team2_score);
-            mLeague = (TextView) v.findViewById(R.id.match_result_league);
-            mDate = (TextView) v.findViewById(R.id.match_result_date);
-            mLocation = (TextView) v.findViewById(R.id.match_result_location);
-            mImageView = (ImageView) v.findViewById(R.id.match_result_item_result_image);
-            mCard = (CardView) v.findViewById(R.id.match_result_item_container);
-            mMatchCardButton = (RelativeLayout) v.findViewById(R.id.match_result_match_overview_button);
-            mExpandable = (RelativeLayout) v.findViewById(R.id.match_result_expandable);
+            mTeam1Name = (TextView) v.findViewById(R.id.ref_match_result_item_match_team1_name);
+            mTeam2Name = (TextView) v.findViewById(R.id.ref_match_result_item_match_team2_name);
+            mTeam1Score = (TextView) v.findViewById(R.id.ref_match_result_item_match_team1_score);
+            mTeam2Score = (TextView) v.findViewById(R.id.ref_match_result_item_match_team2_score);
+            mImageView = (ImageView) v.findViewById(R.id.ref_match_result_item_result_image);
+            mCard = (CardView) v.findViewById(R.id.ref_match_result_item_container);
 
 
-            mCard.setOnClickListener(this);
-
-            //If clicked, callback to main fragment to start the match over view fragment
-            mMatchCardButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int matchID;
-                    boolean hasBeenPlayed;
-                    if(getPosition() > refPastGames.size() - 1) {
-                        matchID = refUpcomingGames.get(getPosition() - refPastGames.size()).getMatchID();
-                        hasBeenPlayed = false;
-                    } else {
-                        matchID = refPastGames.get(getPosition()).getMatchID();
-                        hasBeenPlayed = true;
-                    }
-                    mCallbacks.showMatchOverview(matchID, hasBeenPlayed);
-                }
-            });
-        }
-
-        @Override
-        public void onClick(View v) {
-            if(v.getId() == mCard.getId()) {
-                ValueAnimator animator; //expand the player
-                if (mExpandable.getVisibility() == View.GONE) {
-                    mExpandable.setVisibility(View.VISIBLE); //expand the view
-                    final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                    final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                    mExpandable.measure(widthSpec, heightSpec);
-                    animator = ValueAnimator.ofInt(0, mExpandable.getMeasuredHeight());
-                } else {
-                    animator = ValueAnimator.ofInt(mExpandable.getHeight(), 0);
-                    animator.addListener(new Animator.AnimatorListener() { //listen to the end of animation and then get rid off the view
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animator) {
-                            mExpandable.setVisibility(View.GONE);
-                        }
-                    });
-                }
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        //Update Height
-                        int value = (Integer) valueAnimator.getAnimatedValue();
-                        ViewGroup.LayoutParams layoutParams = mExpandable.getLayoutParams();
-                        layoutParams.height = value;
-                        mExpandable.setLayoutParams(layoutParams);
-                    }
-                });
-                animator.start();
-            }
         }
     }
 
@@ -143,6 +85,7 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onAttachedToRecyclerView(RecyclerView recyclerView){
 
         DataStore.getInstance(mContext).registerMyUpcomingRefereeDBObserver(this);
+        DataStore.getInstance(mContext).registerAllTeamsDBObservers(this);
         setData();
     }
 
@@ -159,7 +102,7 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.match_result_item, parent, false);
+                .inflate(R.layout.ref_match_result_item, parent, false);
 
         switch(viewType){
             default:
@@ -170,6 +113,8 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onDetachedFromRecyclerView (RecyclerView recyclerView){
         DataStore.getInstance(mContext).unregisterMyUpcomingRefereeDBObserver(this);
+        DataStore.getInstance(mContext).unregisterAllTeamsDBObservers(this);
+
         super.onDetachedFromRecyclerView(recyclerView);
     }
 
@@ -178,6 +123,7 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         switch (tableName){
             case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:
                 setData();
+            case DBProviderContract.ALLTEAMS_TABLE_NAME:
                 notifyDataSetChanged();
                 break;
         }
@@ -192,6 +138,7 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         bindResultItem((ViewHolderResults)holder, position );
 
+
 //        if(position == 0){
 //            bindHeaderItem((ViewHolderHeader) holder, position);
 //        }
@@ -204,7 +151,7 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void bindResultItem(ViewHolderResults v, int position){
 
-        Match match;
+        final Match match;
         Boolean played;
         if (position >= refPastGames.size()) {
             match = refUpcomingGames.get(position - refPastGames.size());
@@ -236,11 +183,6 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         v.mTeam2Name.setText(match.getTeamTwo());
         v.mTeam1Score.setText(match.getTeamOnePoints().toString());
         v.mTeam2Score.setText(match.getTeamTwoPoints().toString());
-        v.mLocation.setText(match.getPlace().toString());
-        v.mLeague.setText(DataStore.getInstance(mContext).getLeagueName(match.getLeagueID()));
-
-        DateFormatter df = new DateFormatter();
-        v.mDate.setText(df.format(match.getDateTime()));
 
         //get the context of the adapater, to use resources later on
         Context context = v.mImageView.getContext();
@@ -273,18 +215,108 @@ public class RefGamesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
 
-        int teamColor;
-        try{
-            //set specific team colors if it has been loaded by db
-            teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
-        }
-        catch (Exception e){
-            teamColor = Color.GRAY;
-        }
-        v.mExpandable.setBackgroundColor(teamColor);
-        v.mExpandable.getBackground().setAlpha(200);
+        v.mCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSubmitScoreDialog(match);
+            }
+        });
+    }
 
+    private void showSubmitScoreDialog(final Match match) {
+        MaterialDialog dialog = new MaterialDialog.Builder(mContext)
+                .title("Submit Scores")
+                .customView(R.layout.dialog_submit_score, true)
+                .positiveText("Submit")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        Integer mTeamOneScore = null;
+                        Integer mTeamTwoScore = null;
+                        CheckBox mTeamCaptainConfirm = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_confirm);
+                        CheckBox mTeamOneForfeit = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_forfeit);
+                        CheckBox mTeamTwoForfeit = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_forfeit);
+                        MaterialEditText mTeamOneEditText = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_name);
+                        MaterialEditText mTeamTwoEditText = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_name);
 
+                        if(!mTeamCaptainConfirm.isChecked()){
+                            Toast.makeText(mContext, "Captains need to approve scores", Toast.LENGTH_SHORT).show();
+                        } else if(mTeamOneForfeit.isChecked() && mTeamTwoForfeit.isChecked()) {
+                            Toast.makeText(mContext, "Both teams can't forfeit", Toast.LENGTH_SHORT).show();
+                        } else {
+                            boolean mIsForfeit = false;
+                            if(mTeamOneForfeit.isChecked()){
+                                mTeamOneScore = 0;
+                                mTeamTwoScore = 10;
+                                mIsForfeit = true;
+                            } else if(mTeamTwoForfeit.isChecked()){
+                                mTeamOneScore = 10;
+                                mTeamTwoScore = 0;
+                                mIsForfeit = true;
+                            } else {
+                                try{
+                                    mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+                                } catch(NumberFormatException e){
+                                    Toast.makeText(mContext, "Enter score for " + match.getTeamOne(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                try{
+                                    mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+                                } catch(NumberFormatException e){
+                                    Toast.makeText(mContext, "Enter score for " + match.getTeamTwo(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            if(CheckNetworkConnection.check(mContext)) {
+                                ScoreSubmitInterface activity = null;
+                                try {
+                                    activity = (ScoreSubmitInterface) mContext;
+                                } catch (ClassCastException e) {
+                                    throw new ClassCastException(activity.toString()
+                                            + " must implement ScoreSubmitInteface");
+                                }
+                                new ScoreSubmit((ScoreSubmitInterface) mContext, mContext, match.getMatchID(), mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+                            } else {
+                                Toast.makeText(mContext, "No network connection, the score will be submitted automatically", Toast.LENGTH_LONG).show();
+                                try {
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("matchID", Integer.toString(match.getMatchID()));
+                                    jsonObject.put("teamOneScore", Integer.toString(mTeamOneScore));
+                                    jsonObject.put("teamTwoScore", Integer.toString(mTeamTwoScore));
+                                    jsonObject.put("isForfeit", Boolean.toString(mIsForfeit));
+                                    DataStore.getInstance(mContext).cacheRequest(new CachedRequest(CachedRequest.RequestType.SUBMITSCORE, jsonObject));
+                                } catch (JSONException e){
+
+                                }
+                            }
+                        }
+                    }
+                })
+                .build();
+
+        Team teamOne = DataStore.getInstance(mContext).getTeamFromAllTeams(match.getTeamOneID());
+        Team teamTwo = DataStore.getInstance(mContext).getTeamFromAllTeams(match.getTeamTwoID());
+
+        TextDrawable teamOneAvatar = TextDrawable.builder()
+                .buildRound(match.getTeamOne().substring(0,1),
+                        Color.parseColor(teamOne.getTeamColorPrimary()));
+        TextDrawable teamTwoAvatar = TextDrawable.builder()
+                .buildRound(match.getTeamTwo().substring(0,1),
+                        Color.parseColor(teamTwo.getTeamColorPrimary()));
+        ImageView teamOneImage = (ImageView) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_image);
+        ImageView teamTwoImage = (ImageView) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_image);
+        teamOneImage.setImageDrawable(teamOneAvatar);
+        teamTwoImage.setImageDrawable(teamTwoAvatar);
+
+        MaterialEditText teamOneInput = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_name);
+        MaterialEditText teamTwoInput = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_name);
+        teamOneInput.setHint(match.getTeamOne() + "'s score");
+        teamOneInput.setFloatingLabelText("Input " + match.getTeamOne() + "'s score");
+        teamTwoInput.setHint(match.getTeamTwo() + "'s score");
+        teamTwoInput.setFloatingLabelText("Input " + match.getTeamTwo() + "'s score");
+        dialog.show();
     }
 
     // Return the size of your dataset (invoked by the layout manager)
