@@ -119,6 +119,13 @@ public class SQLiteManager {
                     Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
                 }
                 break;
+            case DBProviderContract.LEAGUEHISTORIC_TABLE_NAME:
+                if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
+                    DataStore.getInstance(context).loadLeagueHistoric(Integer.valueOf(selectionArgs[0]));
+                } else{
+                    Log.d(TAG, "Can't call " + "LeagueHistoric" + " callback, selection/selection args not valid");
+                }
+                break;
             case DBProviderContract.LEAGUETODAY_TABLE_NAME:
                 if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                     DataStore.getInstance(context).loadLeagueToday(Integer.valueOf(selectionArgs[0]));
@@ -159,6 +166,13 @@ public class SQLiteManager {
                     DataStore.getInstance(context).loadTeamsLeagueScore(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
                 } else{
                     Log.d(TAG, "Can't call " + "TeamScores" + " callback, selection/selection args not valid");
+                }
+                break;
+            case DBProviderContract.TEAMHISTORIC_TABLE_NAME:
+                if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEIDANDTEAMID) && selectionArgs.length >= 2) {
+                    DataStore.getInstance(context).loadTeamHistoric(Integer.valueOf(selectionArgs[0]), Integer.valueOf(selectionArgs[1]));
+                } else{
+                    Log.d(TAG, "Can't call " + "TeamHistoric" + " callback, selection/selection args not valid");
                 }
                 break;
             case DBProviderContract.MYUPCOMINGGAMES_TABLE_NAME:

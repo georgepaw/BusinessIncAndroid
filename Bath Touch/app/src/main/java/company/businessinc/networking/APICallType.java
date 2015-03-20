@@ -7,6 +7,7 @@ package company.businessinc.networking;
 public enum APICallType {
     DeviceRegister("/device/register/"),
     DeviceUnregister("/device/unregister/"),
+    LeagueHistoric("/league/historic/"),
     LeagueList("/league/list/"),
     LeagueSchedule("/league/schedule/"),
     LeagueScores("/league/scores/"),
@@ -17,6 +18,7 @@ public enum APICallType {
     RequestPlayers("/request/players/"),
     ScoreSubmit("/score/submit/"),
     TeamAvailability("/team/availability/"),
+    TeamHistoric("/team/historic/"),
     TeamScores("/team/scores/"),
     TeamList("/team/list/"),
     TeamLeagues("/team/leagues/"),

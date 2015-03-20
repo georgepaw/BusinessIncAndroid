@@ -331,8 +331,10 @@ public class TeamOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     args.putBoolean("hasBeenPlayed", false);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     args.putString(Match.KEY_DATETIME, sdf.format(nextMatch.getDateTime()));
-                    //                        intent.putExtras(args);
-                    //                        startActivity(intent);
+                    args.putFloat(Match.KEY_LONGITUDE, nextMatch.getLongitude());
+                    args.putFloat(Match.KEY_LATITUDE, nextMatch.getLatitude());
+                    args.putString(Match.KEY_POSTCODE, nextMatch.getPostCode());
+                    args.putString(Match.KEY_ADDRESS, nextMatch.getAddress());
 
                     mCallbacks.matchDetailsSelectedCallback(args);
 
@@ -488,6 +490,10 @@ public class TeamOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     args.putBoolean("hasBeenPlayed", true);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
                     args.putString(Match.KEY_DATETIME, sdf.format(match.getDateTime()));
+                    args.putFloat(Match.KEY_LONGITUDE, match.getLongitude());
+                    args.putFloat(Match.KEY_LATITUDE, match.getLatitude());
+                    args.putString(Match.KEY_POSTCODE, match.getPostCode());
+                    args.putString(Match.KEY_ADDRESS, match.getAddress());
                     mCallbacks.matchDetailsSelectedCallback(args);
                 }
             });

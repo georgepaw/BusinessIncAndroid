@@ -79,12 +79,14 @@ public class DBProviderContract {
     public static final String CACHEDREQUESTS_TABLE_NAME = "CachedRequests";
     public static final String MESSAGES_TABLE_NAME = "Messages";
     public static final String LEAGUETODAY_TABLE_NAME = "LeagueToday";
+    public static final String TEAMHISTORIC_TABLE_NAME = "TeamHistoric";
+    public static final String LEAGUEHISTORIC_TABLE_NAME = "LeagueHistoric";
 
     public static final String[] TABLES = {ALLTEAMS_TABLE_NAME, MYLEAGUES_TABLE_NAME, ALLLEAGUES_TABLE_NAME, LEAGUESSCORE_TABLE_NAME,
             LEAGUESFIXTURES_TABLE_NAME, LEAGUESSTANDINGS_TABLE_NAME, TEAMSFIXTURES_TABLE_NAME, TEAMSSCORES_TABLE_NAME,
             MYUPCOMINGGAMES_TABLE_NAME, MYUPCOMINGREFEREEGAMES_TABLE_NAME, LEAGUETEAMS_TABLE_NAME,
             MYUPCOMINGGAMESAVAILABILITY_TABLE_NAME, MYTEAMPLAYERSAVAILABILITY_TABLE_NAME, LIVELEAGUE_TABLE_NAME, CACHEDREQUESTS_TABLE_NAME,
-            MESSAGES_TABLE_NAME, LEAGUETODAY_TABLE_NAME};
+            MESSAGES_TABLE_NAME, LEAGUETODAY_TABLE_NAME, TEAMHISTORIC_TABLE_NAME, LEAGUEHISTORIC_TABLE_NAME};
 
     /**
      * Content URI for modification tables
@@ -159,12 +161,20 @@ public class DBProviderContract {
     public static final String CREATE_LEAGUE_TODAY = CREATE_TABLE + " " + LEAGUETODAY_TABLE_NAME + "( " +
                                                         Match.CREATE_TABLE + ", PRIMARY KEY(" + Match.KEY_MATCHID +"))";
 
+    public static final String CREATE_TEAMHISTORIC_TABLE = CREATE_TABLE + " " + TEAMHISTORIC_TABLE_NAME + "( " +
+                                                                League.KEY_LEAGUEID + "\t" + INTEGER + "," +
+                                                                HistoricTeam.CREATE_TABLE + ", PRIMARY KEY("+League.KEY_LEAGUEID+ "," + HistoricTeam.KEY_TEAMID +"))";
+
+    public static final String CREATE_LEAGUEHISTORIC_TABLE = CREATE_TABLE + " " + LEAGUEHISTORIC_TABLE_NAME + "( " +
+                                                                League.KEY_LEAGUEID + "\t" + INTEGER + "," +
+                                                                HistoricTeam.CREATE_TABLE + ", PRIMARY KEY("+League.KEY_LEAGUEID+ "," + HistoricTeam.KEY_TEAMID +"))";
+
 
     public static final String[] CREATE_TABLES = {CREATE_ALLTEAMS_TABLE, CREATE_MYLEAGUES_TABLE, CREATE_ALLLEAGUES_TABLE, CREATE_LEAGUESSCORE_TABLE,
             CREATE_LEAGUESFIXTURES_TABLE ,CREATE_LEAGUESSTANDINGS_TABLE, CREATE_TEAMSFIXTURES_TABLE,
             CREATE_TEAMSSCORES_TABLE, CREATE_MYUPCOMINGGAMES_TABLE, CREATE_MYUPCOMINGREFEREEGAMES_TABLE, CREATE_LEAGUETEAMS_TABLE,
             CREATE_MYUPCOMINGGAMESAVAILABILITY_TABLE, CREATE_MYTEAMPLAYERSAVAILABILITY_TABLE, CREATE_LIVELEAGUE_TABLE, CREATE_CACHEDREQUEST_TABLE,
-            CREATE_MESSAGES_TABLE, CREATE_LEAGUE_TODAY};
+            CREATE_MESSAGES_TABLE, CREATE_LEAGUE_TODAY, CREATE_TEAMHISTORIC_TABLE, CREATE_LEAGUEHISTORIC_TABLE};
 
     // The content provider database name
     public static final String DATABASE_NAME = "BathTouchDB";

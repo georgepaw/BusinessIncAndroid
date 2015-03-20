@@ -9,7 +9,7 @@
         android:id="@+id/activity_match_header"
         android:background="@color/primary"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:elevation="2dp"
         android:paddingLeft="16dp"
@@ -17,79 +17,103 @@
         >
 
         <RelativeLayout
-            android:id="@+id/activity_match_header_team_one"
+            android:id="@+id/activity_match_header_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="center"
-            android:layout_centerVertical="true">
+            android:layout_height="80dp">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="4dp"
-                android:id="@+id/activity_match_header_team_one_image"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
+            <RelativeLayout
+                android:id="@+id/activity_match_header_team_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/activity_match_header_team_one_text"
-                android:layout_below="@id/activity_match_header_team_one_image"
-                android:textColor="@color/white"
-                android:text="Team one"/>
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="4dp"
+                    android:id="@+id/activity_match_header_team_one_image"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/activity_match_header_team_one_text"
+                    android:layout_below="@id/activity_match_header_team_one_image"
+                    android:textColor="@color/white"
+                    android:text="Team one"/>
+
+                </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/activity_match_header_team_one"
+                android:layout_centerHorizontal="true"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/activity_match_header_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="34sp"
+                    android:layout_marginBottom="4dp"
+                    android:text="0-0"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/activity_match_header_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4th December"
+                    android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/activity_match_header_team_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="4dp"
+                    android:id="@+id/activity_match_header_team_two_image"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/activity_match_header_team_two_text"
+                    android:layout_below="@id/activity_match_header_team_two_image"
+                    android:textColor="@color/white"
+                    android:text="Team two"/>
 
             </RelativeLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/activity_match_header_team_one"
-            android:layout_centerHorizontal="true"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/activity_match_header_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="34sp"
-                android:layout_marginBottom="4dp"
-                android:text="0-0"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:id="@+id/activity_match_header_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4th December"
-                android:textColor="@color/white"/>
-
-            </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:layout_centerVertical="true">
-
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/activity_match_header_layout">
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="4dp"
-                android:id="@+id/activity_match_header_team_two_image"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/activity_match_header_team_two_text"
-                android:layout_below="@id/activity_match_header_team_two_image"
-                android:textColor="@color/white"
-                android:text="Team two"/>
+                android:id="@+id/google_maps_click"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/ic_google_maps"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:clickable="true"/>
 
         </RelativeLayout>
+
 
         </RelativeLayout>
 
