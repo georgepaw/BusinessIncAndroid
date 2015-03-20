@@ -2,6 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="company.businessinc.bathtouch.MatchFragment">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_submit_score"
+        android:title="@string/menu_submit_score"
+        android:orderInCategory="1"
+        android:visible="false"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_whistle_white600_48dp"/>
 </menu>

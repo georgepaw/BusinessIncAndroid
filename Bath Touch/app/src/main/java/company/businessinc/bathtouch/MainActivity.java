@@ -51,6 +51,7 @@ import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.User;
+import company.businessinc.endpoints.ScoreSubmitInterface;
 import company.businessinc.networking.APICall;
 
 
@@ -63,6 +64,8 @@ public class MainActivity extends ActionBarActivity
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
         TeamOverviewFragment.TeamOverviewCallbacks,
+        RefGamesFragment.RefGamesCallbacks,
+        ScoreSubmitInterface,
         TodayFragment.TodaysCallbacks,
         DeviceUnregisterInterface{
 
@@ -232,15 +235,15 @@ public class MainActivity extends ActionBarActivity
                             }
                         })
         );
-        if (DataStore.getInstance(this).isUserCaptain()) {
+        if(DataStore.getInstance(this).isReferee()) {
             mNavigationDrawerLayout.addItem(
                     new DrawerItem()
-                            .setImage(getResources().getDrawable(R.drawable.ic_supervisor_account_grey600_48dp))
-                            .setTextPrimary("Organise Team")
+                            .setImage(getResources().getDrawable(R.drawable.ic_whistle_grey600_48dp))
+                            .setTextPrimary("Referee Matches")
                             .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                                 @Override
-                                public void onClick(DrawerItem drawerItem, int id, int position) {
-                                    Toast.makeText(MainActivity.this, "No team organise fragment yet", Toast.LENGTH_SHORT).show();
+                                public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                    changeFragments("REFGAMESTAG", null);
                                     mNavigationDrawerLayout.closeDrawer();
                                 }
                             })
@@ -490,6 +493,8 @@ public class MainActivity extends ActionBarActivity
                 ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
             if (tag.equals("TEAMRESULTSTAG"))
                 ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
+            if (tag.equals("REFGAMESTAG"))
+                ft.replace(R.id.container, RefGamesFragment.newInstance(), tag);
             if (tag.equals("MATCHDETAILSFRAG")) {
                 ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
             }
@@ -668,4 +673,17 @@ public class MainActivity extends ActionBarActivity
     }
 
 
+    @Override
+    public void scoreSubmitCallback(ResponseStatus data) {
+        if(data != null){
+            if(data.getStatus()) {
+                Toast.makeText(this, "Score submitted successfully", Toast.LENGTH_SHORT).show();
+                DataStore.getInstance(getApplicationContext()).refreshData(); //update all scores
+            } else {
+                Toast.makeText(this, "Score could not be submitted", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "Score could not be submitted", Toast.LENGTH_LONG).show();
+        }
+    }
 }
