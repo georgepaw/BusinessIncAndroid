@@ -32,6 +32,7 @@ import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
+import company.businessinc.bathtouch.adapters.TeamOverviewAdapter;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.ResponseStatus;
@@ -63,6 +64,7 @@ public class MainActivity extends ActionBarActivity
         LeagueFragment.LeagueCallbacks,
         HomePageAdapter.homePageAdapterCallbacks,
         ResultsListFragment.ResultsListCallbacks,
+        TeamOverviewAdapter.onMatchDetailsSelected,
         TeamOverviewFragment.TeamOverviewCallbacks,
         RefGamesFragment.RefGamesCallbacks,
         ScoreSubmitInterface,
