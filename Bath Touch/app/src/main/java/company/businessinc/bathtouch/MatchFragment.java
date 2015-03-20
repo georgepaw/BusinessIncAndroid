@@ -3,22 +3,36 @@ package company.businessinc.bathtouch;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.melnykov.fab.FloatingActionButton;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,9 +41,13 @@ import java.util.Locale;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
 import company.businessinc.bathtouch.data.DataStore;
+import company.businessinc.dataModels.CachedRequest;
 import company.businessinc.dataModels.League;
 import company.businessinc.dataModels.Match;
 import company.businessinc.dataModels.Team;
+import company.businessinc.endpoints.ScoreSubmit;
+import company.businessinc.endpoints.ScoreSubmitInterface;
+import company.businessinc.networking.CheckNetworkConnection;
 
 
 public class MatchFragment extends Fragment implements LeagueFragment.LeagueCallbacks,
@@ -63,7 +81,6 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -95,12 +112,8 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         ImageView teamOneImage, teamTwoImage;
         TextView teamOneText, teamTwoText, scoreText, dateText;
 
-//        Toolbar toolbar = (Toolbar) mLayout.findViewById(R.id.toolbar);
-//        toolbar.setTitle("Match");
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(DataStore.getInstance(getBaseContext()).getUserTeamColorPrimary()));
-
+        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle("");
         int primaryColour;
         int secondaryColour;
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
@@ -110,9 +123,23 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
             primaryColour = Color.parseColor(ANON_PRIMARY);
             secondaryColour = Color.parseColor(ANON_SECONDARY);
         }
+        actionBar.setBackgroundDrawable(new ColorDrawable(primaryColour));
+
+        actionBar.setElevation(0f);
 
         headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
         headerBox.setBackgroundColor(primaryColour);
+
+        if(DataStore.getInstance(getActivity()).amIRefing(mMatchID)) {
+            FloatingActionButton fab = (FloatingActionButton) mLayout.findViewById(R.id.submit_score_fab);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSubmitScoreDialog();
+                }
+            });
+        }
 
         setCircles();
 
@@ -160,6 +187,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
             });
         }
         DataStore.getInstance(getActivity()).registerLeagueTeamsDBObserver(this);
+        DataStore.getInstance(getActivity()).registerMyUpcomingRefereeDBObserver(this);
         mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
     }
@@ -167,12 +195,8 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     @Override
     public void onDestroyView(){
         DataStore.getInstance(getActivity()).unregisterLeagueTeamsDBObserver(this);
+        DataStore.getInstance(getActivity()).unregisterMyUpcomingRefereeDBObserver(this);
         super.onDestroyView();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -185,6 +209,101 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
 
     }
 
+    private void showSubmitScoreDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title("Submit Scores")
+                .customView(R.layout.dialog_submit_score, true)
+                .positiveText("Submit")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        CheckBox mTeamCaptainConfirm = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_confirm);
+                        CheckBox mTeamOneForfeit = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_forfeit);
+                        CheckBox mTeamTwoForfeit = (CheckBox) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_forfeit);
+                        MaterialEditText mTeamOneEditText = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_name);
+                        MaterialEditText mTeamTwoEditText = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_name);
+
+                        if(!mTeamCaptainConfirm.isChecked()){
+                            Toast.makeText(getActivity(), "Captains need to approve scores", Toast.LENGTH_SHORT).show();
+                        } else if(mTeamOneForfeit.isChecked() && mTeamTwoForfeit.isChecked()) {
+                            Toast.makeText(getActivity(), "Both teams can't forfeit", Toast.LENGTH_SHORT).show();
+                        } else {
+                            boolean mIsForfeit = false;
+                            if(mTeamOneForfeit.isChecked()){
+                                mTeamOneScore = 0;
+                                mTeamTwoScore = 10;
+                                mIsForfeit = true;
+                            } else if(mTeamTwoForfeit.isChecked()){
+                                mTeamOneScore = 10;
+                                mTeamTwoScore = 0;
+                                mIsForfeit = true;
+                            } else {
+                                try{
+                                    mTeamOneScore = Integer.valueOf(mTeamOneEditText.getText().toString());
+                                } catch(NumberFormatException e){
+                                    Toast.makeText(getActivity(), "Enter score for " + mTeamOneName, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                try{
+                                    mTeamTwoScore = Integer.valueOf(mTeamTwoEditText.getText().toString());
+                                } catch(NumberFormatException e){
+                                    Toast.makeText(getActivity(), "Enter score for " + mTeamTwoName, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            if(CheckNetworkConnection.check(getActivity())) {
+                                ScoreSubmitInterface activity = null;
+                                try {
+                                    activity = (ScoreSubmitInterface) getActivity();
+                                } catch (ClassCastException e) {
+                                    throw new ClassCastException(activity.toString()
+                                            + " must implement ScoreSubmitInteface");
+                                }
+                                new ScoreSubmit((ScoreSubmitInterface) getActivity(), getActivity(), mMatchID, mTeamOneScore, mTeamTwoScore, mIsForfeit).execute();
+                                TextView scoreText = (TextView) mLayout.findViewById(R.id.activity_match_header_score);
+                                scoreText.setText(mTeamOneScore + " - " + mTeamTwoScore);
+                            } else {
+                                Toast.makeText(getActivity(), "No network connection, the score will be submitted automatically", Toast.LENGTH_LONG).show();
+                                try {
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("matchID", Integer.toString(mMatchID));
+                                    jsonObject.put("teamOneScore", Integer.toString(mTeamOneScore));
+                                    jsonObject.put("teamTwoScore", Integer.toString(mTeamTwoScore));
+                                    jsonObject.put("isForfeit", Boolean.toString(mIsForfeit));
+                                    DataStore.getInstance(getActivity()).cacheRequest(new CachedRequest(CachedRequest.RequestType.SUBMITSCORE, jsonObject));
+                                } catch (JSONException e){
+
+                                }
+                            }
+                        }
+                    }
+                })
+                .build();
+
+        Team teamOne = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamOneID);
+        Team teamTwo = DataStore.getInstance(getActivity()).getTeam(mLeagueID,mTeamTwoID);
+
+        TextDrawable teamOneAvatar = TextDrawable.builder()
+                .buildRound(mTeamOneName.substring(0,1),
+                        Color.parseColor(teamOne.getTeamColorPrimary()));
+        TextDrawable teamTwoAvatar = TextDrawable.builder()
+                .buildRound(mTeamTwoName.substring(0,1),
+                        Color.parseColor(teamTwo.getTeamColorPrimary()));
+        ImageView teamOneImage = (ImageView) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_image);
+        ImageView teamTwoImage = (ImageView) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_image);
+        teamOneImage.setImageDrawable(teamOneAvatar);
+        teamTwoImage.setImageDrawable(teamTwoAvatar);
+
+        MaterialEditText teamOneInput = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_one_name);
+        MaterialEditText teamTwoInput = (MaterialEditText) dialog.getCustomView().findViewById(R.id.dialog_submit_score_team_two_name);
+        teamOneInput.setHint(mTeamOneName + "'s score");
+        teamOneInput.setFloatingLabelText(mTeamOneName + "'s score");
+        teamTwoInput.setHint(mTeamTwoName + "'s score");
+        teamTwoInput.setFloatingLabelText(mTeamTwoName + "'s score");
+        dialog.show();
+    }
 
     /*
     Called when the create new ghost player is selected
@@ -216,6 +335,11 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
                         mViewPager.getAdapter().notifyDataSetChanged();
                         setCircles();
                     }
+                break;
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME:
+                if(DataStore.getInstance(getActivity()).amIRefing(mMatchID)) {
+                    ((FloatingActionButton) mLayout.findViewById(R.id.submit_score_fab)).setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }
@@ -277,13 +401,15 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         if(teamOne != null){
             colourTeamOne = Color.parseColor(teamOne.getTeamColorPrimary());
         } else {
-            colourTeamOne = Color.RED;
+            colourTeamOne = getActivity()
+                    .getResources().getColor(R.color.dark_divider);
         }
 
         if(teamTwo != null){
             colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
         } else {
-            colourTeamTwo = Color.RED;
+            colourTeamTwo = getActivity()
+                    .getResources().getColor(R.color.dark_divider);
         }
 
         teamOneDrawable = TextDrawable.builder()

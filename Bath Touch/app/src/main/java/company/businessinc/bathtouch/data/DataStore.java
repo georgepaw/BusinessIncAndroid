@@ -494,6 +494,25 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return matchList.size() > 0 ? matchList.get(0) : null;
     }
 
+    public boolean amIRefing(int matchID) {
+        boolean output = false;
+        Cursor cursor = SQLiteManager.getInstance(context).query(context,
+                DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME,
+                null,
+                DBProviderContract.SELECTION_MATCHID,
+                new String[]{Integer.toString(matchID)},
+                null,
+                null,
+                null,
+                null);
+        if(cursor.moveToFirst()){
+            output = cursor.getCount() > 0;
+        }
+        cursor.close();
+        SQLiteManager.getInstance(context).closeDatabase();
+        return output;
+    }
+
     public boolean amIPlaying(int matchID){
         boolean output = false;
         Cursor cursor = SQLiteManager.getInstance(context).query(context,
