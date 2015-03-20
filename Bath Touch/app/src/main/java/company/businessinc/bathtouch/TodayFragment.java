@@ -101,6 +101,10 @@ public class TodayFragment extends Fragment implements TodaysGameAdapter.MatchSe
             args.putBoolean("hasBeenPlayed", hasBeenPlayed);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
             args.putString(Match.KEY_DATETIME, sdf.format(selectedMatch.getDateTime()));
+            args.putFloat(Match.KEY_LONGITUDE, selectedMatch.getLongitude());
+            args.putFloat(Match.KEY_LATITUDE, selectedMatch.getLatitude());
+            args.putString(Match.KEY_POSTCODE, selectedMatch.getPostCode());
+            args.putString(Match.KEY_ADDRESS, selectedMatch.getAddress());
 
             if (mCallbacks != null) {
                 mCallbacks.onTodaysItemSelected(args);

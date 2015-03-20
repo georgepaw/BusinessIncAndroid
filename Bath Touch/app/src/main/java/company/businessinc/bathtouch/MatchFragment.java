@@ -1,5 +1,6 @@
 package company.businessinc.bathtouch;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -54,8 +55,9 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener, DBObserver {
 
     private static final String TAG = "MatchActivty";
-    private String mTeamOneName,mTeamTwoName;
+    private String mTeamOneName,mTeamTwoName, mPostCode, mAddress;
     private Integer mLeagueID, mMatchID, mTeamOneScore, mTeamTwoScore, mTeamOneID, mTeamTwoID;
+    private Float mLongitude, mLatitude;
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPagerAdapter mViewPagerAdapter;
@@ -103,6 +105,10 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
                 mDate = sdf.parse(extras.getString(Match.KEY_DATETIME));
                 mLeagueID = extras.getInt(League.KEY_LEAGUEID);
                 mHasBeenPlayed = extras.getBoolean("hasBeenPlayed");
+                mLatitude = extras.getFloat(Match.KEY_LATITUDE);
+                mLongitude = extras.getFloat(Match.KEY_LONGITUDE);
+                mPostCode = extras.getString(Match.KEY_POSTCODE);
+                mAddress = extras.getString(Match.KEY_ADDRESS);
             } catch (Exception e){
                 Log.d(TAG, "Couldn't parse the bundle");
             }
@@ -169,6 +175,27 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
+
+        ImageView googleMaps = (ImageView) mLayout.findViewById(R.id.google_maps_click);
+        googleMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f (%s)", mLatitude, mLongitude, "Where the party is at");
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,  Uri.parse("geo:" + mLatitude + "," + mLongitude
+                                + "?q=" + mLatitude + "," + mLongitude + "(" + mAddress + ")"));
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                try {
+                    startActivity(intent); //first try opening google maps
+                } catch(ActivityNotFoundException e) {
+                    try { //no google apps, try any maps app
+                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                        startActivity(unrestrictedIntent);
+                    } catch(ActivityNotFoundException inE){
+                        Toast.makeText(getActivity(), "Please install a maps application.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
 
         if (mSlidingTabLayout != null) {
             mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

@@ -29,6 +29,10 @@ public class Match {
     private Integer teamOnePoints;
     private Integer teamTwoPoints;
     private Boolean isForfeit;
+    private Float longitude;
+    private Float latitude;
+    private String postCode;
+    private String address;
 
     public static final String KEY_LEAGUEID = "leagueID";
     public static final String KEY_MATCHID = "matchID";
@@ -43,7 +47,13 @@ public class Match {
     public static final String KEY_TEAMONEPOINTS = "teamOnePoints";
     public static final String KEY_TEAMTWOPOINTS = "teamTwoPoints";
     public static final String KEY_ISFORFEIT = "isForfeit";
-    public static final String[] COLUMNS = {KEY_LEAGUEID, KEY_MATCHID,KEY_TEAMONEID, KEY_TEAMTWOID, KEY_TEAMONE, KEY_TEAMTWO, KEY_REFID, KEY_REFNAME, KEY_DATETIME, KEY_PLACE, KEY_TEAMONEPOINTS, KEY_TEAMTWOPOINTS, KEY_ISFORFEIT};
+    public static final String KEY_LONGITUDE = "longitude";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_POSTCODE = "postcode";
+    public static final String KEY_ADDRESS = "address";
+    public static final String[] COLUMNS = {KEY_LEAGUEID, KEY_MATCHID,KEY_TEAMONEID, KEY_TEAMTWOID, KEY_TEAMONE, KEY_TEAMTWO,
+                                            KEY_REFID, KEY_REFNAME, KEY_DATETIME, KEY_PLACE, KEY_TEAMONEPOINTS, KEY_TEAMTWOPOINTS,
+                                            KEY_ISFORFEIT, KEY_LONGITUDE, KEY_LATITUDE, KEY_POSTCODE, KEY_ADDRESS};
     public static final String CREATE_TABLE =   KEY_LEAGUEID + "\tINTEGER,\n" +
                                                 KEY_MATCHID + "\tINTEGER,\n" +
                                                 KEY_TEAMONEID + "\tINTEGER,\n" +
@@ -51,6 +61,10 @@ public class Match {
                                                 KEY_TEAMONE + "\tTEXT,\n" +
                                                 KEY_TEAMTWO + "\tTEXT,\n" +
                                                 KEY_REFID + "\tINTEGER,\n" +
+                                                KEY_LONGITUDE + "\tREAL,\n" +
+                                                KEY_LATITUDE + "\tREAL,\n" +
+                                                KEY_POSTCODE + "\tTEXT,\n" +
+                                                KEY_ADDRESS + "\tTEXT,\n" +
                                                 KEY_REFNAME + "\tTEXT,\n" +
                                                 KEY_DATETIME + "\tTEXT,\n" +
                                                 KEY_PLACE + "\tTEXT,\n" +
@@ -58,7 +72,7 @@ public class Match {
                                                 KEY_TEAMTWOPOINTS + "\tINTEGER,\n" +
                                                 KEY_ISFORFEIT + "\tINTEGER";
 
-    public Match(Integer leagueID, Integer matchID, Integer teamOneID, Integer teamTwoID, String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit) {
+    public Match(Integer leagueID, Integer matchID, Integer teamOneID, Integer teamTwoID, String teamOne, String teamTwo, Integer refID, String refName, Date dateTime, String place, Integer teamOnePoints, Integer teamTwoPoints, Boolean isForfeit, Float longitude, Float latitude, String postCode, String address) {
         this.leagueID = leagueID;
         this.matchID = matchID;
         this.teamOneID = teamOneID;
@@ -72,6 +86,10 @@ public class Match {
         this.teamOnePoints = teamOnePoints;
         this.teamTwoPoints = teamTwoPoints;
         this.isForfeit = isForfeit;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.postCode = postCode;
+        this.address = address;
     }
 
     public Match(Cursor cursor){
@@ -114,6 +132,26 @@ public class Match {
             this.refName = cursor.getString(cursor.getColumnIndex(KEY_REFNAME));
         } catch(Exception e) {
             this.refName = null;
+        }
+        try {
+            this.longitude = cursor.getFloat(cursor.getColumnIndex(KEY_LONGITUDE));
+        } catch(Exception e) {
+            this.longitude = null;
+        }
+        try {
+            this.latitude = cursor.getFloat(cursor.getColumnIndex(KEY_LATITUDE));
+        } catch(Exception e) {
+            this.latitude = null;
+        }
+        try {
+            this.address = cursor.getString(cursor.getColumnIndex(KEY_ADDRESS));
+        } catch(Exception e) {
+            this.address = null;
+        }
+        try {
+            this.postCode = cursor.getString(cursor.getColumnIndex(KEY_POSTCODE));
+        } catch(Exception e) {
+            this.postCode = null;
         }
         try {
             String dT = cursor.getString(cursor.getColumnIndex(KEY_DATETIME));
@@ -180,6 +218,26 @@ public class Match {
             this.refName = jsonObject.getString("refName");
         } catch(JSONException e) {
             this.refName = null;
+        }
+        try {
+            this.longitude = (float)jsonObject.getDouble(KEY_LONGITUDE);
+        } catch(Exception e) {
+            this.longitude = null;
+        }
+        try {
+            this.latitude = (float)jsonObject.getDouble(KEY_LATITUDE);
+        } catch(Exception e) {
+            this.latitude = null;
+        }
+        try {
+            this.address = jsonObject.getString(KEY_ADDRESS);
+        } catch(Exception e) {
+            this.address = null;
+        }
+        try {
+            this.postCode = jsonObject.getString(KEY_POSTCODE);
+        } catch(Exception e) {
+            this.postCode = null;
         }
         try {
             String dT = jsonObject.getString("dateTime");
@@ -316,6 +374,38 @@ public class Match {
         this.isForfeit = isForfeit;
     }
 
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
+
+    public Float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_LEAGUEID,leagueID);
@@ -332,6 +422,10 @@ public class Match {
         values.put(KEY_TEAMONEPOINTS, teamOnePoints);
         values.put(KEY_TEAMTWOPOINTS, teamTwoPoints);
         values.put(KEY_ISFORFEIT, isForfeit ? 1 : 0); //convert boolean to int
+        values.put(KEY_LONGITUDE, longitude);
+        values.put(KEY_LATITUDE, latitude);
+        values.put(KEY_POSTCODE, postCode);
+        values.put(KEY_ADDRESS, address);
         return values;
     }
 
