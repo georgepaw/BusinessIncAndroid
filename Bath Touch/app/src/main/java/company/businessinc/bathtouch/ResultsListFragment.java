@@ -88,12 +88,6 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
         mAdapter = new TeamResultsAdapter(this, mLeagueID, mTeamID, mAllTeams);
 
         mRecyclerView.setAdapter(mAdapter);
-        int position = 0;
-        if(mAdapter.getScoresCount() <= mAdapter.getItemCount() - 1)
-            position = mAdapter.getScoresCount();
-        else
-            position = mAdapter.getScoresCount() - 1;
-        mLayoutManager.scrollToPositionWithOffset(position, 60);
         return mLayout;
     }
 
