@@ -119,6 +119,13 @@ public class SQLiteManager {
                     Log.d(TAG, "Can't call " + "LeagueScore" + " callback, selection/selection args not valid");
                 }
                 break;
+            case DBProviderContract.LEAGUETODAY_TABLE_NAME:
+                if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
+                    DataStore.getInstance(context).loadLeagueToday(Integer.valueOf(selectionArgs[0]));
+                } else{
+                    Log.d(TAG, "Can't call " + "LeagueToday" + " callback, selection/selection args not valid");
+                }
+                break;
             case DBProviderContract.LEAGUETEAMS_TABLE_NAME:
                 if(selection != null && selection.contains(DBProviderContract.SELECTION_LEAGUEID) && selectionArgs.length >= 1) {
                     DataStore.getInstance(context).loadLeaguesTeams(Integer.valueOf(selectionArgs[0]));

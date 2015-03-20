@@ -40,8 +40,8 @@ public class MyTeamFragment extends Fragment{
     private String mParam1;
     private String mParam2;
 
-    private static final String[] headersLoggedIn = new String[]{"Activity", "Matches", "League"};
-    private static final String[] headersAnon = new String[]{"Matches", "League"};
+    private static final String[] headersLoggedIn = new String[]{"Activity","Today's Games", "Matches", "League"};
+    private static final String[] headersAnon = new String[]{"Today's Games","Matches", "League"};
 
     private MyTeamFragmentCallbacks mListener;
     private View mLayout;
@@ -194,6 +194,8 @@ public class MyTeamFragment extends Fragment{
             switch (switchString) {
                 case "Activity":
                     return TeamOverviewFragment.newInstance(DataStore.getInstance(getActivity()).getUserTeamID(), mLeagueID);
+                case "Today's Games":
+                    return TodayFragment.newInstance(mLeagueID);
                 case "Matches":
                     if(DataStore.getInstance(getActivity()).isUserLoggedIn())
                         return ResultsListFragment.newInstance(mLeagueID, DataStore.getInstance(getActivity()).getUserTeamID(), false);

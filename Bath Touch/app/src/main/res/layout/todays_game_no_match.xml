@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/fragment_no_match"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="There are no games today."
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+</RelativeLayout>

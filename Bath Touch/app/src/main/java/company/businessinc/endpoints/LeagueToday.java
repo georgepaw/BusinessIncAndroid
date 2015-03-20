@@ -23,12 +23,12 @@ import java.util.List;
  */
 public class LeagueToday extends AsyncTask<Void, Void, ResponseStatus> {
     String TAG = "LeagueScores";
-    private LeagueScoresInterface callback;
+    private LeagueTodayInterface callback;
     private List<NameValuePair> parameters;
     private int leagueID;
     private Context context;
 
-    public LeagueToday(LeagueScoresInterface callback, Context context, int leagueID) {
+    public LeagueToday(LeagueTodayInterface callback, Context context, int leagueID) {
         this.callback = callback;
         this.leagueID = leagueID;
         parameters = new LinkedList<NameValuePair>();
@@ -66,6 +66,6 @@ public class LeagueToday extends AsyncTask<Void, Void, ResponseStatus> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(ResponseStatus responseStatus) {
-        callback.leagueScoresCallback(responseStatus, leagueID);
+        callback.leagueTodayCallback(responseStatus, leagueID);
     }
 }

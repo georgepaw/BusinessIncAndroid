@@ -66,6 +66,7 @@ public class MainActivity extends ActionBarActivity
         TeamOverviewFragment.TeamOverviewCallbacks,
         RefGamesFragment.RefGamesCallbacks,
         ScoreSubmitInterface,
+        TodayFragment.TodaysCallbacks,
         DeviceUnregisterInterface{
 
     private SharedPreferences mSharedPreferences;
@@ -262,6 +263,18 @@ public class MainActivity extends ActionBarActivity
                             })
             );
         }
+        mNavigationDrawerLayout.addItem(
+                new DrawerItem()
+                        .setImage(getResources().getDrawable(R.drawable.ic_timer_black))
+                        .setTextPrimary("Today's Games")
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int id, int position) {
+                                changeFragments("TODAYSGAMES", null);
+                                mNavigationDrawerLayout.closeDrawer();
+                            }
+                        })
+        );
         mNavigationDrawerLayout.addDivider();
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
@@ -406,6 +419,11 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    public void onTodaysItemSelected(Bundle args) {
+        changeFragments("MATCHDETAILSFRAG", args);
+    }
+
+    @Override
     public void onHomePageCardSelected(int position) {
         switch (position) {
             case HomePageAdapter.NEXTREFGAME:
@@ -483,6 +501,10 @@ public class MainActivity extends ActionBarActivity
             if (tag.equals("PLAYERREQUESTS")) {
                 ft.replace(R.id.container, PlayerRequestsFragment.newInstance(), tag);
             }
+            if (tag.equals("TODAYSGAMES")) {
+                ft.replace(R.id.container, TodaysGamesFragment.newInstance(), tag);
+            }
+
 
             ft.addToBackStack(tag);
             ft.commit();

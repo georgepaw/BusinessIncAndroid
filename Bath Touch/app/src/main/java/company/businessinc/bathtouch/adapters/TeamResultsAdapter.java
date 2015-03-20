@@ -343,16 +343,16 @@ public class TeamResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         }
 
-        int teamColor;
-        try{
-            //set specific team colors if it has been loaded by db
-            teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
-        }
-        catch (Exception e){
-            teamColor = Color.WHITE;
-        }
-        v.mExpandable.setBackgroundColor(teamColor);
-        v.mExpandable.getBackground().setAlpha(200);
+//        int teamColor;
+//        try{
+//            //set specific team colors if it has been loaded by db
+//            teamColor = Color.parseColor(oppTeam.getTeamColorPrimary());
+//        }
+//        catch (Exception e){
+//            teamColor = Color.WHITE;
+//        }
+//        v.mExpandable.setBackgroundColor(teamColor);
+//        v.mExpandable.getBackground().setAlpha(200);
 
 
     }
