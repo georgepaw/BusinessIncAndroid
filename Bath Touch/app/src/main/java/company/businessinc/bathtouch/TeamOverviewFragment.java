@@ -313,8 +313,6 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
 //                    startActivity(intent);
                 }
             });
-
-            //TODO show next team and color
             Drawable drawable = TextDrawable.builder()
                     .buildRound("N", getActivity()
                             .getResources().getColor(R.color.dark_divider));
@@ -339,7 +337,8 @@ public class TeamOverviewFragment extends Fragment implements DBObserver, SwipeR
             if(teamTwo != null){
                 colourTeamTwo = Color.parseColor(teamTwo.getTeamColorPrimary());
             } else {
-                colourTeamTwo = Color.GRAY;
+                colourTeamTwo = getActivity()
+                        .getResources().getColor(R.color.dark_divider);
             }
             if (nextMatch.getTeamOneID() == DataStore.getInstance(getActivity()).getUserTeamID()) {
                 mNextMatchName.setText(nextMatch.getTeamTwo());

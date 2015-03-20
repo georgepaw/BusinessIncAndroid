@@ -1,58 +1,57 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import company.businessinc.bathtouch.adapters.RefGamesAdapter;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
-import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.Match;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ResultsListFragment.ResultsListCallbacks} interface
+ * {@link company.businessinc.bathtouch.RefGamesFragment.RefGamesCallbacks} interface
  * to handle interaction events.
- * Use the {@link ResultsListFragment#newInstance} factory method to
+ * Use the {@link company.businessinc.bathtouch.RefGamesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResultsListFragment extends Fragment implements TeamResultsAdapter.OnResultSelectedCallbacks, DBObserver{
+public class RefGamesFragment extends Fragment implements RefGamesAdapter.OnRefGameSelectedCallbacks, DBObserver{
 
     private View mLayout;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
-    private TeamResultsAdapter mAdapter;
-    private ResultsListCallbacks mCallbacks;
+    private RefGamesAdapter mAdapter;
+    private RefGamesCallbacks mCallbacks;
     private Integer mLeagueID, mTeamID;
     private Boolean mAllTeams;
 
-    public static ResultsListFragment newInstance(Integer leagueID, Integer teamID, Boolean allTeams) {
-        ResultsListFragment fragment = new ResultsListFragment();
+    public static RefGamesFragment newInstance() {
+        RefGamesFragment fragment = new RefGamesFragment();
         Bundle args = new Bundle();
-        args.putInt("leagueID", leagueID);
-        args.putInt("teamID", teamID);
-        args.putBoolean("allTeams", allTeams);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public ResultsListFragment() {
+    public RefGamesFragment() {
         // Required empty public constructor
     }
 
@@ -60,9 +59,6 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mLeagueID = getArguments().getInt("leagueID");
-            mTeamID = getArguments().getInt("teamID");
-            mAllTeams = getArguments().getBoolean("allTeams");
         }
     }
 
@@ -72,6 +68,14 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_results_list, container, false);
+
+        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle("Referee Matches");
+        actionBar.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
+                getResources().getDisplayMetrics()));
+
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(3);
 
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.team_results_recycle);
 
@@ -85,7 +89,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
 //                    }
 //                }));
 
-        mAdapter = new TeamResultsAdapter(this, mLeagueID, mTeamID, mAllTeams);
+        mAdapter = new RefGamesAdapter(this);
 
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
@@ -106,7 +110,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
             args.putInt(Match.KEY_TEAMTWOID, selectedMatch.getTeamTwoID());
             args.putInt(Match.KEY_TEAMONEPOINTS, selectedMatch.getTeamOnePoints());
             args.putInt(Match.KEY_TEAMTWOPOINTS, selectedMatch.getTeamTwoPoints());
-            args.putInt("leagueID", mLeagueID);
+            args.putInt("leagueID", selectedMatch.getLeagueID());
             args.putInt(Match.KEY_MATCHID, selectedMatch.getMatchID());
             args.putString(Match.KEY_PLACE, selectedMatch.getPlace());
             args.putBoolean("hasBeenPlayed", hasBeenPlayed);
@@ -123,20 +127,18 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallbacks = (ResultsListCallbacks) activity;
+            mCallbacks = (RefGamesCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement RefGamesCallbacks");
         }
 
-        DataStore.getInstance(activity).registerLeagueScoreDBObserver(this);
-        DataStore.getInstance(activity).registerLeaguesFixturesDBObserver(this);
+        DataStore.getInstance(activity).registerMyUpcomingRefereeDBObserver(this);
     }
 
     @Override
     public void onDetach() {
-        DataStore.getInstance(getActivity()).unregisterLeagueScoreDBObserver(this);
-        DataStore.getInstance(getActivity()).unregisterLeaguesFixturesDBObserver(this);
+        DataStore.getInstance(getActivity()).unregisterMyUpcomingRefereeDBObserver(this);
         super.onDetach();
         mCallbacks = null;
     }
@@ -149,13 +151,12 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
     @Override
     public void notify(String tableName, Object data) {
         switch (tableName){
-            case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
-            case DBProviderContract.LEAGUESFIXTURES_TABLE_NAME:
+            case DBProviderContract.MYUPCOMINGREFEREEGAMES_TABLE_NAME:
                 int position = 0;
-                if(mAdapter.getScoresCount() <= mAdapter.getItemCount() - 1)
-                    position = mAdapter.getScoresCount();
+                if(mAdapter.getPastCount() <= mAdapter.getItemCount() - 1)
+                    position = mAdapter.getPastCount();
                 else
-                    position = mAdapter.getScoresCount() - 1;
+                    position = mAdapter.getPastCount() - 1;
                 mLayoutManager.scrollToPositionWithOffset(position, 60);
                 break;
         }
@@ -171,7 +172,7 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface ResultsListCallbacks {
+    public interface RefGamesCallbacks {
         public void onResultsItemSelected(Bundle args);
     }
 
