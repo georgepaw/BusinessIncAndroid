@@ -98,21 +98,21 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/activity_match_header_layout">
-            <ImageView
-                android:id="@+id/google_maps_click"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@mipmap/ic_google_maps"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:clickable="true"/>
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_below="@id/activity_match_header_layout">-->
+            <!--<ImageView-->
+                <!--android:id="@+id/google_maps_click"-->
+                <!--android:layout_width="35dp"-->
+                <!--android:layout_height="35dp"-->
+                <!--android:src="@mipmap/ic_google_maps"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:clickable="true"/>-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
 
         </RelativeLayout>
