@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +12,12 @@ import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link company.businessinc.bathtouch.LeagueTableFragment.LeagueTableCallbacks} interface
- * to handle interaction events.
- * Use the {@link company.businessinc.bathtouch.LeagueTableFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MyMapFragment extends Fragment {
 
     private static final String TAG = "MapFragment";
+
+    private static View view;
 
 
     private SupportMapFragment fragment;
@@ -60,7 +56,18 @@ public class MyMapFragment extends Fragment {
             mPlace = getArguments().getString("place");
         }
 
-        return inflater.inflate(R.layout.fragment_map, container, false);
+
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_map, container, false);
+        } catch (InflateException e) {
+        /* map is already there, just return view as it is */
+        }
+        return view;
     }
 
     @Override
