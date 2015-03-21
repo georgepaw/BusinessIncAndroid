@@ -1,6 +1,5 @@
 package company.businessinc.bathtouch;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -13,12 +12,8 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -71,8 +66,8 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     private static final String ANON_PRIMARY = "#ff0000";
     private static final String ANON_SECONDARY = "#ffffff";
 
-    private static final String[] headersLoggedIn = new String[]{"Players", "Table"};
-    private static final String[] headersAnon = new String[]{"Table"};
+    private static final String[] headersLoggedIn = new String[]{"Players", "Table", "Map"};
+    private static final String[] headersAnon = new String[]{"Table", "Map"};
 
     public static MatchFragment newInstance(Bundle args){
         MatchFragment frag = new MatchFragment();
@@ -176,26 +171,26 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         mViewPager.setAdapter(mViewPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
 
-        ImageView googleMaps = (ImageView) mLayout.findViewById(R.id.google_maps_click);
-        googleMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f (%s)", mLatitude, mLongitude, "Where the party is at");
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,  Uri.parse("geo:" + mLatitude + "," + mLongitude
-                                + "?q=" + mLatitude + "," + mLongitude + "(" + mAddress + ")"));
-                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                try {
-                    startActivity(intent); //first try opening google maps
-                } catch(ActivityNotFoundException e) {
-                    try { //no google apps, try any maps app
-                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                        startActivity(unrestrictedIntent);
-                    } catch(ActivityNotFoundException inE){
-                        Toast.makeText(getActivity(), "Please install a maps application.", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
+//        ImageView googleMaps = (ImageView) mLayout.findViewById(R.id.google_maps_click);
+//        googleMaps.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f (%s)", mLatitude, mLongitude, "Where the party is at");
+//                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,  Uri.parse("geo:" + mLatitude + "," + mLongitude
+//                                + "?q=" + mLatitude + "," + mLongitude + "(" + mAddress + ")"));
+//                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+//                try {
+//                    startActivity(intent); //first try opening google maps
+//                } catch(ActivityNotFoundException e) {
+//                    try { //no google apps, try any maps app
+//                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+//                        startActivity(unrestrictedIntent);
+//                    } catch(ActivityNotFoundException inE){
+//                        Toast.makeText(getActivity(), "Please install a maps application.", Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            }
+//        });
 
         if (mSlidingTabLayout != null) {
             mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -391,6 +386,8 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
                     return AvailablePlayersFragment.newInstance(mMatchID, mHasBeenPlayed);
                 case "Table":
                     return LeagueFragment.newInstance(mLeagueID);
+                case "Map":
+                    return MyMapFragment.newInstance(mLongitude, mLatitude, mAddress, mPostCode, mPlace);
                 default:
                     return MatchFactsFragment.newInstance("a", "b");
             }
