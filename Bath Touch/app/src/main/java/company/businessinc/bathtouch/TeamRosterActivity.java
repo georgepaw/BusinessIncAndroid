@@ -42,7 +42,7 @@ import company.businessinc.dataModels.Player;
  * http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
  */
 public class TeamRosterActivity extends FragmentActivity implements ActionBar.TabListener,
-        AvailablePlayersAdapter.AvailablePlayerCallbacks, LoaderManager.LoaderCallbacks<Cursor>, AvailablePlayersFragment.AvailablePlayersListener {
+        AvailablePlayersAdapter.AvailablePlayerCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -202,19 +202,6 @@ public class TeamRosterActivity extends FragmentActivity implements ActionBar.Ta
         finish();
     }
 
-    @Override
-    public void createGhostPlayerEvent() {
-        Log.d("TEAMROSTERACTIVITY", "creating new intent");
-        startCreateGhostPlayerIntent();
-    }
-
-//    private ArrayList<Integer> populatePeople(int start) {
-//        ArrayList<Integer> list = new ArrayList<Integer>();
-//        for (int i = start; i < NUM_PEOPLE + start; i++) {
-//            list.add(i);
-//        }
-//        return list;
-//    }
 
     public static class MyDialogFragment extends DialogFragment {
         TextView mName, mEmail, mIsGhost;

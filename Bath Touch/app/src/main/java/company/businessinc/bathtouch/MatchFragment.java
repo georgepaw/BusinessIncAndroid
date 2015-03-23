@@ -47,7 +47,7 @@ import company.businessinc.networking.CheckNetworkConnection;
 
 
 public class MatchFragment extends Fragment implements LeagueFragment.LeagueCallbacks,
-        MatchFactsFragment.OnFragmentInteractionListener, AvailablePlayersFragment.AvailablePlayersListener, DBObserver {
+        MatchFactsFragment.OnFragmentInteractionListener, DBObserver {
 
     private static final String TAG = "MatchActivty";
     private String mTeamOneName,mTeamTwoName, mPostCode, mAddress;
@@ -130,9 +130,9 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
 
         headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
         headerBox.setBackgroundColor(primaryColour);
-
+        FloatingActionButton fab = (FloatingActionButton) mLayout.findViewById(R.id.submit_score_fab);
         if(DataStore.getInstance(getActivity()).amIRefing(mMatchID)) {
-            FloatingActionButton fab = (FloatingActionButton) mLayout.findViewById(R.id.submit_score_fab);
+            fab.setImageResource(R.drawable.ic_whistle_white600_24dp);
             fab.setVisibility(View.VISIBLE);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -140,6 +140,17 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
                     showSubmitScoreDialog();
                 }
             });
+        } else if(DataStore.getInstance(getActivity()).isUserLoggedIn() && DataStore.getInstance(getActivity()).isUserCaptain() && !mHasBeenPlayed) {
+            fab.setImageResource(R.drawable.ic_add_small_24dp);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startCreateGhostPlayerIntent();
+                }
+            });
+        } else {
+            fab.setVisibility(View.GONE);
         }
 
         setCircles();
@@ -343,11 +354,6 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
     Implemented interface from available players fragment
     when create ghost player button is pressed
      */
-    @Override
-    public void createGhostPlayerEvent() {
-        Log.d("TEAMROSTERACTIVITY", "creating new intent");
-        startCreateGhostPlayerIntent();
-    }
 
     @Override
     public void notify(String tableName, Object data) {
