@@ -164,6 +164,18 @@
 
                     </RelativeLayout>
 
+                    <Button
+                            android:id="@+id/fragment_todays_game_button"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:text="Match Details"
+                            android:textColor="@color/red"
+                            android:textAllCaps="true"
+                            android:textSize="14sp"
+                            android:textStyle="bold" android:layout_gravity="right"/>
                     <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -179,19 +191,6 @@
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:clickable="true">
-
-                            <Button
-                                    android:id="@+id/fragment_todays_game_button"
-                                    style="?android:attr/borderlessButtonStyle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentBottom="true"
-                                    android:layout_alignParentRight="true"
-                                    android:text="Match Details"
-                                    android:textColor="@color/red"
-                                    android:textAllCaps="true"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"/>
 
 
                         </RelativeLayout>
