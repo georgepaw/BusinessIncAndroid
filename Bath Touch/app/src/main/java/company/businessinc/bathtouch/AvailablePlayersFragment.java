@@ -35,11 +35,6 @@ public class AvailablePlayersFragment extends Fragment{
     private AvailablePlayersAdapter mAdapter;
     private int matchID;
     private boolean hasBeenPlayed;
-    private AvailablePlayersListener mCallbacks;
-
-    public interface AvailablePlayersListener {
-        public void createGhostPlayerEvent();
-    }
 
 
     public static AvailablePlayersFragment newInstance(int matchID, boolean hasBeenPlayed) {
@@ -60,8 +55,6 @@ public class AvailablePlayersFragment extends Fragment{
             matchID = bundle.getInt("matchID");
             hasBeenPlayed = bundle.getBoolean("hasBeenPlayed");
         }
-
-        mCallbacks = (AvailablePlayersListener) getParentFragment();
 
     }
 
@@ -94,19 +87,6 @@ public class AvailablePlayersFragment extends Fragment{
 //        mRecyclerView.addItemDecoration(headersDecor);
 //        mRecyclerView.addItemDecoration(new DividerDecoration(getActivity().getBaseContext()));
 
-
-        FloatingActionButton fab = (FloatingActionButton) mLayout.findViewById(R.id.team_roster_fab);
-        if(DataStore.getInstance(getActivity()).isUserLoggedIn() && DataStore.getInstance(getActivity()).isUserCaptain() && !hasBeenPlayed) {
-            fab.attachToRecyclerView(mRecyclerView);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCallbacks.createGhostPlayerEvent();
-                }
-            });
-        } else {
-            fab.setVisibility(View.GONE);
-        }
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mLayout.findViewById(R.id.swipeRefreshAvailabilites);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
