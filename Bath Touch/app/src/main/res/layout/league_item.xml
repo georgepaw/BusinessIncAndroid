@@ -9,9 +9,11 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            >
 
             <RelativeLayout
+                android:id="@+id/league_item_team_main_background"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/white">
@@ -113,7 +115,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/league_item_team1_container"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
             <android.support.v7.widget.CardView
                     android:id="@+id/league_item_captain_card"
                     android:layout_width="match_parent"
@@ -123,7 +126,8 @@
                         android:id="@+id/league_item_captain_card_content"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:background="@color/white">
+                        android:background="@color/white"
+                        android:paddingLeft="16dp">
                     <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -155,7 +159,7 @@
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="20dp"
+                        android:paddingLeft="16dp"
                         android:layout_alignParentLeft="true">
                         <ImageView
                                 android:layout_width="40dp"
