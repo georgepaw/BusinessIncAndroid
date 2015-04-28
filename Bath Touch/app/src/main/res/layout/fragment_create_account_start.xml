@@ -64,7 +64,7 @@
                     android:hint="@string/create_account_name_first_hint"
                     android:inputType="textCapWords"
                     android:singleLine="true"
-                    app:floatingLabel="highlight"/>
+                    app:met_floatingLabel="highlight"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/fragment_create_account_start_name_second_edit_text"
@@ -73,7 +73,7 @@
                     android:hint="@string/create_account_name_second_hint"
                     android:inputType="textCapWords"
                     android:singleLine="true"
-                    app:floatingLabel="highlight"/>
+                    app:met_floatingLabel="highlight"/>
 
                 <Spinner
                     android:id="@+id/fragment_create_account_gender_spinner"

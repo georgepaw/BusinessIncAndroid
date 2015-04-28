@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,6 +69,9 @@ public class LeagueTableFragment extends Fragment {
                              Bundle savedInstanceState) {
         mLayout = inflater.inflate(R.layout.fragment_league_table, container, false);
 
+        setEnterTransition(new Fade());
+        setExitTransition(new Fade());
+
         int userColor;
         if (DataStore.getInstance(getActivity()).isUserLoggedIn()) {
             userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
@@ -74,7 +79,7 @@ public class LeagueTableFragment extends Fragment {
             userColor = Color.parseColor(ANON_PRIMARY);
         }
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("League Tables");
         actionBar.setElevation(0f);

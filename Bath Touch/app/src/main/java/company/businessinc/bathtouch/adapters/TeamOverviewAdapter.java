@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -54,10 +55,14 @@ import company.businessinc.networking.CheckNetworkConnection;
 public class TeamOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DBObserver {
 
     private final Context mContext;
+    private final SwipeRefreshLayout mSwipeRefreshLayout;
+    private final ViewPager mViewPager;
     private onMatchDetailsSelected mCallbacks;
     private int mTeamID;
     private int mLeagueID;
     private League league;
+
+//    private Boolean
 
     public interface onMatchDetailsSelected {
         public void matchDetailsSelectedCallback(Bundle args);
@@ -114,10 +119,12 @@ public class TeamOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public TeamOverviewAdapter(Fragment context, int teamID, int leagueID) {
+    public TeamOverviewAdapter(Fragment context, int teamID, int leagueID, SwipeRefreshLayout swipeRefreshLayout, ViewPager viewPager) {
         mContext = context.getActivity();
         mTeamID = teamID;
         mLeagueID = leagueID;
+        mSwipeRefreshLayout = swipeRefreshLayout;
+        mViewPager = viewPager;
         mCallbacks = (onMatchDetailsSelected) mContext;
     }
 
@@ -132,6 +139,7 @@ public class TeamOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolderTeam v = (ViewHolderTeam) holder;
         leagueChanged(v);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -193,7 +201,7 @@ public class TeamOverviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case DBProviderContract.LEAGUETEAMS_TABLE_NAME:
             case DBProviderContract.LEAGUESSCORE_TABLE_NAME:
             case DBProviderContract.ALLLEAGUES_TABLE_NAME:
-                notifyDataSetChanged();
+//                notifyDataSetChanged();
                 break;
         }
     }

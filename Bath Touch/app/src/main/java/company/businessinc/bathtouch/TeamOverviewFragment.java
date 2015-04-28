@@ -51,6 +51,7 @@ public class TeamOverviewFragment extends Fragment{
 
     private TeamOverviewCallbacks mCallbacks;
     private View mLayout;
+    private ViewPager mPager;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private TeamOverviewAdapter mAdapter;
@@ -92,6 +93,8 @@ public class TeamOverviewFragment extends Fragment{
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_team_overview, container, false);
 
+        mPager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
+
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.team_overview_recycle);
 
         mSwipeRefresh = (SwipeRefreshLayout) (mLayout.findViewById(R.id.swipeRefreshOverview));
@@ -102,10 +105,9 @@ public class TeamOverviewFragment extends Fragment{
                     @Override
                     public void run() {
                         DataStore.getInstance(getActivity()).refreshData();
-                        mLayout.setVisibility(View.GONE);
-                        ViewPager pager = (ViewPager) getActivity().findViewById(R.id.fragment_my_team_view_pager);
-                        mSwipeRefresh.setRefreshing(false);
-                        pager.getAdapter().notifyDataSetChanged();
+//                        mLayout.setVisibility(View.GONE);
+//                        mSwipeRefresh.setRefreshing(false);
+//                        mPager.getAdapter().notifyDataSetChanged();
                     }
 
                 },3000);
@@ -115,7 +117,7 @@ public class TeamOverviewFragment extends Fragment{
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new TeamOverviewAdapter(this, mTeamID, mLeagueID);
+        mAdapter = new TeamOverviewAdapter(this, mTeamID, mLeagueID, mSwipeRefresh, mPager);
 
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
