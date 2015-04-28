@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -75,7 +76,7 @@ public class PlayerRequestsFragment extends Fragment {
             userColor = Color.parseColor(ANON_PRIMARY);
         }
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("Player requests");
         actionBar.setElevation(0f);

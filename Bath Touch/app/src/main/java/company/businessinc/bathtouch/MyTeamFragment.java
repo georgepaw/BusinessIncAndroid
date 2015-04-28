@@ -12,6 +12,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +75,12 @@ public class MyTeamFragment extends Fragment{
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_my_team, container, false);
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        setEnterTransition(new Fade());
+        setExitTransition(new Fade());
+        setSharedElementEnterTransition(new Fade());
+        setSharedElementReturnTransition(new Fade());
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         int primaryColour;
         int secondaryColour;
@@ -132,7 +139,7 @@ public class MyTeamFragment extends Fragment{
 
 
         DataStore.getInstance(getActivity()).registerLiveLeagueDBObserver(mViewPagerAdapter);
-        mViewPagerAdapter.notifyDataSetChanged();
+//        mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
     }
 
@@ -179,7 +186,7 @@ public class MyTeamFragment extends Fragment{
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
             mLeagueID = getLeagueID();
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
         }
 
 
@@ -235,7 +242,7 @@ public class MyTeamFragment extends Fragment{
             switch(tableName){
                 case DBProviderContract.LIVELEAGUE_TABLE_NAME:
                     mLeagueID = getLeagueID();
-                    notifyDataSetChanged();
+//                    notifyDataSetChanged();
                     break;
             }
         }

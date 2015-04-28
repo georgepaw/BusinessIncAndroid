@@ -19,8 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.melnykov.fab.FloatingActionButton;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import company.businessinc.bathtouch.adapters.AvailablePlayersAdapter;
 import company.businessinc.bathtouch.data.DataStore;
 
