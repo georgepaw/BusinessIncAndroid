@@ -32,6 +32,8 @@ import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.ui.LibsFragment;
 import company.businessinc.bathtouch.adapters.TeamOverviewAdapter;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.dataModels.League;
@@ -278,6 +280,7 @@ public class MainActivity extends ActionBarActivity
                         })
         );
         mNavigationDrawerLayout.addDivider();
+
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_settings_grey600_48dp))
@@ -286,6 +289,19 @@ public class MainActivity extends ActionBarActivity
                             @Override
                             public void onClick(DrawerItem drawerItem, int id, int position) {
                                 Toast.makeText(MainActivity.this, "No settings activity yet", Toast.LENGTH_SHORT).show();
+                                mNavigationDrawerLayout.closeDrawer();
+                            }
+                        })
+        );
+
+        mNavigationDrawerLayout.addItem(
+                new DrawerItem()
+                        .setImage(getResources().getDrawable(R.drawable.ic_info_outline))
+                        .setTextPrimary("About")
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int id, int position) {
+                                changeFragments("ABOUT", null);
                                 mNavigationDrawerLayout.closeDrawer();
                             }
                         })
@@ -333,47 +349,6 @@ public class MainActivity extends ActionBarActivity
                 Log.d(TAG, "No valid Google Play Services APK found.");
             }
         }
-
-        //FAB STUFF JAMES
-
-//        final FloatingActionButton nextMatchButton = new FloatingActionButton(getApplicationContext());
-//        nextMatchButton.setTitle("Next Match");
-//        nextMatchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_arrow_forward_black));
-//        nextMatchButton.setColorNormal(Color.WHITE);
-//        nextMatchButton.setColorPressed(getResources().getColor(R.color.primary));
-//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(nextMatchButton);
-//
-//        final FloatingActionButton exampleLeagueA = new FloatingActionButton(getApplicationContext());
-//        exampleLeagueA.setTitle("Your Account");
-//        exampleLeagueA.setIconDrawable(getResources().getDrawable(R.drawable.ic_person_big_black));
-//        exampleLeagueA.setColorNormal(Color.WHITE);
-//        exampleLeagueA.setColorPressed(getResources().getColor(R.color.primary));
-//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(exampleLeagueA);
-//
-////        final FloatingActionButton actionC = new FloatingActionButton(getApplicationContext());
-////        actionC.setColorNormal(Color.WHITE);
-////        actionC.setTitle("Show all Leagues");
-////        actionC.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-////                exampleLeagueA.setVisibility(exampleLeagueA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-////                //Toggle the title of action C
-////                if (actionB.getVisibility() == View.VISIBLE) {
-////                    actionC.setTitle("Hide all Leagues");
-////                } else {
-////                    actionC.setTitle("Show all Leagues");
-////                }
-////            }
-////        });
-////        //Added last to bottom
-////        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
-//
-//
-//        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
-//        actionA.setIconDrawable(getResources().getDrawable(R.drawable.ic_send_black));
-
-        //END FAB STUFF JAMES
     }
 
     public int darker (int color, float factor) {
@@ -489,25 +464,37 @@ public class MainActivity extends ActionBarActivity
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
         if (fragment == null) {
-            if (tag.equals("HOMEPAGETAG"))
-                ft.replace(R.id.container, MyTeamFragment.newInstance(), tag);
-            if (tag.equals("LEAGUETABLETAG"))
-                ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
-            if (tag.equals("TEAMRESULTSTAG"))
-                ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
-            if (tag.equals("REFGAMESTAG"))
-                ft.replace(R.id.container, RefGamesFragment.newInstance(), tag);
-            if (tag.equals("MATCHDETAILSFRAG")) {
-                ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
+            switch (tag){
+                case "HOMEPAGETAG":
+                    ft.replace(R.id.container, MyTeamFragment.newInstance(), tag);
+                    break;
+                case "LEAGUETABLETAG":
+                    ft.replace(R.id.container, LeagueTableFragment.newInstance(), tag);
+                    break;
+                case "TEAMRESULTSTAG":
+                    ft.replace(R.id.container, TeamResultsFragment.newInstance(), tag);
+                    break;
+                case "REFGAMESTAG":
+                    ft.replace(R.id.container, RefGamesFragment.newInstance(), tag);
+                    break;
+                case "MATCHDETAILSFRAG":
+                    ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
+                    break;
+                case "PLAYERREQUESTS":
+                    ft.replace(R.id.container, PlayerRequestsFragment.newInstance(), tag);
+                    break;
+                case "TODAYSGAMES":
+                    ft.replace(R.id.container, TodaysGamesFragment.newInstance(), tag);
+                    break;
+                case "ABOUT":
+                    LibsFragment libsFragment = new Libs.Builder()
+                            .withFields(R.string.class.getFields())
+                            .withAboutIconShown(true)
+                            .withAboutVersionShown(true)
+                            .fragment();
+                    ft.replace(R.id.container, libsFragment, tag);
+                    break;
             }
-            if (tag.equals("PLAYERREQUESTS")) {
-                ft.replace(R.id.container, PlayerRequestsFragment.newInstance(), tag);
-            }
-            if (tag.equals("TODAYSGAMES")) {
-                ft.replace(R.id.container, TodaysGamesFragment.newInstance(), tag);
-            }
-
-
             ft.addToBackStack(tag);
             ft.commit();
         } else if (!fragment.isVisible()) {
