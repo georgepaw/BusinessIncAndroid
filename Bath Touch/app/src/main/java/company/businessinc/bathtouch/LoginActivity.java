@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+
 import company.businessinc.bathtouch.data.DataStore;
 import company.businessinc.dataModels.ResponseStatus;
 import company.businessinc.dataModels.User;
@@ -36,6 +38,9 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //Get a Tracker (should auto-report)
+        ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.APP_TRACKER);
+
         if(savedInstanceState == null)
             mSharedPreferences = getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
 
@@ -43,6 +48,20 @@ public class LoginActivity extends ActionBarActivity implements UserLoginInterfa
         toolbar.hideOverflowMenu();
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Get an Analytics tracker to report app starts and uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Get an Analytics tracker to report app starts and uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
     public void login_as_user(View view) {
