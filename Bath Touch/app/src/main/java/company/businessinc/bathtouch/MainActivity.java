@@ -32,8 +32,6 @@ import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.ui.LibsFragment;
 import company.businessinc.bathtouch.adapters.TeamOverviewAdapter;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.dataModels.League;
@@ -487,12 +485,7 @@ public class MainActivity extends ActionBarActivity
                     ft.replace(R.id.container, TodaysGamesFragment.newInstance(), tag);
                     break;
                 case "ABOUT":
-                    LibsFragment libsFragment = new Libs.Builder()
-                            .withFields(R.string.class.getFields())
-                            .withAboutIconShown(true)
-                            .withAboutVersionShown(true)
-                            .fragment();
-                    ft.replace(R.id.container, libsFragment, tag);
+                    ft.replace(R.id.container, LicenceFragment.newInstance(), tag);
                     break;
             }
             ft.addToBackStack(tag);
