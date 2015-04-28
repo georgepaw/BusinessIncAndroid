@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Version: 0.9"
-                android:id="@+id/textView3" android:layout_below="@+id/textView2"
+                android:id="@+id/fragment_licences_version" android:layout_below="@+id/textView2"
                 android:layout_centerHorizontal="true"/>
 
 

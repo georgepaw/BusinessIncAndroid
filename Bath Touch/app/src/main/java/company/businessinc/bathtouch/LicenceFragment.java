@@ -1,27 +1,21 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import company.businessinc.bathtouch.adapters.LicenceAdapter;
-import company.businessinc.bathtouch.adapters.TodaysGameAdapter;
-import company.businessinc.bathtouch.data.DataStore;
-import company.businessinc.dataModels.LeagueTeam;
-import company.businessinc.dataModels.Licence;
-import company.businessinc.dataModels.Match;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Locale;
 
 
 public class LicenceFragment extends Fragment {
@@ -54,7 +48,7 @@ public class LicenceFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(ANON_PRIMARY)));
         actionBar.setTitle("About");
         actionBar.setElevation(0f);
@@ -63,6 +57,13 @@ public class LicenceFragment extends Fragment {
         mLayout = inflater.inflate(R.layout.fragment_licences, container, false);
 
         //set up the recycler view
+        TextView textViewVersion = (TextView) mLayout.findViewById(R.id.fragment_licences_version);
+        try {
+            textViewVersion.setText("Version: " + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e){
+            textViewVersion.setText("");
+            Log.d(TAG,"Couldn't get the version.");
+        }
         mRecyclerView = (RecyclerView) mLayout.findViewById(R.id.fragment_licence_recycle);
 
 //        // use this setting to improve performance if you know that changes
