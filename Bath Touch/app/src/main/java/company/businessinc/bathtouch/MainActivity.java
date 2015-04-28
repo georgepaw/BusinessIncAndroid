@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -25,12 +26,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
+import com.heinrichreimersoftware.materialdrawer.theme.DrawerTheme;
 
 import company.businessinc.bathtouch.adapters.TeamOverviewAdapter;
 import company.businessinc.bathtouch.data.DBObserver;
@@ -56,7 +59,7 @@ import company.businessinc.endpoints.ScoreSubmitInterface;
 import company.businessinc.networking.APICall;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
         implements HomePageFragment.HomePageCallbacks,
         MyTeamFragment.MyTeamFragmentCallbacks,
         TeamResultsFragment.TeamResultsCallbacks,
@@ -91,6 +94,8 @@ public class MainActivity extends ActionBarActivity
     private DrawerFrameLayout mNavigationDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragmentManager;
+    private boolean mDrawItemSelected = false;
+    private String mDrawerTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +127,9 @@ public class MainActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_main);
 
+        //Get a Tracker (should auto-report)
+        ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.APP_TRACKER);
+
         if (savedInstanceState == null) {
             mFragmentManager = getSupportFragmentManager();
             mFragmentManager.beginTransaction()
@@ -134,7 +142,7 @@ public class MainActivity extends ActionBarActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (!DataStore.getInstance(this).isUserLoggedIn()) {
-            mNavigationDrawerLayout.setProfile(
+            mNavigationDrawerLayout.addProfile(
                     new DrawerProfile()
                             .setAvatar(getResources().getDrawable(R.drawable.ic_account_circle_grey600_48dp))
                             .setBackground(getResources().getDrawable(R.color.primary))
@@ -142,7 +150,7 @@ public class MainActivity extends ActionBarActivity
                             .setDescription("Not signed in")
                             .setOnProfileClickListener(new DrawerProfile.OnProfileClickListener() {
                                 @Override
-                                public void onClick(DrawerProfile drawerProfile) {
+                                public void onClick(DrawerProfile drawerProfile, long l) {
                                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                                     alertDialog.setMessage("Do you want to sign in?");
                                     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Sign in", new DialogInterface.OnClickListener() {
@@ -165,7 +173,7 @@ public class MainActivity extends ActionBarActivity
             TextDrawable avatar = TextDrawable.builder()
                     .buildRound(DataStore.getInstance(MainActivity.this).getUserTeam().substring(0, 1)
                             .toUpperCase(), DataStore.getInstance(MainActivity.this).getUserTeamColorPrimary());
-            mNavigationDrawerLayout.setProfile(
+            mNavigationDrawerLayout.addProfile(
                     new DrawerProfile()
                             .setAvatar(avatar)
                             .setBackground(new ColorDrawable(DataStore.getInstance(MainActivity.this).getUserTeamColorSecondary()))
@@ -173,7 +181,7 @@ public class MainActivity extends ActionBarActivity
                             .setDescription(DataStore.getInstance(MainActivity.this).getUserTeam())
                             .setOnProfileClickListener(new DrawerProfile.OnProfileClickListener() {
                                 @Override
-                                public void onClick(DrawerProfile drawerProfile) {
+                                public void onClick(DrawerProfile drawerProfile, long l) {
                                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                                     alertDialog.setMessage("Do you want to sign out?");
                                     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Sign out", new DialogInterface.OnClickListener() {
@@ -192,6 +200,9 @@ public class MainActivity extends ActionBarActivity
                                 }
                             })
             );
+            mNavigationDrawerLayout.setDrawerTheme(
+                    new DrawerTheme(this)
+                            .setHighlightColor(DataStore.getInstance(MainActivity.this).getUserTeamColorPrimary()));
         }
 
         String myTeamFragmentName;
@@ -207,9 +218,10 @@ public class MainActivity extends ActionBarActivity
                         .setTextPrimary(myTeamFragmentName)
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
-                            public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("HOMEPAGETAG", null);
+                            public void onClick(DrawerItem drawerItem, long l, int i) {
                                 mNavigationDrawerLayout.closeDrawer();
+                                mDrawItemSelected = true;
+                                mDrawerTag = "HOMEPAGETAG";
                             }
                         })
         );
@@ -219,9 +231,10 @@ public class MainActivity extends ActionBarActivity
                         .setTextPrimary("Leagues")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
-                            public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("LEAGUETABLETAG", null);
+                            public void onClick(DrawerItem drawerItem, long l, int i) {
                                 mNavigationDrawerLayout.closeDrawer();
+                                mDrawItemSelected = true;
+                                mDrawerTag = "LEAGUETABLETAG";
                             }
                         })
         );
@@ -231,9 +244,10 @@ public class MainActivity extends ActionBarActivity
                         .setTextPrimary("Matches")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
-                            public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("TEAMRESULTSTAG", null);
+                            public void onClick(DrawerItem drawerItem, long l, int i) {
                                 mNavigationDrawerLayout.closeDrawer();
+                                mDrawItemSelected = true;
+                                mDrawerTag = "TEAMRESULTSTAG";
                             }
                         })
         );
@@ -244,9 +258,10 @@ public class MainActivity extends ActionBarActivity
                             .setTextPrimary("Referee Matches")
                             .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                                 @Override
-                                public void onClick(DrawerItem drawerItem, int i, int i2) {
-                                    changeFragments("REFGAMESTAG", null);
+                                public void onClick(DrawerItem drawerItem, long l, int i) {
                                     mNavigationDrawerLayout.closeDrawer();
+                                    mDrawItemSelected = true;
+                                    mDrawerTag = "REFGAMESTAG";
                                 }
                             })
             );
@@ -258,9 +273,10 @@ public class MainActivity extends ActionBarActivity
                             .setTextPrimary("Player requests")
                             .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                                 @Override
-                                public void onClick(DrawerItem drawerItem, int id, int position) {
-                                    changeFragments("PLAYERREQUESTS", null);
+                                public void onClick(DrawerItem drawerItem, long l, int i) {
                                     mNavigationDrawerLayout.closeDrawer();
+                                    mDrawItemSelected = true;
+                                    mDrawerTag = "PLAYERREQUESTS";
                                 }
                             })
             );
@@ -271,23 +287,24 @@ public class MainActivity extends ActionBarActivity
                         .setTextPrimary("Today's Games")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
-                            public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("TODAYSGAMES", null);
+                            public void onClick(DrawerItem drawerItem, long l, int i) {
                                 mNavigationDrawerLayout.closeDrawer();
+                                mDrawItemSelected = true;
+                                mDrawerTag = "TODAYSGAMES";
                             }
                         })
         );
         mNavigationDrawerLayout.addDivider();
-
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
                         .setImage(getResources().getDrawable(R.drawable.ic_settings_grey600_48dp))
                         .setTextPrimary("Settings")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
-                            public void onClick(DrawerItem drawerItem, int id, int position) {
-                                Toast.makeText(MainActivity.this, "No settings activity yet", Toast.LENGTH_SHORT).show();
+                            public void onClick(DrawerItem drawerItem, long l, int i) {
                                 mNavigationDrawerLayout.closeDrawer();
+                                mDrawItemSelected = true;
+                                mDrawerTag = "SETTINGSTAG";
                             }
                         })
         );
@@ -298,9 +315,10 @@ public class MainActivity extends ActionBarActivity
                         .setTextPrimary("About")
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
-                            public void onClick(DrawerItem drawerItem, int id, int position) {
-                                changeFragments("ABOUT", null);
+                            public void onClick(DrawerItem drawerItem, long l, int i) {
                                 mNavigationDrawerLayout.closeDrawer();
+                                mDrawItemSelected = true;
+                                mDrawerTag = "ABOUT";
                             }
                         })
         );
@@ -314,6 +332,10 @@ public class MainActivity extends ActionBarActivity
         ) {
 
             public void onDrawerClosed(View view) {
+                if(mDrawItemSelected) {
+                    mDrawItemSelected = false;
+                    changeFragments(mDrawerTag,null);
+                }
                 invalidateOptionsMenu();
             }
 
@@ -359,6 +381,20 @@ public class MainActivity extends ActionBarActivity
                 Math.max((int) (r * factor), 0),
                 Math.max((int) (g * factor), 0),
                 Math.max((int) (b * factor), 0));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Get an Analytics tracker to report app starts and uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Get an Analytics tracker to report app starts and uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
     @Override protected void onResume()
@@ -460,6 +496,7 @@ public class MainActivity extends ActionBarActivity
         if (mFragmentManager == null)
             mFragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.addSharedElement(findViewById(R.id.toolbar), "toolbar");
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
         if (fragment == null) {
             switch (tag){
@@ -488,8 +525,17 @@ public class MainActivity extends ActionBarActivity
                     ft.replace(R.id.container, LicenceFragment.newInstance(), tag);
                     break;
             }
+            if (tag.equals("PLAYERREQUESTS")) {
+                ft.replace(R.id.container, PlayerRequestsFragment.newInstance(), tag);
+            }
+            if (tag.equals("TODAYSGAMES")) {
+                ft.replace(R.id.container, TodaysGamesFragment.newInstance(), tag);
+            }
+
+
             ft.addToBackStack(tag);
             ft.commit();
+            getSupportFragmentManager().executePendingTransactions();
         } else if (!fragment.isVisible()) {
             if (tag.equals("MATCHDETAILSFRAG")) {
                 ft.replace(R.id.container, MatchFragment.newInstance(args), tag);
@@ -498,6 +544,7 @@ public class MainActivity extends ActionBarActivity
             }
             ft.addToBackStack(tag);
             ft.commit();
+            getSupportFragmentManager().executePendingTransactions();
         }
     }
 

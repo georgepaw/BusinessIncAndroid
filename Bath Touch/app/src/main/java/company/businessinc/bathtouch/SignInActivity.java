@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +52,7 @@ public class SignInActivity extends ActionBarActivity {
     public static class SignInStart extends Fragment{
 
         private SharedPreferences mSharedPreferences;
-        private ActionBarActivity mActivity;
+        private AppCompatActivity mActivity;
         private EditText mUsernameEditText;
         private Button mSkipNext, mNewAccount, mAnonymous;
 
@@ -131,7 +132,7 @@ public class SignInActivity extends ActionBarActivity {
 
         private SharedPreferences mSharedPreferences;
         private String mUsername;
-        private ActionBarActivity mActivity;
+        private AppCompatActivity mActivity;
         private EditText mPasswordEditText;
         private Button mNext, mForgotPassword;
 
@@ -142,7 +143,7 @@ public class SignInActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             mUsername = getArguments().getString("username");
-            mActivity = (ActionBarActivity) getActivity();
+            mActivity = (AppCompatActivity) getActivity();
             mSharedPreferences = mActivity.getSharedPreferences(getResources().getString(R.string.shared_preferences), Context.MODE_PRIVATE);
             View rootView = inflater.inflate(R.layout.fragment_sign_in_password, container, false);
             mPasswordEditText = (EditText) rootView.findViewById(R.id.fragment_sign_in_password_password_edit_text);

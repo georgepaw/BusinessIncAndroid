@@ -12,6 +12,12 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.ChangeTransform;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionValues;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,7 +119,7 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         ImageView teamOneImage, teamTwoImage;
         TextView teamOneText, teamTwoText, scoreText, dateText;
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("");
         int primaryColour;
         int secondaryColour;
@@ -127,6 +133,9 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         actionBar.setBackgroundDrawable(new ColorDrawable(primaryColour));
 
         actionBar.setElevation(0f);
+
+        setEnterTransition(new Fade());
+        setReturnTransition(new Fade());
 
         headerBox = (RelativeLayout) mLayout.findViewById(R.id.activity_match_header);
         headerBox.setBackgroundColor(primaryColour);

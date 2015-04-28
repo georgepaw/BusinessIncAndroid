@@ -12,16 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
-import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.amulyakhare.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +42,14 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public class ViewHolderLeague extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTeamName, mTeamWin, mTeamLose, mTeamForfeits, mTeamDraw, mTeamPts, mPtsFor, mPtsAgn, mCaptainName, mTeamPos;
         public ImageView mImagePosition;
-        public RelativeLayout mExpandable;
-        public CardView mMain;
+        public RelativeLayout mExpandable, mMain;
+        public CardView mCard;
 
         public ViewHolderLeague(View v) {
             super(v);
-            mMain = (CardView) v.findViewById(R.id.league_item_team1_container);
-            mMain.setOnClickListener(this);
+            mCard = (CardView) v.findViewById(R.id.league_item_team1_container);
+            mCard.setOnClickListener(this);
+            mMain = (RelativeLayout) v.findViewById(R.id.league_item_team_main_background);
             mTeamName = (TextView) v.findViewById(R.id.league_item_team_name);
             mTeamWin = (TextView) v.findViewById(R.id.league_item_team_won);
             mTeamLose = (TextView) v.findViewById(R.id.league_item_team_lose);
@@ -73,7 +67,7 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @Override
         public void onClick(View v) {
-            if(v.getId() == mMain.getId()){
+            if(v.getId() == mCard.getId()){
                 ValueAnimator animator; //expand the player
                 if (mExpandable.getVisibility() == View.GONE) {
                     mExpandable.setVisibility(View.VISIBLE); //expand the view
@@ -192,6 +186,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Team fullTeam = null;
         int circleColor;
         int textColor = mContext.getResources().getColor(R.color.body_text_2);
+        int userTeamId = DataStore.getInstance(mContext).getUserTeamID();
+
 
         for (Team e : allTeams) {
             if (e.getTeamID() == team.getTeamID()) {
@@ -199,6 +195,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 break;
             }
         }
+
+
 
         //try and get other team details, may have not been loaded from db yet
         try {
@@ -214,6 +212,12 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } catch (Exception e) {
             circleColor = Color.LTGRAY;
             Log.d("LEAGUEADAPTER", "Team colors still null in db");
+
+        }
+
+        //if this is our team, set colours so that the entire item is team colored
+        if(fullTeam.getTeamID() == userTeamId){
+            textColor = Color.parseColor(fullTeam.getTeamColorPrimary());
         }
 
 
@@ -235,10 +239,8 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         v.mPtsFor.setText(team.getPointsFor().toString());
         v.mPtsAgn.setText(team.getPointsAgainst().toString());
 
-        //Set circle icons for positions, points for and against
         String leaguePosition = team.getPosition().toString();
 
-//        v.mImagePosition.setImageDrawable(drawable);
         v.mTeamPos.setText(leaguePosition);
         v.mTeamPos.setTextColor(circleColor);
 

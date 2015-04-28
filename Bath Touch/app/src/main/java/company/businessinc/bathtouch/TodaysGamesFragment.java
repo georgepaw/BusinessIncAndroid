@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.*;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
@@ -66,7 +67,7 @@ public class TodaysGamesFragment extends Fragment{
             userColor = Color.parseColor(ANON_PRIMARY);
         }
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("Today's Games");
         actionBar.setElevation(0f);

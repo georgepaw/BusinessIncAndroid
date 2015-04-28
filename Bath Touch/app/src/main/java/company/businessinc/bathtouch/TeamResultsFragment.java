@@ -13,7 +13,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,6 +82,9 @@ public class TeamResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         mLayout = inflater.inflate(R.layout.fragment_team_results, container, false);
 
+        setEnterTransition(new Fade());
+        setExitTransition(new Fade());
+
         int userColor;
         if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
             userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
@@ -89,7 +94,7 @@ public class TeamResultsFragment extends Fragment {
             mTeamID = 0;
         }
 
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
 //        actionBar.setTitle("Past Results");
         actionBar.setElevation(0f);
