@@ -104,7 +104,7 @@ public class CreateAccountActivity extends ActionBarActivity {
             mNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mFirstNameEditText.getText().length() == 0 &&
+                    if (mFirstNameEditText.getText().length() == 0 &&
                             mSecondnameEditText.getText().length() == 0) {
                         mFirstNameEditText.setError("Please enter a first name");
                         mSecondnameEditText.setError("Please enter a second name");
@@ -116,17 +116,21 @@ public class CreateAccountActivity extends ActionBarActivity {
                         args.putString("name", name);
                         args.putBoolean("isMale", isMale);
                         InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                                InputMethodManager.HIDE_NOT_ALWAYS);
-                        if (mIsGhost) {
-                            create_account(name, isMale);
-                        } else {
-                            CreateAccountEmail cau = new CreateAccountEmail();
-                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                            cau.setArguments(args);
-                            ft.replace(R.id.activity_create_account_container, cau);
-                            ft.addToBackStack(null);
-                            ft.commit();
+                        try {
+                            im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                                    InputMethodManager.HIDE_NOT_ALWAYS);
+                            if (mIsGhost) {
+                                create_account(name, isMale);
+                            } else {
+                                CreateAccountEmail cau = new CreateAccountEmail();
+                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                cau.setArguments(args);
+                                ft.replace(R.id.activity_create_account_container, cau);
+                                ft.addToBackStack(null);
+                                ft.commit();
+                            }
+                        } catch (NullPointerException e){
+                            Log.d("CreateAccountActivity", "Can't create account, null pointer exception.");
                         }
                     }
                 }
