@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import company.businessinc.bathtouch.data.DBObserver;
@@ -141,6 +143,15 @@ public class MyTeamFragment extends Fragment{
         DataStore.getInstance(getActivity()).registerLiveLeagueDBObserver(mViewPagerAdapter);
 //        mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Home Page Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     public int darker (int color, float factor) {

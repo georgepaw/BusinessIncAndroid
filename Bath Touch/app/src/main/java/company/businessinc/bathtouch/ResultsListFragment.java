@@ -10,6 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -89,6 +93,15 @@ public class ResultsListFragment extends Fragment implements TeamResultsAdapter.
 
         mRecyclerView.setAdapter(mAdapter);
         return mLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Matches Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     /*

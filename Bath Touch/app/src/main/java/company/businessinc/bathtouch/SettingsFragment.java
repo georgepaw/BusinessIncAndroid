@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -34,5 +36,14 @@ public class SettingsFragment extends PreferenceFragment {
         DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
         navigationDrawerLayout.selectItem(6);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Settings Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

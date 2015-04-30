@@ -17,6 +17,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import company.businessinc.bathtouch.adapters.PlayerRequestAdapter;
 import company.businessinc.bathtouch.adapters.TeamResultsAdapter;
@@ -104,6 +107,15 @@ public class PlayerRequestsFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         return mLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Player Requests Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     public int darker (int color, float factor) {

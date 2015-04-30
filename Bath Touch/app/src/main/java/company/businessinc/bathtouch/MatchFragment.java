@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.melnykov.fab.FloatingActionButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -232,6 +234,15 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         DataStore.getInstance(getActivity()).registerMyUpcomingRefereeDBObserver(this);
         mViewPagerAdapter.notifyDataSetChanged();
         return mLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Match Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

@@ -11,6 +11,12 @@
     <bool name="ga_dryRun">false</bool>
 
     <!-- The screen names that will appear in reports -->
-    <string name="com.businessinc.bathtouch.LoginActivity">Login Activity</string>
-    <string name="com.businessinc.bathtouch.MainActivity">Main Activity</string>
+    <string name="company.businessinc.bathtouch.LoginActivity">Login Activity</string>
+    <string name="company.businessinc.bathtouch.MainActivity">Main Activity</string>
+    <string name="company.businessinc.bathtouch.HomePageFragment">Home Page Fragment</string>
+    <string name="company.businessinc.bathtouch.LeagueTableFragment">League Table Fragment</string>
+    <string name="company.businessinc.bathtouch.TeamResultsFragment">Team Results Fragment</string>
+    <string name="company.businessinc.bathtouch.RefGamesFragment">Referee Games Fragment</string>
+    <string name="company.businessinc.bathtouch.PlayerRequestsFragment">Player Requests Fragment</string>
+    <string name="company.businessinc.bathtouch.TodaysGamesFragment">Today's Games Fragment</string>
 </resources>
