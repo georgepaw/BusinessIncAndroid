@@ -86,9 +86,11 @@ public class MyMapFragment extends Fragment {
         super.onResume();
         if (map == null) {
             map = fragment.getMap();
-            map.addMarker(new MarkerOptions().position(new LatLng(mLatitude, mLongitude)).title(mPlace).snippet(mAddress)).showInfoWindow();
-            // For zooming automatically to the Dropped PIN Location
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 15.0f));
+            if(map != null) {
+                map.addMarker(new MarkerOptions().position(new LatLng(mLatitude, mLongitude)).title(mPlace).snippet(mAddress)).showInfoWindow();
+                // For zooming automatically to the Dropped PIN Location
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 15.0f));
+            }
         }
     }
 }
