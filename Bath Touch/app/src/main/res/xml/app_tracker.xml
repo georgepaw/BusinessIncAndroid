@@ -17,5 +17,12 @@
     <integer name="ga_sessionTimeout">-1</integer>
 
     <!-- If ga_autoActivityTracking is enabled, an alternate screen name can be specified to substitute for the full length canonical Activity name in screen view hit. In order to specify an alternate screen name use an <screenName> element, with the name attribute specifying the canonical name, and the value the alias to use instead. -->
-    <screenName name="com.mycompany.MyActivity">My Activity</screenName>
+    <string name="company.businessinc.bathtouch.LoginActivity">Login Activity</string>
+    <string name="company.businessinc.bathtouch.MainActivity">Main Activity</string>
+    <string name="company.businessinc.bathtouch.HomePageFragment">Home Page Fragment</string>
+    <string name="company.businessinc.bathtouch.LeagueTableFragment">League Table Fragment</string>
+    <string name="company.businessinc.bathtouch.TeamResultsFragment">Team Results Fragment</string>
+    <string name="company.businessinc.bathtouch.RefGamesFragment">Referee Games Fragment</string>
+    <string name="company.businessinc.bathtouch.PlayerRequestsFragment">Player Requests Fragment</string>
+    <string name="company.businessinc.bathtouch.TodaysGamesFragment">Today's Games Fragment</string>
 </resources>

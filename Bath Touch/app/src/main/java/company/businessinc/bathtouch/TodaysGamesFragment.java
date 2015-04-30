@@ -14,6 +14,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.*;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import company.businessinc.bathtouch.data.DBObserver;
 import company.businessinc.bathtouch.data.DBProviderContract;
@@ -115,6 +118,15 @@ public class TodaysGamesFragment extends Fragment{
         DataStore.getInstance(getActivity()).registerLiveLeagueDBObserver(mViewPagerAdapter);
         mViewPagerAdapter.setLeagues();
         return mLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Today's Games Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 
 import company.businessinc.bathtouch.data.DBObserver;
@@ -127,6 +129,15 @@ public class LeagueTableFragment extends Fragment {
         DataStore.getInstance(getActivity()).registerAllLeagueDBObserver(mViewPagerAdapter);
         mViewPagerAdapter.setLeagues();
         return mLayout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("League Table Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
