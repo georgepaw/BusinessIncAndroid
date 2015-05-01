@@ -5,7 +5,6 @@
         android:title="Notification settings">
 
         <CheckBoxPreference
-            android:key="@string/settings_notifications"
             android:title="Player Requests"
             android:summary="Would you like to receive requests from captains of other teams when they need players?" />
 
@@ -15,8 +14,6 @@
         android:title="Account Settings">
 
         <EditTextPreference
-            android:key="@string/settings_name"
-            android:summary="@string/settings_name"
             android:title="Your Name"
             android:dialogTitle="Your Name" />
 
