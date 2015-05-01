@@ -15,6 +15,8 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import company.businessinc.bathtouch.adapters.SettingsAdapter;
 import company.businessinc.bathtouch.data.DataStore;
@@ -104,5 +106,14 @@ public class SettingsFragment extends Fragment implements UserEditInterface {
         } else {
             Toast.makeText(getActivity(),"The settings could not be save. Please try again later.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Tracker t = ((MyApplication) getActivity().getApplication()).getTracker(
+                MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Settings Fragment");
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }
