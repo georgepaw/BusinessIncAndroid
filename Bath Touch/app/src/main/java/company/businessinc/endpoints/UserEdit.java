@@ -21,14 +21,14 @@ public class UserEdit extends AsyncTask<Void, Void, ResponseStatus> {
     private UserEditInterface callback;
     private List<NameValuePair> parameters;
 
-    public UserEdit(UserEditInterface callback, String username, String password, String email, String name, int permissions) {
+    public UserEdit(UserEditInterface callback, String email, String name, boolean isReferee, boolean isMale, int teamID) {
         this.callback = callback;
         parameters = new LinkedList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("username", username));
-        parameters.add(new BasicNameValuePair("password", password));
         parameters.add(new BasicNameValuePair("email", email));
         parameters.add(new BasicNameValuePair("name", name));
-        parameters.add(new BasicNameValuePair("permissions", Integer.toString(permissions)));
+        parameters.add(new BasicNameValuePair("teamID", Integer.toString(teamID)));
+        parameters.add(new BasicNameValuePair("notifications", isReferee ? "1" : "0"));
+        parameters.add(new BasicNameValuePair("gender", isMale ? "0" : "1"));
     }
 
     @Override
@@ -40,7 +40,6 @@ public class UserEdit extends AsyncTask<Void, Void, ResponseStatus> {
             Log.d(TAG, "Couldn't parse String into JSON");
             return new ResponseStatus(false);
         }
-
         try{
             return new ResponseStatus(jsonObject);
         } catch (JSONException e){

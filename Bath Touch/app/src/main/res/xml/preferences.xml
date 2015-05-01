@@ -2,22 +2,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Preference cat 1">
+        android:title="Notification settings">
 
         <CheckBoxPreference
-            android:key="checkbox_preference"
-            android:title="Checkbox preference"
-            android:summary="Lorem ipsum checkbox preference" />
+            android:key="@string/settings_notifications"
+            android:title="Player Requests"
+            android:summary="Would you like to receive requests from captains of other teams when they need players?" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Preference cat 2">
+        android:title="Account Settings">
 
         <EditTextPreference
-            android:key="name_preference"
-            android:title="Display name"
-            android:dialogTitle="Display name" />
+            android:key="@string/settings_name"
+            android:summary="@string/settings_name"
+            android:title="Your Name"
+            android:dialogTitle="Your Name" />
 
         <ListPreference
             android:key="list_preference"

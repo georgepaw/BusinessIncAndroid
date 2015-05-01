@@ -297,19 +297,21 @@ public class MainActivity extends AppCompatActivity
                         })
         );
         mNavigationDrawerLayout.addDivider();
-        mNavigationDrawerLayout.addItem(
-                new DrawerItem()
-                        .setImage(getResources().getDrawable(R.drawable.ic_settings_grey600_48dp))
-                        .setTextPrimary("Settings")
-                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
-                            @Override
-                            public void onClick(DrawerItem drawerItem, long l, int i) {
-                                mNavigationDrawerLayout.closeDrawer();
-                                mDrawItemSelected = true;
-                                mDrawerTag = "SETTINGSTAG";
-                            }
-                        })
-        );
+        if(DataStore.getInstance(this).isUserLoggedIn()) {
+            mNavigationDrawerLayout.addItem(
+                    new DrawerItem()
+                            .setImage(getResources().getDrawable(R.drawable.ic_settings_grey600_48dp))
+                            .setTextPrimary("Settings")
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, long l, int i) {
+                                    mNavigationDrawerLayout.closeDrawer();
+                                    mDrawItemSelected = true;
+                                    mDrawerTag = "SETTINGSTAG";
+                                }
+                            })
+            );
+        }
 
         mNavigationDrawerLayout.addItem(
                 new DrawerItem()
@@ -526,12 +528,9 @@ public class MainActivity extends AppCompatActivity
                 case "ABOUT":
                     ft.replace(R.id.container, LicenceFragment.newInstance(), tag);
                     break;
-            }
-            if (tag.equals("PLAYERREQUESTS")) {
-                ft.replace(R.id.container, PlayerRequestsFragment.newInstance(), tag);
-            }
-            if (tag.equals("TODAYSGAMES")) {
-                ft.replace(R.id.container, TodaysGamesFragment.newInstance(), tag);
+                case "SETTINGSTAG":
+                    ft.replace(R.id.container, SettingsFragment.newInstance(), tag);
+                    break;
             }
 
 

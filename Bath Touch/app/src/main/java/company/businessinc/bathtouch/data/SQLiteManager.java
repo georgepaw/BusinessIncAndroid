@@ -22,6 +22,7 @@ public class SQLiteManager {
     private static final String TAG = "SQLiteManager";
 
     public static synchronized SQLiteManager getInstance(Context context) {
+        //If the DB connector has not
         if (sInstance == null) {
             sInstance = new SQLiteManager();
         }
@@ -32,16 +33,19 @@ public class SQLiteManager {
     }
 
     public synchronized SQLiteDatabase openDatabase() {
+        //See if the connection to the DB is already open
         if(mOpenCounter.incrementAndGet() == 1) {
             // Opening new database
             mDatabase = mySQLiteHelper.getWritableDatabase();
         }
+        //Return the connection
         return mDatabase;
     }
 
     public synchronized void closeDatabase() {
+
         if(mOpenCounter.decrementAndGet() == 0) {
-            // Closing database
+            // Close the database if there are no more open connections left
             mDatabase.close();
         }
     }
