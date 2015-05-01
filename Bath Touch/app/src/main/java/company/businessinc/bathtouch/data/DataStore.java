@@ -131,6 +131,14 @@ public class DataStore implements TeamListInterface, TeamLeaguesInterface, Leagu
         return user.getTeamID();
     }
 
+    public String getUserEmail(){
+        return user.getEmail();
+    }
+
+    public Boolean isUserMale(){
+        return user.isMale();
+    }
+
     public int getUserTeamCaptainID() {
         return user.getCaptainID();
     }

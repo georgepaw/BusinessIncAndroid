@@ -16,12 +16,13 @@ public class NetworkStateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-
+        //The network state has changed
         if (intent.getExtras() != null) {
             final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
             final NetworkInfo ni = connectivityManager.getActiveNetworkInfo();
-
+            //if the active network state has changed from disconnected to connected or connecting
             if (ni != null && ni.isConnectedOrConnecting()) {
+                //then try to submit the scores
                 DataStore.getInstance(context).internetIsBack();
             }
         }

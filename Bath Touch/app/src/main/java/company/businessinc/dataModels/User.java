@@ -18,6 +18,8 @@ public class User {
     private Boolean isCaptain = false;
     private Boolean isReferee = false;
     private Boolean notifications = false;
+    private Boolean isMale = false;
+    private String email = null;
     private String teamColorPrimary;
     private String teamColorSecondary;
 
@@ -33,6 +35,8 @@ public class User {
         teamColorPrimary = null;
         teamColorSecondary = null;
         notifications = false;
+        email = null;
+        isMale = false;
     }
 
     public static final String KEY_NAME = "name";
@@ -45,6 +49,8 @@ public class User {
     public static final String KEY_TEAMCOLORPRIMARY = "teamColorPrimary";
     public static final String KEY_TEAMCOLORSECONDARY = "teamColorSecondary";
     public static final String KEY_NOTIFICATIONS = "notifications";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_GENDER = "gender";
     public static final String[] COLUMNS = {KEY_NAME, KEY_TEAMNAME, KEY_TEAMID, KEY_TEAMCOLORPRIMARY, KEY_TEAMCOLORSECONDARY};
     public static final String CREATE_TABLE =   KEY_NAME + "\tTEXT,\n" +
             KEY_TEAMNAME + "\tTEXT,\n" +
@@ -54,6 +60,7 @@ public class User {
             KEY_ISCAPTAIN + "\tINTEGER,\n" +
             KEY_ISREFEREE + "\tINTEGER,\n" +
             KEY_TEAMCOLORPRIMARY + "\tTEXT,\n" +
+            KEY_EMAIL + "\tTEXT,\n" +
             KEY_TEAMCOLORSECONDARY + "\tTEXT,\n";
 
     public User(Cursor cursor){
@@ -160,6 +167,16 @@ public class User {
         } catch (JSONException e){
             this.notifications = false;
         }
+        try {
+            this.email = jsonObject.getString(KEY_EMAIL);
+        } catch (JSONException e){
+            this.email = null;
+        }
+        try {
+            this.isMale = jsonObject.getInt(KEY_GENDER) == 0;
+        } catch (JSONException e){
+            this.isMale = false;
+        }
     }
 
     public Boolean isLoggedIn() {
@@ -210,6 +227,36 @@ public class User {
         return notifications;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Boolean isMale() {
+        return isMale;
+    }
+
+    public void setIsMale(Boolean isMale) {
+        this.isMale = isMale;
+    }
+
+    public void setTeamID(Integer teamID) {
+        this.teamID = teamID;
+    }
+
+    public void setIsReferee(Boolean isReferee) {
+        this.isReferee = isReferee;
+    }
+
+    public void setNotifications(Boolean notifications) {
+        this.notifications = notifications;
+    }
+
+
+
     public String toString(){
         JSONObject jsonObject = new JSONObject();
         try{
@@ -223,6 +270,8 @@ public class User {
                 jsonObject.put(KEY_TEAMCOLORPRIMARY, teamColorPrimary);
                 jsonObject.put(KEY_TEAMCOLORSECONDARY, teamColorSecondary);
                 jsonObject.put(KEY_NOTIFICATIONS, notifications);
+                jsonObject.put(KEY_EMAIL, email);
+                jsonObject.put(KEY_GENDER, isMale ? 0 : 1);
             }
 
         } catch (JSONException e){
