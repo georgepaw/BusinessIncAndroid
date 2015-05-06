@@ -32,6 +32,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.melnykov.fab.FloatingActionButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -135,6 +136,9 @@ public class MatchFragment extends Fragment implements LeagueFragment.LeagueCall
         actionBar.setBackgroundDrawable(new ColorDrawable(primaryColour));
 
         actionBar.setElevation(0f);
+
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(-1);
 
         setEnterTransition(new Fade());
         setReturnTransition(new Fade());

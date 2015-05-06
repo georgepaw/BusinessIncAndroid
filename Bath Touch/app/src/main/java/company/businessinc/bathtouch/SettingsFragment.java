@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.*;
 import android.widget.CheckBox;
 import android.widget.Spinner;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import company.businessinc.bathtouch.adapters.SettingsAdapter;
 import company.businessinc.bathtouch.data.DataStore;
@@ -64,10 +66,21 @@ public class SettingsFragment extends Fragment implements UserEditInterface {
                              Bundle savedInstanceState) {
 
 
+        int userColor;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+        } else {
+            userColor = Color.parseColor(ANON_PRIMARY);
+        }
+
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(ANON_PRIMARY)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("Settings");
-        actionBar.setElevation(0f);
+        actionBar.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
+                getResources().getDisplayMetrics()));
+
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(7);
 
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_settings, container, false);

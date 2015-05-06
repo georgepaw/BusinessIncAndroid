@@ -1,6 +1,7 @@
 package company.businessinc.bathtouch;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -47,6 +48,8 @@ public class RefGamesFragment extends Fragment implements RefGamesAdapter.OnRefG
     private Integer mLeagueID, mTeamID;
     private Boolean mAllTeams;
 
+    private static final String ANON_PRIMARY = "#ff0000";
+
     public static RefGamesFragment newInstance() {
         RefGamesFragment fragment = new RefGamesFragment();
         Bundle args = new Bundle();
@@ -72,7 +75,15 @@ public class RefGamesFragment extends Fragment implements RefGamesAdapter.OnRefG
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_results_list, container, false);
 
+        int userColor;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+        } else {
+            userColor = Color.parseColor(ANON_PRIMARY);
+        }
+
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("Referee Matches");
         actionBar.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
                 getResources().getDisplayMetrics()));

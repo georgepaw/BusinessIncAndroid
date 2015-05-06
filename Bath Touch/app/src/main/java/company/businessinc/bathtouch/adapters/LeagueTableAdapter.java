@@ -186,8 +186,10 @@ public class LeagueTableAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Team fullTeam = null;
         int circleColor;
         int textColor = mContext.getResources().getColor(R.color.body_text_2);
-        int userTeamId = DataStore.getInstance(mContext).getUserTeamID();
-
+        int userTeamId = -1;
+        if(DataStore.getInstance(mContext).isUserLoggedIn()) {
+            userTeamId = DataStore.getInstance(mContext).getUserTeamID();
+        }
 
         for (Team e : allTeams) {
             if (e.getTeamID() == team.getTeamID()) {

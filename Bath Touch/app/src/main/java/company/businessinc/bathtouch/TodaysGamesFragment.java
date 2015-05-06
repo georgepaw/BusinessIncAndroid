@@ -81,7 +81,7 @@ public class TodaysGamesFragment extends Fragment{
         drawerFrameLayout.setStatusBarBackgroundColor(color);
 
         DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
-        navigationDrawerLayout.selectItem(1);
+        navigationDrawerLayout.selectItem(5);
 
         mViewPager = (ViewPager) mLayout.findViewById(R.id.fragment_todays_games_view_pager);
 

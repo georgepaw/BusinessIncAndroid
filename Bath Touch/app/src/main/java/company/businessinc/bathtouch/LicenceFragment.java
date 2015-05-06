@@ -11,11 +11,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+
 import company.businessinc.bathtouch.adapters.LicenceAdapter;
+import company.businessinc.bathtouch.data.DataStore;
 
 
 public class LicenceFragment extends Fragment {
@@ -48,10 +53,21 @@ public class LicenceFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
+        int userColor;
+        if(DataStore.getInstance(getActivity()).isUserLoggedIn()){
+            userColor = DataStore.getInstance(getActivity().getBaseContext()).getUserTeamColorPrimary();
+        } else {
+            userColor = Color.parseColor(ANON_PRIMARY);
+        }
+
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(ANON_PRIMARY)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(userColor));
         actionBar.setTitle("About");
-        actionBar.setElevation(0f);
+        actionBar.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
+                getResources().getDisplayMetrics()));
+
+        DrawerFrameLayout navigationDrawerLayout = (DrawerFrameLayout) getActivity().findViewById(R.id.drawer_layout);
+        navigationDrawerLayout.selectItem(8);
 
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_licences, container, false);
